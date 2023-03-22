@@ -3,7 +3,7 @@ name: Test Python SDK
 on:
   push:
     branches:
-      - "*"
+      - "main"
   pull_request:
     branches: [ main ]
 
