@@ -1,0 +1,8 @@
+pytest
+flake8
+bandit
+requests
+aiohttp
+pytest-asyncio
+coverage
+

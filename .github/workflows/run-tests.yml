@@ -1,0 +1,70 @@
+name: Test Python SDK
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches: [ main ]
+
+env:
+  KEY_ID: ${{ secrets.KEY_ID }}
+  KEY_SECRET: ${{ secrets.KEY_SECRET }}
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  NUMBERS_ORIGIN: ${{ secrets.NUMBERS_ORIGIN }}
+  SMS_ORIGIN: ${{ secrets.SMS_ORIGIN }}
+  CONVERSATION_ORIGIN: ${{ secrets.CONVERSATION_ORIGIN }}
+  AUTH_ORIGIN: ${{ secrets.AUTH_ORIGIN }}
+  DISABLE_SSL: ${{ secrets.DISABLE_SSL }}
+  PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+  ORIGIN_PHONE_NUMBER: ${{ secrets.ORIGIN_PHONE_NUMBER }}
+  APP_ID: ${{ secrets.APP_ID }}
+  EMPTY_PROJECT_ID: ${{ secrets.EMPTY_PROJECT_ID }}
+  TEMPLATES_ORIGIN: ${{ secrets.TEMPLATES_ORIGIN }}
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-dev.txt
+    - name: Lint with flake8
+      run: |
+        flake8 sinch --count --max-complexity=10 --max-line-length=120 --statistics
+
+    - name: Checkout Wiremock fixtures repo
+      uses: actions/checkout@v3
+      with:
+        repository: sinch/sinch-sdk-internal-specs
+        token: ${{ secrets.GH_PAT }}
+        ref: numbers_fixtures
+        path: sinch-sdk-internal-specs
+
+    - uses: actions/setup-node@v3
+    - name: Install wait-port
+      run: |
+        npm install -g wait-port
+
+    - name: Test E2E with Pytest and Wiremock
+      run: |
+        cd sinch-sdk-internal-specs/fixtures/python/ && java -jar wiremock-studio-2.32.0-17.jar &
+        wait-port localhost:8000
+        coverage run --source=. -m pytest
+
+    - name: Test coverage report
+      run: |
+        python -m coverage report
