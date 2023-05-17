@@ -31,7 +31,10 @@ class HTTPTransport(ABC):
 
     def prepare_request(self, endpoint: HTTPEndpoint) -> HttpRequest:
         protocol = "http://" if self.sinch.configuration.disable_https else "https://"
+
         url_query_params = endpoint.build_query_params()
+        if url_query_params is not None:
+            url_query_params = {key: value for key, value in url_query_params.items() if value is not None}
 
         return HttpRequest(
             headers={},
