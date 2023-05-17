@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from sinch import ClientAsync
-from sinch import Client
 
 """
 Run with: uvicorn fast_api_example:app --reload
