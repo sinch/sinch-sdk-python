@@ -1,6 +1,6 @@
 <h1 align="center">
 
-   [![Sinch Logo](https://cdn.liveagent.com/app/uploads/2021/06/sinch-logo.png)](https://www.sinch.com)
+   [![Sinch Logo](https://developers.sinch.com/static/logo-07afe977d6d9dcd21b066d1612978e5c.svg)](https://www.sinch.com)
 
    Python SDK
 
