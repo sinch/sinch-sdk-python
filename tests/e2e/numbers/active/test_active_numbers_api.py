@@ -1,9 +1,5 @@
-from sinch.domains.numbers.models.responses import (
-    ListActiveNumbersResponse,
-    UpdateNumberConfigurationResponse,
-    ReleaseNumberFromProjectResponse,
-    GetNumberConfigurationResponse
-)
+from sinch.domains.numbers import ListActiveNumbersResponse, UpdateNumberConfigurationResponse, \
+    GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
 
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
 

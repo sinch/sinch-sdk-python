@@ -1,8 +1,8 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.domains.numbers.models.responses import ReleaseNumberFromProjectResponse
-from sinch.domains.numbers.models.requests import ReleaseNumberFromProjectRequest
+from sinch.domains.numbers.models.active.requests import ReleaseNumberFromProjectRequest
+from sinch.domains.numbers.models.active.responses import ReleaseNumberFromProjectResponse
 
 
 class ReleaseNumberFromProjectEndpoint(NumbersEndpoint):

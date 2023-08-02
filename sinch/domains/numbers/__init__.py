@@ -1,34 +1,24 @@
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
-from sinch.domains.numbers.endpoints.search_for_number import SearchForNumberEndpoint
-from sinch.domains.numbers.endpoints.list_available_numbers import AvailableNumbersEndpoint
-from sinch.domains.numbers.endpoints.activate_number import ActivateNumberEndpoint
-from sinch.domains.numbers.endpoints.list_active_numbers_for_project import ListActiveNumbersEndpoint
-from sinch.domains.numbers.endpoints.update_number_configuration import UpdateNumberConfigurationEndpoint
-from sinch.domains.numbers.endpoints.get_number_configuration import GetNumberConfigurationEndpoint
-from sinch.domains.numbers.endpoints.release_number_from_project import ReleaseNumberFromProjectEndpoint
-from sinch.domains.numbers.endpoints.list_available_regions import ListAvailableRegionsEndpoint
+from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
+from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
+from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
+from sinch.domains.numbers.endpoints.active.list_active_numbers_for_project import ListActiveNumbersEndpoint
+from sinch.domains.numbers.endpoints.active.update_number_configuration import UpdateNumberConfigurationEndpoint
+from sinch.domains.numbers.endpoints.active.get_number_configuration import GetNumberConfigurationEndpoint
+from sinch.domains.numbers.endpoints.active.release_number_from_project import ReleaseNumberFromProjectEndpoint
+from sinch.domains.numbers.endpoints.regions.list_available_regions import ListAvailableRegionsEndpoint
 
-from sinch.domains.numbers.models.requests import (
-    ListAvailableNumbersRequest,
-    ActivateNumberRequest,
-    CheckNumberAvailabilityRequest,
-    ListActiveNumbersRequest,
-    GetNumberConfigurationRequest,
-    ReleaseNumberFromProjectRequest,
-    ListAvailableRegionsForProjectRequest,
-    UpdateNumberConfigurationRequest
-)
+from sinch.domains.numbers.models.regions.requests import ListAvailableRegionsForProjectRequest
+from sinch.domains.numbers.models.active.requests import ListActiveNumbersRequest, GetNumberConfigurationRequest, \
+    UpdateNumberConfigurationRequest, ReleaseNumberFromProjectRequest
+from sinch.domains.numbers.models.available.requests import ListAvailableNumbersRequest, ActivateNumberRequest, \
+    CheckNumberAvailabilityRequest
 
-from sinch.domains.numbers.models.responses import (
-    ListAvailableNumbersResponse,
-    ActivateNumberResponse,
-    CheckNumberAvailabilityResponse,
-    ListActiveNumbersResponse,
-    UpdateNumberConfigurationResponse,
-    GetNumberConfigurationResponse,
-    ReleaseNumberFromProjectResponse,
-    ListAvailableRegionsResponse
-)
+from sinch.domains.numbers.models.regions.responses import ListAvailableRegionsResponse
+from sinch.domains.numbers.models.available.responses import ListAvailableNumbersResponse, ActivateNumberResponse, \
+    CheckNumberAvailabilityResponse
+from sinch.domains.numbers.models.active.responses import ListActiveNumbersResponse, UpdateNumberConfigurationResponse, \
+    GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
 
 
 class AvailableNumbers:
