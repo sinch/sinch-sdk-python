@@ -9,16 +9,24 @@ from sinch.domains.numbers.endpoints.active.release_number_from_project import R
 from sinch.domains.numbers.endpoints.regions.list_available_regions import ListAvailableRegionsEndpoint
 
 from sinch.domains.numbers.models.regions.requests import ListAvailableRegionsForProjectRequest
-from sinch.domains.numbers.models.active.requests import ListActiveNumbersRequest, GetNumberConfigurationRequest, \
+from sinch.domains.numbers.models.active.requests import (
+    ListActiveNumbersRequest, GetNumberConfigurationRequest,
     UpdateNumberConfigurationRequest, ReleaseNumberFromProjectRequest
-from sinch.domains.numbers.models.available.requests import ListAvailableNumbersRequest, ActivateNumberRequest, \
+)
+from sinch.domains.numbers.models.available.requests import (
+    ListAvailableNumbersRequest, ActivateNumberRequest,
     CheckNumberAvailabilityRequest
+)
 
 from sinch.domains.numbers.models.regions.responses import ListAvailableRegionsResponse
-from sinch.domains.numbers.models.available.responses import ListAvailableNumbersResponse, ActivateNumberResponse, \
+from sinch.domains.numbers.models.available.responses import (
+    ListAvailableNumbersResponse, ActivateNumberResponse,
     CheckNumberAvailabilityResponse
-from sinch.domains.numbers.models.active.responses import ListActiveNumbersResponse, UpdateNumberConfigurationResponse, \
+)
+from sinch.domains.numbers.models.active.responses import (
+    ListActiveNumbersResponse, UpdateNumberConfigurationResponse,
     GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
+)
 
 
 class AvailableNumbers:

@@ -6,6 +6,7 @@ from sinch.domains.numbers.models import Number
 from sinch.domains.numbers.models.available.requests import ListAvailableNumbersRequest
 from sinch.domains.numbers.models.available.responses import ListAvailableNumbersResponse
 
+
 class AvailableNumbersEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers"
     HTTP_METHOD = HTTPMethods.GET.value

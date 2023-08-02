@@ -5,6 +5,7 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.numbers.models.active.requests import GetNumberConfigurationRequest
 from sinch.domains.numbers.models.active.responses import GetNumberConfigurationResponse
 
+
 class GetNumberConfigurationEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers/{phone_number}"
     HTTP_METHOD = HTTPMethods.GET.value

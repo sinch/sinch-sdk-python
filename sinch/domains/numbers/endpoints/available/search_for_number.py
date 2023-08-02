@@ -4,6 +4,7 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.numbers.models.available.responses import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.available.requests import CheckNumberAvailabilityRequest
 
+
 class SearchForNumberEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers/{phone_number}"
     HTTP_METHOD = HTTPMethods.GET.value
