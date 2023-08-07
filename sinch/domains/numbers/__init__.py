@@ -2,6 +2,7 @@ from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
 from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
 from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
 from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
+from sinch.domains.numbers.endpoints.available.rent_any_number import RentAnyNumberEndpoint
 from sinch.domains.numbers.endpoints.active.list_active_numbers_for_project import ListActiveNumbersEndpoint
 from sinch.domains.numbers.endpoints.active.update_number_configuration import UpdateNumberConfigurationEndpoint
 from sinch.domains.numbers.endpoints.active.get_number_configuration import GetNumberConfigurationEndpoint
@@ -15,7 +16,7 @@ from sinch.domains.numbers.models.active.requests import (
 )
 from sinch.domains.numbers.models.available.requests import (
     ListAvailableNumbersRequest, ActivateNumberRequest,
-    CheckNumberAvailabilityRequest
+    CheckNumberAvailabilityRequest, RentAnyNumberRequest
 )
 
 from sinch.domains.numbers.models.regions.responses import ListAvailableRegionsResponse
@@ -77,6 +78,31 @@ class AvailableNumbers:
                     phone_number=phone_number,
                     sms_configuration=sms_configuration,
                     voice_configuration=voice_configuration
+                )
+            )
+        )
+
+    def rent_any(
+        self,
+        region_code: str,
+        type_: str,
+        number_pattern: str = None,
+        capabilities: list = None,
+        sms_configuration: dict = None,
+        voice_configuration: dict = None,
+        callback_url: str = None
+    ) -> RentAnyNumberRequest:
+        return self._sinch.configuration.transport.request(
+            RentAnyNumberEndpoint(
+                project_id=self._sinch.configuration.project_id,
+                request_data=RentAnyNumberRequest(
+                    region_code=region_code,
+                    type_=type_,
+                    number_pattern=number_pattern,
+                    capabilities=capabilities,
+                    sms_configuration=sms_configuration,
+                    voice_configuration=voice_configuration,
+                    callback_url=callback_url
                 )
             )
         )
