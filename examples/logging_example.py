@@ -1,7 +1,8 @@
+import os
 import logging
-from sinch import Sinch
+from sinch import Client
 """
-Simple example for implementing custom logging handler.
+Custom logger configuration example.
 """
 
 logger = logging.getLogger("myapp.sinch")
@@ -14,8 +15,9 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 sinch_log_file_handler.setFormatter(formatter)
 
 
-sinch_client = Sinch(
-    key_id="knights",
-    key_secret="of Ni!",
+sinch_client = Client(
+    key_id=os.getenv("KEY_ID"),
+    key_secret=os.getenv("KEY_SECRET"),
+    project_id=os.getenv("PROJECT_ID"),
     logger=logger
 )

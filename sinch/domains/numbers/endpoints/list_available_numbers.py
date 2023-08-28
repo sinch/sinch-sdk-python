@@ -23,14 +23,24 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
         )
 
     def build_query_params(self) -> dict:
-        return {
+        query_params = {
             "regionCode": self.request_data.region_code,
-            "type": self.request_data.number_type,
-            "size": self.request_data.page_size,
-            "capabilities": self.request_data.capabilities,
-            "numberPattern.pattern": self.request_data.number_pattern,
-            "numberPattern.searchPattern": self.request_data.number_search_pattern
+            "type": self.request_data.number_type
         }
+
+        if self.request_data.page_size:
+            query_params["size"] = self.request_data.page_size
+
+        if self.request_data.capabilities:
+            query_params["capabilities"] = self.request_data.capabilities
+
+        if self.request_data.number_pattern:
+            query_params["numberPattern.pattern"] = self.request_data.number_pattern
+
+        if self.request_data.number_search_pattern:
+            query_params["numberPattern.searchPattern"] = self.request_data.number_search_pattern
+
+        return query_params
 
     def handle_response(self, response: HTTPResponse) -> ListAvailableNumbersResponse:
         super(AvailableNumbersEndpoint, self).handle_response(response)

@@ -6,21 +6,21 @@ from sinch.core.models.base_model import SinchRequestBaseModel
 class ListAvailableNumbersRequest(SinchRequestBaseModel):
     region_code: str
     number_type: str
-    page_size: int = None
-    capabilities: list = None
-    number_search_pattern: str = None
-    number_pattern: str = None
+    page_size: int
+    capabilities: list
+    number_search_pattern: str
+    number_pattern: str
 
 
 @dataclass
 class ListActiveNumbersRequest(SinchRequestBaseModel):
     region_code: str
     number_type: str
-    page_size: int = None
-    capabilities: list = None
-    number_search_pattern: str = None
-    number_pattern: str = None
-    page_token: str = None
+    page_size: int
+    capabilities: list
+    number_search_pattern: str
+    number_pattern: str
+    page_token: str
 
 
 @dataclass
