@@ -56,12 +56,12 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
             region_code=response.body["regionCode"],
             type=response.body["type"],
             capability=response.body["capability"],
-            project_id=response.body["project_id"],
-            callback_url=response.body["callback_url"],
-            expire_at=response.body["expire_at"],
+            project_id=response.body["projectId"],
+            callback_url=response.body["callbackUrl"],
+            expire_at=response.body["expireAt"],
             money=response.body["money"],
-            next_charge_date=response.body["next_charge_date"],
-            sms_configuration=response.body["sms_configuration"],
-            voice_configuration=response.body["voice_configuration"],
-            payment_interval_months=response.body["payment_interval_months"]
+            next_charge_date=response.body["nextChargeDate"],
+            sms_configuration=response.body["smsConfiguration"],
+            voice_configuration=response.body["voiceConfiguration"],
+            payment_interval_months=response.body["paymentIntervalMonths"]
         )
