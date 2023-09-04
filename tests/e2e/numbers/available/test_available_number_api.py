@@ -1,12 +1,8 @@
 import pytest
 
-from sinch.domains.numbers.models.responses import (
-    ListAvailableNumbersResponse,
-    ActivateNumberResponse,
-    CheckNumberAvailabilityResponse
-)
 from sinch.domains.numbers.exceptions import NumbersException
-from sinch.domains.numbers import Numbers
+from sinch.domains.numbers import Numbers, ListAvailableNumbersResponse, ActivateNumberResponse, \
+    CheckNumberAvailabilityResponse
 
 
 def fetch_available_numbers(sinch_client):

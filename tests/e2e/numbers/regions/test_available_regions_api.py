@@ -1,5 +1,5 @@
 from sinch.domains.numbers.enums import NumberType
-from sinch.domains.numbers.models.responses import ListAvailableRegionsResponse
+from sinch.domains.numbers import ListAvailableRegionsResponse
 
 
 def test_list_available_regions(sinch_client_sync):
