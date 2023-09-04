@@ -3,6 +3,7 @@ from sinch.domains.numbers.endpoints.available.search_for_number import SearchFo
 from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
 from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
 from sinch.domains.numbers.endpoints.available.rent_any_number import RentAnyNumberEndpoint
+
 from sinch.domains.numbers.endpoints.active.list_active_numbers_for_project import ListActiveNumbersEndpoint
 from sinch.domains.numbers.endpoints.active.update_number_configuration import UpdateNumberConfigurationEndpoint
 from sinch.domains.numbers.endpoints.active.get_number_configuration import GetNumberConfigurationEndpoint

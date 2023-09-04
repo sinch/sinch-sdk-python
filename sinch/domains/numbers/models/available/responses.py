@@ -32,6 +32,7 @@ class RentAnyNumberResponse(SinchBaseModel):
     sms_configuration: object
     voice_configuration: object
     callback_url: str
+    capability: tuple
 
 
 @dataclass

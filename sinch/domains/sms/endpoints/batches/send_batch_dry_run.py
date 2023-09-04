@@ -23,7 +23,7 @@ class SendBatchSMSDryRunEndpoint(SMSEndpoint):
 
     def build_query_params(self):
         return {
-            "per_recipient": "true" if self.request_data.per_recipient else "false",
+            "per_recipient": str(self.request_data.per_recipient).lower(),
             "number_of_recipients": self.request_data.number_of_recipients
         }
 
