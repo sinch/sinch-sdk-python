@@ -17,29 +17,6 @@ class Number(SinchBaseModel):
 
 
 @dataclass
-class Region(SinchBaseModel):
-    region_code: str
-    region_name: str
-    types: list
-
-
-@dataclass
-class ActiveNumber(SinchBaseModel):
-    phone_number: str
-    project_id: str
-    display_name: str
-    region_code: str
-    type: NumberType
-    capability: NumberCapability
-    money: dict
-    payment_interval_months: int
-    next_charge_date: str
-    expire_at: str
-    sms_configuration: dict
-    voice_configuration: dict
-
-
-@dataclass
 class ScheduledVoiceProvisioning(SinchBaseModel):
     app_id: str
     status: str

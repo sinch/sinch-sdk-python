@@ -1,8 +1,10 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.domains.numbers.models.responses import ListAvailableRegionsResponse, Region
-from sinch.domains.numbers.models.requests import ListAvailableRegionsForProjectRequest
+from sinch.domains.numbers.models.regions import Region
+
+from sinch.domains.numbers.models.regions.responses import ListAvailableRegionsResponse
+from sinch.domains.numbers.models.regions.requests import ListAvailableRegionsForProjectRequest
 
 
 class ListAvailableRegionsEndpoint(NumbersEndpoint):
