@@ -6,9 +6,6 @@
 
    [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
 
-   [![Linux](https://svgshare.com/i/Zhy.svg)](https://svgshare.com/i/Zhy.svg)
-   [![macOS](https://svgshare.com/i/ZjP.svg)](https://svgshare.com/i/ZjP.svg)
-   [![Windows](https://svgshare.com/i/ZhY.svg)](https://svgshare.com/i/ZhY.svg)
 
    [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
    [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
@@ -25,7 +22,7 @@ To use this SDK you'll need a Sinch account and API keys. Please sign up at [sin
 
 For more in depth version of the Sinch APIs, please refer to the official developer portal - [developers.sinch.com](https://developers.sinch.com/)
 
-**This SDK is currently available to select developers for preview use only. It is being provided for the purpose of collecting feedback, and should not be used in production environments.**
+**This SDK is currently available to selected developers for preview use only. It is being provided for the purpose of collecting feedback, and should not be used in production environments.**
 
 * [Installation](#installation)
 * [Getting started](#getting-started)
