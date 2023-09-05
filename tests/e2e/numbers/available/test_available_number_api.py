@@ -28,6 +28,16 @@ def test_list_available_numbers_limit_output_size(sinch_client_sync):
     assert len(numbers_response.available_numbers) == 10
 
 
+async def test_list_available_numbers_limit_output_size_async(sinch_client_async):
+    numbers_response = await sinch_client_async.numbers.available.list(
+        region_code="US",
+        number_type="LOCAL",
+        page_size=10
+    )
+    assert isinstance(numbers_response, ListAvailableNumbersResponse)
+    assert len(numbers_response.available_numbers) == 10
+
+
 def test_list_available_numbers_400_error_code(sinch_client_sync):
     with pytest.raises(NumbersException) as err:
         sinch_client_sync.numbers.available.list(
@@ -37,8 +47,8 @@ def test_list_available_numbers_400_error_code(sinch_client_sync):
     assert err
 
 
-def test_list_available_numbers_with_voice_capabilities_only(sinch_client_sync):
-    numbers_response = sinch_client_sync.numbers.available.list(
+async def test_list_available_numbers_with_voice_capabilities_only(sinch_client_async):
+    numbers_response = await sinch_client_async.numbers.available.list(
         region_code="US",
         number_type="LOCAL",
         capabilities=["VOICE"]
