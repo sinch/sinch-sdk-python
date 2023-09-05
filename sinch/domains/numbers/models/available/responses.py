@@ -15,6 +15,23 @@ class ActivateNumberResponse(SinchBaseModel):
     phone_number: str
     region_code: str
     type: str
+    capability: list
+
+
+@dataclass
+class RentAnyNumberResponse(SinchBaseModel):
+    phone_number: str
+    project_id: str
+    region_code: str
+    type: str
+    capability: list
+    money: dict
+    payment_interval_months: int
+    next_charge_date: str
+    expire_at: str
+    sms_configuration: object
+    voice_configuration: object
+    callback_url: str
     capability: tuple
 
 

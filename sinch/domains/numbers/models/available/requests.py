@@ -7,10 +7,10 @@ from sinch.core.models.base_model import SinchRequestBaseModel
 class ListAvailableNumbersRequest(SinchRequestBaseModel):
     region_code: str
     number_type: str
-    page_size: int = None
-    capabilities: list = None
-    number_search_pattern: str = None
-    number_pattern: str = None
+    page_size: int
+    capabilities: list
+    number_search_pattern: str
+    number_pattern: str
 
 
 @dataclass
@@ -18,6 +18,17 @@ class ActivateNumberRequest(SinchRequestBaseModel):
     phone_number: str
     sms_configuration: dict
     voice_configuration: dict
+
+
+@dataclass
+class RentAnyNumberRequest(SinchRequestBaseModel):
+    region_code: str
+    type_: str
+    number_pattern: str
+    capabilities: list
+    sms_configuration: dict
+    voice_configuration: dict
+    callback_url: str
 
 
 @dataclass
