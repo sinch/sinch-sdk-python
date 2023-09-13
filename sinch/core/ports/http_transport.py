@@ -38,8 +38,8 @@ class HTTPTransport(ABC):
 
         return HttpRequest(
             headers={
-                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()});"
-                              f" {self.__class__.__name__}"
+                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
+                              f" {self.__class__.__name__};)"
             },
             protocol=protocol,
             url=protocol + endpoint.build_url(self.sinch),
