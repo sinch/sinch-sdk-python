@@ -5,4 +5,5 @@ requests
 aiohttp
 pytest-asyncio
 coverage
-
+mypy
+types-requests
