@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.conversation.endpoints.conversation_endpoint import ConversationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.conversation.models.conversation.responses import SinchUpdateConversationResponse
 from sinch.domains.conversation.models.conversation.requests import UpdateConversationRequest
 
 
 class UpdateConversationEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/conversations/{conversation_id}"
-    HTTP_METHOD = HTTPMethods.PATCH.value
+    HTTP_METHOD = HTTPMethod.PATCH.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: UpdateConversationRequest):

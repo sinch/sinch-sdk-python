@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.endpoints.sms_endpoint import SMSEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.sms.models.batches.requests import CancelBatchRequest
 from sinch.domains.sms.models.batches.responses import CancelSMSBatchResponse
 
 
 class CancelBatchEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}"
-    HTTP_METHOD = HTTPMethods.DELETE.value
+    HTTP_METHOD = HTTPMethod.DELETE.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: CancelBatchRequest):

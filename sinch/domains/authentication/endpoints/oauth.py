@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.authentication.exceptions import AuthenticationException
 from sinch.domains.authentication.models.authentication import OAuthToken
 
 
 class OAuthEndpoint(HTTPEndpoint):
     ENDPOINT_URL = "{origin}/oauth2/token"
-    HTTP_METHOD = HTTPMethods.POST.value
+    HTTP_METHOD = HTTPMethod.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.BASIC.value
 
     def __init__(self):

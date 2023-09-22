@@ -1,12 +1,12 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.conversation.endpoints.conversation_endpoint import ConversationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.conversation.models.contact.responses import DeleteConversationContactResponse
 
 
 class DeleteContactEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/contacts/{contact_id}"
-    HTTP_METHOD = HTTPMethods.DELETE.value
+    HTTP_METHOD = HTTPMethod.DELETE.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id, request_data):

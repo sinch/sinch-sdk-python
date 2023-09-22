@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.endpoints.sms_endpoint import SMSEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.sms.models.groups.requests import CreateSMSGroupRequest
 from sinch.domains.sms.models.groups.responses import CreateSMSGroupResponse
 
 
 class CreateSMSGroupEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/groups"
-    HTTP_METHOD = HTTPMethods.POST.value
+    HTTP_METHOD = HTTPMethod.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: CreateSMSGroupRequest):

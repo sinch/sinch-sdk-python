@@ -1,6 +1,6 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.numbers.models import Number
 
 from sinch.domains.numbers.models.available.requests import ListAvailableNumbersRequest
@@ -9,7 +9,7 @@ from sinch.domains.numbers.models.available.responses import ListAvailableNumber
 
 class AvailableNumbersEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers"
-    HTTP_METHOD = HTTPMethods.GET.value
+    HTTP_METHOD = HTTPMethod.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: ListAvailableNumbersRequest):

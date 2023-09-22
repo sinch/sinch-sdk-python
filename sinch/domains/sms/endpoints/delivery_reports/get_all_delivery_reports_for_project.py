@@ -1,6 +1,6 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.endpoints.sms_endpoint import SMSEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.sms.models.delivery_reports import DeliveryReport
 from sinch.domains.sms.models.delivery_reports.requests import ListSMSDeliveryReportsRequest
 from sinch.domains.sms.models.delivery_reports.responses import ListSMSDeliveryReportsResponse
@@ -8,7 +8,7 @@ from sinch.domains.sms.models.delivery_reports.responses import ListSMSDeliveryR
 
 class ListDeliveryReportsEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/delivery_reports"
-    HTTP_METHOD = HTTPMethods.GET.value
+    HTTP_METHOD = HTTPMethod.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: ListSMSDeliveryReportsRequest):

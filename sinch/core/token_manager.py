@@ -5,7 +5,6 @@ from typing import Optional
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
 from sinch.core.exceptions import ValidationException
-from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.models.http_response import HTTPResponse
 
 
@@ -16,7 +15,7 @@ class TokenState(Enum):
 
 
 class TokenManagerBase(ABC):
-    def __init__(self, sinch: ClientBase):
+    def __init__(self, sinch):
         self.sinch = sinch
         self.token: Optional[OAuthToken] = None
         self.token_state = TokenState.INVALID

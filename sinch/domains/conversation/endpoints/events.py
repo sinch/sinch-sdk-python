@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.conversation.endpoints.conversation_endpoint import ConversationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.conversation.models.event.requests import SendConversationEventRequest
 from sinch.domains.conversation.models.event.responses import SendConversationEventResponse
 
 
 class SendEventEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/events:send"
-    HTTP_METHOD = HTTPMethods.POST.value
+    HTTP_METHOD = HTTPMethod.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: SendConversationEventRequest):

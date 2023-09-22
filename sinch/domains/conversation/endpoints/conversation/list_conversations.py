@@ -3,12 +3,12 @@ from sinch.domains.conversation.endpoints.conversation_endpoint import Conversat
 from sinch.domains.conversation.models.conversation.responses import SinchListConversationsResponse
 from sinch.domains.conversation.models.conversation.requests import ListConversationsRequest
 from sinch.domains.conversation.models.conversation import Conversation
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 
 
 class ListConversationsEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/conversations"
-    HTTP_METHOD = HTTPMethods.GET.value
+    HTTP_METHOD = HTTPMethod.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: ListConversationsRequest):
