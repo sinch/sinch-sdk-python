@@ -16,7 +16,7 @@ class ClientAsync(ClientBase):
     """
     def __init__(
         self,
-        key_id,
+        key_id: str,
         key_secret,
         project_id,
         logger_name=None,

@@ -5,6 +5,8 @@ from sinch.domains.authentication import AuthenticationBase
 from sinch.domains.numbers import NumbersBase
 from sinch.domains.conversation import ConversationBase
 from sinch.domains.sms import SMSBase
+from typing import Optional
+from logging import Logger
 
 
 class ClientBase(ABC):
@@ -15,11 +17,11 @@ class ClientBase(ABC):
     """
     def __init__(
         self,
-        key_id,
-        key_secret,
-        project_id,
-        logger_name=None,
-        logger=None
+        key_id: str,
+        key_secret: str,
+        project_id: str,
+        logger_name: Optional[str]=None,
+        logger: Optional[Logger]=None
     ):
         if not key_id or not key_secret or not project_id:
             raise ValidationException(
