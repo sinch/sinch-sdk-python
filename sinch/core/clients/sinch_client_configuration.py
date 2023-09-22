@@ -1,5 +1,5 @@
 import logging
-from typing import Union
+from typing import Union, Optional
 
 from sinch.core.ports.http_transport import HTTPTransport
 from sinch.core.token_manager import TokenManager, TokenManagerAsync
@@ -17,7 +17,7 @@ class Configuration:
         transport: HTTPTransport,
         token_manager: Union[TokenManager, TokenManagerAsync],
         logger=None,
-        logger_name: str = None,
+        logger_name: Optional[str] = None,
         disable_https=False,
         connection_timeout=10
     ):
