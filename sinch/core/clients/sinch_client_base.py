@@ -15,6 +15,12 @@ class ClientBase(ABC):
     By default this SDK provides two implementations - sync and async.
     Feel free to utilize any of them for you custom implementation.
     """
+    configuration: Configuration
+    authentication: AuthenticationBase
+    numbers: NumbersBase
+    conversation: ConversationBase
+    sms: SMSBase
+
     def __init__(
         self,
         key_id: str,
@@ -32,12 +38,6 @@ class ClientBase(ABC):
                 is_from_server=False,
                 response=None
             )
-
-        self.configuration = Configuration
-        self.authentication = AuthenticationBase
-        self.numbers = NumbersBase
-        self.conversation = ConversationBase
-        self.sms = SMSBase
 
     def __repr__(self):
         return f"Sinch SDK client for project_id: {self.configuration.project_id}"
