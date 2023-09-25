@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger, Logger
 from typing import Union, Optional
 
 from sinch.core.ports.http_transport import HTTPTransport
@@ -16,10 +16,10 @@ class Configuration:
         project_id: str,
         transport: HTTPTransport,
         token_manager: Union[TokenManager, TokenManagerAsync],
-        logger=None,
+        logger: Optional[Logger] = None,
         logger_name: Optional[str] = None,
-        disable_https=False,
-        connection_timeout=10
+        disable_https: bool = False,
+        connection_timeout: int = 10
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -42,11 +42,11 @@ class Configuration:
         self._set_templates_origin()
 
         if logger_name:
-            self.logger = logging.getLogger(logger_name)
+            self.logger = getLogger(logger_name)
         elif logger:
             self.logger = logger
         else:
-            self.logger = logging.getLogger("Sinch")
+            self.logger = getLogger("Sinch")
 
     def _set_sms_origin(self):
         self.sms_origin = self._sms_domain.format(self._sms_region)
