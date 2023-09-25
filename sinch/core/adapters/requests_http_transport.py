@@ -16,7 +16,8 @@ class HTTPTransportRequests(HTTPTransport):
 
         self.sinch.configuration.logger.debug(
             f"Sync HTTP {request_data_with_auth.http_method} call with headers:"
-            f" {request_data_with_auth.headers} and body: {request_data_with_auth.request_body} to URL: {request_data_with_auth.url}"
+            f" {request_data_with_auth.headers} and body: {request_data_with_auth.request_body}"
+            f"to URL: {request_data_with_auth.url}"
         )
 
         response = self.session.request(
