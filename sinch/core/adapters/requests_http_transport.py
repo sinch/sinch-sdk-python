@@ -3,10 +3,11 @@ import json
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.clients.sinch_client_base import ClientBase
 
 
 class HTTPTransportRequests(HTTPTransport):
-    def __init__(self, sinch):
+    def __init__(self, sinch: ClientBase):
         super().__init__(sinch)
         self.session = requests.Session()
 

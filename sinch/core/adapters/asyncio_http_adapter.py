@@ -8,21 +8,22 @@ from sinch.core.models.http_response import HTTPResponse
 class HTTPTransportAioHTTP(AsyncHTTPTransport):
     async def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         request_data: HttpRequest = self.prepare_request(endpoint)
-        request_data: HttpRequest = await self.authenticate(endpoint, request_data)
+        request_data_with_auth: HttpRequest = await self.authenticate(endpoint, request_data)
 
         self.sinch.configuration.logger.debug(
-            f"Async HTTP {request_data.http_method} call with headers:"
-            f" {request_data.headers} and body: {request_data.request_body} to URL: {request_data.url}"
+            f"Async HTTP {request_data_with_auth.http_method} call with headers:"
+            f" {request_data_with_auth.headers} and body: {request_data_with_auth.request_body}"
+            f" to URL: {request_data_with_auth.url}"
         )
 
         async with aiohttp.ClientSession() as session:
             async with session.request(
-                method=request_data.http_method,
-                headers=request_data.headers,
-                url=request_data.url,
-                data=request_data.request_body,
-                auth=request_data.auth,
-                params=request_data.query_params,
+                method=request_data_with_auth.http_method,
+                headers=request_data_with_auth.headers,
+                url=request_data_with_auth.url,
+                data=request_data_with_auth.request_body,
+                auth=request_data_with_auth.auth,
+                params=request_data_with_auth.query_params,
                 timeout=aiohttp.ClientTimeout(
                     total=self.sinch.configuration.connection_timeout
                 )
@@ -34,7 +35,7 @@ class HTTPTransportAioHTTP(AsyncHTTPTransport):
 
                 self.sinch.configuration.logger.debug(
                     f"Async HTTP {response.status} response with headers: {response.headers}"
-                    f"and body: {response_body} from URL: {request_data.url}"
+                    f"and body: {response_body} from URL: {request_data_with_auth.url}"
                 )
 
                 return await self.handle_response(

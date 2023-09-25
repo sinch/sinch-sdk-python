@@ -1,6 +1,6 @@
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
-from sinch.core.adapters.asyncio_http_adapter import AsyncHTTPTransport
+from sinch.core.adapters.asyncio_http_adapter import HTTPTransportAioHTTP
 from sinch.core.token_manager import TokenManager, TokenManagerAsync
 
 
@@ -54,7 +54,7 @@ def test_if_logger_name_was_preserved_correctly(sinch_client_async):
         key_secret="a",
         project_id="Kickflip!",
         logger_name=clever_monty_python_quote,
-        transport=AsyncHTTPTransport(sinch_client_async),
+        transport=HTTPTransportAioHTTP(sinch_client_async),
         token_manager=TokenManagerAsync(sinch_client_async)
     )
     client_configuration.logger.name = clever_monty_python_quote

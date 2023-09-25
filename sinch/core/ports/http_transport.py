@@ -1,5 +1,5 @@
 import aiohttp
-from abc import ABC
+from abc import ABC, abstractmethod
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
@@ -11,6 +11,7 @@ class HTTPTransport(ABC):
     def __init__(self, sinch):
         self.sinch = sinch
 
+    @abstractmethod
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 
