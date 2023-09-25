@@ -26,8 +26,8 @@ class ClientBase(ABC):
         key_id: str,
         key_secret: str,
         project_id: str,
-        logger_name: Optional[str]=None,
-        logger: Optional[Logger]=None
+        logger_name: Optional[str] = None,
+        logger: Optional[Logger] = None
     ):
         if not key_id or not key_secret or not project_id:
             raise ValidationException(
@@ -39,5 +39,5 @@ class ClientBase(ABC):
                 response=None
             )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Sinch SDK client for project_id: {self.configuration.project_id}"

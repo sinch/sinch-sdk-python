@@ -1,3 +1,5 @@
+from typing import Optional
+from logging import Logger
 from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManagerAsync
@@ -17,10 +19,10 @@ class ClientAsync(ClientBase):
     def __init__(
         self,
         key_id: str,
-        key_secret,
-        project_id,
-        logger_name=None,
-        logger=None
+        key_secret: str,
+        project_id: str,
+        logger_name: Optional[str] = None,
+        logger: Optional[Logger] = None
     ):
         super().__init__(
             key_id=key_id,
