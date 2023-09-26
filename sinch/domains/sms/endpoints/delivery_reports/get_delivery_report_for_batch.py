@@ -7,8 +7,8 @@ from sinch.domains.sms.models.delivery_reports.responses import GetSMSDeliveryRe
 
 class GetDeliveryReportForBatchEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}/delivery_report"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: GetSMSDeliveryReportForBatchRequest):
         super(GetDeliveryReportForBatchEndpoint, self).__init__(project_id, request_data)

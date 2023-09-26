@@ -7,8 +7,8 @@ from sinch.domains.conversation.models.templates import ConversationTemplate
 
 class ListTemplatesEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/templates"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data=None):
         super(ListTemplatesEndpoint, self).__init__(project_id, request_data)

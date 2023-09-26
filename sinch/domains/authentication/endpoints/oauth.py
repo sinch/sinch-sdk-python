@@ -7,8 +7,8 @@ from sinch.domains.authentication.models.authentication import OAuthToken
 
 class OAuthEndpoint(HTTPEndpoint):
     ENDPOINT_URL = "{origin}/oauth2/token"
-    HTTP_METHOD = HTTPMethod.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.BASIC.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.BASIC
 
     def __init__(self):
         pass

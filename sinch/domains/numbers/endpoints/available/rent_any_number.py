@@ -8,8 +8,8 @@ from sinch.domains.numbers.models.available.responses import RentAnyNumberRespon
 
 class RentAnyNumberEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers:rentAny"
-    HTTP_METHOD = HTTPMethod.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: RentAnyNumberRequest):
         super(RentAnyNumberEndpoint, self).__init__(project_id, request_data)

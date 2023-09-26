@@ -7,8 +7,8 @@ from sinch.domains.sms.models.batches.responses import CancelSMSBatchResponse
 
 class CancelBatchEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}"
-    HTTP_METHOD = HTTPMethod.DELETE.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.DELETE
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: CancelBatchRequest):
         super(CancelBatchEndpoint, self).__init__(project_id, request_data)

@@ -7,8 +7,8 @@ from sinch.domains.conversation.models.app.requests import DeleteConversationApp
 
 class DeleteConversationAppEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/apps/{app_id}"
-    HTTP_METHOD = HTTPMethod.DELETE.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.DELETE
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: DeleteConversationAppRequest):
         super(DeleteConversationAppEndpoint, self).__init__(project_id, request_data)

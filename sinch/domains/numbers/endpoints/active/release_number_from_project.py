@@ -7,8 +7,8 @@ from sinch.domains.numbers.models.active.responses import ReleaseNumberFromProje
 
 class ReleaseNumberFromProjectEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers/{phone_number}:release"
-    HTTP_METHOD = HTTPMethod.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id, request_data: ReleaseNumberFromProjectRequest):
         super(ReleaseNumberFromProjectEndpoint, self).__init__(project_id, request_data)

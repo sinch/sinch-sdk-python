@@ -6,8 +6,8 @@ from sinch.domains.conversation.models.contact.responses import DeleteConversati
 
 class DeleteContactEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/contacts/{contact_id}"
-    HTTP_METHOD = HTTPMethod.DELETE.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.DELETE
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id, request_data):
         super(DeleteContactEndpoint, self).__init__(project_id, request_data)

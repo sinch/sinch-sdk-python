@@ -9,8 +9,8 @@ from sinch.domains.numbers.models.available.responses import ListAvailableNumber
 
 class AvailableNumbersEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: ListAvailableNumbersRequest):
         super(AvailableNumbersEndpoint, self).__init__(project_id, request_data)

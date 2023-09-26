@@ -7,8 +7,8 @@ from sinch.domains.conversation.models.webhook.requests import UpdateConversatio
 
 class UpdateWebhookEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/webhooks/{webhook_id}"
-    HTTP_METHOD = HTTPMethod.PATCH.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.PATCH
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: UpdateConversationWebhookRequest):
         super(UpdateWebhookEndpoint, self).__init__(project_id, request_data)

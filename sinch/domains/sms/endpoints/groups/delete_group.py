@@ -7,8 +7,8 @@ from sinch.domains.sms.models.groups.responses import SinchDeleteSMSGroupRespons
 
 class DeleteSMSGroupEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/groups/{group_id}"
-    HTTP_METHOD = HTTPMethod.DELETE.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.DELETE
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: DeleteSMSGroupRequest):
         super(DeleteSMSGroupEndpoint, self).__init__(project_id, request_data)

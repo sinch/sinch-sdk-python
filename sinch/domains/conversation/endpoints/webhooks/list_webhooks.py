@@ -8,8 +8,8 @@ from sinch.domains.conversation.models.webhook import ConversationWebhook
 
 class ListWebhooksEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/apps/{app_id}/webhooks"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: ListConversationWebhookRequest):
         super(ListWebhooksEndpoint, self).__init__(project_id, request_data)

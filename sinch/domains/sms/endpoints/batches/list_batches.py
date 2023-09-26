@@ -8,8 +8,8 @@ from sinch.domains.sms.models.batches.responses import ListSMSBatchesResponse
 
 class ListSMSBatchesEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: ListBatchesRequest):
         super(ListSMSBatchesEndpoint, self).__init__(project_id, request_data)

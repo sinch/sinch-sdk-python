@@ -7,8 +7,8 @@ from sinch.domains.sms.models.inbounds.responses import GetInboundMessagesRespon
 
 class GetInboundMessagesEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/inbounds/{inbound_id}"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: GetSMSInboundMessageRequest):
         super(GetInboundMessagesEndpoint, self).__init__(project_id, request_data)

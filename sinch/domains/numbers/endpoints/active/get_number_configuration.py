@@ -8,8 +8,8 @@ from sinch.domains.numbers.models.active.responses import GetNumberConfiguration
 
 class GetNumberConfigurationEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers/{phone_number}"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: GetNumberConfigurationRequest):
         super(GetNumberConfigurationEndpoint, self).__init__(project_id, request_data)

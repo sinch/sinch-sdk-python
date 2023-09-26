@@ -7,8 +7,8 @@ from sinch.domains.sms.models.groups.responses import ReplaceSMSGroupResponse
 
 class ReplaceSMSGroupEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/groups/{group_id}"
-    HTTP_METHOD = HTTPMethod.PUT.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.PUT
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: ReplaceSMSGroupPhoneNumbersRequest):
         super(ReplaceSMSGroupEndpoint, self).__init__(project_id, request_data)

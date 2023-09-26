@@ -7,8 +7,8 @@ from sinch.domains.conversation.models.capability.responses import QueryConversa
 
 class CapabilityQueryEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/capability:query"
-    HTTP_METHOD = HTTPMethod.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: QueryConversationCapabilityRequest):
         super(CapabilityQueryEndpoint, self).__init__(project_id, request_data)

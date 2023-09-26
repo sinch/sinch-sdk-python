@@ -7,8 +7,8 @@ from sinch.domains.conversation.models.conversation.requests import InjectMessag
 
 class InjectMessageToConversationEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/conversations/{conversation_id}:inject-message"
-    HTTP_METHOD = HTTPMethod.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: InjectMessageToConversationRequest):
         super(InjectMessageToConversationEndpoint, self).__init__(project_id, request_data)

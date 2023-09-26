@@ -38,7 +38,7 @@ class HTTPTransport(ABC):
             headers={},
             protocol=protocol,
             url=protocol + endpoint.build_url(self.sinch),
-            http_method=endpoint.HTTP_METHOD,
+            http_method=endpoint.HTTP_METHOD.value,
             request_body=endpoint.request_body(),
             query_params=url_query_params,
             auth=()
@@ -55,12 +55,12 @@ class HTTPTransport(ABC):
 
 class AsyncHTTPTransport(HTTPTransport):
     async def authenticate(self, endpoint, request_data):
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
+        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC:
             request_data.auth = aiohttp.BasicAuth(self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
         else:
             request_data.auth = None
 
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
+        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH:
             token_response = await self.sinch.authentication.get_auth_token()
             request_data.headers = {
                 "Authorization": f"Bearer {token_response.access_token}",

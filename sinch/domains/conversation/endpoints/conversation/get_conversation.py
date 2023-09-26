@@ -7,8 +7,8 @@ from sinch.domains.conversation.models.conversation.requests import GetConversat
 
 class GetConversationEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/conversations/{conversation_id}"
-    HTTP_METHOD = HTTPMethod.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: GetConversationRequest):
         super(GetConversationEndpoint, self).__init__(project_id, request_data)
