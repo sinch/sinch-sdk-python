@@ -46,7 +46,7 @@ jobs:
         flake8 sinch --count --max-complexity=10 --max-line-length=120 --statistics
     - name: Check type annotations with MyPy
       run: |
-        mypy sinch/
+        mypy sinch/ --disallow-untyped-defs
     - name: Checkout Wiremock fixtures repo
       uses: actions/checkout@v3
       with:
