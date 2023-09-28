@@ -31,9 +31,9 @@ class HTTPTransportRequests(HTTPTransport):
             params=request_data_with_auth.query_params
         )
 
-        response_body = response.content
-        if response_body:
-            response_body = json.loads(response_body)
+        response_body = {}
+        if response.content:
+            response_body = json.loads(response.content)
 
         self.sinch.configuration.logger.debug(
             f"Sync HTTP {response.status_code} response with headers: {response.headers}"
@@ -45,6 +45,6 @@ class HTTPTransportRequests(HTTPTransport):
             http_response=HTTPResponse(
                 status_code=response.status_code,
                 body=response_body,
-                headers=response.headers
+                headers=dict(response.headers)
             )
         )

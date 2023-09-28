@@ -28,10 +28,10 @@ class HTTPTransportAioHTTP(AsyncHTTPTransport):
                     total=self.sinch.configuration.connection_timeout
                 )
             ) as response:
-
-                response_body = await response.read()
-                if response_body:
-                    response_body = json.loads(response_body)
+                response_body = {}
+                raw_response_body = await response.read()
+                if raw_response_body:
+                    response_body = json.loads(raw_response_body)
 
                 self.sinch.configuration.logger.debug(
                     f"Async HTTP {response.status} response with headers: {response.headers}"
@@ -43,6 +43,6 @@ class HTTPTransportAioHTTP(AsyncHTTPTransport):
                     http_response=HTTPResponse(
                         status_code=response.status,
                         body=response_body,
-                        headers=response.headers
+                        headers=dict(response.headers)
                     )
                 )
