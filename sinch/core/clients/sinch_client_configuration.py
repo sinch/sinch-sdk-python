@@ -48,14 +48,14 @@ class Configuration:
         else:
             self.logger = getLogger("Sinch")
 
-    def _set_sms_origin(self):
+    def _set_sms_origin(self) -> None:
         self.sms_origin = self._sms_domain.format(self._sms_region)
 
-    def _set_sms_region(self, region):
+    def _set_sms_region(self, region: str) -> None:
         self._sms_region = region
         self._set_sms_origin()
 
-    def _get_sms_region(self):
+    def _get_sms_region(self) -> str:
         return self._sms_region
 
     sms_region = property(
@@ -64,11 +64,11 @@ class Configuration:
         doc="SMS Region"
     )
 
-    def _set_sms_domain(self, domain):
+    def _set_sms_domain(self, domain: str) -> None:
         self._sms_domain = domain
         self._set_sms_origin()
 
-    def _get_sms_domain(self):
+    def _get_sms_domain(self) -> None:
         return self.sms_domain
 
     sms_domain = property(
@@ -77,14 +77,14 @@ class Configuration:
         doc="SMS Domain"
     )
 
-    def _set_conversation_origin(self):
+    def _set_conversation_origin(self) -> None:
         self.conversation_origin = self._conversation_region + self._conversation_domain
 
-    def _set_conversation_region(self, region):
+    def _set_conversation_region(self, region: str) -> None:
         self._conversation_region = region
         self._set_conversation_origin()
 
-    def _get_conversation_region(self):
+    def _get_conversation_region(self) -> str:
         return self._conversation_region
 
     conversation_region = property(
@@ -93,11 +93,11 @@ class Configuration:
         doc="ConversationAPI Region"
     )
 
-    def _set_conversation_domain(self, domain):
+    def _set_conversation_domain(self, domain: str) -> None:
         self._conversation_domain = domain
         self._set_conversation_origin()
 
-    def _get_conversation_domain(self):
+    def _get_conversation_domain(self) -> str:
         return self._conversation_domain
 
     conversation_domain = property(
@@ -106,14 +106,14 @@ class Configuration:
         doc="ConversationAPI Domain"
     )
 
-    def _set_templates_origin(self):
+    def _set_templates_origin(self) -> None:
         self.templates_origin = self._templates_region + self._templates_domain
 
-    def _set_templates_region(self, region):
+    def _set_templates_region(self, region: str) -> None:
         self._templates_region = region
         self._set_templates_origin()
 
-    def _get_templates_region(self):
+    def _get_templates_region(self) -> str:
         return self._templates_region
 
     templates_region = property(
@@ -122,11 +122,11 @@ class Configuration:
         doc="Conversation API Templates Region"
     )
 
-    def _set_templates_domain(self, domain):
+    def _set_templates_domain(self, domain: str) -> None:
         self._templates_domain = domain
         self._set_templates_origin()
 
-    def _get_templates_domain(self):
+    def _get_templates_domain(self) -> str:
         return self._templates_domain
 
     templates_domain = property(
