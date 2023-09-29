@@ -23,7 +23,7 @@ class OAuthEndpoint(HTTPEndpoint):
             "grant_type": "client_credentials"
         }
 
-    def handle_response(self, response: HTTPResponse):
+    def handle_response(self, response: HTTPResponse) -> OAuthToken:
         if response.status_code >= 400:
             raise AuthenticationException(
                 message=response.body.get("error_description"),
