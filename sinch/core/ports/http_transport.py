@@ -5,17 +5,18 @@ from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
+from sinch.core.clients.sinch_client_base import ClientBase
 
 
 class HTTPTransport(ABC):
-    def __init__(self, sinch):
+    def __init__(self, sinch: ClientBase):
         self.sinch = sinch
 
     @abstractmethod
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 
-    def authenticate(self, endpoint, request_data):
+    def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
             request_data.auth = (self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
         else:
@@ -44,7 +45,7 @@ class HTTPTransport(ABC):
             auth=()
         )
 
-    def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
+    def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> HTTPResponse:
         if http_response.status_code == 401:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
@@ -54,7 +55,7 @@ class HTTPTransport(ABC):
 
 
 class AsyncHTTPTransport(HTTPTransport):
-    async def authenticate(self, endpoint, request_data):
+    async def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC:
             request_data.auth = aiohttp.BasicAuth(self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
         else:
@@ -69,7 +70,7 @@ class AsyncHTTPTransport(HTTPTransport):
 
         return request_data
 
-    async def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
+    async def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> HTTPResponse:
         if http_response.status_code == 401:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
