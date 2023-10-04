@@ -5,11 +5,11 @@ from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
-from sinch.core.clients.sinch_client_base import ClientBase
+# from sinch.core.clients.sinch_client_base import ClientBase
 
 
 class HTTPTransport(ABC):
-    def __init__(self, sinch: ClientBase):
+    def __init__(self, sinch):
         self.sinch = sinch
 
     @abstractmethod

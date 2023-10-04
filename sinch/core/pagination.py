@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from sinch.core.clients.sinch_client_base import ClientBase
+# from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.endpoint import HTTPEndpoint
 
 
@@ -17,7 +17,7 @@ class Paginator(ABC):
         if paginated_response.has_next_page:
             paginated_response = paginated_response.next_page()
     """
-    def __init__(self, sinch: ClientBase, endpoint: HTTPEndpoint, result):
+    def __init__(self, sinch, endpoint: HTTPEndpoint, result):
         self._sinch = sinch
         self.result = result
         self.endpoint = endpoint
@@ -92,7 +92,7 @@ class IntBasedPaginator(Paginator):
         return PageIterator(self)
 
     @classmethod
-    def _initialize(cls, sinch: ClientBase, endpoint: HTTPEndpoint):
+    def _initialize(cls, sinch, endpoint: HTTPEndpoint):
         result = sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result)
 
@@ -110,7 +110,7 @@ class AsyncIntBasedPaginator(IntBasedPaginator):
         return AsyncPageIterator(self)
 
     @classmethod
-    async def _initialize(cls, sinch: ClientBase, endpoint: HTTPEndpoint):
+    async def _initialize(cls, sinch, endpoint: HTTPEndpoint):
         result = await sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result)
 
