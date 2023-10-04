@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 # from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.endpoint import HTTPEndpoint
@@ -88,7 +89,7 @@ class IntBasedPaginator(Paginator):
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self):
+    def auto_paging_iter(self) -> PageIterator:
         return PageIterator(self)
 
     @classmethod
@@ -106,11 +107,11 @@ class AsyncIntBasedPaginator(IntBasedPaginator):
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self):
+    def auto_paging_iter(self) -> AsyncPageIterator:
         return AsyncPageIterator(self)
 
     @classmethod
-    async def _initialize(cls, sinch, endpoint: HTTPEndpoint):
+    async def _initialize(cls, sinch, endpoint: HTTPEndpoint) -> AsyncIntBasedPaginator:
         result = await sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result)
 
@@ -124,17 +125,17 @@ class TokenBasedPaginator(Paginator):
         else:
             self.has_next_page = False
 
-    def next_page(self):
+    def next_page(self) -> TokenBasedPaginator:
         self.endpoint.request_data.page_token = self.result.next_page_token
         self.result = self._sinch.configuration.transport.request(self.endpoint)
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self):
+    def auto_paging_iter(self) -> PageIterator:
         return PageIterator(self)
 
     @classmethod
-    def _initialize(cls, sinch, endpoint):
+    def _initialize(cls, sinch, endpoint) -> TokenBasedPaginator:
         result = sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result)
 
@@ -142,16 +143,16 @@ class TokenBasedPaginator(Paginator):
 class AsyncTokenBasedPaginator(TokenBasedPaginator):
     __doc__ = TokenBasedPaginator.__doc__
 
-    async def next_page(self):
+    async def next_page(self) -> AsyncTokenBasedPaginator:
         self.endpoint.request_data.page_token = self.result.next_page_token
         self.result = await self._sinch.configuration.transport.request(self.endpoint)
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self):
+    def auto_paging_iter(self) -> AsyncPageIterator:
         return AsyncPageIterator(self)
 
     @classmethod
-    async def _initialize(cls, sinch, endpoint):
+    async def _initialize(cls, sinch, endpoint) -> AsyncTokenBasedPaginator:
         result = await sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result)
