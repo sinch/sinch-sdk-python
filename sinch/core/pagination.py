@@ -25,7 +25,7 @@ class Paginator(ABC):
         self.has_next_page = False
         self._calculate_next_page()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "Paginated response content: " + str(self.result)
 
     @abstractmethod
@@ -33,16 +33,16 @@ class Paginator(ABC):
         pass
 
     @abstractmethod
-    def next_page(self):
+    def next_page(self) -> Paginator:
         pass
 
     @abstractmethod
-    def _calculate_next_page(self):
+    def _calculate_next_page(self) -> None:
         pass
 
     @classmethod
     @abstractmethod
-    def _initialize(cls, sinch, endpoint):
+    def _initialize(cls, sinch, endpoint) -> Paginator:
         pass
 
 
@@ -50,7 +50,7 @@ class PageIterator:
     def __init__(self, paginator: Paginator):
         self.paginator = paginator
 
-    def __iter__(self):
+    def __iter__(self) -> PageIterator:
         return self
 
     def __next__(self):
@@ -64,7 +64,7 @@ class AsyncPageIterator:
     def __init__(self, paginator):
         self.paginator = paginator
 
-    def __aiter__(self):
+    def __aiter__(self) -> AsyncPageIterator:
         return self
 
     async def __anext__(self):
@@ -93,7 +93,7 @@ class IntBasedPaginator(Paginator):
         return PageIterator(self)
 
     @classmethod
-    def _initialize(cls, sinch, endpoint: HTTPEndpoint):
+    def _initialize(cls, sinch, endpoint: HTTPEndpoint) -> IntBasedPaginator:
         result = sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result)
 
@@ -101,7 +101,7 @@ class IntBasedPaginator(Paginator):
 class AsyncIntBasedPaginator(IntBasedPaginator):
     __doc__ = IntBasedPaginator.__doc__
 
-    async def next_page(self):
+    async def next_page(self) -> AsyncIntBasedPaginator:
         self.endpoint.request_data.page += 1
         self.result = await self._sinch.configuration.transport.request(self.endpoint)
         self._calculate_next_page()
@@ -119,7 +119,7 @@ class AsyncIntBasedPaginator(IntBasedPaginator):
 class TokenBasedPaginator(Paginator):
     __doc__ = Paginator.__doc__
 
-    def _calculate_next_page(self):
+    def _calculate_next_page(self) -> None:
         if self.result.next_page_token:
             self.has_next_page = True
         else:
