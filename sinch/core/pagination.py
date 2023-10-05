@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     from sinch.core.clients.sinch_client_base import ClientBase
@@ -32,7 +32,7 @@ class Paginator(ABC):
         return "Paginated response content: " + str(self.result)
 
     @abstractmethod
-    def auto_paging_iter(self):
+    def auto_paging_iter(self) -> Union['PageIterator', 'AsyncPageIterator']:
         pass
 
     @abstractmethod
