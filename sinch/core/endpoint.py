@@ -12,13 +12,13 @@ class HTTPEndpoint(ABC):
         pass
 
     def build_url(self, sinch) -> str:
-        pass
+        return ''
 
     def build_query_params(self) -> dict:
-        pass
+        return {}
 
     def request_body(self) -> dict:
-        pass
+        return {}
 
     @abstractmethod
     def handle_response(self, response: HTTPResponse):
