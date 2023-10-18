@@ -45,7 +45,7 @@ class Paginator(ABC):
 
     @classmethod
     @abstractmethod
-    def _initialize(cls, sinch, endpoint: HTTPEndpoint) -> 'Paginator':
+    def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'Paginator':
         pass
 
 
@@ -56,7 +56,7 @@ class PageIterator:
     def __iter__(self) -> 'PageIterator':
         return self
 
-    def __next__(self):
+    def __next__(self) -> Paginator:
         if self.paginator.has_next_page:
             return self.paginator.next_page()
         else:
