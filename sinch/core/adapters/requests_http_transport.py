@@ -4,6 +4,7 @@ from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.clients.sinch_client_base import ClientBase
+from sinch.core.models.base_model import SinchBaseModel
 
 
 class HTTPTransportRequests(HTTPTransport):
@@ -11,7 +12,7 @@ class HTTPTransportRequests(HTTPTransport):
         super().__init__(sinch)
         self.session = requests.Session()
 
-    def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+    def request(self, endpoint: HTTPEndpoint) -> SinchBaseModel:
         request_data: HttpRequest = self.prepare_request(endpoint)
         request_data_with_auth: HttpRequest = self.authenticate(endpoint, request_data)
 

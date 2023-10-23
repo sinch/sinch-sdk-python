@@ -1,19 +1,23 @@
 import aiohttp
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
-# from sinch.core.clients.sinch_client_base import ClientBase
+from sinch.core.models.base_model import SinchBaseModel
+
+if TYPE_CHECKING:
+    from sinch.core.clients.sinch_client_base import ClientBase
 
 
 class HTTPTransport(ABC):
-    def __init__(self, sinch):
+    def __init__(self, sinch: 'ClientBase'):
         self.sinch = sinch
 
     @abstractmethod
-    def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+    def request(self, endpoint: HTTPEndpoint) -> SinchBaseModel:
         pass
 
     def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
@@ -45,7 +49,7 @@ class HTTPTransport(ABC):
             auth=()
         )
 
-    def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> HTTPResponse:
+    def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> SinchBaseModel:
         if http_response.status_code == 401:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
