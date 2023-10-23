@@ -52,7 +52,9 @@ class TokenManager(TokenManagerBase):
         if self.token:
             return self.token
 
-        self.token = self.sinch.configuration.transport.request(OAuthEndpoint())
+        auth_response = self.sinch.configuration.transport.request(OAuthEndpoint())
+        self.token = OAuthToken(**auth_response.as_dict())
+
         self.token_state = TokenState.VALID
         return self.token
 
