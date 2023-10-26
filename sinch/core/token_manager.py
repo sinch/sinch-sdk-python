@@ -1,6 +1,6 @@
 from enum import Enum
 from abc import ABC, abstractmethod
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Union, Any
 
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
@@ -64,6 +64,8 @@ class TokenManagerAsync(TokenManagerBase):
         if self.token:
             return self.token
 
-        self.token = await self.sinch.configuration.transport.request(OAuthEndpoint())
+        auth_response = await self.sinch.configuration.transport.request(OAuthEndpoint())
+        self.token = OAuthToken(**auth_response.as_dict())
+
         self.token_state = TokenState.VALID
         return self.token
