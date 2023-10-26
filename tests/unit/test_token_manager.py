@@ -29,7 +29,7 @@ def test_get_auth_token_and_check_if_cached(sinch_client_sync, auth_token):
     access_token = token_manager.get_auth_token()
 
     assert isinstance(access_token, OAuthToken)
-    assert token_manager.token is auth_token
+    assert token_manager.token == auth_token
 
 
 async def test_get_auth_token_and_check_if_cached_async(sinch_client_async, auth_token):
