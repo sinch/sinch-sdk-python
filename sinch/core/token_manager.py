@@ -1,6 +1,6 @@
 from enum import Enum
 from abc import ABC, abstractmethod
-from typing import Optional, TYPE_CHECKING, Union, Any
+from typing import Optional, TYPE_CHECKING, Union, Any, Coroutine
 
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
@@ -24,7 +24,7 @@ class TokenManagerBase(ABC):
         self.token_state = TokenState.INVALID
 
     @abstractmethod
-    def get_auth_token(self) -> Optional[OAuthToken]:
+    def get_auth_token(self) -> Union[Optional[OAuthToken], Coroutine[Any, Any, Optional[OAuthToken]]]:
         pass
 
     def invalidate_expired_token(self) -> None:
