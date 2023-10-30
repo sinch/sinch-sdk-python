@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 
 from sinch.core.models.base_model import SinchRequestBaseModel
+from sinch.core.models.pagination import TokenPaginatedRequest
 
 
 @dataclass
-class ListActiveNumbersRequest(SinchRequestBaseModel):
+class ListActiveNumbersRequest(TokenPaginatedRequest):
     region_code: str
     number_type: str
     page_size: int
     capabilities: list
     number_search_pattern: str
     number_pattern: str
-    page_token: str
 
 
 @dataclass

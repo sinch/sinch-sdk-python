@@ -1,11 +1,12 @@
 from enum import Enum
 from abc import ABC, abstractmethod
-from typing import Optional, TYPE_CHECKING, Union, Any, Coroutine
+from typing import Optional, TYPE_CHECKING, Union, Any, Coroutine, cast
 
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
 from sinch.core.exceptions import ValidationException
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.base_model import SinchBaseModel
 
 if TYPE_CHECKING:
     from sinch.core.clients.sinch_client_base import ClientBase
@@ -52,7 +53,7 @@ class TokenManager(TokenManagerBase):
         if self.token:
             return self.token
 
-        auth_response = self.sinch.configuration.transport.request(OAuthEndpoint())
+        auth_response = cast(SinchBaseModel, self.sinch.configuration.transport.request(OAuthEndpoint()))
         self.token = OAuthToken(**auth_response.as_dict())
 
         self.token_state = TokenState.VALID
@@ -64,7 +65,10 @@ class TokenManagerAsync(TokenManagerBase):
         if self.token:
             return self.token
 
-        auth_response = await self.sinch.configuration.transport.request(OAuthEndpoint())
+        auth_response = await cast(
+            Coroutine[Any, Any, SinchBaseModel],
+            self.sinch.configuration.transport.request(OAuthEndpoint())
+        )
         self.token = OAuthToken(**auth_response.as_dict())
 
         self.token_state = TokenState.VALID

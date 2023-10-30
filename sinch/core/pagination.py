@@ -1,7 +1,14 @@
 from abc import ABC, abstractmethod
 from sinch.core.endpoint import HTTPEndpoint
-from sinch.core.models.http_response import HTTPResponse
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Union, cast, Coroutine, Any
+from sinch.core.models.base_model import SinchBaseModel
+from sinch.core.models.pagination import (
+    TokenPaginatedRequest,
+    TokenPaginatedResponse,
+    IntPaginatedRequest,
+    IntPaginatedResponse
+)
+
 
 if TYPE_CHECKING:
     from sinch.core.clients.sinch_client_base import ClientBase
@@ -21,7 +28,12 @@ class Paginator(ABC):
         if paginated_response.has_next_page:
             paginated_response = paginated_response.next_page()
     """
-    def __init__(self, sinch: 'ClientBase', endpoint: HTTPEndpoint, result: HTTPResponse):
+    def __init__(
+        self,
+        sinch: 'ClientBase',
+        endpoint: HTTPEndpoint,
+        result: Union[TokenPaginatedResponse, IntPaginatedResponse]
+    ):
         self._sinch = sinch
         self.result = result
         self.endpoint = endpoint
@@ -36,7 +48,7 @@ class Paginator(ABC):
         pass
 
     @abstractmethod
-    def next_page(self) -> 'Paginator':
+    def next_page(self) -> Union['Paginator', Coroutine[Any, Any, 'Paginator']]:
         pass
 
     @abstractmethod
@@ -45,7 +57,11 @@ class Paginator(ABC):
 
     @classmethod
     @abstractmethod
-    def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'Paginator':
+    def _initialize(
+        cls,
+        sinch: 'ClientBase',
+        endpoint: HTTPEndpoint
+    ) -> Union['Paginator', Coroutine[Any, Any, 'Paginator']]:
         pass
 
 
@@ -58,7 +74,10 @@ class PageIterator:
 
     def __next__(self) -> Paginator:
         if self.paginator.has_next_page:
-            return self.paginator.next_page()
+            return cast(
+                Paginator,
+                self.paginator.next_page()
+            )
         else:
             raise StopIteration
 
@@ -70,14 +89,18 @@ class AsyncPageIterator:
     def __aiter__(self) -> 'AsyncPageIterator':
         return self
 
-    async def __anext__(self):
+    async def __anext__(self) -> Paginator:
         if self.paginator.has_next_page:
-            return await self.paginator.next_page()
+            return await cast(
+                Coroutine[Any, Any, Paginator],
+                self.paginator.next_page()
+            )
         else:
             raise StopAsyncIteration
 
 
 class IntBasedPaginator(Paginator):
+    result: IntPaginatedResponse
     __doc__ = Paginator.__doc__
 
     def _calculate_next_page(self) -> None:
@@ -86,27 +109,39 @@ class IntBasedPaginator(Paginator):
         else:
             self.has_next_page = False
 
-    def next_page(self):
-        self.endpoint.request_data.page += 1
-        self.result = self._sinch.configuration.transport.request(self.endpoint)
+    def next_page(self) -> Union['Paginator', Coroutine[Any, Any, 'Paginator']]:
+        cast(IntPaginatedRequest, self.endpoint.request_data).page += 1
+        self.result = cast(
+            IntPaginatedResponse,
+            self._sinch.configuration.transport.request(self.endpoint)
+        )
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self) -> PageIterator:
+    def auto_paging_iter(self) -> Union['PageIterator', 'AsyncPageIterator']:
         return PageIterator(self)
 
     @classmethod
-    def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'IntBasedPaginator':
+    def _initialize(
+        cls,
+        sinch: 'ClientBase',
+        endpoint: HTTPEndpoint
+    ) -> Union['Paginator', Coroutine[Any, Any, 'Paginator']]:
+
         result = sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, result)
+        return cls(sinch, endpoint, cast(IntPaginatedResponse, result))
 
 
 class AsyncIntBasedPaginator(IntBasedPaginator):
     __doc__ = IntBasedPaginator.__doc__
+    result: IntPaginatedResponse
 
-    async def next_page(self) -> 'AsyncIntBasedPaginator':
-        self.endpoint.request_data.page += 1
-        self.result = await self._sinch.configuration.transport.request(self.endpoint)
+    async def next_page(self) -> 'Paginator':
+        cast(IntPaginatedRequest, self.endpoint.request_data).page += 1
+        self.result = await cast(
+            Coroutine[Any, Any, IntPaginatedResponse],
+            self._sinch.configuration.transport.request(self.endpoint)
+        )
         self._calculate_next_page()
         return self
 
@@ -114,13 +149,17 @@ class AsyncIntBasedPaginator(IntBasedPaginator):
         return AsyncPageIterator(self)
 
     @classmethod
-    async def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'AsyncIntBasedPaginator':
-        result = await sinch.configuration.transport.request(endpoint)
+    async def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'Paginator':
+        result = await cast(
+            Coroutine[Any, Any, IntPaginatedResponse],
+            sinch.configuration.transport.request(endpoint)
+        )
         return cls(sinch, endpoint, result)
 
 
 class TokenBasedPaginator(Paginator):
     __doc__ = Paginator.__doc__
+    result: TokenPaginatedResponse
 
     def _calculate_next_page(self) -> None:
         if self.result.next_page_token:
@@ -128,27 +167,36 @@ class TokenBasedPaginator(Paginator):
         else:
             self.has_next_page = False
 
-    def next_page(self) -> 'TokenBasedPaginator':
-        self.endpoint.request_data.page_token = self.result.next_page_token
-        self.result = self._sinch.configuration.transport.request(self.endpoint)
+    def next_page(self) -> Union['TokenBasedPaginator', Coroutine[Any, Any, 'AsyncTokenBasedPaginator']]:
+        cast(TokenPaginatedRequest, self.endpoint.request_data).page_token = self.result.next_page_token
+        self.result = cast(TokenPaginatedResponse, self._sinch.configuration.transport.request(self.endpoint))
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self) -> PageIterator:
+    def auto_paging_iter(self) -> Union[PageIterator, AsyncPageIterator]:
         return PageIterator(self)
 
     @classmethod
-    def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'TokenBasedPaginator':
+    def _initialize(
+        cls,
+        sinch: 'ClientBase',
+        endpoint: HTTPEndpoint
+    ) -> Union['Paginator', Coroutine[Any, Any, 'Paginator']]:
+
         result = sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, result)
+        return cls(sinch, endpoint, cast(TokenPaginatedResponse, result))
 
 
 class AsyncTokenBasedPaginator(TokenBasedPaginator):
     __doc__ = TokenBasedPaginator.__doc__
+    result: TokenPaginatedResponse
 
     async def next_page(self) -> 'AsyncTokenBasedPaginator':
-        self.endpoint.request_data.page_token = self.result.next_page_token
-        self.result = await self._sinch.configuration.transport.request(self.endpoint)
+        cast(TokenPaginatedRequest, self.endpoint.request_data).page_token = self.result.next_page_token
+        self.result = await cast(
+            Coroutine[Any, Any, TokenPaginatedResponse],
+            self._sinch.configuration.transport.request(self.endpoint)
+        )
         self._calculate_next_page()
         return self
 
@@ -157,5 +205,8 @@ class AsyncTokenBasedPaginator(TokenBasedPaginator):
 
     @classmethod
     async def _initialize(cls, sinch: 'ClientBase', endpoint: HTTPEndpoint) -> 'AsyncTokenBasedPaginator':
-        result = await sinch.configuration.transport.request(endpoint)
+        result = await cast(
+            Coroutine[Any, Any, TokenPaginatedResponse],
+            sinch.configuration.transport.request(endpoint)
+        )
         return cls(sinch, endpoint, result)

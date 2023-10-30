@@ -13,7 +13,7 @@ class SendBatchSMSDryRunEndpoint(SMSEndpoint):
     def __init__(self, project_id: str, request_data: BatchDryRunRequest):
         super(SendBatchSMSDryRunEndpoint, self).__init__(project_id, request_data)
         self.project_id = project_id
-        self.request_data = request_data
+        self.request_data: BatchDryRunRequest = request_data
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(

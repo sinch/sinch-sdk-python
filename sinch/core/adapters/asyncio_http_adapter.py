@@ -17,13 +17,18 @@ class HTTPTransportAioHTTP(AsyncHTTPTransport):
             f" to URL: {request_data_with_auth.url}"
         )
 
+        if request_data_with_auth.auth:
+            auth_data = aiohttp.BasicAuth(request_data_with_auth.auth[0], request_data_with_auth.auth[1])
+        else:
+            auth_data = None
+
         async with aiohttp.ClientSession() as session:
             async with session.request(
                 method=request_data_with_auth.http_method,
                 headers=request_data_with_auth.headers,
                 url=request_data_with_auth.url,
                 data=request_data_with_auth.request_body,
-                auth=request_data_with_auth.auth,
+                auth=auth_data,
                 params=request_data_with_auth.query_params,
                 timeout=aiohttp.ClientTimeout(
                     total=self.sinch.configuration.connection_timeout

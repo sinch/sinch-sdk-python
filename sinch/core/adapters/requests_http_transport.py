@@ -1,5 +1,6 @@
 import requests
 import json
+from typing import cast
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
@@ -14,7 +15,7 @@ class HTTPTransportRequests(HTTPTransport):
 
     def request(self, endpoint: HTTPEndpoint) -> SinchBaseModel:
         request_data: HttpRequest = self.prepare_request(endpoint)
-        request_data_with_auth: HttpRequest = self.authenticate(endpoint, request_data)
+        request_data_with_auth = cast(HttpRequest, self.authenticate(endpoint, request_data))
 
         self.sinch.configuration.logger.debug(
             f"Sync HTTP {request_data_with_auth.http_method} call with headers:"
@@ -41,11 +42,11 @@ class HTTPTransportRequests(HTTPTransport):
             f"and body: {response_body} from URL: {request_data_with_auth.url}"
         )
 
-        return self.handle_response(
+        return cast(SinchBaseModel, self.handle_response(
             endpoint=endpoint,
             http_response=HTTPResponse(
                 status_code=response.status_code,
                 body=response_body,
                 headers=dict(response.headers)
             )
-        )
+        ))

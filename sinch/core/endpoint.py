@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from sinch.core.models.http_response import HTTPResponse
-from sinch.core.models.http_request import HttpRequest
-from sinch.core.models.base_model import SinchBaseModel
+from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from typing import TYPE_CHECKING
 
@@ -13,8 +12,10 @@ class HTTPEndpoint(ABC):
     ENDPOINT_URL: str
     HTTP_METHOD: HTTPMethod
     HTTP_AUTHENTICATION: HTTPAuthentication
+    project_id: str
+    request_data: SinchRequestBaseModel
 
-    def __init__(self, project_id: str, request_data: 'HttpRequest'):
+    def __init__(self, project_id: str, request_data: SinchRequestBaseModel):
         pass
 
     def build_url(self, sinch: 'ClientBase') -> str:

@@ -1,3 +1,4 @@
+from typing import Optional
 from sinch.core.pagination import IntBasedPaginator
 from sinch.core.pagination import AsyncIntBasedPaginator
 
@@ -101,13 +102,13 @@ class SMSDeliveryReports:
     def list(
         self,
         page: int = 0,
-        start_date: str = None,
-        end_date: str = None,
-        status: str = None,
-        code: str = None,
-        page_size: int = None,
-        client_reference: str = None
-    ) -> ListSMSDeliveryReportsResponse:
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        status: Optional[str] = None,
+        code: Optional[str] = None,
+        page_size: Optional[int] = None,
+        client_reference: Optional[str] = None
+    ) -> IntBasedPaginator:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListDeliveryReportsEndpoint(
@@ -127,9 +128,9 @@ class SMSDeliveryReports:
     def get_for_batch(
         self,
         batch_id: str,
-        type_: str = None,
-        code: list = None,
-        status: list = None
+        type_: Optional[str] = None,
+        code: Optional[list] = None,
+        status: Optional[list] = None
     ) -> GetSMSDeliveryReportForBatchResponse:
         return self._sinch.configuration.transport.request(
             GetDeliveryReportForBatchEndpoint(
@@ -163,13 +164,13 @@ class SMSDeliveryReportsWithAsyncPagination(SMSDeliveryReports):
     async def list(
         self,
         page: int = 0,
-        start_date: str = None,
-        end_date: str = None,
-        status: str = None,
-        code: str = None,
-        page_size: int = None,
-        client_reference: str = None
-    ) -> ListSMSDeliveryReportsResponse:
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        status: Optional[str] = None,
+        code: Optional[str] = None,
+        page_size: Optional[int] = None,
+        client_reference: Optional[str] = None
+    ) -> AsyncIntBasedPaginator:
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListDeliveryReportsEndpoint(
@@ -194,12 +195,12 @@ class SMSInbounds:
     def list(
         self,
         page: int = 0,
-        start_date: str = None,
-        to: str = None,
-        end_date: str = None,
-        page_size: int = None,
-        client_reference: str = None
-    ) -> SinchListInboundMessagesResponse:
+        start_date: Optional[str] = None,
+        to: Optional[str] = None,
+        end_date: Optional[str] = None,
+        page_size: Optional[int] = None,
+        client_reference: Optional[str] = None
+    ) -> IntBasedPaginator:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListInboundMessagesEndpoint(
@@ -230,12 +231,12 @@ class SMSInboundsWithAsyncPagination(SMSInbounds):
     async def list(
         self,
         page: int = 0,
-        start_date: str = None,
-        to: str = None,
-        end_date: str = None,
-        page_size: int = None,
-        client_reference: str = None
-    ) -> SinchListInboundMessagesResponse:
+        start_date: Optional[str] = None,
+        to: Optional[str] = None,
+        end_date: Optional[str] = None,
+        page_size: Optional[int] = None,
+        client_reference: Optional[str] = None
+    ) -> AsyncIntBasedPaginator:
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListInboundMessagesEndpoint(
@@ -261,19 +262,19 @@ class SMSBatches:
         body: str,
         delivery_report: str,
         to: list,
-        from_: str = None,
-        parameters: dict = None,
-        type_: str = None,
-        send_at: str = None,
-        expire_at: str = None,
-        callback_url: str = None,
-        client_reference: str = None,
-        feedback_enabled: bool = None,
-        flash_message: bool = None,
-        truncate_concat: bool = None,
-        max_number_of_message_parts: int = None,
-        from_ton: int = None,
-        from_npi: int = None
+        from_: Optional[str] = None,
+        parameters: Optional[dict] = None,
+        type_: Optional[str] = None,
+        send_at: Optional[str] = None,
+        expire_at: Optional[str] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        flash_message: Optional[bool] = None,
+        truncate_concat: Optional[bool] = None,
+        max_number_of_message_parts: Optional[int] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None
     ) -> SendSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSEndpoint(
@@ -302,12 +303,12 @@ class SMSBatches:
     def list(
         self,
         page: int = 0,
-        page_size: int = None,
-        from_s: str = None,
-        start_date: str = None,
-        end_date: str = None,
-        client_reference: str = None
-    ) -> ListSMSBatchesResponse:
+        page_size: Optional[int] = None,
+        from_s: Optional[str] = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        client_reference: Optional[str] = None
+    ) -> IntBasedPaginator:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSBatchesEndpoint(
@@ -337,19 +338,19 @@ class SMSBatches:
         self,
         to: str,
         body: str,
-        per_recipient: bool = None,
-        number_of_recipients: int = None,
-        from_: str = None,
-        type_: str = None,
-        udh: str = None,
-        delivery_report: str = None,
-        send_at: str = None,
-        expire_at: str = None,
-        callback_url: str = None,
-        flash_message: bool = None,
-        parameters: dict = None,
-        client_reference: str = None,
-        max_number_of_message_parts: int = None
+        per_recipient: Optional[bool] = None,
+        number_of_recipients: Optional[int] = None,
+        from_: Optional[str] = None,
+        type_: Optional[str] = None,
+        udh: Optional[str] = None,
+        delivery_report: Optional[str] = None,
+        send_at: Optional[str] = None,
+        expire_at: Optional[str] = None,
+        callback_url: Optional[str] = None,
+        flash_message: Optional[bool] = None,
+        parameters: Optional[dict] = None,
+        client_reference: Optional[str] = None,
+        max_number_of_message_parts: Optional[int] = None
     ) -> SendSMSBatchDryRunResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSDryRunEndpoint(
@@ -387,14 +388,14 @@ class SMSBatches:
     def update(
         self,
         batch_id: str,
-        to_add: list = None,
-        to_remove: list = None,
-        from_: str = None,
-        body: str = None,
-        delivery_report: str = None,
-        send_at: str = None,
-        expire_at: str = None,
-        callback_url: str = None,
+        to_add: Optional[list] = None,
+        to_remove: Optional[list] = None,
+        from_: Optional[str] = None,
+        body: Optional[str] = None,
+        delivery_report: Optional[str] = None,
+        send_at: Optional[str] = None,
+        expire_at: Optional[str] = None,
+        callback_url: Optional[str] = None,
     ) -> UpdateSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             UpdateBatchSMSEndpoint(
@@ -418,17 +419,17 @@ class SMSBatches:
         batch_id: str,
         to: str,
         body: str,
-        from_: str = None,
-        type_: str = None,
-        udh: str = None,
-        delivery_report: str = None,
-        send_at: str = None,
-        expire_at: str = None,
-        callback_url: str = None,
-        flash_message: bool = None,
-        parameters: dict = None,
-        client_reference: str = None,
-        max_number_of_message_parts: int = None
+        from_: Optional[str] = None,
+        type_: Optional[str] = None,
+        udh: Optional[str] = None,
+        delivery_report: Optional[str] = None,
+        send_at: Optional[str] = None,
+        expire_at: Optional[str] = None,
+        callback_url: Optional[str] = None,
+        flash_message: Optional[bool] = None,
+        parameters: Optional[dict] = None,
+        client_reference: Optional[str] = None,
+        max_number_of_message_parts: Optional[int] = None
     ) -> ReplaceSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             ReplaceBatchSMSEndpoint(
@@ -472,11 +473,11 @@ class SMSBatchesWithAsyncPagination(SMSBatches):
     async def list(
         self,
         page: int = 0,
-        page_size: int = None,
-        from_s: str = None,
-        start_date: str = None,
-        end_date: str = None,
-        client_reference: str = None
+        page_size: Optional[int] = None,
+        from_s: Optional[str] = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        client_reference: Optional[str] = None
     ) -> ListSMSBatchesResponse:
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
@@ -501,9 +502,9 @@ class SMSGroups:
     def create(
         self,
         name: str,
-        members: list = None,
-        child_groups: list = None,
-        auto_update: dict = None
+        members: Optional[list] = None,
+        child_groups: Optional[list] = None,
+        auto_update: Optional[dict] = None
     ) -> CreateSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             CreateSMSGroupEndpoint(
@@ -521,7 +522,7 @@ class SMSGroups:
         self,
         page=0,
         page_size=None
-    ) -> SinchListSMSGroupResponse:
+    ) -> IntBasedPaginator:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSGroupEndpoint(
@@ -575,12 +576,12 @@ class SMSGroups:
     def update(
         self,
         group_id: str,
-        name: str = None,
-        add: list = None,
-        remove: list = None,
-        add_from_group: str = None,
-        remove_from_group: str = None,
-        auto_update: dict = None
+        name: Optional[str] = None,
+        add: Optional[list] = None,
+        remove: Optional[list] = None,
+        add_from_group: Optional[str] = None,
+        remove_from_group: Optional[str] = None,
+        auto_update: Optional[dict] = None
     ) -> UpdateSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             UpdateSMSGroupEndpoint(
@@ -601,7 +602,7 @@ class SMSGroups:
         self,
         group_id: str,
         members: list,
-        name: str = None
+        name: Optional[str] = None
     ) -> ReplaceSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             ReplaceSMSGroupEndpoint(
