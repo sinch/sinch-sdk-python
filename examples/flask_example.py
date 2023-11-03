@@ -16,7 +16,7 @@ sinch_client = Client(
 )
 
 
-@app.route("/create_app")
+@app.route("/create_app", methods=['POST'])
 def project():
     conversation_api_app = sinch_client.conversation.app.create(
         display_name="Shrubbery",
@@ -27,6 +27,10 @@ def project():
                     "token": "herring"
                 }
             }
-        ]
+        ],
+        retention_policy={
+            "ttl_days": 20,
+            "retention_type" : "MESSAGE_EXPIRE_POLICY"
+        }
     )
     return {"sinch_app_id": conversation_api_app.id}
