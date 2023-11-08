@@ -3,6 +3,8 @@ flake8
 bandit
 requests
 aiohttp
+flask
+fastapi
+httpx
 pytest-asyncio
 coverage
-
