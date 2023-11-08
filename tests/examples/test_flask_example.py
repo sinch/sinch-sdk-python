@@ -12,5 +12,5 @@ def test_flask_create_app_get_endpoint(
     flask_client = app.test_client()
 
     response = flask_client.post("/create_app")
-    assert response.status_code== 200
+    assert response.status_code == 200
     assert "sinch_app_id" in response.json

@@ -30,7 +30,7 @@ def project():
         ],
         retention_policy={
             "ttl_days": 20,
-            "retention_type" : "MESSAGE_EXPIRE_POLICY"
+            "retention_type": "MESSAGE_EXPIRE_POLICY"
         }
     )
     return {"sinch_app_id": conversation_api_app.id}
