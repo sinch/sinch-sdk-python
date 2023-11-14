@@ -4,10 +4,12 @@ from sinch.core.ports.http_transport import AsyncHTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
 
-aiohttp_session = aiohttp.ClientSession()
-
 
 class HTTPTransportAioHTTP(AsyncHTTPTransport):
+    def __init__(self, sinch):
+        super().__init__(sinch)
+        self.http_session = aiohttp.ClientSession()
+
     async def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         request_data: HttpRequest = self.prepare_request(endpoint)
         request_data: HttpRequest = await self.authenticate(endpoint, request_data)
@@ -17,7 +19,7 @@ class HTTPTransportAioHTTP(AsyncHTTPTransport):
             f" {request_data.headers} and body: {request_data.request_body} to URL: {request_data.url}"
         )
 
-        async with aiohttp_session.request(
+        async with self.http_session.request(
             method=request_data.http_method,
             headers=request_data.headers,
             url=request_data.url,
