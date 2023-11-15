@@ -8,11 +8,14 @@ from sinch.core.models.http_response import HTTPResponse
 class HTTPTransportAioHTTP(AsyncHTTPTransport):
     def __init__(self, sinch):
         super().__init__(sinch)
-        self.http_session = aiohttp.ClientSession()
+        self.http_session = None
 
     async def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         request_data: HttpRequest = self.prepare_request(endpoint)
         request_data: HttpRequest = await self.authenticate(endpoint, request_data)
+
+        if not self.http_session:
+            self.http_session = aiohttp.ClientSession()
 
         self.sinch.configuration.logger.debug(
             f"Async HTTP {request_data.http_method} call with headers:"
