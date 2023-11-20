@@ -55,7 +55,10 @@ class HTTPTransport(ABC):
 class AsyncHTTPTransport(HTTPTransport):
     async def authenticate(self, endpoint, request_data):
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
-            request_data.auth = aiohttp.BasicAuth(self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
+            request_data.auth = aiohttp.BasicAuth(
+                self.sinch.configuration.key_id,
+                self.sinch.configuration.key_secret
+            )
         else:
             request_data.auth = None
 

@@ -8,7 +8,7 @@ from sinch.core.models.http_response import HTTPResponse
 class HTTPTransportRequests(HTTPTransport):
     def __init__(self, sinch):
         super().__init__(sinch)
-        self.session = requests.Session()
+        self.http_session = requests.Session()
 
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         request_data: HttpRequest = self.prepare_request(endpoint)
@@ -19,7 +19,7 @@ class HTTPTransportRequests(HTTPTransport):
             f" {request_data.headers} and body: {request_data.request_body} to URL: {request_data.url}"
         )
 
-        response = self.session.request(
+        response = self.http_session.request(
             method=request_data.http_method,
             url=request_data.url,
             data=request_data.request_body,
