@@ -127,3 +127,6 @@ cython_debug/
 
 # PyCharm
 .idea/
+
+# Poetry
+poetry.lock
