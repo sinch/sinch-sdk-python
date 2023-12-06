@@ -4,9 +4,9 @@ from unittest.mock import Mock
 
 
 def mock_http_transport(client):
-    client.configuration.transport.session = Mock()
-    client.configuration.transport.session.request.return_value.content = None
-    client.configuration.transport.session.request.return_value.headers = None
+    client.configuration.transport.http_session = Mock()
+    client.configuration.transport.http_session.request.return_value.content = None
+    client.configuration.transport.http_session.request.return_value.headers = None
     client.configuration.transport.prepare_request = Mock()
     client.configuration.transport.authenticate = Mock()
     return client

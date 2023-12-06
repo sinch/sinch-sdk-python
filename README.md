@@ -1,3 +1,4 @@
+
 <h1 align="center">
 
    [![Sinch Logo](https://developers.sinch.com/static/logo-07afe977d6d9dcd21b066d1612978e5c.svg)](https://www.sinch.com)
@@ -93,12 +94,9 @@ Sinch client provides access to the following Sinch product domains:
 Usage example of the `numbers` domain:
 
 ```python
-from sinch.domains.numbers.enums import NumberType
-
 available_numbers = sinch_client.numbers.available.list(
     region_code="US",
-    number_type=NumberType.LOCAL.value,
-    project_id="Shrubbery"
+    number_type="LOCAL"
 )
 ```
 Returned values are represented as Python `dataclasses`:
@@ -128,8 +126,7 @@ from sinch.domains.numbers.exceptions import NumbersException
 try:
     nums = sinch_client.numbers.available.list(
         region_code="US",
-        number_type="LOCAL",
-        project_id="project"
+        number_type="LOCAL"
     )
 except NumbersException as err:
     pass
