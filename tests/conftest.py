@@ -121,6 +121,16 @@ def origin_phone_number():
 
 
 @pytest.fixture
+def verification_key():
+    return os.getenv("VERIFICATION_KEY")
+
+
+@pytest.fixture
+def verification_secret():
+    return os.getenv("VERIFICATION_SECRET")
+
+
+@pytest.fixture
 def app_id():
     return os.getenv("APP_ID")
 

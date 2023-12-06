@@ -26,6 +26,8 @@ class HTTPTransport(ABC):
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json"
             }
+        elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
+            pass
 
         return request_data
 

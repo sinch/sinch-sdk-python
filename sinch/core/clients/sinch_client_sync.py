@@ -6,6 +6,7 @@ from sinch.domains.authentication import Authentication
 from sinch.domains.numbers import Numbers
 from sinch.domains.conversation import Conversation
 from sinch.domains.sms import SMS
+from sinch.domains.verification import Verification
 
 
 class Client(ClientBase):
@@ -20,7 +21,9 @@ class Client(ClientBase):
         key_secret,
         project_id,
         logger_name=None,
-        logger=None
+        logger=None,
+        verification_key: str = None,
+        verification_secret: str = None
     ):
         super().__init__(
             key_id=key_id,
@@ -36,9 +39,12 @@ class Client(ClientBase):
             logger_name=logger_name,
             logger=logger,
             transport=HTTPTransportRequests(self),
-            token_manager=TokenManager(self)
+            token_manager=TokenManager(self),
+            verification_key=verification_key,
+            verification_secret=verification_secret
         )
         self.authentication = Authentication(self)
         self.numbers = Numbers(self)
         self.conversation = Conversation(self)
         self.sms = SMS(self)
+        self.verification = Verification(self)

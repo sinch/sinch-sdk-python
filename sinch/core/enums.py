@@ -12,3 +12,4 @@ class HTTPMethods(Enum):
 class HTTPAuthentication(Enum):
     BASIC = "BASIC"
     OAUTH = "OAUTH"
+    SIGNED = "SIGNED"
