@@ -34,7 +34,6 @@ from sinch.domains.numbers.models.callbacks.responses import (
     GetNumbersCallbackConfigurationResponse,
     UpdateNumbersCallbackConfigurationResponse
 )
-
 from sinch.domains.numbers.models.callbacks.requests import (
     UpdateNumbersCallbackConfigurationRequest
 )
