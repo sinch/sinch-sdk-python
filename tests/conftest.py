@@ -42,6 +42,7 @@ def configure_origin(
     templates_origin,
     auth_origin,
     sms_origin,
+    verification_origin,
     disable_ssl
 ):
     if auth_origin:
@@ -58,6 +59,9 @@ def configure_origin(
 
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
+
+    if verification_origin:
+        sinch_client.configuration.verification_origin = verification_origin
 
     if disable_ssl:
         sinch_client.configuration.disable_https = True
@@ -98,6 +102,11 @@ def auth_origin():
 @pytest.fixture
 def sms_origin():
     return os.getenv("SMS_ORIGIN")
+
+
+@pytest.fixture
+def verification_origin():
+    return os.getenv("VERIFICATION_ORIGIN")
 
 
 @pytest.fixture
@@ -294,6 +303,7 @@ def sinch_client_sync(
     templates_origin,
     auth_origin,
     sms_origin,
+    verification_origin,
     disable_ssl,
     project_id
 ):
@@ -308,6 +318,7 @@ def sinch_client_sync(
         templates_origin,
         auth_origin,
         sms_origin,
+        verification_origin,
         disable_ssl
     )
 
@@ -321,6 +332,7 @@ def sinch_client_async(
     templates_origin,
     auth_origin,
     sms_origin,
+    verification_origin,
     disable_ssl,
     project_id
 ):
@@ -335,5 +347,6 @@ def sinch_client_async(
         templates_origin,
         auth_origin,
         sms_origin,
+        verification_origin,
         disable_ssl
     )

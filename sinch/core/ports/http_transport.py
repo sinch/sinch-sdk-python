@@ -1,6 +1,7 @@
 import aiohttp
 from abc import ABC
 from sinch.core.endpoint import HTTPEndpoint
+from sinch.core.signature import Signature
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.enums import HTTPAuthentication
@@ -27,7 +28,13 @@ class HTTPTransport(ABC):
                 "Content-Type": "application/json"
             }
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
-            pass
+            signature = Signature(
+                self.sinch,
+                endpoint.HTTP_METHOD,
+                request_data.request_body,
+                endpoint.get_uri()
+            )
+            request_data.headers = signature.get_http_headers_with_signature()
 
         return request_data
 
@@ -46,7 +53,7 @@ class HTTPTransport(ABC):
         )
 
     def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
-        if http_response.status_code == 401:
+        if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
                 return self.request(endpoint=endpoint)
@@ -74,7 +81,7 @@ class AsyncHTTPTransport(HTTPTransport):
         return request_data
 
     async def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
-        if http_response.status_code == 401:
+        if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
                 return await self.request(endpoint=endpoint)

@@ -16,6 +16,8 @@ class Signature:
         self.authorization_signature = None
 
     def get_http_headers_with_signature(self):
+        if not self.authorization_signature:
+            self.calculate()
         return {
             "Content-Type": self.content_type,
             "Authorization": (
@@ -26,7 +28,7 @@ class Signature:
 
     def calculate(self):
         b64_encoded_application_secret = base64.b64decode(self.sinch.configuration.verification_secret)
-        encoded_verification_request = json.dumps(self.request_data).encode()
+        encoded_verification_request = self.request_data.encode()
         md5_verification_request = hashlib.md5(encoded_verification_request)
         encoded_md5_to_base64_verification_request = base64.b64encode(md5_verification_request.digest())
 
