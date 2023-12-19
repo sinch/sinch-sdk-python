@@ -9,3 +9,32 @@ class StartVerificationRequest(SinchRequestBaseModel):
     reference: str
     custom: str
     flash_call_options: object
+
+
+@dataclass
+class ReportVerificationUsingIdentityRequest(SinchRequestBaseModel):
+    endpoint: str
+    method: str
+    sms_code: str
+    flash_call_cli: str
+    callout: str
+
+
+@dataclass
+class ReportVerificationUsingIdRequest(SinchRequestBaseModel):
+    pass
+
+
+@dataclass
+class GetVerificationByReferenceRequest(SinchRequestBaseModel):
+    pass
+
+
+@dataclass
+class GetVerificationByIdRequest(SinchRequestBaseModel):
+    pass
+
+
+@dataclass
+class GetVerificationByIdentityRequest(SinchRequestBaseModel):
+    pass

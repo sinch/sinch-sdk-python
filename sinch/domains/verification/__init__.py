@@ -63,7 +63,7 @@ class Verification:
     ) -> ReportVerificationUsingIdentityResponse:
         return self._sinch.configuration.transport.request(
             ReportVerificationUsingIdentityEndpoint(
-                request_data=ReportVerificationUsingIdentityResponse(
+                request_data=ReportVerificationUsingIdentityRequest(
                     endpoint,
                     method,
                     sms_code,
@@ -83,7 +83,7 @@ class Verification:
     ) -> ReportVerificationUsingIdentityResponse:
         return self._sinch.configuration.transport.request(
             ReportVerificationUsingIdentityEndpoint(
-                request_data=ReportVerificationUsingIdentityResponse(
+                request_data=ReportVerificationUsingIdentityRequest(
                     endpoint,
                     method,
                     sms_code,
@@ -106,7 +106,7 @@ class Verification:
             )
         )
 
-    def get_by_id(self, id) -> :
+    def get_by_id(self, id):
         return self._sinch.configuration.transport.request(
             ReportVerificationUsingIdentityEndpoint(
                 request_data=ReportVerificationUsingIdentityResponse(
@@ -119,7 +119,7 @@ class Verification:
             )
         )
 
-    def get_by_identity(self, id) -> :
+    def get_by_identity(self, id):
         return self._sinch.configuration.transport.request(
             ReportVerificationUsingIdentityEndpoint(
                 request_data=ReportVerificationUsingIdentityResponse(
