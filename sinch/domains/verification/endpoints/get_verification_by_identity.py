@@ -6,7 +6,7 @@ from sinch.domains.verification.models.responses import GetVerificationByIdentit
 
 
 class GetVerificationByIdentityEndpoint(VerificationEndpoint):
-    ENDPOINT_URL = "{origin}/verification/v1/verifications"
+    ENDPOINT_URL = "{origin}/verification/v1/verifications/{method}/number/{endpoint}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
@@ -16,6 +16,8 @@ class GetVerificationByIdentityEndpoint(VerificationEndpoint):
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.verification_origin,
+            medthod=self.request_data.method,
+            endpoint=self.request_data.endpoint
         )
 
     def request_body(self):
