@@ -7,7 +7,7 @@ class VerificationEndpoint(HTTPEndpoint):
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:
             raise VerificationException(
-                message=response.body["error"].get("message"),
+                message=response.body["message"],
                 response=response,
                 is_from_server=True
             )
