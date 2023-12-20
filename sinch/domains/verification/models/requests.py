@@ -27,14 +27,15 @@ class ReportVerificationUsingIdRequest(SinchRequestBaseModel):
 
 @dataclass
 class GetVerificationByReferenceRequest(SinchRequestBaseModel):
-    pass
+    reference: str
 
 
 @dataclass
 class GetVerificationByIdRequest(SinchRequestBaseModel):
-    pass
+    id: str
 
 
 @dataclass
 class GetVerificationByIdentityRequest(SinchRequestBaseModel):
-    pass
+    endpoint: str
+    method: str

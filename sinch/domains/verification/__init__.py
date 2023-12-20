@@ -107,21 +107,27 @@ class Verification:
     def get_by_reference(self, reference) -> GetVerificationByReferenceResponse:
         return self._sinch.configuration.transport.request(
             GetVerificationByReferenceEndpoint(
-                request_data=GetVerificationByReferenceRequest()
+                request_data=GetVerificationByReferenceRequest(
+                    reference=reference
+                )
             )
         )
 
     def get_by_id(self, id) -> GetVerificationByIdResponse:
         return self._sinch.configuration.transport.request(
             GetVerificationByIdEndpoint(
-                request_data=GetVerificationByIdRequest()
+                request_data=GetVerificationByIdRequest(
+                    id=id
+                )
             )
         )
 
-    def get_by_identity(self, id) -> GetVerificationByIdentityResponse:
+    def get_by_identity(self, endpoint, method) -> GetVerificationByIdentityResponse:
         return self._sinch.configuration.transport.request(
             GetVerificationByIdentityEndpoint(
-                request_data=GetVerificationByIdentityRequest()
+                request_data=GetVerificationByIdentityRequest(
+                    endpoint=endpoint,
+                    method=method
+                )
             )
         )
-

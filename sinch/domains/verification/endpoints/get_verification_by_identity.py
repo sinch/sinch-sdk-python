@@ -16,7 +16,7 @@ class GetVerificationByIdentityEndpoint(VerificationEndpoint):
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.verification_origin,
-            medthod=self.request_data.method,
+            method=self.request_data.method,
             endpoint=self.request_data.endpoint
         )
 
@@ -24,6 +24,7 @@ class GetVerificationByIdentityEndpoint(VerificationEndpoint):
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> GetVerificationByIdentityResponse:
+        super().handle_response(response)
         return GetVerificationByIdentityResponse(
             **response.body
         )

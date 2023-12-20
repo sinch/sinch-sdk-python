@@ -6,7 +6,7 @@ from sinch.domains.verification.models.responses import ReportVerificationUsingI
 
 
 class ReportVerificationUsingIdentityEndpoint(VerificationEndpoint):
-    ENDPOINT_URL = "{origin}/verification/v1/verifications/number/{endpoint]"
+    ENDPOINT_URL = "{origin}/verification/v1/verifications/number/{endpoint}"
     HTTP_METHOD = HTTPMethods.PUT.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
@@ -16,6 +16,7 @@ class ReportVerificationUsingIdentityEndpoint(VerificationEndpoint):
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.verification_origin,
+            endpoint=self.request_data.endpoint
         )
 
     def request_body(self):
