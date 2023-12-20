@@ -20,9 +20,6 @@ class GetVerificationByIdentityEndpoint(VerificationEndpoint):
             endpoint=self.request_data.endpoint
         )
 
-    def request_body(self):
-        return self.request_data.as_json()
-
     def handle_response(self, response: HTTPResponse) -> GetVerificationByIdentityResponse:
         super().handle_response(response)
         return GetVerificationByIdentityResponse(

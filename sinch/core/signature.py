@@ -2,7 +2,6 @@ import hashlib
 import hmac
 import base64
 from datetime import datetime, timezone
-import json
 
 
 class Signature:
@@ -18,6 +17,7 @@ class Signature:
     def get_http_headers_with_signature(self):
         if not self.authorization_signature:
             self.calculate()
+
         return {
             "Content-Type": self.content_type,
             "Authorization": (
@@ -28,15 +28,18 @@ class Signature:
 
     def calculate(self):
         b64_encoded_application_secret = base64.b64decode(self.sinch.configuration.verification_secret)
-        encoded_verification_request = self.request_data.encode()
-        md5_verification_request = hashlib.md5(encoded_verification_request)
-        encoded_md5_to_base64_verification_request = base64.b64encode(md5_verification_request.digest())
+        if self.request_data:
+            encoded_verification_request = hashlib.md5(self.request_data.encode())
+            encoded_verification_request = base64.b64encode(encoded_verification_request.digest())
+
+        else:
+            encoded_verification_request = ''.encode()
 
         request_timestamp = "x-timestamp:" + self.signature_time
 
         string_to_sign = (
             self.http_method + '\n'
-            + encoded_md5_to_base64_verification_request.decode() + '\n'
+            + encoded_verification_request.decode() + '\n'
             + self.content_type + '\n'
             + request_timestamp + '\n'
             + self.request_uri
