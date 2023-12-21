@@ -32,7 +32,7 @@ class HTTPTransport(ABC):
                 self.sinch,
                 endpoint.HTTP_METHOD,
                 request_data.request_body,
-                endpoint.get_uri()
+                endpoint.get_url_without_origin(self.sinch)
             )
             request_data.headers = signature.get_http_headers_with_signature()
 

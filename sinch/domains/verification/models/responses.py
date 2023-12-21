@@ -21,15 +21,27 @@ class ReportVerificationUsingIdResponse(SinchBaseModel):
 
 
 @dataclass
-class GetVerificationByReferenceResponse(SinchBaseModel):
+class GetVerificationResponse(SinchBaseModel):
+    id: str
+    method: str
+    status: str
+    reason: str
+    price: dict
+    identity: str
+    countryId: str
+    verificationTimestamp: str
+
+
+@dataclass
+class GetVerificationByReferenceResponse(GetVerificationResponse):
     pass
 
 
 @dataclass
-class GetVerificationByIdResponse(SinchBaseModel):
+class GetVerificationByIdResponse(GetVerificationResponse):
     pass
 
 
 @dataclass
-class GetVerificationByIdentityResponse(SinchBaseModel):
+class GetVerificationByIdentityResponse(GetVerificationResponse):
     pass

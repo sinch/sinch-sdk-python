@@ -10,6 +10,9 @@ class HTTPEndpoint(ABC):
     def __init__(self, project_id, request_data):
         pass
 
+    def get_url_without_origin(self, sinch):
+        return '/' + '/'.join(self.build_url(sinch).split('/')[1:])
+
     def get_uri(self):
         return self.ENDPOINT_URL.removeprefix("{origin}")
 
