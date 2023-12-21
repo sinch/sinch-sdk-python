@@ -140,6 +140,11 @@ def verification_secret():
 
 
 @pytest.fixture
+def verification_id():
+    return os.getenv("VERIFICATION_ID")
+
+
+@pytest.fixture
 def app_id():
     return os.getenv("APP_ID")
 

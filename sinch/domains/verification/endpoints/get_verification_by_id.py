@@ -16,6 +16,7 @@ class GetVerificationByIdEndpoint(VerificationEndpoint):
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.verification_origin,
+            id=self.request_data.id
         )
 
     def request_body(self):
