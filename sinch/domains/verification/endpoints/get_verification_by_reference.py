@@ -6,7 +6,7 @@ from sinch.domains.verification.models.responses import GetVerificationByReferen
 
 
 class GetVerificationByReferenceEndpoint(VerificationEndpoint):
-    ENDPOINT_URL = "{origin}/verification/v1/verifications/id/{reference}"
+    ENDPOINT_URL = "{origin}/verification/v1/verifications/reference/{reference}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
@@ -16,6 +16,7 @@ class GetVerificationByReferenceEndpoint(VerificationEndpoint):
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.verification_origin,
+            reference=self.request_data.reference
         )
 
     def request_body(self):

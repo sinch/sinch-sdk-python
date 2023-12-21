@@ -15,7 +15,8 @@ def test_start_verification(
         identity={
             "type": "number",
             "endpoint": phone_number
-        }
+        },
+        reference="test"
     )
 
     assert isinstance(verification_response, StartVerificationResponse)

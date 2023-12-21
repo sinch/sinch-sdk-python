@@ -34,7 +34,7 @@ class GetVerificationResponse(SinchBaseModel):
 
 @dataclass
 class GetVerificationByReferenceResponse(GetVerificationResponse):
-    pass
+    reference: str
 
 
 @dataclass
@@ -44,4 +44,4 @@ class GetVerificationByIdResponse(GetVerificationResponse):
 
 @dataclass
 class GetVerificationByIdentityResponse(GetVerificationResponse):
-    pass
+    reference: str
