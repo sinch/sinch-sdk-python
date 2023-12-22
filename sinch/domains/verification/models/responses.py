@@ -11,17 +11,7 @@ class StartVerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class ReportVerificationUsingIdentityResponse(SinchBaseModel):
-    pass
-
-
-@dataclass
-class ReportVerificationUsingIdResponse(SinchBaseModel):
-    pass
-
-
-@dataclass
-class GetVerificationResponse(SinchBaseModel):
+class VerificationResponse(SinchBaseModel):
     id: str
     method: str
     status: str
@@ -33,15 +23,31 @@ class GetVerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class GetVerificationByReferenceResponse(GetVerificationResponse):
+class ReportVerificationUsingIdentityResponse(SinchBaseModel):
+    reference: str
+    id: str
+    method: str
+    status: str
+
+
+@dataclass
+class ReportVerificationUsingIdResponse(SinchBaseModel):
+    reference: str
+    id: str
+    method: str
+    status: str
+
+
+@dataclass
+class GetVerificationByReferenceResponse(VerificationResponse):
     reference: str
 
 
 @dataclass
-class GetVerificationByIdResponse(GetVerificationResponse):
+class GetVerificationByIdResponse(VerificationResponse):
     pass
 
 
 @dataclass
-class GetVerificationByIdentityResponse(GetVerificationResponse):
+class GetVerificationByIdentityResponse(VerificationResponse):
     reference: str

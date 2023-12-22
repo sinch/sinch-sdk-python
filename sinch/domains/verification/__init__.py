@@ -2,8 +2,8 @@ from sinch.domains.verification.endpoints.start_verification import StartVerific
 from sinch.domains.verification.endpoints.report_verification_using_identity import (
     ReportVerificationUsingIdentityEndpoint
 )
-from sinch.domains.verification.endpoints.report_verification_with_id import (
-    ReportVerificationWithIdEndpoint
+from sinch.domains.verification.endpoints.report_verification_using_id import (
+    ReportVerificationUsingIdEndpoint
 )
 from sinch.domains.verification.endpoints.get_verification_by_id import (
     GetVerificationByIdEndpoint
@@ -50,7 +50,7 @@ class Verification:
         method: str,
         reference: str = None,
         custom: str = None,
-        flash_call_options: object = None
+        flash_call_options: dict = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
@@ -66,20 +66,14 @@ class Verification:
 
     def report_using_id(
         self,
-        endpoint,
-        method,
-        sms_code=None,
-        flash_call_cli=None,
-        callout=None
-    ) -> ReportVerificationUsingIdentityResponse:
+        id: str,
+        verification_report_request: dict
+    ) -> ReportVerificationUsingIdResponse:
         return self._sinch.configuration.transport.request(
-            ReportVerificationUsingIdentityEndpoint(
-                request_data=ReportVerificationUsingIdentityRequest(
-                    endpoint,
-                    method,
-                    sms_code,
-                    flash_call_cli,
-                    callout
+            ReportVerificationUsingIdEndpoint(
+                request_data=ReportVerificationUsingIdRequest(
+                    id,
+                    verification_report_request
                 )
             )
         )
@@ -87,19 +81,13 @@ class Verification:
     def report_using_identity(
         self,
         endpoint,
-        method,
-        sms_code=None,
-        flash_call_cli=None,
-        callout=None
+        verification_report_request
     ) -> ReportVerificationUsingIdentityResponse:
         return self._sinch.configuration.transport.request(
             ReportVerificationUsingIdentityEndpoint(
                 request_data=ReportVerificationUsingIdentityRequest(
                     endpoint,
-                    method,
-                    sms_code,
-                    flash_call_cli,
-                    callout
+                    verification_report_request
                 )
             )
         )

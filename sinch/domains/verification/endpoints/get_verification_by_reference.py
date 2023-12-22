@@ -23,6 +23,7 @@ class GetVerificationByReferenceEndpoint(VerificationEndpoint):
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> GetVerificationByReferenceResponse:
+        super().handle_response(response)
         return GetVerificationByReferenceResponse(
             **response.body
         )

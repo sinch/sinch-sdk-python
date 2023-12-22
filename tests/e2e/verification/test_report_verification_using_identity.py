@@ -1,7 +1,7 @@
-from sinch.domains.verification.models.responses import GetVerificationByIdentityResponse
+from sinch.domains.verification.models.responses import ReportVerificationUsingIdentityResponse
 
 
-def test_get_report_verification_using_identity(
+def test_report_verification_using_identity_and_sms(
     sinch_client_sync,
     phone_number,
     verification_key,
@@ -12,6 +12,11 @@ def test_get_report_verification_using_identity(
 
     verification_response = sinch_client_sync.verification.report_using_identity(
         endpoint=phone_number,
-        method="sms"
+        verification_report_request={
+              "method": "sms",
+              "sms": {
+                "code": "1481"
+              }
+        }
     )
-    assert isinstance(verification_response, GetVerificationByIdentityResponse)
+    assert isinstance(verification_response, ReportVerificationUsingIdentityResponse)

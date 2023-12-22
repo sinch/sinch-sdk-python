@@ -26,7 +26,7 @@ class Configuration:
         self.key_id = key_id
         self.key_secret = key_secret
         self.project_id = project_id
-        self.verification_key = verification_key
+        self.verifican_key = verification_key
         self.verification_secret = verification_secret
         self.connection_timeout = connection_timeout
         self.auth_origin = "auth.sinch.com"

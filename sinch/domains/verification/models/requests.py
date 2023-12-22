@@ -8,21 +8,19 @@ class StartVerificationRequest(SinchRequestBaseModel):
     method: str
     reference: str
     custom: str
-    flash_call_options: object
+    flash_call_options: dict
 
 
 @dataclass
 class ReportVerificationUsingIdentityRequest(SinchRequestBaseModel):
     endpoint: str
-    method: str
-    sms_code: str
-    flash_call_cli: str
-    callout: str
+    verification_report_request: dict
 
 
 @dataclass
 class ReportVerificationUsingIdRequest(SinchRequestBaseModel):
-    pass
+    id: str
+    verification_report_request: dict
 
 
 @dataclass
