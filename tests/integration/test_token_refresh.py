@@ -3,10 +3,15 @@ from unittest.mock import Mock, AsyncMock
 
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
+from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
 from sinch.domains.authentication.exceptions import AuthenticationException
 
 
-def test_handling_401_without_expiration(sinch_client_sync, auth_token_as_dict):
+def test_handling_401_without_expiration(
+    sinch_client_sync,
+    auth_token_as_dict,
+    project_id
+):
     http_response = HTTPResponse(
         status_code=401,
         headers={
@@ -26,7 +31,8 @@ def test_handling_401_without_expiration(sinch_client_sync, auth_token_as_dict):
 def test_handling_401_with_expired_token_gets_invalidated_and_refreshed(
     sinch_client_sync,
     auth_token_as_dict,
-    expired_token_http_response
+    expired_token_http_response,
+    project_id
 ):
     sinch_client_sync.configuration.token_manager.set_auth_token(auth_token_as_dict)
     sinch_client_sync.configuration.transport.request = Mock()
@@ -34,7 +40,7 @@ def test_handling_401_with_expired_token_gets_invalidated_and_refreshed(
 
     transport_response = sinch_client_sync.configuration.transport.handle_response(
         http_response=expired_token_http_response,
-        endpoint=OAuthEndpoint()
+        endpoint=AvailableNumbersEndpoint(project_id, {})
     )
     assert transport_response == "Token Refresh!"
 
@@ -42,7 +48,8 @@ def test_handling_401_with_expired_token_gets_invalidated_and_refreshed(
 async def test_handling_401_with_expired_token_gets_refreshed_async(
     sinch_client_async,
     auth_token_as_dict,
-    expired_token_http_response
+    expired_token_http_response,
+    project_id
 ):
     sinch_client_async.configuration.token_manager.set_auth_token(auth_token_as_dict)
     sinch_client_async.configuration.transport.request = AsyncMock()
@@ -50,6 +57,6 @@ async def test_handling_401_with_expired_token_gets_refreshed_async(
 
     transport_response = await sinch_client_async.configuration.transport.handle_response(
         http_response=expired_token_http_response,
-        endpoint=OAuthEndpoint()
+        endpoint=AvailableNumbersEndpoint(project_id, {})
     )
     assert transport_response == "Token Refresh!"

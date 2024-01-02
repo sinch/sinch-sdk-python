@@ -18,7 +18,11 @@ class HTTPTransport(ABC):
 
     def authenticate(self, endpoint, request_data):
         if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
-            if not self.sinch.configuration.key_id or not self.sinch.configuration.key_secret or not self.sinch.configuration.project_id:
+            if (
+                not self.sinch.configuration.key_id
+                or not self.sinch.configuration.key_secret
+                or not self.sinch.configuration.project_id
+            ):
                 raise ValidationException(
                     message=(
                         "key_id, key_secret and project_id are required by this API. "

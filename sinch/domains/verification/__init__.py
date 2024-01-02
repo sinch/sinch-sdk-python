@@ -14,10 +14,6 @@ from sinch.domains.verification.endpoints.get_verification_by_identity import (
 from sinch.domains.verification.endpoints.get_verification_by_reference import (
     GetVerificationByReferenceEndpoint
 )
-from sinch.domains.verification.endpoints.get_verification_by_id import GetVerificationByIdEndpoint
-from sinch.domains.verification.endpoints.get_verification_by_identity import (
-    GetVerificationByIdentityEndpoint
-)
 from sinch.domains.verification.models.responses import (
     StartVerificationResponse,
     ReportVerificationUsingIdentityResponse,
