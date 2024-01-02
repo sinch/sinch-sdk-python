@@ -25,13 +25,6 @@ class Client(ClientBase):
         application_key: str = None,
         application_secret: str = None
     ):
-        super().__init__(
-            key_id=key_id,
-            key_secret=key_secret,
-            project_id=project_id,
-            logger_name=logger_name,
-            logger=logger
-        )
         self.configuration = Configuration(
             key_id=key_id,
             key_secret=key_secret,
@@ -43,6 +36,7 @@ class Client(ClientBase):
             application_key=application_key,
             application_secret=application_secret
         )
+
         self.authentication = Authentication(self)
         self.numbers = Numbers(self)
         self.conversation = Conversation(self)

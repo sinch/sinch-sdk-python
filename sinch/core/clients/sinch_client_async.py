@@ -20,15 +20,10 @@ class ClientAsync(ClientBase):
         key_secret,
         project_id,
         logger_name=None,
-        logger=None
+        logger=None,
+        application_key: str = None,
+        application_secret: str = None
     ):
-        super().__init__(
-            key_id=key_id,
-            key_secret=key_secret,
-            project_id=project_id,
-            logger_name=logger_name,
-            logger=logger
-        )
         self.configuration = Configuration(
             key_id=key_id,
             key_secret=key_secret,
@@ -36,8 +31,11 @@ class ClientAsync(ClientBase):
             logger_name=logger_name,
             logger=logger,
             transport=HTTPTransportAioHTTP(self),
-            token_manager=TokenManagerAsync(self)
+            token_manager=TokenManagerAsync(self),
+            application_secret=application_secret,
+            application_key=application_key
         )
+
         self.authentication = AuthenticationAsync(self)
         self.numbers = NumbersAsync(self)
         self.conversation = ConversationAsync(self)
