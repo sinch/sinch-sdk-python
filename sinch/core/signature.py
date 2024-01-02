@@ -21,13 +21,13 @@ class Signature:
         return {
             "Content-Type": self.content_type,
             "Authorization": (
-                f"Application {self.sinch.configuration.verification_key}:{self.authorization_signature}"
+                f"Application {self.sinch.configuration.application_key}:{self.authorization_signature}"
             ),
             "x-timestamp": self.signature_time
         }
 
     def calculate(self):
-        b64_encoded_application_secret = base64.b64decode(self.sinch.configuration.verification_secret)
+        b64_encoded_application_secret = base64.b64decode(self.sinch.configuration.application_secret)
         if self.request_data:
             encoded_verification_request = hashlib.md5(self.request_data.encode())
             encoded_verification_request = base64.b64encode(encoded_verification_request.digest())

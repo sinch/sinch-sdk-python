@@ -20,14 +20,14 @@ class Configuration:
         logger_name: str = None,
         disable_https=False,
         connection_timeout=10,
-        verification_key: str = None,
-        verification_secret: str = None
+        application_key: str = None,
+        application_secret: str = None
     ):
         self.key_id = key_id
         self.key_secret = key_secret
         self.project_id = project_id
-        self.verifican_key = verification_key
-        self.verification_secret = verification_secret
+        self.application_key = application_key
+        self.application_secret = application_secret
         self.connection_timeout = connection_timeout
         self.auth_origin = "auth.sinch.com"
         self.numbers_origin = "numbers.api.sinch.com"

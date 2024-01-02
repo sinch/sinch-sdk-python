@@ -15,11 +15,11 @@ class VerificationResponse(SinchBaseModel):
     id: str
     method: str
     status: str
-    reason: str
     price: dict
     identity: str
     countryId: str
     verificationTimestamp: str
+    reference: str
 
 
 @dataclass
@@ -40,7 +40,7 @@ class ReportVerificationUsingIdResponse(SinchBaseModel):
 
 @dataclass
 class GetVerificationByReferenceResponse(VerificationResponse):
-    reference: str
+    pass
 
 
 @dataclass
@@ -50,4 +50,4 @@ class GetVerificationByIdResponse(VerificationResponse):
 
 @dataclass
 class GetVerificationByIdentityResponse(VerificationResponse):
-    reference: str
+    pass

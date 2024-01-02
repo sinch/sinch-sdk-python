@@ -21,15 +21,15 @@ class ClientBase(ABC):
         logger_name=None,
         logger=None
     ):
-        if not key_id or not key_secret or not project_id:
-            raise ValidationException(
-                message=(
-                    "key_id, key_secret and project_id are required by the Sinch Client. "
-                    "Those credentials can be obtained from Sinch portal."
-                ),
-                is_from_server=False,
-                response=None
-            )
+        # if not key_id or not key_secret or not project_id:
+        #     raise ValidationException(
+        #         message=(
+        #             "key_id, key_secret and project_id are required by the Sinch Client. "
+        #             "Those credentials can be obtained from Sinch portal."
+        #         ),
+        #         is_from_server=False,
+        #         response=None
+        #     )
 
         self.configuration = Configuration
         self.authentication = AuthenticationBase

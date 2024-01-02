@@ -130,13 +130,13 @@ def origin_phone_number():
 
 
 @pytest.fixture
-def verification_key():
-    return os.getenv("VERIFICATION_KEY")
+def application_key():
+    return os.getenv("APPLICATION_KEY")
 
 
 @pytest.fixture
-def verification_secret():
-    return os.getenv("VERIFICATION_SECRET")
+def application_secret():
+    return os.getenv("APPLICATION_SECRET")
 
 
 @pytest.fixture
@@ -303,6 +303,8 @@ def third_int_based_pagination_response():
 def sinch_client_sync(
     key_id,
     key_secret,
+    application_key,
+    application_secret,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -316,7 +318,9 @@ def sinch_client_sync(
         Client(
             key_id=key_id,
             key_secret=key_secret,
-            project_id=project_id
+            project_id=project_id,
+            application_key=application_key,
+            application_secret=application_secret
         ),
         numbers_origin,
         conversation_origin,

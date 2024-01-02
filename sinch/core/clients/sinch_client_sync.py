@@ -22,8 +22,8 @@ class Client(ClientBase):
         project_id,
         logger_name=None,
         logger=None,
-        verification_key: str = None,
-        verification_secret: str = None
+        application_key: str = None,
+        application_secret: str = None
     ):
         super().__init__(
             key_id=key_id,
@@ -40,8 +40,8 @@ class Client(ClientBase):
             logger=logger,
             transport=HTTPTransportRequests(self),
             token_manager=TokenManager(self),
-            verification_key=verification_key,
-            verification_secret=verification_secret
+            application_key=application_key,
+            application_secret=application_secret
         )
         self.authentication = Authentication(self)
         self.numbers = Numbers(self)
