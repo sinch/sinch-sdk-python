@@ -16,3 +16,20 @@ def test_report_verification_using_id_and_sms(
         }
     )
     assert isinstance(verification_response, ReportVerificationUsingIdResponse)
+
+
+async def test_report_verification_using_id_and_sms_async(
+    sinch_client_async,
+    phone_number,
+    verification_id
+):
+    verification_response = await sinch_client_async.verification.report_using_id(
+        id=verification_id,
+        verification_report_request={
+            "method": "sms",
+            "sms": {
+                "code": "2302"
+            }
+        }
+    )
+    assert isinstance(verification_response, ReportVerificationUsingIdResponse)

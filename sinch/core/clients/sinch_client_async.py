@@ -6,6 +6,7 @@ from sinch.domains.authentication import AuthenticationAsync
 from sinch.domains.numbers import NumbersAsync
 from sinch.domains.conversation import ConversationAsync
 from sinch.domains.sms import SMSAsync
+from sinch.domains.verification import Verification as VerificationAsync
 
 
 class ClientAsync(ClientBase):
@@ -40,3 +41,4 @@ class ClientAsync(ClientBase):
         self.numbers = NumbersAsync(self)
         self.conversation = ConversationAsync(self)
         self.sms = SMSAsync(self)
+        self.verification = VerificationAsync(self)

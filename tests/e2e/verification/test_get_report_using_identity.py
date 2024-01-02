@@ -10,3 +10,14 @@ def test_get_report_verification_using_identity(
         method="sms"
     )
     assert isinstance(verification_response, GetVerificationByIdentityResponse)
+
+
+async def test_get_report_verification_using_identity_async(
+    sinch_client_async,
+    phone_number
+):
+    verification_response = await sinch_client_async.verification.get_by_identity(
+        endpoint=phone_number,
+        method="sms"
+    )
+    assert isinstance(verification_response, GetVerificationByIdentityResponse)
