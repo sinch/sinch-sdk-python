@@ -64,7 +64,6 @@ class HTTPTransport(ABC):
             )
             request_data.headers = signature.get_http_headers_with_signature()
 
-
         return request_data
 
     def prepare_request(self, endpoint: HTTPEndpoint) -> HttpRequest:
