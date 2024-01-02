@@ -1,5 +1,6 @@
 import aiohttp
-from abc import ABC
+from abc import ABC, abstractmethod
+from platform import python_version
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.signature import Signature
 from sinch.core.models.http_request import HttpRequest
@@ -7,12 +8,14 @@ from sinch.core.models.http_response import HTTPResponse
 from sinch.core.exceptions import ValidationException
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
+from sinch import __version__ as sdk_version
 
 
 class HTTPTransport(ABC):
     def __init__(self, sinch):
         self.sinch = sinch
 
+    @abstractmethod
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 
@@ -39,10 +42,10 @@ class HTTPTransport(ABC):
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             token = self.sinch.authentication.get_auth_token().access_token
-            request_data.headers = {
+            request_data.headers.update({
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json"
-            }
+            })
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
             if not self.sinch.configuration.application_key or not self.sinch.configuration.application_secret:
                 raise ValidationException(
@@ -61,6 +64,7 @@ class HTTPTransport(ABC):
             )
             request_data.headers = signature.get_http_headers_with_signature()
 
+
         return request_data
 
     def prepare_request(self, endpoint: HTTPEndpoint) -> HttpRequest:
@@ -68,7 +72,10 @@ class HTTPTransport(ABC):
         url_query_params = endpoint.build_query_params()
 
         return HttpRequest(
-            headers={},
+            headers={
+                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
+                              f" {self.__class__.__name__};)"
+            },
             protocol=protocol,
             url=protocol + endpoint.build_url(self.sinch),
             http_method=endpoint.HTTP_METHOD,
