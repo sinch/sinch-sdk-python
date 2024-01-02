@@ -4,6 +4,7 @@ from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.signature import Signature
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.exceptions import ValidationException
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
 
@@ -16,6 +17,17 @@ class HTTPTransport(ABC):
         pass
 
     def authenticate(self, endpoint, request_data):
+        if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
+            if not self.sinch.configuration.key_id or not self.sinch.configuration.key_secret or not self.sinch.configuration.project_id:
+                raise ValidationException(
+                    message=(
+                        "key_id, key_secret and project_id are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
+
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
             request_data.auth = (self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
         else:
@@ -28,6 +40,15 @@ class HTTPTransport(ABC):
                 "Content-Type": "application/json"
             }
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
+            if not self.sinch.configuration.application_key or not self.sinch.configuration.application_secret:
+                raise ValidationException(
+                    message=(
+                        "application key and application secret are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
             signature = Signature(
                 self.sinch,
                 endpoint.HTTP_METHOD,

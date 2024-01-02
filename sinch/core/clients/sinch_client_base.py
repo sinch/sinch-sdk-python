@@ -1,5 +1,4 @@
 from abc import ABC
-from sinch.core.exceptions import ValidationException
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.domains.authentication import AuthenticationBase
 from sinch.domains.numbers import NumbersBase
@@ -21,16 +20,6 @@ class ClientBase(ABC):
         logger_name=None,
         logger=None
     ):
-        # if not key_id or not key_secret or not project_id:
-        #     raise ValidationException(
-        #         message=(
-        #             "key_id, key_secret and project_id are required by the Sinch Client. "
-        #             "Those credentials can be obtained from Sinch portal."
-        #         ),
-        #         is_from_server=False,
-        #         response=None
-        #     )
-
         self.configuration = Configuration
         self.authentication = AuthenticationBase
         self.numbers = NumbersBase
