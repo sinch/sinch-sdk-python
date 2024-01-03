@@ -21,7 +21,9 @@ env:
   APP_ID: ${{ secrets.APP_ID }}
   EMPTY_PROJECT_ID: ${{ secrets.EMPTY_PROJECT_ID }}
   TEMPLATES_ORIGIN: ${{ secrets.TEMPLATES_ORIGIN }}
-
+  APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET }}
+  APPLICATION_KEY: ${{ secrets.APPLICATION_KEY }}
+  VERIFICATION_ID: ${{ secrets.VERIFICATION_ID }}
 
 jobs:
   build:
