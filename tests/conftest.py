@@ -336,6 +336,8 @@ def sinch_client_sync(
 def sinch_client_async(
     key_id,
     key_secret,
+    application_key,
+    application_secret,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -349,7 +351,9 @@ def sinch_client_async(
         ClientAsync(
             key_id=key_id,
             key_secret=key_secret,
-            project_id=project_id
+            project_id=project_id,
+            application_key=application_key,
+            application_secret=application_secret
         ),
         numbers_origin,
         conversation_origin,
