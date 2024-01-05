@@ -23,19 +23,21 @@ class VerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class ReportVerificationUsingIdentityResponse(SinchBaseModel):
-    reference: str
+class ReportVerificationResponse(SinchBaseModel):
     id: str
+    reference: str
     method: str
     status: str
 
 
 @dataclass
-class ReportVerificationUsingIdResponse(SinchBaseModel):
-    reference: str
-    id: str
-    method: str
-    status: str
+class ReportVerificationUsingIdentityResponse(ReportVerificationResponse):
+    pass
+
+
+@dataclass
+class ReportVerificationUsingIdResponse(ReportVerificationResponse):
+    pass
 
 
 @dataclass
