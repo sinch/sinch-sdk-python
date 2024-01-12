@@ -59,7 +59,7 @@ class Verification:
             )
         )
 
-    def report_using_id(
+    def report_by_id(
         self,
         id: str,
         verification_report_request: dict
@@ -73,7 +73,7 @@ class Verification:
             )
         )
 
-    def report_using_identity(
+    def report_by_identity(
         self,
         endpoint,
         verification_report_request
