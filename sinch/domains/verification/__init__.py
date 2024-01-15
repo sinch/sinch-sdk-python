@@ -32,10 +32,7 @@ from sinch.domains.verification.models.requests import (
 )
 
 
-class Verification:
-    """
-    Documentation for the Verification API: https://developers.sinch.com/docs/verification
-    """
+class Verifications:
     def __init__(self, sinch):
         self._sinch = sinch
 
@@ -87,6 +84,11 @@ class Verification:
             )
         )
 
+
+class VerificationStatus:
+    def __init__(self, sinch):
+        self._sinch = sinch
+
     def get_by_reference(self, reference) -> GetVerificationByReferenceResponse:
         return self._sinch.configuration.transport.request(
             GetVerificationByReferenceEndpoint(
@@ -114,3 +116,35 @@ class Verification:
                 )
             )
         )
+
+
+class VerificationBase:
+    """
+    Documentation for the Verification API: https://developers.sinch.com/docs/verification/
+    """
+    def __init__(self, sinch):
+        self._sinch = sinch
+
+
+class Verification(VerificationBase):
+    """
+    Synchronous version of the Verification Domain
+    """
+    __doc__ += VerificationBase.__doc__
+
+    def __init__(self, sinch):
+        super(Verification, self).__init__(sinch)
+        self.verifications = Verifications(self._sinch)
+        self.verification_status = VerificationStatus(self._sinch)
+
+
+class VerificationAsync(VerificationBase):
+    """
+    Asynchronous version of the Verification Domain
+    """
+    __doc__ += VerificationBase.__doc__
+
+    def __init__(self, sinch):
+        super(VerificationAsync, self).__init__(sinch)
+        self.verifications = Verifications(self._sinch)
+        self.verification_status = VerificationStatus(self._sinch)
