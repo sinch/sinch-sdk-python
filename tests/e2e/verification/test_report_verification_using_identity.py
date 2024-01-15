@@ -5,7 +5,7 @@ def test_report_verification_using_identity_and_sms(
     sinch_client_sync,
     phone_number
 ):
-    verification_response = sinch_client_sync.verification.report_using_identity(
+    verification_response = sinch_client_sync.verification.verifications.report_by_identity(
         endpoint=phone_number,
         verification_report_request={
               "method": "sms",
@@ -21,7 +21,7 @@ async def test_report_verification_using_identity_and_sms_async(
     sinch_client_async,
     phone_number
 ):
-    verification_response = await sinch_client_async.verification.report_using_identity(
+    verification_response = await sinch_client_async.verification.verifications.report_by_identity(
         endpoint=phone_number,
         verification_report_request={
               "method": "sms",
