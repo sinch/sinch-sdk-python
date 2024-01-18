@@ -37,4 +37,4 @@ class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
 @dataclass
 class GetVerificationStatusByIdentityRequest(SinchRequestBaseModel):
     endpoint: str
-    method: str
+    method: VerificationMethod

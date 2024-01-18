@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchBaseModel
+from sinch.domains.verification.enums import VerificationMethod
 
 
 @dataclass
 class StartVerificationResponse(SinchBaseModel):
     id: str
-    method: str
+    method: VerificationMethod
     sms: dict
     _links: list
 
@@ -13,7 +14,7 @@ class StartVerificationResponse(SinchBaseModel):
 @dataclass
 class VerificationResponse(SinchBaseModel):
     id: str
-    method: str
+    method: VerificationMethod
     status: str
     price: dict
     identity: str
@@ -26,7 +27,7 @@ class VerificationResponse(SinchBaseModel):
 class ReportVerificationResponse(SinchBaseModel):
     id: str
     reference: str
-    method: str
+    method: VerificationMethod
     status: str
 
 
