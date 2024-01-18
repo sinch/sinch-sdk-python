@@ -11,11 +11,12 @@ class Signature:
         http_method,
         request_data,
         request_uri,
+        content_type=None,
         signature_timestamp=None
     ):
         self.sinch = sinch
         self.http_method = http_method
-        self.content_type = 'application/json; charset=UTF-8'
+        self.content_type = content_type or 'application/json; charset=UTF-8'
         self.request_data = request_data
         self.signature_timestamp = signature_timestamp or datetime.now(timezone.utc).isoformat()
         self.request_uri = request_uri
