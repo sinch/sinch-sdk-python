@@ -14,7 +14,6 @@ def test_request_signature(
         request_uri="/verification/v1/verifications",
         signature_timestamp=verification_request_signature_timestamp
     )
-    signature.signature_timestamp = verification_request_signature_timestamp
     signature.calculate()
 
     assert signature.authorization_signature
@@ -34,7 +33,6 @@ def test_request_signature_using_empty_body(
         request_uri="/verification/v1/verifications",
         signature_timestamp=verification_request_signature_timestamp
     )
-    signature.signature_timestamp = verification_request_signature_timestamp
     signature.calculate()
 
     assert signature.authorization_signature
@@ -54,7 +52,6 @@ def test_get_headers_with_signature_and_async_client(
         request_uri="/verification/v1/verifications",
         signature_timestamp=verification_request_signature_timestamp
     )
-    signature.signature_timestamp = verification_request_signature_timestamp
     headers = signature.get_http_headers_with_signature()
 
     assert "x-timestamp" in headers
