@@ -1,4 +1,4 @@
-from sinch.domains.verification.models.responses import ReportVerificationUsingIdResponse
+from sinch.domains.verification.models.responses import ReportVerificationByIdResponse
 
 
 def test_report_verification_using_id_and_sms(
@@ -15,7 +15,7 @@ def test_report_verification_using_id_and_sms(
             }
         }
     )
-    assert isinstance(verification_response, ReportVerificationUsingIdResponse)
+    assert isinstance(verification_response, ReportVerificationByIdResponse)
 
 
 async def test_report_verification_using_id_and_sms_async(
@@ -32,4 +32,4 @@ async def test_report_verification_using_id_and_sms_async(
             }
         }
     )
-    assert isinstance(verification_response, ReportVerificationUsingIdResponse)
+    assert isinstance(verification_response, ReportVerificationByIdResponse)

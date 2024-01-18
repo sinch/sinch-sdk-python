@@ -1,4 +1,4 @@
-from sinch.domains.verification.models.responses import GetVerificationByIdentityResponse
+from sinch.domains.verification.models.responses import GetVerificationStatusByIdentityResponse
 
 
 def test_get_report_verification_using_identity(
@@ -9,7 +9,7 @@ def test_get_report_verification_using_identity(
         endpoint=phone_number,
         method="sms"
     )
-    assert isinstance(verification_response, GetVerificationByIdentityResponse)
+    assert isinstance(verification_response, GetVerificationStatusByIdentityResponse)
 
 
 async def test_get_report_verification_using_identity_async(
@@ -20,4 +20,4 @@ async def test_get_report_verification_using_identity_async(
         endpoint=phone_number,
         method="sms"
     )
-    assert isinstance(verification_response, GetVerificationByIdentityResponse)
+    assert isinstance(verification_response, GetVerificationStatusByIdentityResponse)

@@ -1,34 +1,34 @@
 from sinch.domains.verification.endpoints.start_verification import StartVerificationEndpoint
 from sinch.domains.verification.endpoints.report_verification_using_identity import (
-    ReportVerificationUsingIdentityEndpoint
+    ReportVerificationByIdentityEndpoint
 )
 from sinch.domains.verification.endpoints.report_verification_using_id import (
-    ReportVerificationUsingIdEndpoint
+    ReportVerificationByIdEndpoint
 )
 from sinch.domains.verification.endpoints.get_verification_by_id import (
-    GetVerificationByIdEndpoint
+    GetVerificationStatusByIdEndpoint
 )
 from sinch.domains.verification.endpoints.get_verification_by_identity import (
-    GetVerificationByIdentityEndpoint
+    GetVerificationStatusByIdentityEndpoint
 )
 from sinch.domains.verification.endpoints.get_verification_by_reference import (
-    GetVerificationByReferenceEndpoint
+    GetVerificationStatusByReferenceEndpoint
 )
 from sinch.domains.verification.models.responses import (
     StartVerificationResponse,
-    ReportVerificationUsingIdentityResponse,
-    ReportVerificationUsingIdResponse,
-    GetVerificationByIdentityResponse,
-    GetVerificationByIdResponse,
-    GetVerificationByReferenceResponse
+    ReportVerificationByIdentityResponse,
+    ReportVerificationByIdResponse,
+    GetVerificationStatusByIdentityResponse,
+    GetVerificationStatusByIdResponse,
+    GetVerificationStatusByReferenceResponse
 )
 from sinch.domains.verification.models.requests import (
     StartVerificationRequest,
-    ReportVerificationUsingIdentityRequest,
-    ReportVerificationUsingIdRequest,
-    GetVerificationByIdentityRequest,
-    GetVerificationByIdRequest,
-    GetVerificationByReferenceRequest
+    ReportVerificationByIdentityRequest,
+    ReportVerificationByIdRequest,
+    GetVerificationStatusByIdRequest,
+    GetVerificationStatusByIdentityRequest,
+    GetVerificationStatusByReferenceRequest
 )
 
 from sinch.domains.verification.enums import VerificationMethod
@@ -62,10 +62,10 @@ class Verifications:
         self,
         id: str,
         verification_report_request: dict
-    ) -> ReportVerificationUsingIdResponse:
+    ) -> ReportVerificationByIdResponse:
         return self._sinch.configuration.transport.request(
-            ReportVerificationUsingIdEndpoint(
-                request_data=ReportVerificationUsingIdRequest(
+            ReportVerificationByIdEndpoint(
+                request_data=ReportVerificationByIdRequest(
                     id,
                     verification_report_request
                 )
@@ -76,10 +76,10 @@ class Verifications:
         self,
         endpoint,
         verification_report_request
-    ) -> ReportVerificationUsingIdentityResponse:
+    ) -> ReportVerificationByIdentityResponse:
         return self._sinch.configuration.transport.request(
-            ReportVerificationUsingIdentityEndpoint(
-                request_data=ReportVerificationUsingIdentityRequest(
+            ReportVerificationByIdentityEndpoint(
+                request_data=ReportVerificationByIdentityRequest(
                     endpoint,
                     verification_report_request
                 )
@@ -91,28 +91,28 @@ class VerificationStatus:
     def __init__(self, sinch):
         self._sinch = sinch
 
-    def get_by_reference(self, reference) -> GetVerificationByReferenceResponse:
+    def get_by_reference(self, reference) -> GetVerificationStatusByReferenceResponse:
         return self._sinch.configuration.transport.request(
-            GetVerificationByReferenceEndpoint(
-                request_data=GetVerificationByReferenceRequest(
+            GetVerificationStatusByReferenceEndpoint(
+                request_data=GetVerificationStatusByReferenceRequest(
                     reference=reference
                 )
             )
         )
 
-    def get_by_id(self, id) -> GetVerificationByIdResponse:
+    def get_by_id(self, id) -> GetVerificationStatusByIdResponse:
         return self._sinch.configuration.transport.request(
-            GetVerificationByIdEndpoint(
-                request_data=GetVerificationByIdRequest(
+            GetVerificationStatusByIdEndpoint(
+                request_data=GetVerificationStatusByIdRequest(
                     id=id
                 )
             )
         )
 
-    def get_by_identity(self, endpoint, method) -> GetVerificationByIdentityResponse:
+    def get_by_identity(self, endpoint, method) -> GetVerificationStatusByIdentityResponse:
         return self._sinch.configuration.transport.request(
-            GetVerificationByIdentityEndpoint(
-                request_data=GetVerificationByIdentityRequest(
+            GetVerificationStatusByIdentityEndpoint(
+                request_data=GetVerificationStatusByIdentityRequest(
                     endpoint=endpoint,
                     method=method
                 )

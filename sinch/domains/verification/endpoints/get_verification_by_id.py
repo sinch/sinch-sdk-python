@@ -1,16 +1,16 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.domains.verification.models.requests import GetVerificationByIdRequest
-from sinch.domains.verification.models.responses import GetVerificationByIdResponse
+from sinch.domains.verification.models.requests import GetVerificationStatusByIdRequest
+from sinch.domains.verification.models.responses import GetVerificationStatusByIdResponse
 
 
-class GetVerificationByIdEndpoint(VerificationEndpoint):
+class GetVerificationStatusByIdEndpoint(VerificationEndpoint):
     ENDPOINT_URL = "{origin}/verification/v1/verifications/id/{id}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
-    def __init__(self, request_data: GetVerificationByIdRequest):
+    def __init__(self, request_data: GetVerificationStatusByIdRequest):
         self.request_data = request_data
 
     def build_url(self, sinch):
@@ -19,8 +19,8 @@ class GetVerificationByIdEndpoint(VerificationEndpoint):
             id=self.request_data.id
         )
 
-    def handle_response(self, response: HTTPResponse) -> GetVerificationByIdResponse:
+    def handle_response(self, response: HTTPResponse) -> GetVerificationStatusByIdResponse:
         super().handle_response(response)
-        return GetVerificationByIdResponse(
+        return GetVerificationStatusByIdResponse(
             **response.body
         )

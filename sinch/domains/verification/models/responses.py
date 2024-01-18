@@ -31,25 +31,25 @@ class ReportVerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class ReportVerificationUsingIdentityResponse(ReportVerificationResponse):
+class ReportVerificationByIdentityResponse(ReportVerificationResponse):
     pass
 
 
 @dataclass
-class ReportVerificationUsingIdResponse(ReportVerificationResponse):
+class ReportVerificationByIdResponse(ReportVerificationResponse):
     pass
 
 
 @dataclass
-class GetVerificationByReferenceResponse(VerificationResponse):
+class GetVerificationStatusByReferenceResponse(VerificationResponse):
     pass
 
 
 @dataclass
-class GetVerificationByIdResponse(VerificationResponse):
+class GetVerificationStatusByIdResponse(VerificationResponse):
     pass
 
 
 @dataclass
-class GetVerificationByIdentityResponse(VerificationResponse):
+class GetVerificationStatusByIdentityResponse(VerificationResponse):
     pass

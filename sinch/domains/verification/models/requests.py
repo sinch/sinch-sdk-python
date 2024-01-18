@@ -13,28 +13,28 @@ class StartVerificationRequest(SinchRequestBaseModel):
 
 
 @dataclass
-class ReportVerificationUsingIdentityRequest(SinchRequestBaseModel):
+class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
     endpoint: str
     verification_report_request: dict
 
 
 @dataclass
-class ReportVerificationUsingIdRequest(SinchRequestBaseModel):
+class ReportVerificationByIdRequest(SinchRequestBaseModel):
     id: str
     verification_report_request: dict
 
 
 @dataclass
-class GetVerificationByReferenceRequest(SinchRequestBaseModel):
+class GetVerificationStatusByReferenceRequest(SinchRequestBaseModel):
     reference: str
 
 
 @dataclass
-class GetVerificationByIdRequest(SinchRequestBaseModel):
+class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
     id: str
 
 
 @dataclass
-class GetVerificationByIdentityRequest(SinchRequestBaseModel):
+class GetVerificationStatusByIdentityRequest(SinchRequestBaseModel):
     endpoint: str
     method: str

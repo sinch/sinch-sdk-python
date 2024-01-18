@@ -1,4 +1,4 @@
-from sinch.domains.verification.models.responses import GetVerificationByIdResponse
+from sinch.domains.verification.models.responses import GetVerificationStatusByIdResponse
 
 
 def test_get_report_verification_using_id(
@@ -9,7 +9,7 @@ def test_get_report_verification_using_id(
     verification_response = sinch_client_sync.verification.verification_status.get_by_id(
         id=verification_id
     )
-    assert isinstance(verification_response, GetVerificationByIdResponse)
+    assert isinstance(verification_response, GetVerificationStatusByIdResponse)
 
 
 async def test_get_report_verification_using_id_async(
@@ -20,4 +20,4 @@ async def test_get_report_verification_using_id_async(
     verification_response = await sinch_client_async.verification.verification_status.get_by_id(
         id=verification_id
     )
-    assert isinstance(verification_response, GetVerificationByIdResponse)
+    assert isinstance(verification_response, GetVerificationStatusByIdResponse)
