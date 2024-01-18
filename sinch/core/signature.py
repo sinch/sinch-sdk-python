@@ -27,7 +27,7 @@ class Signature:
         }
 
     def calculate(self):
-        b64_encoded_application_secret = base64.b64decode(self.sinch.configuration.application_secret)
+        b64_decoded_application_secret = base64.b64decode(self.sinch.configuration.application_secret)
         if self.request_data:
             encoded_verification_request = hashlib.md5(self.request_data.encode())
             encoded_verification_request = base64.b64encode(encoded_verification_request.digest())
@@ -46,5 +46,5 @@ class Signature:
         )
 
         self.authorization_signature = base64.b64encode(
-            hmac.new(b64_encoded_application_secret, string_to_sign.encode(), hashlib.sha256).digest()
+            hmac.new(b64_decoded_application_secret, string_to_sign.encode(), hashlib.sha256).digest()
         ).decode()
