@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchRequestBaseModel
+from sinch.domains.verification.enums import VerificationMethod
 
 
 @dataclass
 class StartVerificationRequest(SinchRequestBaseModel):
     identity: dict
-    method: str
+    method: VerificationMethod
     reference: str
     custom: str
     flash_call_options: dict

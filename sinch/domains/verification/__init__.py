@@ -31,6 +31,8 @@ from sinch.domains.verification.models.requests import (
     GetVerificationByReferenceRequest
 )
 
+from sinch.domains.verification.enums import VerificationMethod
+
 
 class Verifications:
     def __init__(self, sinch):
@@ -39,7 +41,7 @@ class Verifications:
     def start(
         self,
         identity: dict,
-        method: str,
+        method: VerificationMethod,
         reference: str = None,
         custom: str = None,
         flash_call_options: dict = None
