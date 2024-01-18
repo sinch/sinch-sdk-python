@@ -10,7 +10,7 @@ class Signature:
         self.http_method = http_method
         self.content_type = 'application/json; charset=UTF-8'
         self.request_data = request_data
-        self.signature_time = datetime.now(timezone.utc).isoformat()
+        self.signature_timestamp = datetime.now(timezone.utc).isoformat()
         self.request_uri = request_uri
         self.authorization_signature = None
 
@@ -23,7 +23,7 @@ class Signature:
             "Authorization": (
                 f"Application {self.sinch.configuration.application_key}:{self.authorization_signature}"
             ),
-            "x-timestamp": self.signature_time
+            "x-timestamp": self.signature_timestamp
         }
 
     def calculate(self):
@@ -35,7 +35,7 @@ class Signature:
         else:
             encoded_verification_request = ''.encode()
 
-        request_timestamp = "x-timestamp:" + self.signature_time
+        request_timestamp = "x-timestamp:" + self.signature_timestamp
 
         string_to_sign = (
             self.http_method + '\n'

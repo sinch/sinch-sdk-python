@@ -160,6 +160,21 @@ def empty_project_id():
 
 
 @pytest.fixture
+def verification_request_signature():
+    return os.getenv("VERIFICATION_REQUEST_SIGNATURE")
+
+
+@pytest.fixture
+def verification_request_with_empty_body_signature():
+    return os.getenv("VERIFICATION_REQUEST_WITH_EMPTY_BODY_SIGNATURE")
+
+
+@pytest.fixture
+def verification_request_signature_timestamp():
+    return os.getenv("VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP")
+
+
+@pytest.fixture
 def http_response():
     return HTTPResponse(
         status_code=404,
@@ -179,7 +194,7 @@ def sms_http_response():
     return HTTPResponse(
         status_code=404,
         body={
-            "text":  "Nobody expects the Spanish Inquisition!"
+            "text": "Nobody expects the Spanish Inquisition!"
         },
         headers={
             "SAMPLE_HEADER": "test"
