@@ -11,7 +11,8 @@ def test_request_signature(
         sinch_client_sync,
         http_method="GET",
         request_data=json.dumps({"test": "test"}),
-        request_uri="/verification/v1/verifications"
+        request_uri="/verification/v1/verifications",
+        signature_timestamp=verification_request_signature_timestamp
     )
     signature.signature_timestamp = verification_request_signature_timestamp
     signature.calculate()
@@ -30,7 +31,8 @@ def test_request_signature_using_empty_body(
         sinch_client_sync,
         http_method="POST",
         request_data=None,
-        request_uri="/verification/v1/verifications"
+        request_uri="/verification/v1/verifications",
+        signature_timestamp=verification_request_signature_timestamp
     )
     signature.signature_timestamp = verification_request_signature_timestamp
     signature.calculate()
@@ -49,7 +51,8 @@ def test_get_headers_with_signature_and_async_client(
         sinch_client_async,
         http_method="POST",
         request_data=None,
-        request_uri="/verification/v1/verifications"
+        request_uri="/verification/v1/verifications",
+        signature_timestamp=verification_request_signature_timestamp
     )
     signature.signature_timestamp = verification_request_signature_timestamp
     headers = signature.get_http_headers_with_signature()

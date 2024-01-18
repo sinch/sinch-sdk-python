@@ -5,12 +5,19 @@ from datetime import datetime, timezone
 
 
 class Signature:
-    def __init__(self, sinch, http_method, request_data, request_uri):
+    def __init__(
+        self,
+        sinch,
+        http_method,
+        request_data,
+        request_uri,
+        signature_timestamp=None
+    ):
         self.sinch = sinch
         self.http_method = http_method
         self.content_type = 'application/json; charset=UTF-8'
         self.request_data = request_data
-        self.signature_timestamp = datetime.now(timezone.utc).isoformat()
+        self.signature_timestamp = signature_timestamp or datetime.now(timezone.utc).isoformat()
         self.request_uri = request_uri
         self.authorization_signature = None
 
