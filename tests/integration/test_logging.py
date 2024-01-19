@@ -17,7 +17,7 @@ def test_default_logger(sinch_client_sync, caplog):
     sinch_client = mock_http_transport(sinch_client_sync)
     http_endpoint = Mock()
     sinch_client.configuration.transport.request(http_endpoint)
-    assert len(caplog.records) == 2
+    assert len(caplog.get_records("call")) == 2
     assert caplog.records[0].levelname == "DEBUG"
 
 
@@ -27,7 +27,7 @@ def test_changing_logger_name_within_the_client(sinch_client_sync, caplog):
     sinch_client = mock_http_transport(sinch_client_sync)
     http_endpoint = Mock()
     sinch_client.configuration.transport.request(http_endpoint)
-    assert len(caplog.records) == 2
+    assert len(caplog.get_records("call")) == 2
     assert caplog.records[0].name == "SumOlimpijczyk"
 
 
