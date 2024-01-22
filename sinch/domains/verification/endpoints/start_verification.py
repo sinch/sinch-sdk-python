@@ -23,5 +23,11 @@ class StartVerificationEndpoint(VerificationEndpoint):
 
     def handle_response(self, response: HTTPResponse) -> StartVerificationResponse:
         return StartVerificationResponse(
-            **response.body
+            id=response.body.get("id"),
+            method=response.body.get("method"),
+            _links=response.body.get("_links"),
+            sms=response.body.get("sms"),
+            flash_call=response.body.get("flashCall"),
+            callout=response.body.get("callout"),
+            seamless=response.body.get("seamless"),
         )

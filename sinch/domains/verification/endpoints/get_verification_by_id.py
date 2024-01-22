@@ -22,5 +22,14 @@ class GetVerificationStatusByIdEndpoint(VerificationEndpoint):
     def handle_response(self, response: HTTPResponse) -> GetVerificationStatusByIdResponse:
         super().handle_response(response)
         return GetVerificationStatusByIdResponse(
-            **response.body
+            id=response.body.get("id"),
+            method=response.body.get("method"),
+            status=response.body.get("status"),
+            price=response.body.get("price"),
+            identity=response.body.get("identity"),
+            country_id=response.body.get("country_id"),
+            verification_timestamp=response.body.get("verification_timestamp"),
+            reference=response.body.get("reference"),
+            reason=response.body.get("reason"),
+            call_complete=response.body.get("call_complete")
         )

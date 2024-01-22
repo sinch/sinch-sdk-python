@@ -1,7 +1,7 @@
 from sinch.domains.verification.models.responses import StartVerificationResponse
 
 
-def test_start_verification(
+def test_start_verification_sms(
     sinch_client_sync,
     phone_number
 ):
@@ -12,6 +12,22 @@ def test_start_verification(
             "endpoint": phone_number
         },
         reference="random"
+    )
+
+    assert isinstance(verification_response, StartVerificationResponse)
+
+
+def test_start_verification_flash_call(
+    sinch_client_sync,
+    phone_number
+):
+    verification_response = sinch_client_sync.verification.verifications.start(
+        method="flashCall",
+        identity={
+            "type": "number",
+            "endpoint": phone_number
+        },
+        reference="random5"
     )
 
     assert isinstance(verification_response, StartVerificationResponse)

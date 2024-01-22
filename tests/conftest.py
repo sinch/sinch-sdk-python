@@ -277,40 +277,20 @@ def second_int_based_pagination_response():
 
 
 @pytest.fixture
-def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
-        page=0,
-        page_size=2
-    )
-
-
-@pytest.fixture
-def first_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=0,
-        page_size=2,
-        pig_dogs=["Bartosz", "Piotr"]
-    )
-
-
-@pytest.fixture
-def second_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=1,
-        page_size=2,
-        pig_dogs=["Walaszek", "Połać"]
-    )
-
-
-@pytest.fixture
 def third_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
         page=2,
         page_size=0,
         pig_dogs=[]
+    )
+
+
+@pytest.fixture
+def int_based_pagination_request_data():
+    return IntBasedPaginationRequest(
+        page=0,
+        page_size=2
     )
 
 
