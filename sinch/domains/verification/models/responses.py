@@ -36,7 +36,7 @@ class VerificationResponse(SinchBaseModel):
     method: VerificationMethod
     status: VerificationStatus
     price: dict
-    identity: str
+    identity: dict
     country_id: str
     verification_timestamp: str
     reference: str
