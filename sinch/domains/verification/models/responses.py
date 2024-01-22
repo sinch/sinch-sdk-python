@@ -30,11 +30,8 @@ class VerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class ReportVerificationResponse(SinchBaseModel):
-    id: str
-    reference: str
-    method: VerificationMethod
-    status: str
+class ReportVerificationResponse(VerificationResponse):
+    pass
 
 
 @dataclass
