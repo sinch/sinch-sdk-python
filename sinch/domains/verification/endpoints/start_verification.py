@@ -1,8 +1,15 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.domains.verification.enums import VerificationMethod
 from sinch.domains.verification.models.requests import StartVerificationRequest
-from sinch.domains.verification.models.responses import StartVerificationResponse
+from sinch.domains.verification.models.responses import (
+    StartVerificationResponse,
+    StartSMSInitiateVerificationResponse,
+    StartDataInitiateVerificationResponse,
+    StartCalloutInitiateVerificationResponse,
+    StartFlashCallInitiateVerificationResponse
+)
 
 
 class StartVerificationEndpoint(VerificationEndpoint):
@@ -22,12 +29,22 @@ class StartVerificationEndpoint(VerificationEndpoint):
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> StartVerificationResponse:
-        return StartVerificationResponse(
-            id=response.body.get("id"),
-            method=response.body.get("method"),
-            _links=response.body.get("_links"),
-            sms=response.body.get("sms"),
-            flash_call=response.body.get("flashCall"),
-            callout=response.body.get("callout"),
-            seamless=response.body.get("seamless"),
-        )
+        if self.request_data.method == VerificationMethod.SMS.value:
+            return StartSMSInitiateVerificationResponse(
+                **response.body
+            )
+        elif self.request_data.method == VerificationMethod.FLASHCALL.value:
+            return StartFlashCallInitiateVerificationResponse(
+                id=response.body.get("id"),
+                method=response.body.get("method"),
+                _links=response.body.get("_links"),
+                flash_call=response.body.get("flashCall")
+            )
+        elif self.request_data.method == VerificationMethod.CALLOUT.value:
+            return StartCalloutInitiateVerificationResponse(
+                **response.body
+            )
+        elif self.request_data.method == VerificationMethod.SEAMLESS.value:
+            return StartDataInitiateVerificationResponse(
+                **response.body
+            )

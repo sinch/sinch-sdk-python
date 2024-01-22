@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchBaseModel
 from sinch.domains.verification.enums import VerificationMethod, VerificationStatus
-from typing import Optional
 
 
 @dataclass
@@ -9,10 +8,26 @@ class StartVerificationResponse(SinchBaseModel):
     id: str
     method: VerificationMethod
     _links: list
-    sms: Optional[dict] = None
-    flash_call: Optional[dict] = None
-    callout: Optional[dict] = None
-    seamless: Optional[dict] = None
+
+
+@dataclass
+class StartSMSInitiateVerificationResponse(StartVerificationResponse):
+    sms: dict
+
+
+@dataclass
+class StartFlashCallInitiateVerificationResponse(StartVerificationResponse):
+    flash_call: dict
+
+
+@dataclass
+class StartCalloutInitiateVerificationResponse(StartVerificationResponse):
+    callout: dict
+
+
+@dataclass
+class StartDataInitiateVerificationResponse(StartVerificationResponse):
+    seamless: dict
 
 
 @dataclass
