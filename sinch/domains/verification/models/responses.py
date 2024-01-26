@@ -17,7 +17,7 @@ class StartSMSInitiateVerificationResponse(StartVerificationResponse):
 
 @dataclass
 class StartFlashCallInitiateVerificationResponse(StartVerificationResponse):
-    flash_call: dict
+    flashcall: dict
 
 
 @dataclass

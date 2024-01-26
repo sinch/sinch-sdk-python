@@ -1,3 +1,4 @@
+from copy import deepcopy
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -26,6 +27,11 @@ class StartVerificationEndpoint(VerificationEndpoint):
         )
 
     def request_body(self):
+        if self.request_data.method == VerificationMethod.FLASHCALL.value:
+            request_data = deepcopy(self.request_data)
+            request_data.method = "flashCall"
+            return request_data.as_json()
+
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> StartVerificationResponse:
@@ -38,7 +44,7 @@ class StartVerificationEndpoint(VerificationEndpoint):
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
-                flash_call=response.body.get("flashCall")
+                flashcall=response.body.get("flashCall")
             )
         elif self.request_data.method == VerificationMethod.CALLOUT.value:
             return StartCalloutInitiateVerificationResponse(

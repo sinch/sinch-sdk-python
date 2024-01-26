@@ -1,4 +1,5 @@
 from sinch.domains.verification.models.responses import StartVerificationResponse
+from sinch.domains.verification.enums import VerificationMethod
 
 
 def test_start_verification_sms(
@@ -22,7 +23,7 @@ def test_start_verification_flash_call(
     phone_number
 ):
     verification_response = sinch_client_sync.verification.verifications.start(
-        method="flashCall",
+        method=VerificationMethod.FLASHCALL.value,
         identity={
             "type": "number",
             "endpoint": phone_number
