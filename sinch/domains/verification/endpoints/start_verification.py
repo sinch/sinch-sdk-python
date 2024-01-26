@@ -27,11 +27,6 @@ class StartVerificationEndpoint(VerificationEndpoint):
         )
 
     def request_body(self):
-        if self.request_data.method == VerificationMethod.FLASHCALL.value:
-            request_data = deepcopy(self.request_data)
-            request_data.method = "flashCall"
-            return request_data.as_json()
-
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> StartVerificationResponse:
