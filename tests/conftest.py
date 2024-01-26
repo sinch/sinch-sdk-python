@@ -42,6 +42,7 @@ def configure_origin(
     templates_origin,
     auth_origin,
     sms_origin,
+    verification_origin,
     disable_ssl
 ):
     if auth_origin:
@@ -58,6 +59,9 @@ def configure_origin(
 
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
+
+    if verification_origin:
+        sinch_client.configuration.verification_origin = verification_origin
 
     if disable_ssl:
         sinch_client.configuration.disable_https = True
@@ -101,6 +105,11 @@ def sms_origin():
 
 
 @pytest.fixture
+def verification_origin():
+    return os.getenv("VERIFICATION_ORIGIN")
+
+
+@pytest.fixture
 def templates_origin():
     return os.getenv("TEMPLATES_ORIGIN")
 
@@ -121,6 +130,21 @@ def origin_phone_number():
 
 
 @pytest.fixture
+def application_key():
+    return os.getenv("APPLICATION_KEY")
+
+
+@pytest.fixture
+def application_secret():
+    return os.getenv("APPLICATION_SECRET")
+
+
+@pytest.fixture
+def verification_id():
+    return os.getenv("VERIFICATION_ID")
+
+
+@pytest.fixture
 def app_id():
     return os.getenv("APP_ID")
 
@@ -133,6 +157,21 @@ def contact_id():
 @pytest.fixture
 def empty_project_id():
     return os.getenv("EMPTY_PROJECT_ID")
+
+
+@pytest.fixture
+def verification_request_signature():
+    return os.getenv("VERIFICATION_REQUEST_SIGNATURE")
+
+
+@pytest.fixture
+def verification_request_with_empty_body_signature():
+    return os.getenv("VERIFICATION_REQUEST_WITH_EMPTY_BODY_SIGNATURE")
+
+
+@pytest.fixture
+def verification_request_signature_timestamp():
+    return os.getenv("VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP")
 
 
 @pytest.fixture
@@ -155,7 +194,7 @@ def sms_http_response():
     return HTTPResponse(
         status_code=404,
         body={
-            "text":  "Nobody expects the Spanish Inquisition!"
+            "text": "Nobody expects the Spanish Inquisition!"
         },
         headers={
             "SAMPLE_HEADER": "test"
@@ -238,34 +277,6 @@ def second_int_based_pagination_response():
 
 
 @pytest.fixture
-def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
-        page=0,
-        page_size=2
-    )
-
-
-@pytest.fixture
-def first_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=0,
-        page_size=2,
-        pig_dogs=["Bartosz", "Piotr"]
-    )
-
-
-@pytest.fixture
-def second_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=1,
-        page_size=2,
-        pig_dogs=["Walaszek", "Połać"]
-    )
-
-
-@pytest.fixture
 def third_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
@@ -276,14 +287,25 @@ def third_int_based_pagination_response():
 
 
 @pytest.fixture
+def int_based_pagination_request_data():
+    return IntBasedPaginationRequest(
+        page=0,
+        page_size=2
+    )
+
+
+@pytest.fixture
 def sinch_client_sync(
     key_id,
     key_secret,
+    application_key,
+    application_secret,
     numbers_origin,
     conversation_origin,
     templates_origin,
     auth_origin,
     sms_origin,
+    verification_origin,
     disable_ssl,
     project_id
 ):
@@ -291,13 +313,16 @@ def sinch_client_sync(
         Client(
             key_id=key_id,
             key_secret=key_secret,
-            project_id=project_id
+            project_id=project_id,
+            application_key=application_key,
+            application_secret=application_secret
         ),
         numbers_origin,
         conversation_origin,
         templates_origin,
         auth_origin,
         sms_origin,
+        verification_origin,
         disable_ssl
     )
 
@@ -306,11 +331,14 @@ def sinch_client_sync(
 def sinch_client_async(
     key_id,
     key_secret,
+    application_key,
+    application_secret,
     numbers_origin,
     conversation_origin,
     templates_origin,
     auth_origin,
     sms_origin,
+    verification_origin,
     disable_ssl,
     project_id
 ):
@@ -318,12 +346,15 @@ def sinch_client_async(
         ClientAsync(
             key_id=key_id,
             key_secret=key_secret,
-            project_id=project_id
+            project_id=project_id,
+            application_key=application_key,
+            application_secret=application_secret
         ),
         numbers_origin,
         conversation_origin,
         templates_origin,
         auth_origin,
         sms_origin,
+        verification_origin,
         disable_ssl
     )
