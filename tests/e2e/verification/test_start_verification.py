@@ -1,4 +1,7 @@
-from sinch.domains.verification.models.responses import StartVerificationResponse
+from sinch.domains.verification.models.responses import (
+    StartSMSInitiateVerificationResponse,
+    StartFlashCallInitiateVerificationResponse
+)
 from sinch.domains.verification.enums import VerificationMethod
 
 
@@ -15,7 +18,7 @@ def test_start_verification_sms(
         reference="random"
     )
 
-    assert isinstance(verification_response, StartVerificationResponse)
+    assert isinstance(verification_response, StartSMSInitiateVerificationResponse)
 
 
 def test_start_verification_flash_call(
@@ -31,7 +34,7 @@ def test_start_verification_flash_call(
         reference="random5"
     )
 
-    assert isinstance(verification_response, StartVerificationResponse)
+    assert isinstance(verification_response, StartFlashCallInitiateVerificationResponse)
 
 
 async def test_start_verification_async(
@@ -47,4 +50,4 @@ async def test_start_verification_async(
         reference="random"
     )
 
-    assert isinstance(verification_response, StartVerificationResponse)
+    assert isinstance(verification_response, StartSMSInitiateVerificationResponse)
