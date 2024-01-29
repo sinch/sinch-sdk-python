@@ -1,29 +1,29 @@
 # Sinch Python SDK
- 
+
 Here you'll find documentation related to the Sinch Python SDK, including how to install it, initialize it, and start developing Python code using Sinch services.
- 
+
 To use Sinch services, you'll need a Sinch account and access keys. You can sign up for an account and create access keys at [dashboard.sinch.com](https://dashboard.sinch.com).
- 
+
 For more information on the Sinch APIs on which this SDK is based, refer to the official [developer documentation portal](developers.sinch.com).
- 
+
 **This SDK is currently available to selected developers for preview use only. It is being provided for the purpose of collecting feedback, and should not be used in production environments.**
- 
+
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Getting started](#getting-started)
 - [Logging]()
- 
+
 ## Prerequisites
- 
+
 - Python in one of the supported versions - 3.9, 3.10, 3.11, 3.12
 - pip
 - Sinch account
- 
+
 ## Installation
- 
+
 You can install this package by typing:
 `pip install sinch`
- 
+
 ## Getting started
 
 ### Client initialization
@@ -58,15 +58,14 @@ sinch_client = Client(
 ```
 
 ## Products
- 
+
 Sinch client provides access to the following Sinch products:
- 
 - Numbers
 - SMS
 - Verification
 - Conversation API
-- additional products coming soon!
- 
+- Additional products coming soon!
+
 ## Logging
 
 Logging configuration for this SDK utilizes following hierarchy:
@@ -79,7 +78,7 @@ If all logging returned by this SDK needs to be disabled, usage of `NullHanlder`
 
  
 ## Sample apps
- 
+
 Usage example of the `numbers` domain:
 
 ```python
@@ -122,7 +121,7 @@ except NumbersException as err:
 ```
 
 For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) form `sinch.core.exceptions`.
- 
+
 ## License
- 
+
 This project is licensed under the Apache License. See the [LICENSE](license.md) file for the license text.
