@@ -140,6 +140,16 @@ def application_secret():
 
 
 @pytest.fixture
+def service_plan_id():
+    return os.getenv("SERVICE_PLAN_ID")
+
+
+@pytest.fixture
+def sms_api_token():
+    return os.getenv("SMS_API_TOKEN")
+
+
+@pytest.fixture
 def verification_id():
     return os.getenv("VERIFICATION_ID")
 
@@ -257,6 +267,13 @@ def second_token_based_pagination_response():
 
 
 @pytest.fixture
+def int_based_pagination_request_data():
+    return IntBasedPaginationRequest(
+        page=0,
+        page_size=2
+    )
+
+
 def first_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
@@ -287,19 +304,13 @@ def third_int_based_pagination_response():
 
 
 @pytest.fixture
-def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
-        page=0,
-        page_size=2
-    )
-
-
-@pytest.fixture
 def sinch_client_sync(
     key_id,
     key_secret,
     application_key,
     application_secret,
+    service_plan_id,
+    sms_api_token,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -315,7 +326,9 @@ def sinch_client_sync(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret
+            application_secret=application_secret,
+            service_plan_id=service_plan_id,
+            sms_api_token=sms_api_token
         ),
         numbers_origin,
         conversation_origin,
@@ -333,6 +346,8 @@ def sinch_client_async(
     key_secret,
     application_key,
     application_secret,
+    service_plan_id,
+    sms_api_token,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -348,7 +363,9 @@ def sinch_client_async(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret
+            application_secret=application_secret,
+            service_plan_id=service_plan_id,
+            sms_api_token=sms_api_token
         ),
         numbers_origin,
         conversation_origin,

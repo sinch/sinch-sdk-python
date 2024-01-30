@@ -23,7 +23,9 @@ class Client(ClientBase):
         logger_name=None,
         logger=None,
         application_key: str = None,
-        application_secret: str = None
+        application_secret: str = None,
+        service_plan_id: str = None,
+        sms_api_token: str = None
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -34,7 +36,9 @@ class Client(ClientBase):
             transport=HTTPTransportRequests(self),
             token_manager=TokenManager(self),
             application_key=application_key,
-            application_secret=application_secret
+            application_secret=application_secret,
+            service_plan_id=service_plan_id,
+            sms_api_token=sms_api_token
         )
 
         self.authentication = Authentication(self)

@@ -277,7 +277,7 @@ class SMSBatches:
     ) -> SendSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=SendBatchRequest(
                     to=to,
                     body=body,
@@ -311,7 +311,7 @@ class SMSBatches:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSBatchesEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListBatchesRequest(
                     page=page,
                     page_size=page_size,

@@ -1,5 +1,6 @@
 import pytest
 from sinch.domains.sms.models.batches.responses import SendSMSBatchResponse
+from sinch.core.enums import HTTPAuthentication
 
 
 @pytest.mark.skip()
@@ -43,7 +44,7 @@ async def test_send_sms_async(sinch_client_async, phone_number, origin_phone_num
         to=[phone_number],
         from_=origin_phone_number,
         body="Asynchronous Spanish Inquisition",
-        feedback_enabled=True,
+        feedback_enabled=True
     )
     assert isinstance(send_sms_response, SendSMSBatchResponse)
 
@@ -54,6 +55,24 @@ def test_send_sms_sync(sinch_client_sync, phone_number, origin_phone_number):
         to=[phone_number],
         from_=origin_phone_number,
         body="Synchronous Spanish Inquisition",
-        feedback_enabled=True,
+        feedback_enabled=True
+    )
+    assert isinstance(send_sms_response, SendSMSBatchResponse)
+
+
+def test_send_sms_sync_with_service_plan_id(
+    sinch_client_sync,
+    phone_number,
+    origin_phone_number
+):
+    sinch_client_sync.configuration.set_sms_authentication_method(
+        HTTPAuthentication.SMS_TOKEN.value
+    )
+    send_sms_response = sinch_client_sync.sms.batches.send(
+        delivery_report="none",
+        to=[phone_number],
+        from_=origin_phone_number,
+        body="Synchronous Spanish Inquisition",
+        feedback_enabled=True
     )
     assert isinstance(send_sms_response, SendSMSBatchResponse)

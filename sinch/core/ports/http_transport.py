@@ -63,6 +63,20 @@ class HTTPTransport(ABC):
                 endpoint.get_url_without_origin(self.sinch)
             )
             request_data.headers = signature.get_http_headers_with_signature()
+        elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
+            if not self.sinch.configuration.sms_api_token or not self.sinch.configuration.service_plan_id:
+                raise ValidationException(
+                    message=(
+                        "sms_api_token and service_plan_id are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
+            request_data.headers.update({
+                "Authorization": f"Bearer {self.sinch.configuration.sms_api_token}",
+                "Content-Type": "application/json"
+            })
 
         return request_data
 
