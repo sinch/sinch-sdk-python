@@ -432,7 +432,7 @@ class SMSBatches:
     ) -> ReplaceSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             ReplaceBatchSMSEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ReplaceBatchRequest(
                     batch_id=batch_id,
                     to=to,
