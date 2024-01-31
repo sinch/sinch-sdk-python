@@ -6,13 +6,12 @@ from sinch.domains.sms.models.batches.requests import ReplaceBatchRequest
 
 
 class ReplaceBatchSMSEndpoint(SMSEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_or_service_id}/batches/{batch_id}"
     HTTP_METHOD = HTTPMethods.PUT.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, request_data: ReplaceBatchRequest, sinch):
         super().__init__(request_data, sinch)
-        self.request_data = request_data
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(

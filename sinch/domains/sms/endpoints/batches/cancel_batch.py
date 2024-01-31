@@ -12,7 +12,6 @@ class CancelBatchEndpoint(SMSEndpoint):
 
     def __init__(self, request_data: CancelBatchRequest, sinch):
         super().__init__(request_data, sinch)
-        self.request_data = request_data
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
