@@ -1,4 +1,22 @@
+<h1 align="center">
+
+   [![Sinch Logo](https://developers.sinch.com/static/logo-07afe977d6d9dcd21b066d1612978e5c.svg)](https://www.sinch.com)
+
+   Python SDK
+
+   [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
+
+
+   [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
+   [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
+   [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+   [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
+
+
+</h1>
+
 # Sinch Python SDK
+
 
 Here you'll find documentation related to the Sinch Python SDK, including how to install it, initialize it, and start developing Python code using Sinch services.
 
@@ -122,6 +140,30 @@ except NumbersException as err:
 
 For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) form `sinch.core.exceptions`.
 
+
+## Custom HTTP client implementation
+
+By default, two HTTP implementations are provided:
+- Synchronous using `requests` HTTP library
+- Asynchronous using `aiohttp` HTTP library
+
+For creating custom HTTP client code, use either `Client` or `ClientAsync` client and inject your transport during initialisation:
+```python
+sinch_client = ClientAsync(
+    key_id="Spanish",
+    key_secret="Inquisition",
+    project_id="some_project",
+    transport=MyHTTPAsyncImplementation
+)
+```
+
+Custom client has to obey types and methods described by `HTTPTransport` abstract base class:
+```python
+class HTTPTransport(ABC):
+    @abstractmethod
+    def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+        pass
+```
 ## License
 
 This project is licensed under the Apache License. See the [LICENSE](license.md) file for the license text.
