@@ -6,19 +6,17 @@ from sinch.domains.sms.models.batches.requests import BatchDryRunRequest
 
 
 class SendBatchSMSDryRunEndpoint(SMSEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/dry_run"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_or_service_id}/batches/dry_run"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: BatchDryRunRequest):
-        super(SendBatchSMSDryRunEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    def __init__(self, request_data: BatchDryRunRequest, sinch):
+        super().__init__(request_data, sinch)
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
-            project_id=self.project_id
+            project_or_service_id=self.project_or_service_id
         )
 
     def build_query_params(self):

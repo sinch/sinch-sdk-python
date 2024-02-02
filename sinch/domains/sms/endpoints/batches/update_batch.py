@@ -6,19 +6,17 @@ from sinch.domains.sms.models.batches.requests import UpdateBatchRequest
 
 
 class UpdateBatchSMSEndpoint(SMSEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_or_service_id}/batches/{batch_id}"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: UpdateBatchRequest):
-        super(UpdateBatchSMSEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    def __init__(self, request_data: UpdateBatchRequest, sinch):
+        super().__init__(request_data, sinch)
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
-            project_id=self.project_id,
+            project_or_service_id=self.project_or_service_id,
             batch_id=self.request_data.batch_id
         )
 

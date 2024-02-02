@@ -6,19 +6,17 @@ from sinch.domains.sms.models.delivery_reports.responses import GetSMSDeliveryRe
 
 
 class GetDeliveryReportForNumberEndpoint(SMSEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}/delivery_report/{recipient_msisdn}"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_or_service_id}/batches/{batch_id}/delivery_report/{recipient_msisdn}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: GetSMSDeliveryReportForNumberRequest):
-        super(GetDeliveryReportForNumberEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    def __init__(self, request_data: GetSMSDeliveryReportForNumberRequest, sinch):
+        super().__init__(request_data, sinch)
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
-            project_id=self.project_id,
+            project_or_service_id=self.project_or_service_id,
             batch_id=self.request_data.batch_id,
             recipient_msisdn=self.request_data.recipient_number
         )

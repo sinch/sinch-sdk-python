@@ -3,6 +3,7 @@ from typing import Union
 
 from sinch.core.ports.http_transport import HTTPTransport
 from sinch.core.token_manager import TokenManager, TokenManagerAsync
+from sinch.core.enums import HTTPAuthentication
 
 
 class Configuration:
@@ -21,7 +22,9 @@ class Configuration:
         disable_https=False,
         connection_timeout=10,
         application_key: str = None,
-        application_secret: str = None
+        application_secret: str = None,
+        service_plan_id: str = None,
+        sms_api_token: str = None
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -29,6 +32,8 @@ class Configuration:
         self.application_key = application_key
         self.application_secret = application_secret
         self.connection_timeout = connection_timeout
+        self.sms_api_token = sms_api_token
+        self.service_plan_id = service_plan_id
         self.auth_origin = "auth.sinch.com"
         self.numbers_origin = "numbers.api.sinch.com"
         self.verification_origin = "verification.api.sinch.com"
@@ -36,6 +41,8 @@ class Configuration:
         self._conversation_domain = ".conversation.api.sinch.com"
         self._sms_region = "us"
         self._sms_domain = "zt.{}.sms.api.sinch.com"
+        self._sms_domain_with_service_plan_id = "sms.api.sinch.com"
+        self._sms_authentication = HTTPAuthentication.OAUTH.value
         self._templates_region = "eu"
         self._templates_domain = ".template.api.sinch.com"
         self.token_manager = token_manager
@@ -52,6 +59,44 @@ class Configuration:
             self.logger = logger
         else:
             self.logger = logging.getLogger("Sinch")
+
+    def _set_sms_origin_with_service_plan_id(self):
+        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(self._sms_region)
+
+    def _set_sms_region_with_service_plan_id(self, region):
+        self._sms_region = region
+        self._set_sms_origin_with_service_plan_id()
+
+    def _get_sms_region_with_service_plan_id(self):
+        return self._sms_region
+
+    sms_region_with_service_plan_id = property(
+        _get_sms_region_with_service_plan_id,
+        _set_sms_region_with_service_plan_id,
+        doc="SMS Region for service plan id version of the SMS API"
+    )
+
+    def _set_sms_domain_with_service_plan_id(self, domain):
+        self._sms_domain = domain
+        self._set_sms_origin()
+
+    def _get_sms_domain_with_service_plan_id(self):
+        return self._sms_domain_with_service_plan_id
+
+    def set_sms_authentication_method(
+        self,
+        auth_type: str
+    ) -> None:
+        self._sms_authentication = auth_type
+
+    sms_domain_with_service_plan_id = property(
+        _get_sms_domain_with_service_plan_id,
+        _set_sms_domain_with_service_plan_id,
+        doc="SMS Domain for service plan id version of the SMS API"
+    )
+
+    def get_sms_authentication_method(self) -> str:
+        return self._sms_authentication
 
     def _set_sms_origin(self):
         self.sms_origin = self._sms_domain.format(self._sms_region)
