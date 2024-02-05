@@ -1,14 +1,20 @@
+from typing import TYPE_CHECKING, Any, Coroutine, cast
+import aiohttp
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Union, Any, Coroutine, cast
+from platform import python_version
 from sinch.core.endpoint import HTTPEndpoint
+from sinch.core.signature import Signature
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.exceptions import ValidationException
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
 from sinch.core.models.base_model import SinchBaseModel
+from sinch import __version__ as sdk_version
 
 if TYPE_CHECKING:
     from sinch.core.clients.sinch_client_base import ClientBase
+
 
 
 class HTTPTransport(ABC):
@@ -16,14 +22,24 @@ class HTTPTransport(ABC):
         self.sinch = sinch
 
     @abstractmethod
-    def request(self, endpoint: HTTPEndpoint) -> Union[SinchBaseModel, Coroutine[Any, Any, SinchBaseModel]]:
+    def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 
-    def authenticate(
-        self,
-        endpoint: HTTPEndpoint,
-        request_data: HttpRequest
-    ) -> Union[HttpRequest, Coroutine[Any, Any, HttpRequest]]:
+    def authenticate(self, endpoint, request_data):
+        if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
+            if (
+                not self.sinch.configuration.key_id
+                or not self.sinch.configuration.key_secret
+                or not self.sinch.configuration.project_id
+            ):
+                raise ValidationException(
+                    message=(
+                        "key_id, key_secret and project_id are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
             request_data.auth = (self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
@@ -32,10 +48,27 @@ class HTTPTransport(ABC):
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             token = self.sinch.authentication.get_auth_token().access_token
-            request_data.headers = {
+            request_data.headers.update({
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json"
-            }
+            })
+        elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
+            if not self.sinch.configuration.application_key or not self.sinch.configuration.application_secret:
+                raise ValidationException(
+                    message=(
+                        "application key and application secret are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
+            signature = Signature(
+                self.sinch,
+                endpoint.HTTP_METHOD,
+                request_data.request_body,
+                endpoint.get_url_without_origin(self.sinch)
+            )
+            request_data.headers = signature.get_http_headers_with_signature()
 
         return request_data
 
@@ -44,7 +77,10 @@ class HTTPTransport(ABC):
         url_query_params = endpoint.build_query_params()
 
         return HttpRequest(
-            headers={},
+            headers={
+                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
+                              f" {self.__class__.__name__};)"
+            },
             protocol=protocol,
             url=protocol + endpoint.build_url(self.sinch),
             http_method=endpoint.HTTP_METHOD.value,
@@ -53,12 +89,8 @@ class HTTPTransport(ABC):
             auth=None
         )
 
-    def handle_response(
-        self,
-        endpoint: HTTPEndpoint,
-        http_response: HTTPResponse
-    ) -> Union[SinchBaseModel, Coroutine[Any, Any, SinchBaseModel]]:
-        if http_response.status_code == 401:
+    def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
+        if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
                 return self.request(endpoint=endpoint)  # type: ignore
@@ -67,9 +99,12 @@ class HTTPTransport(ABC):
 
 
 class AsyncHTTPTransport(HTTPTransport):
-    async def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC:
-            request_data.auth = (self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
+    async def authenticate(self, endpoint, request_data):
+        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
+            request_data.auth = aiohttp.BasicAuth(
+                self.sinch.configuration.key_id,
+                self.sinch.configuration.key_secret
+            )
         else:
             request_data.auth = None
 
@@ -82,8 +117,8 @@ class AsyncHTTPTransport(HTTPTransport):
 
         return request_data
 
-    async def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> SinchBaseModel:
-        if http_response.status_code == 401:
+    async def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
+        if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
                 return await cast(Coroutine[Any, Any, SinchBaseModel], self.request(endpoint=endpoint))

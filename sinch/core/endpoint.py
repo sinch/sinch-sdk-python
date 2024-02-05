@@ -18,8 +18,11 @@ class HTTPEndpoint(ABC):
     def __init__(self, project_id: str, request_data: SinchRequestBaseModel):
         pass
 
-    def build_url(self, sinch: 'ClientBase') -> str:
-        return ''
+    def get_url_without_origin(self, sinch):
+        return '/' + '/'.join(self.build_url(sinch).split('/')[1:])
+
+    def build_url(self, sinch):
+        return
 
     def build_query_params(self) -> dict:
         return {}

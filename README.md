@@ -7,10 +7,11 @@
    [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
 
 
-   [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
    [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
    [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
    [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+   [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
+
 
 </h1>
 
@@ -93,12 +94,9 @@ Sinch client provides access to the following Sinch product domains:
 Usage example of the `numbers` domain:
 
 ```python
-from sinch.domains.numbers.enums import NumberType
-
 available_numbers = sinch_client.numbers.available.list(
     region_code="US",
-    number_type=NumberType.LOCAL.value,
-    project_id="Shrubbery"
+    number_type="LOCAL"
 )
 ```
 Returned values are represented as Python `dataclasses`:
@@ -128,8 +126,7 @@ from sinch.domains.numbers.exceptions import NumbersException
 try:
     nums = sinch_client.numbers.available.list(
         region_code="US",
-        number_type="LOCAL",
-        project_id="project"
+        number_type="LOCAL"
     )
 except NumbersException as err:
     pass

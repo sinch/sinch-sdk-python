@@ -1,5 +1,4 @@
-from abc import ABC
-from sinch.core.exceptions import ValidationException
+from abc import ABC, abstractmethod
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.domains.authentication import AuthenticationBase
 from sinch.domains.numbers import NumbersBase
@@ -12,7 +11,7 @@ from logging import Logger
 class ClientBase(ABC):
     """
     Sinch abstract base class for concrete Sinch Client implementations.
-    By default this SDK provides two implementations - sync and async.
+    By default, this SDK provides two implementations - sync and async.
     Feel free to utilize any of them for you custom implementation.
     """
     configuration: Configuration
@@ -21,23 +20,18 @@ class ClientBase(ABC):
     conversation: ConversationBase
     sms: SMSBase
 
+    @abstractmethod
     def __init__(
         self,
-        key_id: str,
-        key_secret: str,
-        project_id: str,
+        key_id,
+        key_secret,
+        project_id,
         logger_name: Optional[str] = None,
-        logger: Optional[Logger] = None
+        logger: Optional[Logger] = None,
+        application_key: str = None,
+        application_secret: str = None
     ):
-        if not key_id or not key_secret or not project_id:
-            raise ValidationException(
-                message=(
-                    "key_id, key_secret and project_id are required by the Sinch Client. "
-                    "Those credentials can be obtained from Sinch portal."
-                ),
-                is_from_server=False,
-                response=None
-            )
+        pass
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return f"Sinch SDK client for project_id: {self.configuration.project_id}"

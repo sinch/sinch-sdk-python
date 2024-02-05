@@ -8,6 +8,7 @@ from sinch.domains.authentication import AuthenticationAsync
 from sinch.domains.numbers import NumbersAsync
 from sinch.domains.conversation import ConversationAsync
 from sinch.domains.sms import SMSAsync
+from sinch.domains.verification import Verification as VerificationAsync
 
 
 class ClientAsync(ClientBase):
@@ -18,19 +19,14 @@ class ClientAsync(ClientBase):
     """
     def __init__(
         self,
-        key_id: str,
-        key_secret: str,
-        project_id: str,
+        key_id,
+        key_secret,
+        project_id,
         logger_name: Optional[str] = None,
-        logger: Optional[Logger] = None
+        logger: Optional[Logger] = None,
+        application_key: Optional[str] = None,
+        application_secret: Optional[str] = None
     ):
-        super().__init__(
-            key_id=key_id,
-            key_secret=key_secret,
-            project_id=project_id,
-            logger_name=logger_name,
-            logger=logger
-        )
         self.configuration = Configuration(
             key_id=key_id,
             key_secret=key_secret,
@@ -38,9 +34,13 @@ class ClientAsync(ClientBase):
             logger_name=logger_name,
             logger=logger,
             transport=HTTPTransportAioHTTP(self),
-            token_manager=TokenManagerAsync(self)
+            token_manager=TokenManagerAsync(self),
+            application_secret=application_secret,
+            application_key=application_key
         )
+
         self.authentication = AuthenticationAsync(self)
         self.numbers = NumbersAsync(self)
         self.conversation = ConversationAsync(self)
         self.sms = SMSAsync(self)
+        self.verification = VerificationAsync(self)

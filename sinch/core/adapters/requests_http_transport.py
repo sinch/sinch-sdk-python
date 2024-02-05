@@ -11,7 +11,7 @@ from sinch.core.models.base_model import SinchBaseModel
 class HTTPTransportRequests(HTTPTransport):
     def __init__(self, sinch: ClientBase):
         super().__init__(sinch)
-        self.session = requests.Session()
+        self.http_session = requests.Session()
 
     def request(self, endpoint: HTTPEndpoint) -> SinchBaseModel:
         request_data: HttpRequest = self.prepare_request(endpoint)
@@ -23,12 +23,12 @@ class HTTPTransportRequests(HTTPTransport):
             f"to URL: {request_data_with_auth.url}"
         )
 
-        response = self.session.request(
-            method=request_data_with_auth.http_method,
-            url=request_data_with_auth.url,
-            data=request_data_with_auth.request_body,
-            auth=request_data_with_auth.auth,
-            headers=request_data_with_auth.headers,
+        response = self.http_session.request(
+            method=request_data.http_method,
+            url=request_data.url,
+            data=request_data.request_body,
+            auth=request_data.auth,
+            headers=request_data.headers,
             timeout=self.sinch.configuration.connection_timeout,
             params=request_data_with_auth.query_params
         )
