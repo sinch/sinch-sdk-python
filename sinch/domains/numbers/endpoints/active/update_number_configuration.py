@@ -1,14 +1,14 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.numbers.models.active.requests import UpdateNumberConfigurationRequest
 from sinch.domains.numbers.models.active.responses import UpdateNumberConfigurationResponse
 
 
 class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers/{phone_number}"
-    HTTP_METHOD = HTTPMethods.PATCH.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.PATCH
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: UpdateNumberConfigurationRequest):
         super(UpdateNumberConfigurationEndpoint, self).__init__(project_id, request_data)

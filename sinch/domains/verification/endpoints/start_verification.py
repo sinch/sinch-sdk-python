@@ -1,6 +1,6 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.verification.enums import VerificationMethod
 from sinch.domains.verification.models.requests import StartVerificationRequest
 from sinch.domains.verification.models.responses import (
@@ -14,7 +14,7 @@ from sinch.domains.verification.models.responses import (
 
 class StartVerificationEndpoint(VerificationEndpoint):
     ENDPOINT_URL = "{origin}/verification/v1/verifications"
-    HTTP_METHOD = HTTPMethods.POST.value
+    HTTP_METHOD = HTTPMethod.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
     def __init__(self, request_data: StartVerificationRequest):

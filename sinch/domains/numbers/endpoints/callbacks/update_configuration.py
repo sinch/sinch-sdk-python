@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.numbers.models.callbacks.responses import UpdateNumbersCallbackConfigurationResponse
 from sinch.domains.numbers.models.callbacks.requests import UpdateNumbersCallbackConfigurationRequest
 
 
 class UpdateNumbersCallbackConfigurationEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/callbackConfiguration"
-    HTTP_METHOD = HTTPMethods.PATCH.value
+    HTTP_METHOD = HTTPMethod.PATCH.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: UpdateNumbersCallbackConfigurationRequest):

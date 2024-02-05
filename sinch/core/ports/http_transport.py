@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING, Any, Coroutine, cast
 import aiohttp
 from abc import ABC, abstractmethod
 from platform import python_version
@@ -8,11 +9,16 @@ from sinch.core.models.http_response import HTTPResponse
 from sinch.core.exceptions import ValidationException
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
+from sinch.core.models.base_model import SinchBaseModel
 from sinch import __version__ as sdk_version
+
+if TYPE_CHECKING:
+    from sinch.core.clients.sinch_client_base import ClientBase
+
 
 
 class HTTPTransport(ABC):
-    def __init__(self, sinch):
+    def __init__(self, sinch: 'ClientBase'):
         self.sinch = sinch
 
     @abstractmethod
@@ -77,17 +83,17 @@ class HTTPTransport(ABC):
             },
             protocol=protocol,
             url=protocol + endpoint.build_url(self.sinch),
-            http_method=endpoint.HTTP_METHOD,
+            http_method=endpoint.HTTP_METHOD.value,
             request_body=endpoint.request_body(),
             query_params=url_query_params,
-            auth=()
+            auth=None
         )
 
     def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
         if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
-                return self.request(endpoint=endpoint)
+                return self.request(endpoint=endpoint)  # type: ignore
 
         return endpoint.handle_response(http_response)
 
@@ -102,7 +108,7 @@ class AsyncHTTPTransport(HTTPTransport):
         else:
             request_data.auth = None
 
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
+        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH:
             token_response = await self.sinch.authentication.get_auth_token()
             request_data.headers = {
                 "Authorization": f"Bearer {token_response.access_token}",
@@ -115,6 +121,6 @@ class AsyncHTTPTransport(HTTPTransport):
         if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             self.sinch.configuration.token_manager.handle_invalid_token(http_response)
             if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
-                return await self.request(endpoint=endpoint)
+                return await cast(Coroutine[Any, Any, SinchBaseModel], self.request(endpoint=endpoint))
 
         return endpoint.handle_response(http_response)

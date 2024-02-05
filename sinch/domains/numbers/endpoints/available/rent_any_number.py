@@ -1,15 +1,15 @@
 import json
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.numbers.models.available.requests import RentAnyNumberRequest
 from sinch.domains.numbers.models.available.responses import RentAnyNumberResponse
 
 
 class RentAnyNumberEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers:rentAny"
-    HTTP_METHOD = HTTPMethods.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: RentAnyNumberRequest):
         super(RentAnyNumberEndpoint, self).__init__(project_id, request_data)

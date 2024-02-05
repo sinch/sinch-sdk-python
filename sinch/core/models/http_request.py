@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -9,4 +10,4 @@ class HttpRequest:
     http_method: str
     request_body: dict
     query_params: dict
-    auth: str
+    auth: Optional[tuple[str, str]]

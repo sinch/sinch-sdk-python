@@ -1,5 +1,9 @@
+from typing import Union
+from sinch.core.models.http_response import HTTPResponse
+
+
 class SinchException(Exception):
-    def __init__(self, message, response, is_from_server):
+    def __init__(self, message: str, response: Union[HTTPResponse, None], is_from_server: bool):
         self.is_from_server = is_from_server
         self.response_status_code = response.status_code if response else None
         self.http_response = response

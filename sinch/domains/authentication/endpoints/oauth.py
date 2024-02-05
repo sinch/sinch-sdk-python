@@ -1,14 +1,14 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.authentication.exceptions import AuthenticationException
 from sinch.domains.authentication.models.authentication import OAuthToken
 
 
 class OAuthEndpoint(HTTPEndpoint):
     ENDPOINT_URL = "{origin}/oauth2/token"
-    HTTP_METHOD = HTTPMethods.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.BASIC.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.BASIC
 
     def __init__(self):
         pass
@@ -23,7 +23,7 @@ class OAuthEndpoint(HTTPEndpoint):
             "grant_type": "client_credentials"
         }
 
-    def handle_response(self, response: HTTPResponse):
+    def handle_response(self, response: HTTPResponse) -> OAuthToken:
         if response.status_code >= 400:
             raise AuthenticationException(
                 message=response.body.get("error_description"),

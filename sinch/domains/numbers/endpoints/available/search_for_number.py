@@ -1,14 +1,14 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.numbers.models.available.responses import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.available.requests import CheckNumberAvailabilityRequest
 
 
 class SearchForNumberEndpoint(NumbersEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers/{phone_number}"
-    HTTP_METHOD = HTTPMethods.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: CheckNumberAvailabilityRequest):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)

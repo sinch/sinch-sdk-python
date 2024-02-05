@@ -1,14 +1,14 @@
 import json
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.verification.models.requests import ReportVerificationByIdRequest
 from sinch.domains.verification.models.responses import ReportVerificationByIdResponse
 
 
 class ReportVerificationByIdEndpoint(VerificationEndpoint):
     ENDPOINT_URL = "{origin}/verification/v1/verifications/id/{id}"
-    HTTP_METHOD = HTTPMethods.PUT.value
+    HTTP_METHOD = HTTPMethod.PUT.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
     def __init__(self, request_data: ReportVerificationByIdRequest):

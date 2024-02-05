@@ -4,6 +4,8 @@ from sinch.domains.authentication import AuthenticationBase
 from sinch.domains.numbers import NumbersBase
 from sinch.domains.conversation import ConversationBase
 from sinch.domains.sms import SMSBase
+from typing import Optional
+from logging import Logger
 
 
 class ClientBase(ABC):
@@ -12,11 +14,11 @@ class ClientBase(ABC):
     By default, this SDK provides two implementations - sync and async.
     Feel free to utilize any of them for you custom implementation.
     """
-    configuration = Configuration
-    authentication = AuthenticationBase
-    numbers = NumbersBase
-    conversation = ConversationBase
-    sms = SMSBase
+    configuration: Configuration
+    authentication: AuthenticationBase
+    numbers: NumbersBase
+    conversation: ConversationBase
+    sms: SMSBase
 
     @abstractmethod
     def __init__(
@@ -24,8 +26,8 @@ class ClientBase(ABC):
         key_id,
         key_secret,
         project_id,
-        logger_name=None,
-        logger=None,
+        logger_name: Optional[str] = None,
+        logger: Optional[Logger] = None,
         application_key: str = None,
         application_secret: str = None
     ):

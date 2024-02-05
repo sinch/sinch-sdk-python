@@ -1,3 +1,5 @@
+from typing import Optional
+from logging import Logger
 from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManager
@@ -20,8 +22,8 @@ class Client(ClientBase):
         key_id,
         key_secret,
         project_id,
-        logger_name=None,
-        logger=None,
+        logger_name: Optional[str] = None,
+        logger: Optional[Logger] = None,
         application_key: str = None,
         application_secret: str = None
     ):

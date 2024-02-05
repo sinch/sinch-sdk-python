@@ -8,3 +8,6 @@ fastapi
 httpx
 pytest-asyncio
 coverage
+mypy
+types-requests
+coverage

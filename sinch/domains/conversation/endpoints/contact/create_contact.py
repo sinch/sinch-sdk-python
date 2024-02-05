@@ -1,14 +1,14 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.conversation.endpoints.conversation_endpoint import ConversationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.conversation.models.contact.responses import CreateConversationContactResponse
 from sinch.domains.conversation.models.contact.requests import CreateConversationContactRequest
 
 
 class CreateConversationContactEndpoint(ConversationEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/contacts"
-    HTTP_METHOD = HTTPMethods.POST.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.POST
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: CreateConversationContactRequest):
         super(CreateConversationContactEndpoint, self).__init__(project_id, request_data)

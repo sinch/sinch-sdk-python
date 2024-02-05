@@ -1,13 +1,13 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.verification.models.requests import GetVerificationStatusByReferenceRequest
 from sinch.domains.verification.models.responses import GetVerificationStatusByReferenceResponse
 
 
 class GetVerificationStatusByReferenceEndpoint(VerificationEndpoint):
     ENDPOINT_URL = "{origin}/verification/v1/verifications/reference/{reference}"
-    HTTP_METHOD = HTTPMethods.GET.value
+    HTTP_METHOD = HTTPMethod.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
     def __init__(self, request_data: GetVerificationStatusByReferenceRequest):

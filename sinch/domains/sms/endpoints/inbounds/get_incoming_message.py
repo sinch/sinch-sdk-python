@@ -1,14 +1,14 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.endpoints.sms_endpoint import SMSEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.sms.models.inbounds.requests import GetSMSInboundMessageRequest
 from sinch.domains.sms.models.inbounds.responses import GetInboundMessagesResponse
 
 
 class GetInboundMessagesEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/inbounds/{inbound_id}"
-    HTTP_METHOD = HTTPMethods.GET.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.GET
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: GetSMSInboundMessageRequest):
         super(GetInboundMessagesEndpoint, self).__init__(project_id, request_data)

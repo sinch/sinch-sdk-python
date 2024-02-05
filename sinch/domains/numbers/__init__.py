@@ -1,3 +1,4 @@
+from typing import Optional
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
 from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
 from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
@@ -47,10 +48,10 @@ class AvailableNumbers:
         self,
         region_code: str,
         number_type: str,
-        number_pattern: str = None,
-        number_search_pattern: str = None,
-        capabilities: list = None,
-        page_size: int = None
+        number_pattern: Optional[str] = None,
+        number_search_pattern: Optional[str] = None,
+        capabilities: Optional[list] = None,
+        page_size: Optional[int] = None
     ) -> ListAvailableNumbersResponse:
         """
         Search for available virtual numbers using a variety of parameters to filter results.
@@ -73,8 +74,8 @@ class AvailableNumbers:
     def activate(
         self,
         phone_number: str,
-        sms_configuration: dict = None,
-        voice_configuration: dict = None
+        sms_configuration: Optional[dict] = None,
+        voice_configuration: Optional[dict] = None
     ) -> ActivateNumberResponse:
         """
         Activate a virtual number to use with SMS products, Voice products, or both.
@@ -95,11 +96,11 @@ class AvailableNumbers:
         self,
         region_code: str,
         type_: str,
-        number_pattern: str = None,
-        capabilities: list = None,
-        sms_configuration: dict = None,
-        voice_configuration: dict = None,
-        callback_url: str = None
+        number_pattern: Optional[str] = None,
+        capabilities: Optional[list] = None,
+        sms_configuration: Optional[dict] = None,
+        voice_configuration: Optional[dict] = None,
+        callback_url: Optional[str] = None
     ) -> RentAnyNumberRequest:
         return self._sinch.configuration.transport.request(
             RentAnyNumberEndpoint(
@@ -139,12 +140,12 @@ class ActiveNumbers:
         self,
         region_code: str,
         number_type: str,
-        number_pattern: str = None,
-        number_search_pattern: str = None,
-        capabilities: list = None,
-        page_size: int = None,
-        page_token: str = None
-    ) -> ListActiveNumbersResponse:
+        number_pattern: Optional[str] = None,
+        number_search_pattern: Optional[str] = None,
+        capabilities: Optional[list] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None
+    ) -> TokenBasedPaginator:
         """
         Search for all active virtual numbers associated with a certain project.
         For additional documentation, see https://www.sinch.com and visit our developer portal.
@@ -167,11 +168,11 @@ class ActiveNumbers:
 
     def update(
         self,
-        phone_number: str = None,
-        display_name: str = None,
-        sms_configuration: dict = None,
-        voice_configuration: dict = None,
-        app_id: str = None
+        phone_number: Optional[str] = None,
+        display_name: Optional[str] = None,
+        sms_configuration: Optional[dict] = None,
+        voice_configuration: Optional[dict] = None,
+        app_id: Optional[str] = None
     ) -> UpdateNumberConfigurationResponse:
         """
         Make updates to the configuration of your virtual number.
@@ -225,12 +226,12 @@ class ActiveNumbersWithAsyncPagination(ActiveNumbers):
         self,
         region_code: str,
         number_type: str,
-        number_pattern: str = None,
-        number_search_pattern: str = None,
-        capabilities: list = None,
-        page_size: int = None,
-        page_token: str = None
-    ) -> ListActiveNumbersResponse:
+        number_pattern: Optional[str] = None,
+        number_search_pattern: Optional[str] = None,
+        capabilities: Optional[list] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None
+    ) -> AsyncTokenBasedPaginator:
         return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListActiveNumbersEndpoint(
@@ -254,8 +255,8 @@ class AvailableRegions:
 
     def list(
         self,
-        number_type: str = None,
-        number_types: list = None
+        number_type: Optional[str] = None,
+        number_types: Optional[list] = None
     ) -> ListAvailableRegionsResponse:
         """
         Lists all regions for numbers provided using the project ID.

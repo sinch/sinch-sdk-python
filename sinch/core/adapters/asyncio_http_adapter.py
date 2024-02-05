@@ -12,14 +12,15 @@ class HTTPTransportAioHTTP(AsyncHTTPTransport):
 
     async def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         request_data: HttpRequest = self.prepare_request(endpoint)
-        request_data: HttpRequest = await self.authenticate(endpoint, request_data)
+        request_data_with_auth: HttpRequest = await self.authenticate(endpoint, request_data)
 
         if not self.http_session:
             self.http_session = aiohttp.ClientSession()
 
         self.sinch.configuration.logger.debug(
-            f"Async HTTP {request_data.http_method} call with headers:"
-            f" {request_data.headers} and body: {request_data.request_body} to URL: {request_data.url}"
+            f"Async HTTP {request_data_with_auth.http_method} call with headers:"
+            f" {request_data_with_auth.headers} and body: {request_data_with_auth.request_body}"
+            f" to URL: {request_data_with_auth.url}"
         )
 
         async with self.http_session.request(

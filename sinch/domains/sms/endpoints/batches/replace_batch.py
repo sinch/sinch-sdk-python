@@ -1,14 +1,14 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.endpoints.sms_endpoint import SMSEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.enums import HTTPAuthentication, HTTPMethod
 from sinch.domains.sms.models.batches.responses import ReplaceSMSBatchResponse
 from sinch.domains.sms.models.batches.requests import ReplaceBatchRequest
 
 
 class ReplaceBatchSMSEndpoint(SMSEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}"
-    HTTP_METHOD = HTTPMethods.PUT.value
-    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+    HTTP_METHOD = HTTPMethod.PUT
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH
 
     def __init__(self, project_id: str, request_data: ReplaceBatchRequest):
         super(ReplaceBatchSMSEndpoint, self).__init__(project_id, request_data)

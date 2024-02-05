@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
 
@@ -174,14 +174,14 @@ class ConversationMessage:
         app_id: str,
         recipient: dict,
         message: dict,
-        callback_url: str = None,
+        callback_url: Optional[str] = None,
         channel_priority_order: list = None,
-        channel_properties: dict = None,
-        message_metadata: str = None,
-        conversation_metadata: dict = None,
-        queue: str = None,
-        ttl: str = None,
-        processing_strategy: str = None
+        channel_properties: Optional[dict] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[dict] = None,
+        queue: Optional[str] = None,
+        ttl: Optional[str] = None,
+        processing_strategy: Optional[str] = None
     ) -> SendConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             SendConversationMessageEndpoint(
@@ -205,7 +205,7 @@ class ConversationMessage:
     def get(
         self,
         message_id: str,
-        messages_source: str = None
+        messages_source: Optional[str] = None
     ) -> GetConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             GetConversationMessageEndpoint(
@@ -220,7 +220,7 @@ class ConversationMessage:
     def delete(
         self,
         message_id: str,
-        messages_source: str = None
+        messages_source: Optional[str] = None
     ) -> DeleteConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             DeleteConversationMessageEndpoint(
@@ -234,15 +234,15 @@ class ConversationMessage:
 
     def list(
         self,
-        conversation_id: str = None,
-        contact_id: str = None,
-        app_id: str = None,
-        page_size: int = None,
-        page_token: str = None,
-        view: str = None,
-        messages_source: str = None,
-        only_recipient_originated: bool = None
-    ) -> ListConversationMessagesResponse:
+        conversation_id: Optional[str] = None,
+        contact_id: Optional[str] = None,
+        app_id: Optional[str] = None,
+        page_size: Optional[bool] = None,
+        page_token: Optional[str] = None,
+        view: Optional[str] = None,
+        messages_source: Optional[str] = None,
+        only_recipient_originated: Optional[bool] = None
+    ) -> TokenBasedPaginator:
         return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListConversationMessagesEndpoint(
@@ -264,15 +264,15 @@ class ConversationMessage:
 class ConversationMessageWithAsyncPagination(ConversationMessage):
     async def list(
         self,
-        conversation_id: str = None,
-        contact_id: str = None,
-        app_id: str = None,
-        page_size: int = None,
-        page_token: str = None,
-        view: str = None,
-        messages_source: str = None,
-        only_recipient_originated: bool = None
-    ) -> ListConversationMessagesResponse:
+        conversation_id: Optional[str] = None,
+        contact_id: Optional[str] = None,
+        app_id: Optional[str] = None,
+        page_size: Optional[bool] = None,
+        page_token: Optional[str] = None,
+        view: Optional[str] = None,
+        messages_source: Optional[str] = None,
+        only_recipient_originated: Optional[bool] = None
+    ) -> AsyncTokenBasedPaginator:
         return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListConversationMessagesEndpoint(
@@ -299,10 +299,10 @@ class ConversationApp:
         self,
         display_name: str,
         channel_credentials: list,
-        conversation_metadata_report_view: str = None,
-        retention_policy: dict = None,
-        dispatch_retention_policy: dict = None,
-        processing_mode: str = None
+        conversation_metadata_report_view: Optional[str] = None,
+        retention_policy: Optional[dict] = None,
+        dispatch_retention_policy: Optional[dict] = None,
+        processing_mode: Optional[str] = None
     ) -> CreateConversationAppResponse:
         """
         Creates a new Conversation API app with one or more configured channels.
@@ -397,13 +397,13 @@ class ConversationContact:
     def update(
         self,
         contact_id: str,
-        channel_identities: List[SinchConversationChannelIdentities] = None,
-        language: str = None,
-        display_name: str = None,
-        email: str = None,
-        external_id: str = None,
-        metadata: str = None,
-        channel_priority: list = None
+        channel_identities: Optional[List[SinchConversationChannelIdentities]] = None,
+        language: Optional[str] = None,
+        display_name: Optional[str] = None,
+        email: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[str] = None,
+        channel_priority: Optional[list] = None
     ) -> UpdateConversationContactResponse:
         """
         Updates an existing Conversation API contact with new configuration options defined in the request.
@@ -429,11 +429,11 @@ class ConversationContact:
         self,
         channel_identities: List[SinchConversationChannelIdentities],
         language: str,
-        display_name: str = None,
-        email: str = None,
-        external_id: str = None,
-        metadata: str = None,
-        channel_priority: list = None
+        display_name: Optional[str] = None,
+        email: Optional[str] = None,
+        external_id: Optional[str] = None,
+        metadata: Optional[str] = None,
+        channel_priority: Optional[list] = None
     ) -> CreateConversationContactResponse:
         """
         Creates a new Conversation API contact.
@@ -483,12 +483,12 @@ class ConversationContact:
 
     def list(
         self,
-        page_size: int = None,
-        page_token: str = None,
-        external_id: str = None,
-        channel: str = None,
-        identity: str = None
-    ) -> ListConversationContactsResponse:
+        page_size: Optional[bool] = None,
+        page_token: Optional[str] = None,
+        external_id: Optional[str] = None,
+        channel: Optional[str] = None,
+        identity: Optional[str] = None
+    ) -> TokenBasedPaginator:
         """
         Lists all Conversation API contacts for the project identified by the project_id.
         Returns the information as an array of contact objects in the response.
@@ -511,7 +511,7 @@ class ConversationContact:
         self,
         source_id: str,
         destination_id: str,
-        strategy: str = None
+        strategy: Optional[str] = None
     ) -> MergeConversationContactsResponse:
         """
         Merges two existing Conversation API contacts.
@@ -557,12 +557,12 @@ class ConversationContact:
 class ConversationContactWithAsyncPagination(ConversationContact):
     async def list(
         self,
-        page_size: int = None,
-        page_token: str = None,
-        external_id: str = None,
-        channel: str = None,
-        identity: str = None
-    ) -> ListConversationContactsResponse:
+        page_size: Optional[bool] = None,
+        page_token: Optional[str] = None,
+        external_id: Optional[str] = None,
+        channel: Optional[str] = None,
+        identity: Optional[str] = None
+    ) -> AsyncTokenBasedPaginator:
         return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListContactsEndpoint(
@@ -587,10 +587,10 @@ class ConversationEvent:
         app_id: str,
         recipient: dict,
         event: dict,
-        callback_url: str = None,
-        channel_priority_order: str = None,
-        event_metadata: str = None,
-        queue: str = None
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[str] = None,
+        event_metadata: Optional[str] = None,
+        queue: Optional[str] = None
     ) -> SendConversationEventResponse:
         return self._sinch.configuration.transport.request(
             SendEventEndpoint(
@@ -617,8 +617,8 @@ class ConversationTranscoding:
         app_id: str,
         app_message: dict,
         channels: list,
-        from_: str = None,
-        to: str = None
+        from_: Optional[str] = None,
+        to: Optional[str] = None
     ) -> TranscodeConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             TranscodeMessageEndpoint(
@@ -643,8 +643,8 @@ class ConversationOptIn:
         app_id: str,
         channels: list,
         recipient: dict,
-        request_id: str = None,
-        processing_strategy: str = None
+        request_id: Optional[str] = None,
+        processing_strategy: Optional[str] = None
     ) -> RegisterConversationOptInResponse:
         return self._sinch.configuration.transport.request(
             RegisterOptInEndpoint(
@@ -669,8 +669,8 @@ class ConversationOptOut:
         app_id: str,
         channels: list,
         recipient: dict,
-        request_id: str = None,
-        processing_strategy: str = None
+        request_id: Optional[str] = None,
+        processing_strategy: Optional[str] = None
     ) -> RegisterConversationOptOutResponse:
         return self._sinch.configuration.transport.request(
             RegisterOptOutEndpoint(
@@ -694,7 +694,7 @@ class ConversationCapability:
         self,
         app_id: str,
         recipient: dict,
-        request_id: str = None
+        request_id: Optional[str] = None
     ) -> QueryConversationCapabilityResponse:
         return self._sinch.configuration.transport.request(
             CapabilityQueryEndpoint(
@@ -716,11 +716,11 @@ class ConversationTemplate:
         self,
         translations: list,
         default_translation: str,
-        channel: str = None,
-        create_time: str = None,
-        description: str = None,
-        id: str = None,
-        update_time: str = None
+        channel: Optional[str] = None,
+        create_time: Optional[str] = None,
+        description: Optional[str] = None,
+        id: Optional[str] = None,
+        update_time: Optional[str] = None
     ) -> CreateConversationTemplateResponse:
         return self._sinch.configuration.transport.request(
             CreateTemplateEndpoint(
@@ -759,12 +759,12 @@ class ConversationTemplate:
         template_id: str,
         translations: list,
         default_translation: str,
-        id: str = None,
-        update_mask: str = None,
-        channel: str = None,
-        create_time: str = None,
-        description: str = None,
-        update_time: str = None
+        id: Optional[str] = None,
+        update_mask: Optional[str] = None,
+        channel: Optional[str] = None,
+        create_time: Optional[str] = None,
+        description: Optional[str] = None,
+        update_time: Optional[str] = None
     ) -> UpdateConversationTemplateResponse:
         return self._sinch.configuration.transport.request(
             UpdateTemplateEndpoint(
@@ -803,9 +803,9 @@ class ConversationWebhook:
         app_id: str,
         target: str,
         triggers: list,
-        client_credentials: dict = None,
-        secret: str = None,
-        target_type: str = None
+        client_credentials: Optional[dict] = None,
+        secret: Optional[str] = None,
+        target_type: Optional[str] = None
     ) -> CreateWebhookResponse:
         return self._sinch.configuration.transport.request(
             CreateWebhookEndpoint(
@@ -827,10 +827,10 @@ class ConversationWebhook:
         app_id: str,
         target: str,
         triggers: list,
-        update_mask: str = None,
-        client_credentials: dict = None,
-        secret: str = None,
-        target_type: str = None
+        update_mask: Optional[str] = None,
+        client_credentials: Optional[dict] = None,
+        secret: Optional[str] = None,
+        target_type: Optional[str] = None
     ) -> UpdateWebhookResponse:
         return self._sinch.configuration.transport.request(
             UpdateWebhookEndpoint(
@@ -885,13 +885,13 @@ class ConversationConversation:
 
     def create(
         self,
-        id: str = None,
-        metadata: str = None,
-        conversation_metadata: dict = None,
-        contact_id: str = None,
-        app_id: str = None,
-        active_channel: str = None,
-        active: bool = None,
+        id: Optional[str] = None,
+        metadata: Optional[str] = None,
+        conversation_metadata: Optional[dict] = None,
+        contact_id: Optional[str] = None,
+        app_id: Optional[str] = None,
+        active_channel: Optional[str] = None,
+        active: Optional[bool] = None,
     ) -> SinchCreateConversationResponse:
         return self._sinch.configuration.transport.request(
             CreateConversationEndpoint(
@@ -911,11 +911,11 @@ class ConversationConversation:
     def list(
         self,
         only_active: bool,
-        page_size: int = None,
-        page_token: str = None,
-        app_id: str = None,
-        contact_id: str = None
-    ) -> SinchListConversationsResponse:
+        page_size: Optional[bool] = None,
+        page_token: Optional[str] = None,
+        app_id: Optional[str] = None,
+        contact_id: Optional[str] = None
+    ) -> TokenBasedPaginator:
         return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListConversationsEndpoint(
@@ -953,14 +953,14 @@ class ConversationConversation:
     def update(
         self,
         conversation_id: str,
-        update_mask: str = None,
-        metadata_update_strategy: str = None,
-        metadata: str = None,
-        conversation_metadata: dict = None,
-        contact_id: str = None,
-        app_id: str = None,
-        active_channel: str = None,
-        active: bool = None
+        update_mask: Optional[str] = None,
+        metadata_update_strategy: Optional[str] = None,
+        metadata: Optional[str] = None,
+        conversation_metadata: Optional[dict] = None,
+        contact_id: Optional[str] = None,
+        app_id: Optional[str] = None,
+        active_channel: Optional[str] = None,
+        active: Optional[bool] = None
     ) -> SinchUpdateConversationResponse:
         return self._sinch.configuration.transport.request(
             UpdateConversationEndpoint(
@@ -992,13 +992,13 @@ class ConversationConversation:
     def inject_message_to_conversation(
         self,
         conversation_id: str,
-        accept_time: str = None,
-        app_message: dict = None,
-        channel_identity: dict = None,
-        contact_id: str = None,
-        contact_message: dict = None,
-        direction: str = None,
-        metadata: str = None
+        accept_time: Optional[str] = None,
+        app_message: Optional[dict] = None,
+        channel_identity: Optional[dict] = None,
+        contact_id: Optional[str] = None,
+        contact_message: Optional[dict] = None,
+        direction: Optional[str] = None,
+        metadata: Optional[str] = None
     ) -> SinchInjectMessageResponse:
         return self._sinch.configuration.transport.request(
             InjectMessageToConversationEndpoint(
@@ -1021,11 +1021,11 @@ class ConversationConversationWithAsyncPagination(ConversationConversation):
     async def list(
         self,
         only_active: bool,
-        page_size: int = None,
-        page_token: str = None,
-        app_id: str = None,
-        contact_id: str = None
-    ) -> SinchListConversationsResponse:
+        page_size: Optional[bool] = None,
+        page_token: Optional[str] = None,
+        app_id: Optional[str] = None,
+        contact_id: Optional[str] = None
+    ) -> AsyncTokenBasedPaginator:
         return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListConversationsEndpoint(
