@@ -116,7 +116,7 @@ def templates_origin():
 
 @pytest.fixture
 def disable_ssl():
-    return os.getenv("DISABLE_SSL")
+    return
 
 
 @pytest.fixture
@@ -142,6 +142,11 @@ def application_secret():
 @pytest.fixture
 def verification_id():
     return os.getenv("VERIFICATION_ID")
+
+
+@pytest.fixture()
+def call_id():
+    return os.getenv("VOICE_CALL_ID")
 
 
 @pytest.fixture
