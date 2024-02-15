@@ -3,7 +3,7 @@ from sinch.domains.voice.enums import CalloutMethod
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.voice.endpoints.voice_endpoint import VoiceEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.domains.voice.models.callouts.responses import CalloutResponse
+from sinch.domains.voice.models.callouts.responses import VoiceCalloutResponse
 
 
 class CalloutEndpoint(VoiceEndpoint):
@@ -38,4 +38,4 @@ class CalloutEndpoint(VoiceEndpoint):
 
     def handle_response(self, response: HTTPResponse):
         super().handle_response(response)
-        return CalloutResponse(call_id=response.body["callId"])
+        return VoiceCalloutResponse(call_id=response.body["callId"])

@@ -2,11 +2,11 @@ from sinch.domains.voice.endpoints.callouts.callout import CalloutEndpoint
 from sinch.domains.voice.endpoints.calls.get_call import GetCallEndpoint
 from sinch.domains.voice.endpoints.calls.update_call import UpdateCallEndpoint
 from sinch.domains.voice.enums import CalloutMethod
-from sinch.domains.voice.models.callouts.responses import CalloutResponse
+from sinch.domains.voice.models.callouts.responses import VoiceCalloutResponse
 from sinch.domains.voice.models.callouts.requests import (
-    ConferenceCalloutRequest,
-    TextToSpeechCalloutRequest,
-    CustomCalloutRequest
+    ConferenceVoiceCalloutRequest,
+    TextToSpeechVoiceCalloutRequest,
+    CustomVoiceCalloutRequest
 )
 from sinch.domains.voice.models.calls.requests import GetVoiceCallRequest, UpdateVoiceCallRequest
 from sinch.domains.voice.models.calls.responses import GetVoiceCallResponse
@@ -29,11 +29,11 @@ class Callouts:
         enable_ace: bool = None,
         enable_dice: bool = None,
         enable_pie: bool = None
-    ) -> CalloutResponse:
+    ) -> VoiceCalloutResponse:
         return self._sinch.configuration.transport.request(
             CalloutEndpoint(
                 callout_method=CalloutMethod.TTS.value,
-                request_data=TextToSpeechCalloutRequest(
+                request_data=TextToSpeechVoiceCalloutRequest(
                     destination=destination,
                     cli=cli,
                     dtmf=dtmf,
@@ -66,11 +66,11 @@ class Callouts:
         moh_class: str = None,
         custom: str = None,
         domain: str = None
-    ) -> CalloutResponse:
+    ) -> VoiceCalloutResponse:
         return self._sinch.configuration.transport.request(
             CalloutEndpoint(
                 callout_method=CalloutMethod.CONFERENCE.value,
-                request_data=ConferenceCalloutRequest(
+                request_data=ConferenceVoiceCalloutRequest(
                     destination=destination,
                     conference_id=conference_id,
                     cli=cli,
@@ -100,11 +100,11 @@ class Callouts:
         ice: str = None,
         ace: str = None,
         pie: str = None
-    ) -> CalloutResponse:
+    ) -> VoiceCalloutResponse:
         return self._sinch.configuration.transport.request(
             CalloutEndpoint(
                 callout_method=CalloutMethod.CUSTOM.value,
-                request_data=CustomCalloutRequest(
+                request_data=CustomVoiceCalloutRequest(
                     cli=cli,
                     destination=destination,
                     dtmf=dtmf,

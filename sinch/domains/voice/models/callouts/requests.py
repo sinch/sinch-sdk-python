@@ -3,7 +3,7 @@ from sinch.core.models.base_model import SinchRequestBaseModel
 
 
 @dataclass
-class TextToSpeechCalloutRequest(SinchRequestBaseModel):
+class TextToSpeechVoiceCalloutRequest(SinchRequestBaseModel):
     destination: dict
     cli: str
     dtmf: str
@@ -18,7 +18,7 @@ class TextToSpeechCalloutRequest(SinchRequestBaseModel):
 
 
 @dataclass
-class ConferenceCalloutRequest(SinchRequestBaseModel):
+class ConferenceVoiceCalloutRequest(SinchRequestBaseModel):
     destination: dict
     conference_id: str
     cli: str
@@ -37,7 +37,7 @@ class ConferenceCalloutRequest(SinchRequestBaseModel):
 
 
 @dataclass
-class CustomCalloutRequest(SinchRequestBaseModel):
+class CustomVoiceCalloutRequest(SinchRequestBaseModel):
     cli: str
     destination: dict
     dtmf: str

@@ -3,5 +3,5 @@ from sinch.core.models.base_model import SinchBaseModel
 
 
 @dataclass
-class CalloutResponse(SinchBaseModel):
+class VoiceCalloutResponse(SinchBaseModel):
     call_id: str

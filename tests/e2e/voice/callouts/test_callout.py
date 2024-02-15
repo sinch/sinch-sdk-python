@@ -1,5 +1,5 @@
 import pytest
-from sinch.domains.voice.models.callouts.responses import CalloutResponse
+from sinch.domains.voice.models.callouts.responses import VoiceCalloutResponse
 
 
 def test_tts_callout(
@@ -16,7 +16,7 @@ def test_tts_callout(
         locale="en-US",
         cli=voice_origin_phone_number
     )
-    assert isinstance(tts_callout_response, CalloutResponse)
+    assert isinstance(tts_callout_response, VoiceCalloutResponse)
 
 
 async def test_tts_callout_async(
@@ -33,7 +33,7 @@ async def test_tts_callout_async(
         locale="en-US",
         cli=voice_origin_phone_number
     )
-    assert isinstance(tts_callout_response, CalloutResponse)
+    assert isinstance(tts_callout_response, VoiceCalloutResponse)
 
 
 @pytest.mark.skip(reason="Conference endpoints have to be implemented first.")
@@ -50,7 +50,7 @@ def test_conference_callout(
         locale="en-US",
         cli=voice_origin_phone_number
     )
-    assert isinstance(conference_callout_response, CalloutResponse)
+    assert isinstance(conference_callout_response, VoiceCalloutResponse)
 
 
 def test_custom_callout(
@@ -65,4 +65,4 @@ def test_custom_callout(
         },
         cli=voice_origin_phone_number
     )
-    assert isinstance(custom_callout_response, CalloutResponse)
+    assert isinstance(custom_callout_response, VoiceCalloutResponse)
