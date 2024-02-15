@@ -130,7 +130,7 @@ except NumbersException as err:
     pass
 ```
 
-For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) form `sinch.core.exceptions`.
+For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) from `sinch.core.exceptions`.
 
 
 ## Custom HTTP client implementation
