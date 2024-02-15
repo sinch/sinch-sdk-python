@@ -3,6 +3,7 @@ from sinch.domains.voice.endpoints.voice_endpoint import VoiceEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.voice.models.calls.responses import GetVoiceCallResponse
 from sinch.domains.voice.models.calls.requests import GetVoiceCallRequest
+from sinch.domains.voice.models import Price
 
 
 class GetCallEndpoint(VoiceEndpoint):
@@ -32,6 +33,12 @@ class GetCallEndpoint(VoiceEndpoint):
             reason=response.body.get("reason"),
             timestamp=response.body.get("timestamp"),
             custom=response.body.get("custom"),
-            user_rate=response.body.get("userRate"),
-            debit=response.body.get("debit")
+            user_rate=Price(
+                currency_id=response.body["userRate"]["currencyId"],
+                amount=response.body["userRate"]["amount"]
+            ),
+            debit=Price(
+                currency_id=response.body["userRate"]["currencyId"],
+                amount=response.body["userRate"]["amount"]
+            )
         )
