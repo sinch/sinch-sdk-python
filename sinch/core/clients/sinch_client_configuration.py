@@ -32,8 +32,8 @@ class Configuration:
         self.auth_origin = "auth.sinch.com"
         self.numbers_origin = "numbers.api.sinch.com"
         self.verification_origin = "verification.api.sinch.com"
-        self.voice_origin = "calling.api.sinch.com"
-        self.voice_region = ""  # TODO: add region handling
+        self._voice_domain = "{}.api.sinch.com"
+        self._voice_region = None
         self._conversation_region = "eu"
         self._conversation_domain = ".conversation.api.sinch.com"
         self._sms_region = "us"
@@ -54,6 +54,25 @@ class Configuration:
             self.logger = logger
         else:
             self.logger = logging.getLogger("Sinch")
+
+    def _set_voice_origin(self):
+        if not self._voice_region:
+            self.voice_origin = self._voice_domain.format("calling")
+        else:
+            self.voice_origin = self._voice_domain.format("calling-" + self._voice_region)
+
+    def _set_voice_region(self, region):
+        self._voice_region = region
+        self._set_voice_origin()
+
+    def _get_voice_region(self):
+        return self._voice_region
+
+    voice_region = property(
+        _get_voice_region,
+        _set_voice_region,
+        doc="Voice Region"
+    )
 
     def _set_sms_origin(self):
         self.sms_origin = self._sms_domain.format(self._sms_region)
