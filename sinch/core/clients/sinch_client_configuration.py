@@ -47,6 +47,7 @@ class Configuration:
         self._set_conversation_origin()
         self._set_sms_origin()
         self._set_templates_origin()
+        self._set_voice_origin()
 
         if logger_name:
             self.logger = logging.getLogger(logger_name)

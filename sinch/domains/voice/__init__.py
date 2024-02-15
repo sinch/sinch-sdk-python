@@ -126,7 +126,7 @@ class Calls:
         return self._sinch.configuration.transport.request(
             GetCallEndpoint(
                 request_data=GetVoiceCallRequest(
-                    callId=call_id
+                    call_id=call_id
                 )
             )
         )
@@ -140,7 +140,7 @@ class Calls:
         return self._sinch.configuration.transport.request(
             UpdateCallEndpoint(
                 request_data=UpdateVoiceCallRequest(
-                    callId=call_id,
+                    call_id=call_id,
                     instructions=instructions,
                     action=action
                 )

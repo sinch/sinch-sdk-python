@@ -7,7 +7,7 @@ from sinch.domains.voice.models.calls.requests import UpdateVoiceCallRequest
 
 class UpdateCallEndpoint(VoiceEndpoint):
     ENDPOINT_URL = "{origin}/calling/v1/calls/id/{call_id}"
-    HTTP_METHOD = HTTPMethods.GET.value
+    HTTP_METHOD = HTTPMethods.PATCH.value
     HTTP_AUTHENTICATION = HTTPAuthentication.SIGNED.value
 
     def __init__(self, request_data: UpdateVoiceCallRequest):
@@ -16,11 +16,11 @@ class UpdateCallEndpoint(VoiceEndpoint):
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.voice_origin,
-            call_id=self.request_data.callId
+            call_id=self.request_data.call_id
         )
 
     def request_body(self):
-        self.request_data.callId = None
+        self.request_data.call_id = None
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> UpdateVoiceCallResponse:

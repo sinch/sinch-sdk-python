@@ -16,7 +16,7 @@ class GetCallEndpoint(VoiceEndpoint):
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.voice_origin,
-            call_id=self.request_data.callId
+            call_id=self.request_data.call_id
         )
 
     def handle_response(self, response: HTTPResponse) -> GetVoiceCallResponse:

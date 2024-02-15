@@ -4,11 +4,11 @@ from sinch.core.models.base_model import SinchRequestBaseModel
 
 @dataclass
 class GetVoiceCallRequest(SinchRequestBaseModel):
-    callId: str
+    call_id: str
 
 
 @dataclass
 class UpdateVoiceCallRequest(SinchRequestBaseModel):
-    callId: str
+    call_id: str
     instructions: list
     action: dict
