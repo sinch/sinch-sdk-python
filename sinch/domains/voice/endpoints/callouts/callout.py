@@ -22,9 +22,9 @@ class CalloutEndpoint(VoiceEndpoint):
 
     def request_body(self):
         request_data = {}
-        if self.callout_method == CalloutMethod.TTS.value:
-            request_data["method"] = CalloutMethod.TTS.value
-            request_data[CalloutMethod.TTS.value] = self.request_data.as_dict()
+        if self.callout_method == CalloutMethod.TEXT_TO_SPEECH.value:
+            request_data["method"] = CalloutMethod.TEXT_TO_SPEECH.value
+            request_data[CalloutMethod.TEXT_TO_SPEECH.value] = self.request_data.as_dict()
 
         elif self.callout_method == CalloutMethod.CUSTOM.value:
             request_data["method"] = CalloutMethod.CUSTOM.value

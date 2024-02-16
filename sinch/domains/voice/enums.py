@@ -2,6 +2,6 @@ from enum import Enum
 
 
 class CalloutMethod(Enum):
-    TTS = "ttsCallout"
+    TEXT_TO_SPEECH = "ttsCallout"
     CUSTOM = "customCallout"
     CONFERENCE = "conferenceCallout"

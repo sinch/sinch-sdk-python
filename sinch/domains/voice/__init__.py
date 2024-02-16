@@ -32,7 +32,7 @@ class Callouts:
     ) -> VoiceCalloutResponse:
         return self._sinch.configuration.transport.request(
             CalloutEndpoint(
-                callout_method=CalloutMethod.TTS.value,
+                callout_method=CalloutMethod.TEXT_TO_SPEECH.value,
                 request_data=TextToSpeechVoiceCalloutRequest(
                     destination=destination,
                     cli=cli,
