@@ -20,7 +20,7 @@ class UpdateCallEndpoint(VoiceEndpoint):
         )
 
     def request_body(self):
-        # self.request_data.call_id = None
+        self.request_data.call_id = None
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> UpdateVoiceCallResponse:

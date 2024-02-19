@@ -22,3 +22,7 @@ class GetVoiceCallResponse(SinchBaseModel):
 @dataclass
 class UpdateVoiceCallResponse(SinchBaseModel):
     pass
+
+
+class ManageVoiceCallResponse(SinchBaseModel):
+    pass

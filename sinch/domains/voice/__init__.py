@@ -1,6 +1,7 @@
 from sinch.domains.voice.endpoints.callouts.callout import CalloutEndpoint
 from sinch.domains.voice.endpoints.calls.get_call import GetCallEndpoint
 from sinch.domains.voice.endpoints.calls.update_call import UpdateCallEndpoint
+from sinch.domains.voice.endpoints.calls.manage_call import ManageCallEndpoint
 from sinch.domains.voice.enums import CalloutMethod
 from sinch.domains.voice.models.callouts.responses import VoiceCalloutResponse
 from sinch.domains.voice.models.callouts.requests import (
@@ -8,8 +9,16 @@ from sinch.domains.voice.models.callouts.requests import (
     TextToSpeechVoiceCalloutRequest,
     CustomVoiceCalloutRequest
 )
-from sinch.domains.voice.models.calls.requests import GetVoiceCallRequest, UpdateVoiceCallRequest
-from sinch.domains.voice.models.calls.responses import GetVoiceCallResponse
+from sinch.domains.voice.models.calls.requests import (
+    GetVoiceCallRequest,
+    UpdateVoiceCallRequest,
+    ManageVoiceCallRequest
+)
+from sinch.domains.voice.models.calls.responses import (
+    GetVoiceCallResponse,
+    UpdateVoiceCallResponse,
+    ManageVoiceCallResponse
+)
 
 
 class Callouts:
@@ -133,14 +142,32 @@ class Calls:
 
     def update(
         self,
-        call_id,
+        call_id: str,
         instructions: list,
         action: dict
-    ):
+    ) -> UpdateVoiceCallResponse:
         return self._sinch.configuration.transport.request(
             UpdateCallEndpoint(
                 request_data=UpdateVoiceCallRequest(
                     call_id=call_id,
+                    instructions=instructions,
+                    action=action
+                )
+            )
+        )
+
+    def manage(
+        self,
+        call_id: str,
+        call_leg: str,
+        instructions: list,
+        action: dict
+    ) -> ManageVoiceCallResponse:
+        return self._sinch.configuration.transport.request(
+            ManageCallEndpoint(
+                request_data=ManageVoiceCallRequest(
+                    call_id=call_id,
+                    call_leg=call_leg,
                     instructions=instructions,
                     action=action
                 )

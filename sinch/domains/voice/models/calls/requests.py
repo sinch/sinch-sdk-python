@@ -12,3 +12,11 @@ class UpdateVoiceCallRequest(SinchRequestBaseModel):
     call_id: str
     instructions: list
     action: dict
+
+
+@dataclass
+class ManageVoiceCallRequest(SinchRequestBaseModel):
+    call_id: str
+    call_leg: str
+    instructions: list
+    action: dict
