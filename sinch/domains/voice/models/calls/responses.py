@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchBaseModel
-from sinch.domains.voice.models import Price
+from sinch.domains.voice.models import Price, Destination
 
 
 @dataclass
 class GetVoiceCallResponse(SinchBaseModel):
     from_: str
-    to: dict
+    to: Destination
     domain: str
     call_id: str
     duration: int

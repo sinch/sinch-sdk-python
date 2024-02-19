@@ -3,7 +3,7 @@ from sinch.domains.voice.endpoints.voice_endpoint import VoiceEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.voice.models.calls.responses import GetVoiceCallResponse
 from sinch.domains.voice.models.calls.requests import GetVoiceCallRequest
-from sinch.domains.voice.models import Price
+from sinch.domains.voice.models import Price, Destination
 
 
 class GetCallEndpoint(VoiceEndpoint):
@@ -24,7 +24,10 @@ class GetCallEndpoint(VoiceEndpoint):
         super().handle_response(response)
         return GetVoiceCallResponse(
             from_=response.body.get("from"),
-            to=response.body.get("to"),
+            to=Destination(
+                type=response.body["to"]["type"],
+                endpoint=response.body["to"]["endpoint"]
+            ),
             domain=response.body.get("domain"),
             call_id=response.body.get("callId"),
             duration=response.body.get("duration"),
