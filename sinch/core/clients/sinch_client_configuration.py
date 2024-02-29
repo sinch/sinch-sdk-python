@@ -32,6 +32,7 @@ class Configuration:
         self.auth_origin = "auth.sinch.com"
         self.numbers_origin = "numbers.api.sinch.com"
         self.verification_origin = "verification.api.sinch.com"
+        self.voice_applications_origin = "callingapi.sinch.com"
         self._voice_domain = "{}.api.sinch.com"
         self._voice_region = None
         self._conversation_region = "eu"

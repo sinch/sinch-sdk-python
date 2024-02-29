@@ -1,4 +1,3 @@
-import pytest
 from sinch.domains.voice.models.callouts.responses import VoiceCalloutResponse
 
 
@@ -36,13 +35,14 @@ async def test_tts_callout_async(
     assert isinstance(tts_callout_response, VoiceCalloutResponse)
 
 
-@pytest.mark.skip(reason="Conference endpoints have to be implemented first.")
 def test_conference_callout(
     sinch_client_sync,
     phone_number,
-    voice_origin_phone_number
+    voice_origin_phone_number,
+    conference_id
 ):
     conference_callout_response = sinch_client_sync.voice.callouts.conference(
+        conference_id=conference_id,
         destination={
             "type": "number",
             "endpoint": phone_number

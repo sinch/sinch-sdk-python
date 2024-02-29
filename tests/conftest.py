@@ -163,6 +163,16 @@ def call_id():
     return os.getenv("VOICE_CALL_ID")
 
 
+@pytest.fixture()
+def conference_id():
+    return os.getenv("CONFERENCE_ID")
+
+
+@pytest.fixture()
+def conference_call_id():
+    return os.getenv("CONFERENCE_CALL_ID")
+
+
 @pytest.fixture
 def app_id():
     return os.getenv("APP_ID")

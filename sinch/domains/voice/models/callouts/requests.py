@@ -20,7 +20,7 @@ class TextToSpeechVoiceCalloutRequest(SinchRequestBaseModel):
 @dataclass
 class ConferenceVoiceCalloutRequest(SinchRequestBaseModel):
     destination: dict
-    conference_id: str
+    conferenceId: str
     cli: str
     conferenceDtmfOptions: dict
     dtmf: str

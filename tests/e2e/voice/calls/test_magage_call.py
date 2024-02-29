@@ -1,14 +1,12 @@
-import pytest
 from sinch.domains.voice.models.calls.responses import ManageVoiceCallResponse
 
 
-@pytest.mark.skip(reason="Conference endpoints have to be implemented first.")
 def test_manage_call(
     sinch_client_sync,
-    call_id
+    conference_call_id
 ):
     update_call_response = sinch_client_sync.voice.calls.manage(
-        call_id=call_id,
+        call_id=conference_call_id,
         call_leg="caller",
         instructions=[
             {
@@ -21,3 +19,10 @@ def test_manage_call(
         }
     )
     assert isinstance(update_call_response, ManageVoiceCallResponse)
+
+
+def test_manage_call_async(
+    sinch_client_async,
+    call_id
+):
+    pass

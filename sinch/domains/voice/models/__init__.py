@@ -11,3 +11,18 @@ class Price:
 class Destination:
     type: str
     endpoint: str
+
+
+@dataclass
+class ConferenceParticipant:
+    cli: str
+    id: str
+    duration: int
+    muted: bool
+    onhold: bool
+
+
+@dataclass
+class ApplicationNumber:
+    number: str
+    capability: str
