@@ -26,4 +26,3 @@ class ConferenceParticipant:
 class ApplicationNumber:
     number: str
     capability: str
-
