@@ -24,4 +24,3 @@ class AssignVoiceNumbersEndpoint(VoiceEndpoint):
     def handle_response(self, response: HTTPResponse) -> AssignNumbersVoiceApplicationResponse:
         super().handle_response(response)
         return AssignNumbersVoiceApplicationResponse()
-
