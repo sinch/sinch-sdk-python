@@ -66,6 +66,7 @@ def configure_origin(
 
     if voice_origin:
         sinch_client.configuration.voice_origin = voice_origin
+        sinch_client.configuration.voice_applications_origin = voice_origin
 
     if disable_ssl:
         sinch_client.configuration.disable_https = True

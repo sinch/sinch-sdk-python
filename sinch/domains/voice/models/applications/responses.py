@@ -21,7 +21,7 @@ class UnassignNumbersVoiceApplicationResponse(SinchBaseModel):
 
 
 @dataclass
-class KickParticipantVoiceConferenceResponse(SinchBaseModel):
+class UpdateCallbackUrlsVoiceApplicationResponse(SinchBaseModel):
     pass
 
 

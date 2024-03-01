@@ -32,6 +32,20 @@ class CalloutEndpoint(VoiceEndpoint):
 
         elif self.callout_method == CalloutMethod.CONFERENCE.value:
             request_data["method"] = CalloutMethod.CONFERENCE.value
+            if self.request_data.conferenceDtmfOptions:
+                dtmf_options = {}
+
+                if self.request_data.conferenceDtmfOptions["mode"]:
+                    dtmf_options["mode"] = self.request_data.get["conferenceDtmfOptions"]["mode"]
+
+                if self.request_data.conferenceDtmfOptions["timeout_mills"]:
+                    dtmf_options["timeoutMills"] = self.request_data.get["conferenceDtmfOptions"]["timeout_mills"]
+
+                if self.request_data.conferenceDtmfOptions["max_digits"]:
+                    dtmf_options["maxDigits"] = self.request_data.get["conferenceDtmfOptions"]["max_digits"]
+
+                self.request_data.conferenceDtmfOptions = dtmf_options
+
             request_data[CalloutMethod.CONFERENCE.value] = self.request_data.as_dict()
 
         return json.dumps(request_data)

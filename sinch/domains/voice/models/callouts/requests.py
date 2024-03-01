@@ -1,10 +1,22 @@
 from dataclasses import dataclass
+from typing import TypedDict
 from sinch.core.models.base_model import SinchRequestBaseModel
+
+
+class Destination(TypedDict):
+    type: str
+    endpoint: str
+
+
+class ConferenceDTMFOptions(TypedDict):
+    mode: str
+    max_digits: int
+    timeout_mills: int
 
 
 @dataclass
 class TextToSpeechVoiceCalloutRequest(SinchRequestBaseModel):
-    destination: dict
+    destination: Destination
     cli: str
     dtmf: str
     domain: str
@@ -19,10 +31,10 @@ class TextToSpeechVoiceCalloutRequest(SinchRequestBaseModel):
 
 @dataclass
 class ConferenceVoiceCalloutRequest(SinchRequestBaseModel):
-    destination: dict
+    destination: Destination
     conferenceId: str
     cli: str
-    conferenceDtmfOptions: dict
+    conferenceDtmfOptions: ConferenceDTMFOptions
     dtmf: str
     conference: str
     maxDuration: int
@@ -39,7 +51,7 @@ class ConferenceVoiceCalloutRequest(SinchRequestBaseModel):
 @dataclass
 class CustomVoiceCalloutRequest(SinchRequestBaseModel):
     cli: str
-    destination: dict
+    destination: Destination
     dtmf: str
     custom: str
     maxDuration: int

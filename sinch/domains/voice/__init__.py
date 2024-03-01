@@ -1,3 +1,4 @@
+from typing import List
 from sinch.domains.voice.endpoints.callouts.callout import CalloutEndpoint
 from sinch.domains.voice.endpoints.calls.get_call import GetCallEndpoint
 from sinch.domains.voice.endpoints.calls.update_call import UpdateCallEndpoint
@@ -7,6 +8,8 @@ from sinch.domains.voice.endpoints.applications.get_numbers import GetVoiceNumbe
 from sinch.domains.voice.endpoints.applications.query_number import QueryVoiceNumberEndpoint
 from sinch.domains.voice.endpoints.applications.get_callback_urls import GetVoiceCallbacksEndpoint
 from sinch.domains.voice.endpoints.applications.unassign_number import UnAssignVoiceNumberEndpoint
+from sinch.domains.voice.endpoints.applications.assign_numbers import AssignVoiceNumbersEndpoint
+from sinch.domains.voice.endpoints.applications.update_callbacks import UpdateVoiceCallbacksEndpoint
 
 from sinch.domains.voice.endpoints.conferences.kick_participant import KickParticipantConferenceEndpoint
 from sinch.domains.voice.endpoints.conferences.kick_all_participants import KickAllConferenceEndpoint
@@ -18,12 +21,15 @@ from sinch.domains.voice.models.callouts.responses import VoiceCalloutResponse
 from sinch.domains.voice.models.callouts.requests import (
     ConferenceVoiceCalloutRequest,
     TextToSpeechVoiceCalloutRequest,
-    CustomVoiceCalloutRequest
+    CustomVoiceCalloutRequest,
+    Destination,
+    ConferenceDTMFOptions
 )
 from sinch.domains.voice.models.calls.requests import (
     GetVoiceCallRequest,
     UpdateVoiceCallRequest,
-    ManageVoiceCallRequest
+    ManageVoiceCallRequest,
+    Action
 )
 from sinch.domains.voice.models.calls.responses import (
     GetVoiceCallResponse,
@@ -43,17 +49,16 @@ from sinch.domains.voice.models.conferences.responses import (
     KickParticipantVoiceConferenceResponse
 )
 from sinch.domains.voice.models.applications.requests import (
-    GetNumbersVoiceApplicationRequest,
     AssignNumbersVoiceApplicationRequest,
     UnassignNumbersVoiceApplicationRequest,
-    GetCallbackUrlsVoiceApplicationRequest,
-    QueryNumberVoiceApplicationRequest
+    QueryNumberVoiceApplicationRequest,
+    UpdateCallbackUrlsVoiceApplicationRequest,
+    GetCallbackUrlsVoiceApplicationRequest
 )
 from sinch.domains.voice.models.applications.responses import (
     GetNumbersVoiceApplicationResponse,
     AssignNumbersVoiceApplicationResponse,
     UnassignNumbersVoiceApplicationResponse,
-    KickParticipantVoiceConferenceResponse,
     GetCallbackUrlsVoiceApplicationResponse,
     QueryNumberVoiceApplicationResponse
 )
@@ -65,7 +70,7 @@ class Callouts:
 
     def text_to_speech(
         self,
-        destination: dict,
+        destination: Destination,
         cli: str = None,
         dtmf: str = None,
         domain: str = None,
@@ -98,10 +103,10 @@ class Callouts:
 
     def conference(
         self,
-        destination: dict,
+        destination: Destination,
         conference_id: str,
         cli: str = None,
-        conference_dtmf_options: dict = None,
+        conference_dtmf_options: ConferenceDTMFOptions = None,
         dtmf: str = None,
         conference: str = None,
         max_duration: int = None,
@@ -140,7 +145,7 @@ class Callouts:
     def custom(
         self,
         cli: str = None,
-        destination: dict = None,
+        destination: Destination = None,
         dtmf: str = None,
         custom: str = None,
         max_duration: int = None,
@@ -182,7 +187,7 @@ class Calls:
         self,
         call_id: str,
         instructions: list,
-        action: dict
+        action: Action,
     ) -> UpdateVoiceCallResponse:
         return self._sinch.configuration.transport.request(
             UpdateCallEndpoint(
@@ -199,7 +204,7 @@ class Calls:
         call_id: str,
         call_leg: str,
         instructions: list,
-        action: dict
+        action: Action,
     ) -> ManageVoiceCallResponse:
         return self._sinch.configuration.transport.request(
             ManageCallEndpoint(
@@ -277,11 +282,18 @@ class Applications:
             GetVoiceNumbersEndpoint()
         )
 
-    def assign_numbers(self, call_id) -> AssignNumbersVoiceApplicationResponse:
+    def assign_numbers(
+        self,
+        numbers: List[str],
+        application_key: str = None,
+        capability: str = None
+    ) -> AssignNumbersVoiceApplicationResponse:
         return self._sinch.configuration.transport.request(
-            AssignVoiceNumbersEndxpoint(
+            AssignVoiceNumbersEndpoint(
                 request_data=AssignNumbersVoiceApplicationRequest(
-                    call_id=call_id
+                    numbers=numbers,
+                    application_key=application_key,
+                    capability=capability
                 )
             )
         )
@@ -289,7 +301,7 @@ class Applications:
     def unassign_number(
         self,
         number: str,
-        application_key: str =None,
+        application_key: str = None,
         capability: str = None
 
     ) -> UnassignNumbersVoiceApplicationResponse:
@@ -303,9 +315,32 @@ class Applications:
             )
         )
 
-    def get_callback_urls(self) -> GetCallbackUrlsVoiceApplicationResponse:
+    def get_callback_urls(
+        self,
+        application_key: str
+    ) -> GetCallbackUrlsVoiceApplicationResponse:
         return self._sinch.configuration.transport.request(
-            GetVoiceCallbacksEndpoint()
+            GetVoiceCallbacksEndpoint(
+                request_data=GetCallbackUrlsVoiceApplicationRequest(
+                    application_key=application_key
+                )
+            )
+        )
+
+    def update_callback_urls(
+        self,
+        application_key: str,
+        primary: str = None,
+        fallback: str = None
+    ):
+        return self._sinch.configuration.transport.request(
+            UpdateVoiceCallbacksEndpoint(
+                request_data=UpdateCallbackUrlsVoiceApplicationRequest(
+                    application_key=application_key,
+                    primary=primary,
+                    fallback=fallback
+                )
+            )
         )
 
     def query_number(self, number) -> QueryNumberVoiceApplicationResponse:

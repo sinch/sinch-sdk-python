@@ -22,9 +22,9 @@ class QueryVoiceNumberEndpoint(VoiceEndpoint):
     def handle_response(self, response: HTTPResponse) -> QueryNumberVoiceApplicationResponse:
         super().handle_response(response)
         return QueryNumberVoiceApplicationResponse(
-            country_id=response.body["countryId"],
-            number_type=response.body["numberType"],
-            normalized_number=response.body["normalizedNumber"],
-            restricted=response.body["restricted"],
-            rate=response.body["rate"]
+            country_id=response.body["number"]["countryId"],
+            number_type=response.body["number"]["numberType"],
+            normalized_number=response.body["number"]["normalizedNumber"],
+            restricted=response.body["number"]["restricted"],
+            rate=response.body["number"]["rate"]
         )
