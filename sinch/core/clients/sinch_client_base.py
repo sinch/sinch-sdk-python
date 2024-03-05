@@ -21,11 +21,11 @@ class ClientBase(ABC):
     @abstractmethod
     def __init__(
         self,
-        key_id,
-        key_secret,
-        project_id,
-        logger_name=None,
-        logger=None,
+        key_id: str = None,
+        key_secret: str = None,
+        project_id: str = None,
+        logger_name: str = None,
+        logger: str = None,
         application_key: str = None,
         application_secret: str = None
     ):
