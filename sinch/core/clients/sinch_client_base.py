@@ -32,4 +32,4 @@ class ClientBase(ABC):
         pass
 
     def __repr__(self):
-        return f"Sinch SDK client for project_id: {self.configuration.project_id}"
+        return "Sinch SDK client"
