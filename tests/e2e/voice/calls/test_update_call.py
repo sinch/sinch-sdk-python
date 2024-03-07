@@ -1,8 +1,6 @@
-import pytest
 from sinch.domains.voice.models.calls.responses import UpdateVoiceCallResponse
 
 
-@pytest.mark.skip(reason="Conference endpoints have to be implemented first.")
 def test_update_call(
     sinch_client_sync,
     call_id
@@ -22,7 +20,6 @@ def test_update_call(
     assert isinstance(update_call_response, UpdateVoiceCallResponse)
 
 
-@pytest.mark.skip(reason="Conference endpoints have to be implemented first.")
 async def test_update_call_async(
     sinch_client_async,
     call_id
