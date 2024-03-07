@@ -27,3 +27,9 @@ class ConferenceMusicOnHold(Enum):
     MUSIC_1 = "music1"
     MUSIC_2 = "music2"
     MUSIC_3 = "music3"
+
+
+class ConferenceDTMFOptionsMode(Enum):
+    IGNORE = "ignore"
+    FORWARD = "forward"
+    DETECT = "detect"
