@@ -23,7 +23,7 @@ class UnAssignVoiceNumberEndpoint(VoiceEndpoint):
         request_data = {}
 
         if self.request_data.number:
-            request_data["numbers"] = self.request_data.number
+            request_data["number"] = self.request_data.number
 
         if self.request_data.application_key:
             request_data["applicationKey"] = self.request_data.application_key
