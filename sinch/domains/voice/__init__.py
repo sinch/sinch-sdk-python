@@ -199,7 +199,7 @@ class Calls:
             )
         )
 
-    def manage(
+    def manage_with_call_leg(
         self,
         call_id: str,
         call_leg: str,
