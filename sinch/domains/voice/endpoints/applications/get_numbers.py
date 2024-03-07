@@ -23,8 +23,9 @@ class GetVoiceNumbersEndpoint(VoiceEndpoint):
         return GetNumbersVoiceApplicationResponse(
             numbers=[
                 ApplicationNumber(
-                    number=number["number"],
-                    capability=number["capability"]
+                    number=number.get("number"),
+                    capability=number.get("capability"),
+                    applicationkey=number.get("applicationkey")
                 ) for number in response.body["numbers"]
             ]
         )
