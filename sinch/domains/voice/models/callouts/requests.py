@@ -1,17 +1,6 @@
 from dataclasses import dataclass
-from typing import TypedDict
 from sinch.core.models.base_model import SinchRequestBaseModel
-
-
-class Destination(TypedDict):
-    type: str
-    endpoint: str
-
-
-class ConferenceDTMFOptions(TypedDict):
-    mode: str
-    max_digits: int
-    timeout_mills: int
+from sinch.domains.voice.models import Destination, ConferenceDTMFOptions
 
 
 @dataclass

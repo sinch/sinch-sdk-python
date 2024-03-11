@@ -6,7 +6,7 @@ def test_unassign_application_number(
 ):
     get_voice_numbers_response = sinch_client_sync.voice.applications.get_numbers()
     unassign_number_response = sinch_client_sync.voice.applications.unassign_number(
-        number=get_voice_numbers_response.numbers[0].number
+        number=get_voice_numbers_response.numbers[4].number
     )
     assert isinstance(unassign_number_response, UnassignNumbersVoiceApplicationResponse)
 

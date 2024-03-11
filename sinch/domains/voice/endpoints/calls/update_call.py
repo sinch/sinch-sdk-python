@@ -1,3 +1,4 @@
+from copy import deepcopy
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.voice.endpoints.voice_endpoint import VoiceEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -20,8 +21,9 @@ class UpdateCallEndpoint(VoiceEndpoint):
         )
 
     def request_body(self):
-        self.request_data.call_id = None
-        return self.request_data.as_json()
+        request_data = deepcopy(self.request_data)
+        request_data.call_id = None
+        return request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> UpdateVoiceCallResponse:
         super().handle_response(response)
