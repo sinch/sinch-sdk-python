@@ -1,4 +1,6 @@
 from sinch.domains.voice.models.calls.responses import ManageVoiceCallResponse
+from sinch.domains.voice.models.svaml.actions import HangupAction
+from sinch.domains.voice.models.svaml.instructions import SendDtmfInstruction
 
 
 def test_manage_call(
@@ -9,14 +11,11 @@ def test_manage_call(
         call_id=conference_call_id,
         call_leg="caller",
         instructions=[
-            {
-              "name": "sendDtmf",
-              "value": "1234#"
-            }
+            SendDtmfInstruction(
+                value="1234#"
+            ).as_dict()
         ],
-        action={
-            "name": "hangup"
-        }
+        action=HangupAction().as_dict()
     )
     assert isinstance(update_call_response, ManageVoiceCallResponse)
 
@@ -29,13 +28,10 @@ async def test_manage_call_async(
         call_id=conference_call_id,
         call_leg="caller",
         instructions=[
-            {
-              "name": "sendDtmf",
-              "value": "1234#"
-            }
+            SendDtmfInstruction(
+                value="1234#"
+            ).as_dict()
         ],
-        action={
-            "name": "hangup"
-        }
+        action=HangupAction().as_dict()
     )
     assert isinstance(update_call_response, ManageVoiceCallResponse)
