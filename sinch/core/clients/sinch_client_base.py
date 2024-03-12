@@ -1,3 +1,4 @@
+from logging import Logger
 from abc import ABC, abstractmethod
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.domains.authentication import AuthenticationBase
@@ -25,7 +26,7 @@ class ClientBase(ABC):
         key_secret: str = None,
         project_id: str = None,
         logger_name: str = None,
-        logger: str = None,
+        logger: Logger = None,
         application_key: str = None,
         application_secret: str = None
     ):
