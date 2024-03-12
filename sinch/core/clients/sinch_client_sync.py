@@ -1,3 +1,4 @@
+from logging import Logger
 from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManager
@@ -17,11 +18,11 @@ class Client(ClientBase):
     """
     def __init__(
         self,
-        key_id,
-        key_secret,
-        project_id,
-        logger_name=None,
-        logger=None,
+        key_id: str = None,
+        key_secret: str = None,
+        project_id: str = None,
+        logger_name: str = None,
+        logger: Logger = None,
         application_key: str = None,
         application_secret: str = None
     ):
