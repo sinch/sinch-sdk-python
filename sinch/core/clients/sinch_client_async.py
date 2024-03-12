@@ -1,3 +1,4 @@
+from logging import Logger
 from sinch.core.clients.sinch_client_base import ClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManagerAsync
@@ -21,7 +22,7 @@ class ClientAsync(ClientBase):
         key_secret: str = None,
         project_id: str = None,
         logger_name: str = None,
-        logger: str = None,
+        logger: Logger = None,
         application_key: str = None,
         application_secret: str = None
     ):
