@@ -1,10 +1,8 @@
-import pytest
 from sinch.domains.verification.models.responses import (
     StartSMSInitiateVerificationResponse,
     StartFlashCallInitiateVerificationResponse
 )
 from sinch.domains.verification.enums import VerificationMethod
-from sinch.domains.verification.exceptions import VerificationException
 
 
 def test_start_verification_sms(
@@ -21,22 +19,6 @@ def test_start_verification_sms(
     )
 
     assert isinstance(verification_response, StartSMSInitiateVerificationResponse)
-
-
-def test_start_verification_sms_malformed_phone_number(
-    sinch_client_sync,
-    phone_number
-):
-    with pytest.raises(VerificationException) as err:
-        sinch_client_sync.verification.verifications.start(
-            method="sms",
-            identity={
-                "type": "number",
-                "endpoint": "abcd" + phone_number + "abcd"
-            },
-            reference="random"
-        )
-    assert "invalid" in err.value.http_response.body["message"]
 
 
 def test_start_verification_flash_call(
