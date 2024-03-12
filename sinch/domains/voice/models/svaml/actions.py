@@ -65,13 +65,31 @@ class ConnectMxpAction(SinchRequestBaseModel):
 
 
 @dataclass
+class Option(SinchRequestBaseModel):
+    dtmf: str
+    action: str
+
+
+@dataclass
+class MenuOption(SinchRequestBaseModel):
+    id: str
+    main_prompt: Optional[str] = None
+    repeat_prompt: Optional[str] = None
+    repeats: Optional[int] = None
+    max_digits: Optional[int] = None
+    timeout_mills: Optional[int] = None
+    max_timeout_mills: Optional[int] = None
+    options: Optional[List[Option]] = None
+
+
+@dataclass
 class ConnectSipAction(SinchRequestBaseModel):
     destination: Optional[Destination]
     name: str = "connectSip"
     max_duration: Optional[int] = None
     cli: Optional[str] = None
     transport: Optional[str] = None
-    suppressCallbacks: Optional[bool] = None
+    suppress_callbacks: Optional[bool] = None
     call_headers: Optional[List[CallHeaders]] = None
     moh: Optional[str] = None
 
@@ -102,13 +120,13 @@ class RunMenuAction(SinchRequestBaseModel):
     locale: Optional[str] = None
     main_menu: Optional[str] = None
     enable_voice: Optional[bool] = None
-    menus: Optional[dict] = None
+    menus: Optional[List[MenuOption]] = None
 
 
 @dataclass
 class ParkAction(SinchRequestBaseModel):
     name: str = "park"
     locale: Optional[str] = None
-    introPrompt: Optional[str] = None
+    intro_prompt: Optional[str] = None
     holdPrompt: Optional[str] = None
     maxDuration: Optional[int] = None
