@@ -29,6 +29,7 @@ class StartVerificationEndpoint(VerificationEndpoint):
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> StartVerificationResponse:
+        super().handle_response(response)
         if self.request_data.method == VerificationMethod.SMS.value:
             return StartSMSInitiateVerificationResponse(
                 **response.body
