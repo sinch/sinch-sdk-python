@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 from sinch.domains.voice.endpoints.callouts.callout import CalloutEndpoint
 from sinch.domains.voice.endpoints.calls.get_call import GetCallEndpoint
 from sinch.domains.voice.endpoints.calls.update_call import UpdateCallEndpoint
@@ -73,7 +73,7 @@ class Callouts:
         destination: Destination,
         cli: str = None,
         dtmf: str = None,
-        domain: str = None,
+        domain: Literal["pstn", "mxp"] = None,
         custom: str = None,
         locale: str = None,
         text: str = None,
@@ -117,7 +117,7 @@ class Callouts:
         greeting: str = None,
         moh_class: str = None,
         custom: str = None,
-        domain: str = None
+        domain: Literal["pstn", "mxp"] = None,
     ) -> VoiceCalloutResponse:
         return self._sinch.configuration.transport.request(
             CalloutEndpoint(
@@ -238,7 +238,7 @@ class Conferences:
         greeting: str = None,
         moh_class: str = None,
         custom: str = None,
-        domain: str = None
+        domain: Literal["pstn", "mxp"] = None,
     ) -> VoiceCalloutResponse:
         return self._sinch.voice.callouts.conference(
             destination=destination,
