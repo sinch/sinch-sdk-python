@@ -8,7 +8,7 @@ class AnsweringMachineDetection(TypedDict):
     enabled: bool
 
 
-class CallHeaders(TypedDict):
+class CallHeader(TypedDict):
     key: str
     value: str
 
@@ -54,7 +54,7 @@ class ConnectPtsnAction(SinchRequestBaseModel):
 class ConnectMxpAction(SinchRequestBaseModel):
     name: str = "connectMxp"
     destination: Optional[Destination] = None
-    call_headers: Optional[List[CallHeaders]] = None
+    call_headers: Optional[List[CallHeader]] = None
 
     def as_dict(self):
         payload = super().as_dict()
@@ -90,7 +90,7 @@ class ConnectSipAction(SinchRequestBaseModel):
     cli: Optional[str] = None
     transport: Optional[str] = None
     suppress_callbacks: Optional[bool] = None
-    call_headers: Optional[List[CallHeaders]] = None
+    call_headers: Optional[List[CallHeader]] = None
     moh: Optional[str] = None
 
     def as_dict(self):
