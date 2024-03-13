@@ -222,6 +222,42 @@ class Conferences:
     def __init__(self, sinch):
         self._sinch = sinch
 
+    def call(
+        self,
+        destination: Destination,
+        conference_id: str,
+        cli: str = None,
+        conference_dtmf_options: ConferenceDTMFOptions = None,
+        dtmf: str = None,
+        conference: str = None,
+        max_duration: int = None,
+        enable_ace: bool = None,
+        enable_dice: bool = None,
+        enable_pie: bool = None,
+        locale: str = None,
+        greeting: str = None,
+        moh_class: str = None,
+        custom: str = None,
+        domain: str = None
+    ) -> VoiceCalloutResponse:
+        return self._sinch.voice.callouts.conference(
+            destination=destination,
+            conference_id=conference_id,
+            cli=cli,
+            conference_dtmf_options=conference_dtmf_options,
+            dtmf=dtmf,
+            conference=conference,
+            max_duration=max_duration,
+            enable_ace=enable_ace,
+            enable_dice=enable_dice,
+            enable_pie=enable_pie,
+            locale=locale,
+            greeting=greeting,
+            moh_class=moh_class,
+            custom=custom,
+            domain=domain
+        )
+
     def get(self, conference_id: str) -> GetVoiceConferenceResponse:
         return self._sinch.configuration.transport.request(
             GetConferenceEndpoint(
