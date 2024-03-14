@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Literal
 from sinch.core.models.base_model import SinchRequestBaseModel
 from sinch.domains.voice.models import Destination, ConferenceDTMFOptions
 
@@ -34,7 +35,7 @@ class ConferenceVoiceCalloutRequest(SinchRequestBaseModel):
     greeting: str
     mohClass: str
     custom: str
-    domain: str
+    domain: Literal["pstn", "mxp"]
 
 
 @dataclass
