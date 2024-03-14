@@ -100,7 +100,6 @@ class ReplaceBatchRequest(BatchRequest):
     flash_message: bool
     max_number_of_message_parts: int
     udh: str
-    max_number_of_message_parts: int
 
 
 @dataclass
