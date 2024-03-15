@@ -24,7 +24,7 @@ class ContinueAction(SinchRequestBaseModel):
 
 
 @dataclass
-class ConnectPtsnAction(SinchRequestBaseModel):
+class ConnectPstnAction(SinchRequestBaseModel):
     name: str = "connectPstn"
     number: Optional[str] = None
     locale: Optional[str] = None
