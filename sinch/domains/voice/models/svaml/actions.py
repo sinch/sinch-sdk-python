@@ -128,5 +128,5 @@ class ParkAction(SinchRequestBaseModel):
     name: str = "park"
     locale: Optional[str] = None
     intro_prompt: Optional[str] = None
-    holdPrompt: Optional[str] = None
-    maxDuration: Optional[int] = None
+    hold_prompt: Optional[str] = None
+    max_duration: Optional[int] = None
