@@ -2,4 +2,4 @@ from datetime import datetime
 
 
 def timestamp_to_datetime_in_utc_deserializer(timestamp: str):
-    return datetime.fromisoformat(timestamp + 'Z')
+    return datetime.fromisoformat(timestamp + "+00:00")
