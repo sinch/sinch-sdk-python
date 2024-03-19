@@ -1,6 +1,8 @@
 import json
+import datetime
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
+from sinch.core.deserializers import timestamp_to_datetime_in_utc_deserializer
 
 
 @dataclass
@@ -55,3 +57,9 @@ def test_sinch_request_base_model_empty_field_removal():
     test_data_model = construct_request_test_data_model()
     request_data_model_as_dict = test_data_model.as_dict()
     assert not request_data_model_as_dict.get("accepted")
+
+
+def test_timestamp_to_datetime_in_utc_deserializer():
+    datetime_in_utc = timestamp_to_datetime_in_utc_deserializer("2024-02-15T13:01:29")
+    assert isinstance(datetime_in_utc, datetime.datetime)
+    assert datetime_in_utc.tzinfo == datetime.timezone.utc

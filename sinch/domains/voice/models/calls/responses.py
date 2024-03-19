@@ -1,3 +1,4 @@
+from datetime import datetime
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchBaseModel
 from sinch.domains.voice.models import Price, Destination
@@ -13,7 +14,7 @@ class GetVoiceCallResponse(SinchBaseModel):
     status: str
     result: str
     reason: str
-    timestamp: str
+    timestamp: datetime
     custom: dict
     user_rate: Price
     debit: Price

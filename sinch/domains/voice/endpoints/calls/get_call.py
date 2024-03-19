@@ -1,3 +1,4 @@
+from sinch.core.deserializers import timestamp_to_datetime_in_utc_deserializer
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.voice.endpoints.voice_endpoint import VoiceEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -34,7 +35,7 @@ class GetCallEndpoint(VoiceEndpoint):
             status=response.body.get("status"),
             result=response.body.get("result"),
             reason=response.body.get("reason"),
-            timestamp=response.body.get("timestamp"),
+            timestamp=timestamp_to_datetime_in_utc_deserializer(response.body["timestamp"]),
             custom=response.body.get("custom"),
             user_rate=Price(
                 currency_id=response.body["userRate"]["currencyId"],
