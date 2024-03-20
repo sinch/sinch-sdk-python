@@ -30,6 +30,6 @@ class Destination(TypedDict):
 
 
 class ConferenceDTMFOptions(TypedDict):
-    mode: str
+    mode: Literal["ignore", "forward", "detect"]
     max_digits: int
     timeout_mills: int
