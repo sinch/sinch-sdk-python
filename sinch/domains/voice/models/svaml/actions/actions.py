@@ -1,50 +1,7 @@
-from enum import Enum
 from dataclasses import dataclass
 from typing import Optional, List, TypedDict
 from sinch.core.models.base_model import SinchRequestBaseModel
 from sinch.domains.voice import Destination, ConferenceDTMFOptions
-
-
-class Indications(Enum):
-    AUSTRIA = "at"
-    AUSTRALIA = "au"
-    BULGARIA = "bg"
-    BRAZIL = "br"
-    BELGIUM = "be"
-    SWITZERLAND = "ch"
-    CHILE = "cl"
-    CHINA = "cn"
-    CZECH_REPUBLIC = "cz"
-    GERMANY = "de"
-    DENMARK = "dk"
-    ESTONIA = "ee"
-    SPAIN = "es"
-    FINLAND = "fi"
-    FRANCE = "fr"
-    GREECE = "gr"
-    HUNGARY = "hu"
-    ISRAEL = "il"
-    INDIA = "in"
-    ITALY = "it"
-    LITHUANIA = "lt"
-    JAPAN = "jp"
-    MEXICO = "mx"
-    MALAYSIA = "my"
-    NETHERLANDS = "nl"
-    NORWAY = "no"
-    NEW_ZEALAND = "nz"
-    PHILIPPINES = "ph"
-    POLAND = "pl"
-    PORTUGAL = "pt"
-    RUSSIA = "ru"
-    SWEDEN = "se"
-    SINGAPORE = "sg"
-    THAILAND = "th"
-    UNITED_KINGDOM = "uk"
-    UNITED_STATES = "us"
-    TAIWAN = "tw"
-    VENEZUELA = "ve"
-    SOUTH_AFRICA = "za"
 
 
 class AnsweringMachineDetection(TypedDict):
