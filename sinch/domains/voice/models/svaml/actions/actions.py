@@ -114,6 +114,13 @@ class ConnectConfAction(SinchRequestBaseModel):
     conference_dtmf_options: Optional[ConferenceDTMFOptions] = None
     moh: Optional[str] = None
 
+    def as_dict(self):
+        payload = super().as_dict()
+        if payload.get("conference_dtmf_options"):
+            payload["conferenceDtmfOptions"] = payload.pop("conference_dtmf_options")
+
+        return payload
+
 
 @dataclass
 class RunMenuAction(SinchRequestBaseModel):
@@ -124,6 +131,16 @@ class RunMenuAction(SinchRequestBaseModel):
     enable_voice: Optional[bool] = None
     menus: Optional[List[MenuOption]] = None
 
+    def as_dict(self):
+        payload = super().as_dict()
+        if payload.get("main_menu"):
+            payload["mainMenu"] = payload.pop("main_menu")
+
+        if payload.get("enable_voice"):
+            payload["enableVoice"] = payload.pop("enable_voice")
+
+        return payload
+
 
 @dataclass
 class ParkAction(SinchRequestBaseModel):
@@ -132,3 +149,16 @@ class ParkAction(SinchRequestBaseModel):
     intro_prompt: Optional[str] = None
     hold_prompt: Optional[str] = None
     max_duration: Optional[int] = None
+
+    def as_dict(self):
+        payload = super().as_dict()
+        if payload.get("intro_prompt"):
+            payload["introPrompt"] = payload.pop("intro_prompt")
+
+        if payload.get("hold_prompt"):
+            payload["holdPrompt"] = payload.pop("hold_prompt")
+
+        if payload.get("max_duration"):
+            payload["maxDuration"] = payload.pop("max_duration")
+
+        return payload
