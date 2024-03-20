@@ -144,6 +144,9 @@ class ConnectSipAction(SinchRequestBaseModel):
         if payload.get("suppress_callbacks"):
             payload["suppressCallbacks"] = payload.pop("suppress_callbacks")
 
+        if payload.get("call_headers"):
+            payload["callHeaders"] = payload.pop("call_headers")
+
         return payload
 
 
