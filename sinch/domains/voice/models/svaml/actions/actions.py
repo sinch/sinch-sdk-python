@@ -109,7 +109,6 @@ class ConnectSipAction(SinchRequestBaseModel):
 
 @dataclass
 class ConnectConfAction(SinchRequestBaseModel):
-    destination: Optional[Destination]
     conference_id: str
     name: str = "connectConf"
     conference_dtmf_options: Optional[ConferenceDTMFOptions] = None
