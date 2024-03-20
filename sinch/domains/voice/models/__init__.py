@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TypedDict
+from typing import TypedDict, Literal
 
 
 @dataclass
@@ -25,7 +25,7 @@ class ApplicationNumber:
 
 
 class Destination(TypedDict):
-    type: str
+    type: Literal["number", "username"]
     endpoint: str
 
 
