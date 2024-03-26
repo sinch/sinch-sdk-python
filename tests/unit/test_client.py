@@ -1,9 +1,9 @@
-from sinch import Client, ClientAsync
+from sinch import SinchClient, SinchClientAsync
 from sinch.core.clients.sinch_client_configuration import Configuration
 
 
 def test_sinch_client_initialization():
-    sinch_client_sync = Client(
+    sinch_client_sync = SinchClient(
         key_id="test",
         key_secret="test_secret",
         project_id="test_project_id"
@@ -12,7 +12,7 @@ def test_sinch_client_initialization():
 
 
 def test_sinch_client_async_initialization():
-    sinch_client_async = ClientAsync(
+    sinch_client_async = SinchClientAsync(
         key_id="test",
         key_secret="test_secret",
         project_id="test_project_id"

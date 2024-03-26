@@ -2,8 +2,8 @@ import os
 import pytest
 from dataclasses import dataclass
 
-from sinch import Client
-from sinch import ClientAsync
+from sinch import SinchClient
+from sinch import SinchClientAsync
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
@@ -310,7 +310,7 @@ def sinch_client_sync(
     project_id
 ):
     return configure_origin(
-        Client(
+        SinchClient(
             key_id=key_id,
             key_secret=key_secret,
             project_id=project_id,
@@ -343,7 +343,7 @@ def sinch_client_async(
     project_id
 ):
     return configure_origin(
-        ClientAsync(
+        SinchClientAsync(
             key_id=key_id,
             key_secret=key_secret,
             project_id=project_id,

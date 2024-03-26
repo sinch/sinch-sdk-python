@@ -7,7 +7,7 @@ from sinch.domains.conversation import ConversationBase
 from sinch.domains.sms import SMSBase
 
 
-class ClientBase(ABC):
+class SinchClientBase(ABC):
     """
     Sinch abstract base class for concrete Sinch Client implementations.
     By default, this SDK provides two implementations - sync and async.

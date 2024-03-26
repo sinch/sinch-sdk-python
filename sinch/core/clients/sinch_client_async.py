@@ -1,5 +1,5 @@
 from logging import Logger
-from sinch.core.clients.sinch_client_base import ClientBase
+from sinch.core.clients.sinch_client_base import SinchClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManagerAsync
 from sinch.core.adapters.asyncio_http_adapter import HTTPTransportAioHTTP
@@ -10,7 +10,7 @@ from sinch.domains.sms import SMSAsync
 from sinch.domains.verification import Verification as VerificationAsync
 
 
-class ClientAsync(ClientBase):
+class SinchClientAsync(SinchClientBase):
     """
     Asynchronous implementation of the Sinch Client
     By default this implementation uses HTTPTransportAioHTTP based on AioHTTP library

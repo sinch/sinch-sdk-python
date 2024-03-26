@@ -1,6 +1,6 @@
 import pytest
 
-from sinch import Client
+from sinch import SinchClient
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.domains.authentication.exceptions import AuthenticationException
 
@@ -11,7 +11,7 @@ def test_basic_auth_token_generation(sinch_client_sync):
 
 
 def test_basic_auth_token_generation_invalid_credentials(project_id):
-    sinch_client = Client(
+    sinch_client = SinchClient(
         key_id="silly",
         key_secret="walk",
         project_id=project_id

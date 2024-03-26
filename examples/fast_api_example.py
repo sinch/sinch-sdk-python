@@ -1,6 +1,6 @@
 import os
 from fastapi import FastAPI
-from sinch import ClientAsync
+from sinch import SinchClientAsync
 
 """
 Run with: uvicorn fast_api_example:app --reload
@@ -8,7 +8,7 @@ Run with: uvicorn fast_api_example:app --reload
 
 app = FastAPI()
 
-sinch_client = ClientAsync(
+sinch_client = SinchClientAsync(
     key_id=os.getenv("KEY_ID"),
     key_secret=os.getenv("KEY_SECRET"),
     project_id=os.getenv("PROJECT_ID")
