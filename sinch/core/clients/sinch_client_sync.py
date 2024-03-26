@@ -1,5 +1,5 @@
 from logging import Logger
-from sinch.core.clients.sinch_client_base import ClientBase
+from sinch.core.clients.sinch_client_base import SinchClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
@@ -10,7 +10,7 @@ from sinch.domains.sms import SMS
 from sinch.domains.verification import Verification
 
 
-class Client(ClientBase):
+class SinchClient(SinchClientBase):
     """
     Synchronous implementation of the Sinch Client
     By default this implementation uses HTTPTransportRequests based on Requests library

@@ -1,6 +1,6 @@
 import os
 import logging
-from sinch import Client
+from sinch import SinchClient
 """
 Custom logger configuration example.
 """
@@ -22,7 +22,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-sinch_client = Client(
+sinch_client = SinchClient(
     key_id=os.getenv("KEY_ID"),
     key_secret=os.getenv("KEY_SECRET"),
     project_id=os.getenv("PROJECT_ID"),
