@@ -43,9 +43,9 @@ To initialize communication with Sinch backed, credentials obtained from Sinch p
 It's highly advised to not hardcode those credentials, but to fetch them from environment variables:
 
 ```python
-from sinch import Client
+from sinch import SinchClient
 
-sinch_client = Client(
+sinch_client = SinchClient(
     key_id="key_id",
     key_secret="key_secret",
     project_id="some_project",
@@ -56,9 +56,9 @@ sinch_client = Client(
 
 ```python
 import os
-from sinch import Client
+from sinch import SinchClient
 
-sinch_client = Client(
+sinch_client = SinchClient(
     key_id=os.getenv("KEY_ID"),
     key_secret=os.getenv("KEY_SECRET"),
     project_id=os.getenv("PROJECT_ID"),
@@ -139,9 +139,9 @@ By default, two HTTP implementations are provided:
 - Synchronous using `requests` HTTP library
 - Asynchronous using `aiohttp` HTTP library
 
-For creating custom HTTP client code, use either `Client` or `ClientAsync` client and inject your transport during initialisation:
+For creating custom HTTP client code, use either `SinchClient` or `SinchClientAsync` client and inject your transport during initialisation:
 ```python
-sinch_client = ClientAsync(
+sinch_client = SinchClientAsync(
     key_id="Spanish",
     key_secret="Inquisition",
     project_id="some_project",

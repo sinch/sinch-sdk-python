@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from sinch import Client
+from sinch import SinchClient
 from sinch.domains.conversation.enums import ConversationChannel
 
 """
@@ -9,7 +9,7 @@ Run with: export FLASK_APP=flask_example.py; flask run
 
 app = Flask("Sinch_example")
 
-sinch_client = Client(
+sinch_client = SinchClient(
     key_id=os.getenv("KEY_ID"),
     key_secret=os.getenv("KEY_SECRET"),
     project_id=os.getenv("PROJECT_ID")
