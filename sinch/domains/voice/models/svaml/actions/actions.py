@@ -81,6 +81,25 @@ class MenuOption(SinchRequestBaseModel):
     max_timeout_mills: Optional[int] = None
     options: Optional[List[Option]] = None
 
+    def as_dict(self):
+        payload = super().as_dict()
+        if payload.get("main_prompt"):
+            payload["mainPrompt"] = payload.pop("main_prompt")
+
+        if payload.get("repeat_prompt"):
+            payload["repeatPrompt"] = payload.pop("repeat_prompt")
+
+        if payload.get("max_digits"):
+            payload["maxDigits"] = payload.pop("max_digits")
+
+        if payload.get("timeout_mills"):
+            payload["timeoutMills"] = payload.pop("timeout_mills")
+
+        if payload.get("max_timeout_mills"):
+            payload["maxTimeoutMills"] = payload.pop("max_timeout_mills")
+
+        return payload
+
 
 @dataclass
 class ConnectSipAction(SinchRequestBaseModel):
