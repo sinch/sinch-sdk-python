@@ -116,6 +116,9 @@ class ConnectConfAction(SinchRequestBaseModel):
 
     def as_dict(self):
         payload = super().as_dict()
+        if payload.get("conference_id"):
+            payload["conferenceId"] = payload.pop("conference_id")
+
         if payload.get("conference_dtmf_options"):
             payload["conferenceDtmfOptions"] = payload.pop("conference_dtmf_options")
 
