@@ -9,7 +9,7 @@ class TextToSpeechVoiceCalloutRequest(SinchRequestBaseModel):
     destination: Destination
     cli: str
     dtmf: str
-    domain: str
+    domain: Literal["pstn", "mxp"]
     custom: str
     locale: str
     text: str
