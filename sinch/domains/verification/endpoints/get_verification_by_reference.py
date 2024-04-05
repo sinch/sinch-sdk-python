@@ -1,3 +1,4 @@
+from sinch.core.deserializers import timestamp_to_datetime_in_utc_deserializer
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -27,9 +28,11 @@ class GetVerificationStatusByReferenceEndpoint(VerificationEndpoint):
             status=response.body.get("status"),
             price=response.body.get("price"),
             identity=response.body.get("identity"),
-            country_id=response.body.get("country_id"),
-            verification_timestamp=response.body.get("verification_timestamp"),
+            country_id=response.body.get("countryId"),
+            verification_timestamp=timestamp_to_datetime_in_utc_deserializer(
+                response.body.get("verificationTimestamp")
+            ),
             reference=response.body.get("reference"),
             reason=response.body.get("reason"),
-            call_complete=response.body.get("call_complete")
+            call_complete=response.body.get("callComplete")
         )
