@@ -23,7 +23,10 @@ from sinch.domains.verification.models.responses import (
     GetVerificationStatusByReferenceResponse
 )
 from sinch.domains.verification.models.requests import (
-    StartVerificationRequest,
+    StartSMSVerificationRequest,
+    StartFlashCallVerificationRequest,
+    StartCalloutVerificationRequest,
+    StartSeamlessVerificationRequest,
     ReportVerificationByIdentityRequest,
     ReportVerificationByIdRequest,
     GetVerificationStatusByIdRequest,
@@ -32,6 +35,7 @@ from sinch.domains.verification.models.requests import (
 )
 
 from sinch.domains.verification.enums import VerificationMethod
+from sinch.domains.verification.models import VerificationIdentity
 
 
 class Verifications:
@@ -40,80 +44,74 @@ class Verifications:
 
     def start_sms(
         self,
-        identity: dict,
-        method: VerificationMethod,
+        identity: VerificationIdentity,
         reference: str = None,
         custom: str = None,
-        flash_call_options: dict = None
+        expiry: str = None,
+        code_type: str = None,
+        template: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartVerificationRequest(
+                request_data=StartSMSVerificationRequest(
                     identity=identity,
-                    method=method,
                     reference=reference,
                     custom=custom,
-                    flash_call_options=flash_call_options
+                    expiry=expiry,
+                    code_type=code_type,
+                    template=template
                 )
             )
         )
 
     def start_flash_call(
         self,
-        identity: dict,
-        method: VerificationMethod,
+        identity: VerificationIdentity,
         reference: str = None,
         custom: str = None,
-        flash_call_options: dict = None
+        dial_timeout: int = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartVerificationRequest(
+                request_data=StartFlashCallVerificationRequest(
                     identity=identity,
-                    method=method,
                     reference=reference,
                     custom=custom,
-                    flash_call_options=flash_call_options
+                    dial_timeout=dial_timeout
                 )
             )
         )
 
     def start_callout(
         self,
-        identity: dict,
-        method: VerificationMethod,
+        identity: VerificationIdentity,
         reference: str = None,
         custom: str = None,
-        flash_call_options: dict = None
+        speech_locale: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartVerificationRequest(
+                request_data=StartCalloutVerificationRequest(
                     identity=identity,
-                    method=method,
                     reference=reference,
                     custom=custom,
-                    flash_call_options=flash_call_options
+                    speech_locale=speech_locale
                 )
             )
         )
 
     def start_seamless(
         self,
-        identity: dict,
-        method: VerificationMethod,
+        identity: VerificationIdentity,
         reference: str = None,
-        custom: str = None,
-        flash_call_options: dict = None
+        custom: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartVerificationRequest(
+                request_data=StartSeamlessVerificationRequest(
                     identity=identity,
-                    method=method,
                     reference=reference,
-                    custom=custom,
-                    flash_call_options=flash_call_options
+                    custom=custom
                 )
             )
         )

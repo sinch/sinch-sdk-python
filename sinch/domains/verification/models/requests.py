@@ -1,28 +1,33 @@
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchRequestBaseModel
 from sinch.domains.verification.enums import VerificationMethod
+from sinch.domains.verification.models import VerificationIdentity
 
 
 @dataclass
 class StartVerificationRequest(SinchRequestBaseModel):
-    identity: dict
+    identity: VerificationIdentity
     reference: str
     custom: str
-
 
 
 @dataclass
 class StartSMSVerificationRequest(StartVerificationRequest):
     method: str = VerificationMethod.SMS.value
+    expiry: str = None
+    code_type: str = None
+    template: str = None
 
 
 @dataclass
 class StartFlashCallVerificationRequest(StartVerificationRequest):
+    dial_timeout: int
     method: str = VerificationMethod.FLASHCALL.value
 
 
 @dataclass
 class StartCalloutVerificationRequest(StartVerificationRequest):
+    speech_locale: str
     method: str = VerificationMethod.CALLOUT.value
 
 
