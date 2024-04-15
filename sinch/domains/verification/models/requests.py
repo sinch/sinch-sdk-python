@@ -6,10 +6,29 @@ from sinch.domains.verification.enums import VerificationMethod
 @dataclass
 class StartVerificationRequest(SinchRequestBaseModel):
     identity: dict
-    method: VerificationMethod
     reference: str
     custom: str
-    flash_call_options: dict
+
+
+
+@dataclass
+class StartSMSVerificationRequest(StartVerificationRequest):
+    method: str = VerificationMethod.SMS.value
+
+
+@dataclass
+class StartFlashCallVerificationRequest(StartVerificationRequest):
+    method: str = VerificationMethod.FLASHCALL.value
+
+
+@dataclass
+class StartCalloutVerificationRequest(StartVerificationRequest):
+    method: str = VerificationMethod.CALLOUT.value
+
+
+@dataclass
+class StartSeamlessVerificationRequest(StartVerificationRequest):
+    method: str = VerificationMethod.SEAMLESS.value
 
 
 @dataclass

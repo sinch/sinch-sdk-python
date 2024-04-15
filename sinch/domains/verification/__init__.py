@@ -38,7 +38,67 @@ class Verifications:
     def __init__(self, sinch):
         self._sinch = sinch
 
-    def start(
+    def start_sms(
+        self,
+        identity: dict,
+        method: VerificationMethod,
+        reference: str = None,
+        custom: str = None,
+        flash_call_options: dict = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartVerificationRequest(
+                    identity=identity,
+                    method=method,
+                    reference=reference,
+                    custom=custom,
+                    flash_call_options=flash_call_options
+                )
+            )
+        )
+
+    def start_flash_call(
+        self,
+        identity: dict,
+        method: VerificationMethod,
+        reference: str = None,
+        custom: str = None,
+        flash_call_options: dict = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartVerificationRequest(
+                    identity=identity,
+                    method=method,
+                    reference=reference,
+                    custom=custom,
+                    flash_call_options=flash_call_options
+                )
+            )
+        )
+
+    def start_callout(
+        self,
+        identity: dict,
+        method: VerificationMethod,
+        reference: str = None,
+        custom: str = None,
+        flash_call_options: dict = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartVerificationRequest(
+                    identity=identity,
+                    method=method,
+                    reference=reference,
+                    custom=custom,
+                    flash_call_options=flash_call_options
+                )
+            )
+        )
+
+    def start_seamless(
         self,
         identity: dict,
         method: VerificationMethod,
