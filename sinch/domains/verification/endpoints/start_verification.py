@@ -4,6 +4,9 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.verification.enums import VerificationMethod
 from sinch.domains.verification.models.requests import StartVerificationRequest
 from sinch.domains.verification.models.responses import (
+    FlashCallResponse,
+    SMSResponse,
+    DataResponse,
     StartVerificationResponse,
     StartSMSInitiateVerificationResponse,
     StartDataInitiateVerificationResponse,
@@ -32,20 +35,38 @@ class StartVerificationEndpoint(VerificationEndpoint):
         super().handle_response(response)
         if self.request_data.method == VerificationMethod.SMS.value:
             return StartSMSInitiateVerificationResponse(
-                **response.body
+                id=response.body.get("id"),
+                method=response.body.get("method"),
+                _links=response.body.get("_links"),
+                sms=SMSResponse(
+                    interception_timeout=response.body["sms"].get("interceptionTimeout"),
+                    template=response.body["sms"].get("template")
+                )
             )
         elif self.request_data.method == VerificationMethod.FLASHCALL.value:
             return StartFlashCallInitiateVerificationResponse(
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
-                flashcall=response.body.get("flashCall")
+                flashcall=FlashCallResponse(
+                    cli_filter=response.body["flashCall"].get("cliFilter"),
+                    interception_timeout=response.body["flashCall"].get("interceptionTimeout"),
+                    report_timeout=response.body["flashCall"].get("reportTimeout"),
+                    deny_call_after=response.body["flashCall"].get("denyCallAfter")
+                )
             )
         elif self.request_data.method == VerificationMethod.CALLOUT.value:
             return StartCalloutInitiateVerificationResponse(
-                **response.body
+                id=response.body.get("id"),
+                method=response.body.get("method"),
+                _links=response.body.get("_links")
             )
         elif self.request_data.method == VerificationMethod.SEAMLESS.value:
             return StartDataInitiateVerificationResponse(
-                **response.body
+                id=response.body.get("id"),
+                method=response.body.get("method"),
+                _links=response.body.get("_links"),
+                seamless=DataResponse(
+                    target_uri=response.body["seamless"].get("targetUri")
+                )
             )

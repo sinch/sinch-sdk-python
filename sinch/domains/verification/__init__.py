@@ -33,8 +33,6 @@ from sinch.domains.verification.models.requests import (
     GetVerificationStatusByIdentityRequest,
     GetVerificationStatusByReferenceRequest
 )
-
-from sinch.domains.verification.enums import VerificationMethod
 from sinch.domains.verification.models import VerificationIdentity
 
 
