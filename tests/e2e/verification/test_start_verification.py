@@ -43,13 +43,13 @@ def test_start_verification_flash_call(
     sinch_client_sync,
     phone_number
 ):
-    verification_response = sinch_client_sync.verification.verifications.start(
-        method=VerificationMethod.FLASHCALL.value,
+    verification_response = sinch_client_sync.verification.verifications.start_flash_call(
         identity={
             "type": "number",
             "endpoint": phone_number
         },
-        reference="random5"
+        reference="random5",
+        dial_timeout=5
     )
 
     assert isinstance(verification_response, StartFlashCallInitiateVerificationResponse)
