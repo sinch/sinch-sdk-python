@@ -59,7 +59,7 @@ jobs:
         ref: numbers_fixtures
         path: sinch-sdk-internal-specs
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
     - name: Install wait-port
       run: |
         npm install -g wait-port
