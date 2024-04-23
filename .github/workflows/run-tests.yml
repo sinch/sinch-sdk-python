@@ -62,7 +62,7 @@ jobs:
     - uses: actions/setup-node@v3
     - name: Install wait-port
       run: |
-        npm install wait-port
+        npm install -g wait-port
 
     - name: Test E2E with Pytest and Wiremock
       run: |
