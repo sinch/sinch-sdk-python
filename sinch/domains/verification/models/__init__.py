@@ -1,6 +1,6 @@
-from typing import TypedDict
+from typing import TypedDict, Literal
 
 
 class VerificationIdentity(TypedDict):
-    type: str
+    type: Literal["number"]
     endpoint: str
