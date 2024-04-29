@@ -36,7 +36,7 @@ class StartSMSInitiateVerificationResponse(StartVerificationResponse):
 
 @dataclass
 class StartFlashCallInitiateVerificationResponse(StartVerificationResponse):
-    flashcall: FlashCallResponse
+    flash_call: FlashCallResponse
 
 
 @dataclass

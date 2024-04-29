@@ -40,7 +40,7 @@ class StartSMSVerificationRequest(StartVerificationRequest):
 @dataclass
 class StartFlashCallVerificationRequest(StartVerificationRequest):
     dial_timeout: int
-    method: str = VerificationMethod.FLASHCALL.value
+    method: str = VerificationMethod.FLASH_CALL.value
 
     def as_dict(self):
         payload = super().as_dict()
