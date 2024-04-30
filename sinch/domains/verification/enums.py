@@ -3,7 +3,7 @@ from enum import Enum
 
 class VerificationMethod(Enum):
     SMS = "sms"
-    FLASHCALL = "flashcall"
+    FLASH_CALL = "flashCall"
     CALLOUT = "callout"
     SEAMLESS = "seamless"
 
