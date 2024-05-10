@@ -24,7 +24,10 @@ class GetCallEndpoint(VoiceEndpoint):
     def handle_response(self, response: HTTPResponse) -> GetVoiceCallResponse:
         super().handle_response(response)
         return GetVoiceCallResponse(
-            from_=response.body.get("from"),
+            from_=Destination(
+                type=response.body["from"]["type"],
+                endpoint=response.body["from"]["endpoint"]
+            ),
             to=Destination(
                 type=response.body["to"]["type"],
                 endpoint=response.body["to"]["endpoint"]

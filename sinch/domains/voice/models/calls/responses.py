@@ -6,7 +6,7 @@ from sinch.domains.voice.models import Price, Destination
 
 @dataclass
 class GetVoiceCallResponse(SinchBaseModel):
-    from_: str
+    from_: Destination
     to: Destination
     domain: str
     call_id: str
