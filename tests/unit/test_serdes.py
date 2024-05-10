@@ -63,3 +63,9 @@ def test_timestamp_to_datetime_in_utc_deserializer():
     datetime_in_utc = timestamp_to_datetime_in_utc_deserializer("2024-02-15T13:01:29")
     assert isinstance(datetime_in_utc, datetime.datetime)
     assert datetime_in_utc.tzinfo == datetime.timezone.utc
+
+
+def test_timestamp_to_datetime_in_utc_deserializer_with_added_tz():
+    datetime_in_utc = timestamp_to_datetime_in_utc_deserializer("2024-02-15T13:01:29Z")
+    assert isinstance(datetime_in_utc, datetime.datetime)
+    assert datetime_in_utc.tzinfo == datetime.timezone.utc
