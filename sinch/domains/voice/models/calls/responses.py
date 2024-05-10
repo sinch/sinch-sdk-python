@@ -15,7 +15,7 @@ class GetVoiceCallResponse(SinchBaseModel):
     result: str
     reason: str
     timestamp: datetime
-    custom: dict
+    custom: str
     user_rate: Price
     debit: Price
 
