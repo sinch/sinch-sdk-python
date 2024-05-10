@@ -1,7 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, List, TypedDict
 from sinch.core.models.base_model import SinchRequestBaseModel
-from sinch.domains.voice import Destination, ConferenceDTMFOptions
+from sinch.domains.voice.models import Destination, ConferenceDTMFOptions
+
+
+class Action(SinchRequestBaseModel):
+    name: str
 
 
 class AnsweringMachineDetection(TypedDict):
@@ -14,17 +18,17 @@ class CallHeader(TypedDict):
 
 
 @dataclass
-class HangupAction(SinchRequestBaseModel):
+class HangupAction(Action):
     name: str = "hangup"
 
 
 @dataclass
-class ContinueAction(SinchRequestBaseModel):
+class ContinueAction(Action):
     name: str = "continue"
 
 
 @dataclass
-class ConnectPstnAction(SinchRequestBaseModel):
+class ConnectPstnAction(Action):
     name: str = "connectPstn"
     number: Optional[str] = None
     locale: Optional[str] = None
@@ -51,7 +55,7 @@ class ConnectPstnAction(SinchRequestBaseModel):
 
 
 @dataclass
-class ConnectMxpAction(SinchRequestBaseModel):
+class ConnectMxpAction(Action):
     name: str = "connectMxp"
     destination: Optional[Destination] = None
     call_headers: Optional[List[CallHeader]] = None
@@ -102,7 +106,7 @@ class MenuOption(SinchRequestBaseModel):
 
 
 @dataclass
-class ConnectSipAction(SinchRequestBaseModel):
+class ConnectSipAction(Action):
     destination: Optional[Destination]
     name: str = "connectSip"
     max_duration: Optional[int] = None
@@ -127,7 +131,7 @@ class ConnectSipAction(SinchRequestBaseModel):
 
 
 @dataclass
-class ConnectConfAction(SinchRequestBaseModel):
+class ConnectConfAction(Action):
     conference_id: str
     name: str = "connectConf"
     conference_dtmf_options: Optional[ConferenceDTMFOptions] = None
@@ -145,7 +149,7 @@ class ConnectConfAction(SinchRequestBaseModel):
 
 
 @dataclass
-class RunMenuAction(SinchRequestBaseModel):
+class RunMenuAction(Action):
     name: str = "runMenu"
     barge: Optional[bool] = None
     locale: Optional[str] = None
@@ -165,7 +169,7 @@ class RunMenuAction(SinchRequestBaseModel):
 
 
 @dataclass
-class ParkAction(SinchRequestBaseModel):
+class ParkAction(Action):
     name: str = "park"
     locale: Optional[str] = None
     intro_prompt: Optional[str] = None

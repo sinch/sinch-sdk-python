@@ -1,10 +1,6 @@
 from dataclasses import dataclass
-from typing import TypedDict
 from sinch.core.models.base_model import SinchRequestBaseModel
-
-
-class Action(TypedDict):
-    name: str
+from sinch.domains.voice.models.svaml.actions.actions import Action
 
 
 @dataclass

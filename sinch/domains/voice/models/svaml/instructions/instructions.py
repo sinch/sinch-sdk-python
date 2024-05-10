@@ -4,6 +4,11 @@ from sinch.core.models.base_model import SinchRequestBaseModel
 
 
 @dataclass
+class Instruction(SinchRequestBaseModel):
+    pass
+
+
+@dataclass
 class TranscriptionOptions(SinchRequestBaseModel):
     enabled: str = None
     locale: str = None
@@ -32,43 +37,43 @@ class RecordingOptions(SinchRequestBaseModel):
 
 
 @dataclass
-class PlayFileInstruction(SinchRequestBaseModel):
+class PlayFileInstruction(Instruction):
     ids: List[List[str]]
     locale: str
     name: str = "playFiles"
 
 
 @dataclass
-class SayInstruction(SinchRequestBaseModel):
+class SayInstruction(Instruction):
     name: str = "say"
     text: Optional[str] = None
     locale: Optional[str] = None
 
 
 @dataclass
-class SendDtmfInstruction(SinchRequestBaseModel):
+class SendDtmfInstruction(Instruction):
     name: str = "sendDtmf"
     value: Optional[str] = None
 
 
 @dataclass
-class SetCookieInstruction(SinchRequestBaseModel):
+class SetCookieInstruction(Instruction):
     name: str = "setCookie"
     key: Optional[str] = None
     value: Optional[str] = None
 
 
 @dataclass
-class AnswerInstruction(SinchRequestBaseModel):
+class AnswerInstruction(Instruction):
     name: str = "answer"
 
 
 @dataclass
-class StartRecordingInstruction(SinchRequestBaseModel):
+class StartRecordingInstruction(Instruction):
     name: str = "startRecording"
     options: Optional[RecordingOptions] = None
 
 
 @dataclass
-class StopRecordingInstruction(SinchRequestBaseModel):
+class StopRecordingInstruction(Instruction):
     name: str = "stopRecording"

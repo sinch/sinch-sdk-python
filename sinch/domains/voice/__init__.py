@@ -1,4 +1,4 @@
-from typing import List, Literal
+from typing import List, Literal, Union
 from sinch.domains.voice.endpoints.callouts.callout import CalloutEndpoint
 from sinch.domains.voice.endpoints.calls.get_call import GetCallEndpoint
 from sinch.domains.voice.endpoints.calls.update_call import UpdateCallEndpoint
@@ -28,8 +28,7 @@ from sinch.domains.voice.models.callouts.requests import (
 from sinch.domains.voice.models.calls.requests import (
     GetVoiceCallRequest,
     UpdateVoiceCallRequest,
-    ManageVoiceCallRequest,
-    Action
+    ManageVoiceCallRequest
 )
 from sinch.domains.voice.models.calls.responses import (
     GetVoiceCallResponse,
@@ -62,6 +61,8 @@ from sinch.domains.voice.models.applications.responses import (
     GetCallbackUrlsVoiceApplicationResponse,
     QueryNumberVoiceApplicationResponse
 )
+from sinch.domains.voice.models.svaml.actions.actions import Action
+from sinch.domains.voice.models.svaml.instructions.instructions import Instruction
 
 
 class Callouts:
@@ -186,8 +187,8 @@ class Calls:
     def update(
         self,
         call_id: str,
-        instructions: list,
-        action: Action,
+        instructions: Union[list, List[Instruction]],
+        action: Union[dict, Action]
     ) -> UpdateVoiceCallResponse:
         return self._sinch.configuration.transport.request(
             UpdateCallEndpoint(
@@ -203,8 +204,8 @@ class Calls:
         self,
         call_id: str,
         call_leg: str,
-        instructions: list,
-        action: Action,
+        instructions: Union[list, List[Instruction]],
+        action: Union[dict, Action]
     ) -> ManageVoiceCallResponse:
         return self._sinch.configuration.transport.request(
             ManageCallEndpoint(
