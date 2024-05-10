@@ -75,3 +75,8 @@ class Indications(Enum):
     TAIWAN = "tw"
     VENEZUELA = "ve"
     SOUTH_AFRICA = "za"
+
+
+class Capability(Enum):
+    VOCE = "voice"
+    SMS = "sms"
