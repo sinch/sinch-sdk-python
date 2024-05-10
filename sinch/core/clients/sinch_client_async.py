@@ -7,7 +7,8 @@ from sinch.domains.authentication import AuthenticationAsync
 from sinch.domains.numbers import NumbersAsync
 from sinch.domains.conversation import ConversationAsync
 from sinch.domains.sms import SMSAsync
-from sinch.domains.verification import Verification as VerificationAsync
+from sinch.domains.verification import VerificationAsync
+from sinch.domains.voice import VoiceAsync
 
 
 class SinchClientAsync(SinchClientBase):
@@ -43,3 +44,4 @@ class SinchClientAsync(SinchClientBase):
         self.conversation = ConversationAsync(self)
         self.sms = SMSAsync(self)
         self.verification = VerificationAsync(self)
+        self.voice = VoiceAsync(self)

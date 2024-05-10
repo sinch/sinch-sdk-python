@@ -5,6 +5,7 @@ from sinch.domains.authentication import AuthenticationBase
 from sinch.domains.numbers import NumbersBase
 from sinch.domains.conversation import ConversationBase
 from sinch.domains.sms import SMSBase
+from sinch.domains.voice import VoiceBase
 
 
 class SinchClientBase(ABC):
@@ -18,6 +19,7 @@ class SinchClientBase(ABC):
     numbers = NumbersBase
     conversation = ConversationBase
     sms = SMSBase
+    voice = VoiceBase
 
     @abstractmethod
     def __init__(
