@@ -13,7 +13,7 @@ class GetVoiceCallRequest(SinchRequestBaseModel):
 @dataclass
 class UpdateVoiceCallRequest(SinchRequestBaseModel):
     call_id: str
-    instructions: list
+    instructions: Union[list, List[Instruction]]
     action: Action
 
 
