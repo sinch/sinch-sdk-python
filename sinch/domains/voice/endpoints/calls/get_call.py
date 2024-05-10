@@ -23,15 +23,17 @@ class GetCallEndpoint(VoiceEndpoint):
 
     def handle_response(self, response: HTTPResponse) -> GetVoiceCallResponse:
         super().handle_response(response)
+        call_origin = response.body.get("from")
+        call_destination = response.body.get("to")
         return GetVoiceCallResponse(
             from_=Destination(
-                type=response.body["from"]["type"],
-                endpoint=response.body["from"]["endpoint"]
-            ),
+                type=call_origin["type"],
+                endpoint=call_origin.get["endpoint"],
+            ) if call_origin else None,
             to=Destination(
-                type=response.body["to"]["type"],
-                endpoint=response.body["to"]["endpoint"]
-            ),
+                type=call_destination.get("type"),
+                endpoint=call_destination.get("endpoint")
+            ) if call_destination else None,
             domain=response.body.get("domain"),
             call_id=response.body.get("callId"),
             duration=response.body.get("duration"),
