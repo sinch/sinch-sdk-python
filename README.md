@@ -73,7 +73,7 @@ Sinch client provides access to the following Sinch products:
 - SMS
 - Verification
 - Voice API
-- Conversation API (currently in beta state)
+- Conversation API (beta release)
 
 ## Logging
 
