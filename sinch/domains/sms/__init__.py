@@ -111,7 +111,7 @@ class SMSDeliveryReports:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListDeliveryReportsEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListSMSDeliveryReportsRequest(
                     page=page,
                     page_size=page_size,
@@ -133,7 +133,7 @@ class SMSDeliveryReports:
     ) -> GetSMSDeliveryReportForBatchResponse:
         return self._sinch.configuration.transport.request(
             GetDeliveryReportForBatchEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=GetSMSDeliveryReportForBatchRequest(
                     batch_id=batch_id,
                     type_=type_,
@@ -150,7 +150,7 @@ class SMSDeliveryReports:
     ) -> GetSMSDeliveryReportForNumberResponse:
         return self._sinch.configuration.transport.request(
             GetDeliveryReportForNumberEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=GetSMSDeliveryReportForNumberRequest(
                     batch_id=batch_id,
                     recipient_number=recipient_number
@@ -173,7 +173,7 @@ class SMSDeliveryReportsWithAsyncPagination(SMSDeliveryReports):
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListDeliveryReportsEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListSMSDeliveryReportsRequest(
                     page=page,
                     page_size=page_size,
@@ -203,7 +203,7 @@ class SMSInbounds:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListInboundMessagesEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListSMSInboundMessageRequest(
                     page=page,
                     page_size=page_size,
@@ -218,7 +218,7 @@ class SMSInbounds:
     def get(self, inbound_id: str) -> GetInboundMessagesResponse:
         return self._sinch.configuration.transport.request(
             GetInboundMessagesEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=GetSMSInboundMessageRequest(
                     inbound_id=inbound_id
                 )
@@ -239,7 +239,7 @@ class SMSInboundsWithAsyncPagination(SMSInbounds):
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListInboundMessagesEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListSMSInboundMessageRequest(
                     page=page,
                     page_size=page_size,
@@ -277,7 +277,7 @@ class SMSBatches:
     ) -> SendSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=SendBatchRequest(
                     to=to,
                     body=body,
@@ -311,7 +311,7 @@ class SMSBatches:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSBatchesEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListBatchesRequest(
                     page=page,
                     page_size=page_size,
@@ -326,7 +326,7 @@ class SMSBatches:
     def get(self, batch_id: str) -> GetSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             GetSMSEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=GetBatchRequest(
                     batch_id=batch_id
                 )
@@ -353,7 +353,7 @@ class SMSBatches:
     ) -> SendSMSBatchDryRunResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSDryRunEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=BatchDryRunRequest(
                     per_recipient=per_recipient,
                     number_of_recipients=number_of_recipients,
@@ -377,7 +377,7 @@ class SMSBatches:
     def cancel(self, batch_id: str) -> CancelSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             CancelBatchEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=CancelBatchRequest(
                     batch_id=batch_id
                 )
@@ -398,7 +398,7 @@ class SMSBatches:
     ) -> UpdateSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             UpdateBatchSMSEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=UpdateBatchRequest(
                     batch_id=batch_id,
                     to_add=to_add,
@@ -432,7 +432,7 @@ class SMSBatches:
     ) -> ReplaceSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             ReplaceBatchSMSEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ReplaceBatchRequest(
                     batch_id=batch_id,
                     to=to,
@@ -459,7 +459,7 @@ class SMSBatches:
     ) -> SendSMSDeliveryFeedbackResponse:
         return self._sinch.configuration.transport.request(
             SendDeliveryReportEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=SendDeliveryFeedbackRequest(
                     batch_id=batch_id,
                     recipients=recipients
@@ -481,7 +481,7 @@ class SMSBatchesWithAsyncPagination(SMSBatches):
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSBatchesEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListBatchesRequest(
                     page=page,
                     page_size=page_size,
@@ -507,7 +507,7 @@ class SMSGroups:
     ) -> CreateSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             CreateSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=CreateSMSGroupRequest(
                     name=name,
                     members=members,
@@ -525,7 +525,7 @@ class SMSGroups:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListSMSGroupRequest(
                     page=page,
                     page_size=page_size
@@ -539,7 +539,7 @@ class SMSGroups:
     ) -> SinchDeleteSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             DeleteSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=DeleteSMSGroupRequest(
                     group_id=group_id
                 )
@@ -552,7 +552,7 @@ class SMSGroups:
     ) -> GetSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             GetSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=GetSMSGroupRequest(
                     group_id=group_id
                 )
@@ -565,7 +565,7 @@ class SMSGroups:
     ) -> SinchGetSMSGroupPhoneNumbersResponse:
         return self._sinch.configuration.transport.request(
             GetSMSGroupPhoneNumbersEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=GetSMSGroupPhoneNumbersRequest(
                     group_id=group_id
                 )
@@ -584,7 +584,7 @@ class SMSGroups:
     ) -> UpdateSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             UpdateSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=UpdateSMSGroupRequest(
                     group_id=group_id,
                     name=name,
@@ -605,7 +605,7 @@ class SMSGroups:
     ) -> ReplaceSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             ReplaceSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ReplaceSMSGroupPhoneNumbersRequest(
                     group_id=group_id,
                     members=members,
@@ -624,7 +624,7 @@ class SMSGroupsWithAsyncPagination(SMSGroups):
         return await AsyncIntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSGroupEndpoint(
-                project_id=self._sinch.configuration.project_id,
+                sinch=self._sinch,
                 request_data=ListSMSGroupRequest(
                     page=page,
                     page_size=page_size
