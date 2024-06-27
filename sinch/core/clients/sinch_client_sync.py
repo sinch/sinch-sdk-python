@@ -1,4 +1,5 @@
-from sinch.core.clients.sinch_client_base import ClientBase
+from logging import Logger
+from sinch.core.clients.sinch_client_base import SinchClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
@@ -7,9 +8,10 @@ from sinch.domains.numbers import Numbers
 from sinch.domains.conversation import Conversation
 from sinch.domains.sms import SMS
 from sinch.domains.verification import Verification
+from sinch.domains.voice import Voice
 
 
-class Client(ClientBase):
+class SinchClient(SinchClientBase):
     """
     Synchronous implementation of the Sinch Client
     By default this implementation uses HTTPTransportRequests based on Requests library
@@ -17,11 +19,11 @@ class Client(ClientBase):
     """
     def __init__(
         self,
-        key_id,
-        key_secret,
-        project_id,
-        logger_name=None,
-        logger=None,
+        key_id: str = None,
+        key_secret: str = None,
+        project_id: str = None,
+        logger_name: str = None,
+        logger: Logger = None,
         application_key: str = None,
         application_secret: str = None,
         service_plan_id: str = None,
@@ -46,3 +48,4 @@ class Client(ClientBase):
         self.conversation = Conversation(self)
         self.sms = SMS(self)
         self.verification = Verification(self)
+        self.voice = Voice(self)

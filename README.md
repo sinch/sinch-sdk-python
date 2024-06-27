@@ -1,42 +1,37 @@
-<h1 align="center">
+# Sinch Python SDK
 
-   [![Sinch Logo](https://developers.sinch.com/static/logo-07afe977d6d9dcd21b066d1612978e5c.svg)](https://www.sinch.com)
-
-   Python SDK
-
-   [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
 
 
-   [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
-   [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-   [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-   [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
+[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
 
 
-</h1>
 
-## Welcome to Sinch's Python SDK.
+Here you'll find documentation related to the Sinch Python SDK, including how to install it, initialize it, and start developing Python code using Sinch services.
 
-Here you'll find documentation to start developing Python code using Sinch services. 
+To use Sinch services, you'll need a Sinch account and access keys. You can sign up for an account and create access keys at [dashboard.sinch.com](https://dashboard.sinch.com).
 
-To use this SDK you'll need a Sinch account and API keys. Please sign up at [sinch.com](https://sinch.com)
+For more information on the Sinch APIs on which this SDK is based, refer to the official [developer documentation portal](developers.sinch.com).
 
-For more in depth version of the Sinch APIs, please refer to the official developer portal - [developers.sinch.com](https://developers.sinch.com/)
 
-**This SDK is currently available to selected developers for preview use only. It is being provided for the purpose of collecting feedback, and should not be used in production environments.**
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Getting started](#getting-started)
+- [Logging]()
 
-* [Installation](#installation)
-* [Getting started](#getting-started)
-* [Logging](#logging)
-* [Custom HTTP client implementation](#custom-http-client-implementation)
-***
+## Prerequisites
 
+- Python in one of the supported versions - 3.9, 3.10, 3.11, 3.12
+- pip
+- Sinch account
 
 ## Installation
 
-You can install this package to your virtual environment or to your global Python installation by cloning this repo and typing:
+You can install this package by typing:
 `pip install sinch`
-
 
 ## Getting started
 
@@ -47,49 +42,51 @@ To initialize communication with Sinch backed, credentials obtained from Sinch p
 It's highly advised to not hardcode those credentials, but to fetch them from environment variables:
 
 ```python
-from sinch import Client
+from sinch import SinchClient
 
-sinch_client = Client(
+sinch_client = SinchClient(
     key_id="key_id",
     key_secret="key_secret",
-    project_id="some_project"
+    project_id="some_project",
+    application_key="application_key",
+    application_secret="application_secret"
 )
 ```
 
 ```python
 import os
-from sinch import Client
+from sinch import SinchClient
 
-sinch_client = Client(
+sinch_client = SinchClient(
     key_id=os.getenv("KEY_ID"),
     key_secret=os.getenv("KEY_SECRET"),
-    project_id=os.getenv("PROJECT_ID")
+    project_id=os.getenv("PROJECT_ID"),
+    application_key=os.getenv("APPLICATION_KEY"),
+    application_secret=os.getenv("APPLICATION_SECRET")
 )
 ```
 
+## Products
 
-### Domains
-
-Each product from Sinch portfolio is considered and coded as a separate `domain`.
-Domain contains data structures specific to that service, that can be also used by the developer.
-
-Abstract directory structure of the `domain`:
-```
-├── domain_name
-│   ├── __init__.py (public interface of the domain)
-│   ├── endpoints (directory with endpoint definitions)
-│   ├── models (direcotry with data models definitions)
-│   ├── enums.py (enums that can be helpful for a developer; e.g. SinchNumberType)
-│   ├── exceptions.py (exceptions spefific for a particular domain; e.g. NumbersException)
-│
-```
-
-Sinch client provides access to the following Sinch product domains:
-
+Sinch client provides access to the following Sinch products:
 - Numbers
-- Conversation API
 - SMS
+- Verification
+- Voice API
+- Conversation API (beta release)
 
+## Logging
+
+Logging configuration for this SDK utilizes following hierarchy:
+1. If no configuration was provided via `logger_name` or `logger` configurable, SDK will inherit configuration from the root logger with the `Sinch` prefix.
+2. If `logger_name` configurable was provided, SDK will use logger related to that name. For example: `myapp.sinch` will inherit configuration from the `myapp` logger.
+3. If `logger` (logger instance) configurable was provided, SDK will use that particular logger for all its logging operations.
+
+If all logging returned by this SDK needs to be disabled, usage of `NullHanlder` provided by the standard `logging` module is advised.  
+
+
+ 
+## Sample apps
 
 Usage example of the `numbers` domain:
 
@@ -116,9 +113,9 @@ ListAvailableNumbersResponse(
 
 ### Handling exceptions
 
-Each domain throws a `DomainException` exception for an unsuccessful backed call.
+Each API throws a custom, API related exception for an unsuccessful backed call.
 
-Example for Numbers Domain:
+Example for Numbers API:
 
 ```python
 from sinch.domains.numbers.exceptions import NumbersException
@@ -132,17 +129,7 @@ except NumbersException as err:
     pass
 ```
 
-For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) form `sinch.core.exceptions`.
-
-
-## Logging
-
-Logging configuration for this SDK utilizes following hierarchy:
-1. If no configuration was provided via `logger_name` or `logger` configurable, SDK will inherit configuration from the root logger with the `Sinch` prefix.
-2. If `logger_name` configurable was provided, SDK will use logger related to that name. For example: `myapp.sinch` will inherit configuration from the `myapp` logger.
-3. If `logger` (logger instance) configurable was provided, SDK will use that particular logger for all its logging operations.
-
-If all logging returned by this SDK needs to be disabled, usage of `NullHanlder` provided by the standard `logging` module is advised.  
+For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) from `sinch.core.exceptions`.
 
 
 ## Custom HTTP client implementation
@@ -151,9 +138,9 @@ By default, two HTTP implementations are provided:
 - Synchronous using `requests` HTTP library
 - Asynchronous using `aiohttp` HTTP library
 
-For creating custom HTTP client code, use either `Client` or `ClientAsync` client and inject your transport during initialisation:
+For creating custom HTTP client code, use either `SinchClient` or `SinchClientAsync` client and inject your transport during initialisation:
 ```python
-sinch_client = ClientAsync(
+sinch_client = SinchClientAsync(
     key_id="Spanish",
     key_secret="Inquisition",
     project_id="some_project",
@@ -168,3 +155,6 @@ class HTTPTransport(ABC):
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 ```
+## License
+
+This project is licensed under the Apache License. See the [LICENSE](license.md) file for the license text.

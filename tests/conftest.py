@@ -2,8 +2,8 @@ import os
 import pytest
 from dataclasses import dataclass
 
-from sinch import Client
-from sinch import ClientAsync
+from sinch import SinchClient
+from sinch import SinchClientAsync
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
@@ -43,6 +43,7 @@ def configure_origin(
     auth_origin,
     sms_origin,
     verification_origin,
+    voice_origin,
     disable_ssl
 ):
     if auth_origin:
@@ -62,6 +63,10 @@ def configure_origin(
 
     if verification_origin:
         sinch_client.configuration.verification_origin = verification_origin
+
+    if voice_origin:
+        sinch_client.configuration.voice_origin = voice_origin
+        sinch_client.configuration.voice_applications_origin = voice_origin
 
     if disable_ssl:
         sinch_client.configuration.disable_https = True
@@ -110,6 +115,11 @@ def verification_origin():
 
 
 @pytest.fixture
+def voice_origin():
+    return os.getenv("VOICE_ORIGIN")
+
+
+@pytest.fixture
 def templates_origin():
     return os.getenv("TEMPLATES_ORIGIN")
 
@@ -127,6 +137,11 @@ def phone_number():
 @pytest.fixture
 def origin_phone_number():
     return os.getenv("ORIGIN_PHONE_NUMBER")
+
+
+@pytest.fixture
+def voice_origin_phone_number():
+    return os.getenv("VOICE_ORIGIN_PHONE_NUMBER")
 
 
 @pytest.fixture
@@ -152,6 +167,21 @@ def sms_api_token():
 @pytest.fixture
 def verification_id():
     return os.getenv("VERIFICATION_ID")
+
+
+@pytest.fixture()
+def call_id():
+    return os.getenv("VOICE_CALL_ID")
+
+
+@pytest.fixture()
+def conference_id():
+    return os.getenv("CONFERENCE_ID")
+
+
+@pytest.fixture()
+def conference_call_id():
+    return os.getenv("CONFERENCE_CALL_ID")
 
 
 @pytest.fixture
@@ -317,11 +347,12 @@ def sinch_client_sync(
     auth_origin,
     sms_origin,
     verification_origin,
+    voice_origin,
     disable_ssl,
     project_id
 ):
     return configure_origin(
-        Client(
+        SinchClient(
             key_id=key_id,
             key_secret=key_secret,
             project_id=project_id,
@@ -336,6 +367,7 @@ def sinch_client_sync(
         auth_origin,
         sms_origin,
         verification_origin,
+        voice_origin,
         disable_ssl
     )
 
@@ -354,11 +386,12 @@ def sinch_client_async(
     auth_origin,
     sms_origin,
     verification_origin,
+    voice_origin,
     disable_ssl,
     project_id
 ):
     return configure_origin(
-        ClientAsync(
+        SinchClientAsync(
             key_id=key_id,
             key_secret=key_secret,
             project_id=project_id,
@@ -373,5 +406,6 @@ def sinch_client_async(
         auth_origin,
         sms_origin,
         verification_origin,
+        voice_origin,
         disable_ssl
     )

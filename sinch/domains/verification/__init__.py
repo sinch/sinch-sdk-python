@@ -23,37 +23,93 @@ from sinch.domains.verification.models.responses import (
     GetVerificationStatusByReferenceResponse
 )
 from sinch.domains.verification.models.requests import (
-    StartVerificationRequest,
+    StartSMSVerificationRequest,
+    StartFlashCallVerificationRequest,
+    StartCalloutVerificationRequest,
+    StartSeamlessVerificationRequest,
     ReportVerificationByIdentityRequest,
     ReportVerificationByIdRequest,
     GetVerificationStatusByIdRequest,
     GetVerificationStatusByIdentityRequest,
     GetVerificationStatusByReferenceRequest
 )
-
-from sinch.domains.verification.enums import VerificationMethod
+from sinch.domains.verification.models import VerificationIdentity
 
 
 class Verifications:
     def __init__(self, sinch):
         self._sinch = sinch
 
-    def start(
+    def start_sms(
         self,
-        identity: dict,
-        method: VerificationMethod,
+        identity: VerificationIdentity,
         reference: str = None,
         custom: str = None,
-        flash_call_options: dict = None
+        expiry: str = None,
+        code_type: str = None,
+        template: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartVerificationRequest(
+                request_data=StartSMSVerificationRequest(
                     identity=identity,
-                    method=method,
                     reference=reference,
                     custom=custom,
-                    flash_call_options=flash_call_options
+                    expiry=expiry,
+                    code_type=code_type,
+                    template=template
+                )
+            )
+        )
+
+    def start_flash_call(
+        self,
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None,
+        dial_timeout: int = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartFlashCallVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom,
+                    dial_timeout=dial_timeout
+                )
+            )
+        )
+
+    def start_callout(
+        self,
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None,
+        speech_locale: str = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartCalloutVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom,
+                    speech_locale=speech_locale
+                )
+            )
+        )
+
+    def start_seamless(
+        self,
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartSeamlessVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom
                 )
             )
         )

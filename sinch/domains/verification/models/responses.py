@@ -4,6 +4,25 @@ from sinch.domains.verification.enums import VerificationMethod, VerificationSta
 
 
 @dataclass
+class FlashCallResponse:
+    cli_filter: str
+    interception_timeout: int
+    report_timeout: int
+    deny_call_after: int
+
+
+@dataclass
+class SMSResponse:
+    template: str
+    interception_timeout: str
+
+
+@dataclass
+class DataResponse:
+    target_uri: str
+
+
+@dataclass
 class StartVerificationResponse(SinchBaseModel):
     id: str
     method: VerificationMethod
@@ -12,22 +31,22 @@ class StartVerificationResponse(SinchBaseModel):
 
 @dataclass
 class StartSMSInitiateVerificationResponse(StartVerificationResponse):
-    sms: dict
+    sms: SMSResponse
 
 
 @dataclass
 class StartFlashCallInitiateVerificationResponse(StartVerificationResponse):
-    flashcall: dict
-
-
-@dataclass
-class StartCalloutInitiateVerificationResponse(StartVerificationResponse):
-    callout: dict
+    flash_call: FlashCallResponse
 
 
 @dataclass
 class StartDataInitiateVerificationResponse(StartVerificationResponse):
-    seamless: dict
+    seamless: DataResponse
+
+
+@dataclass
+class StartCalloutInitiateVerificationResponse(StartVerificationResponse):
+    pass
 
 
 @dataclass
