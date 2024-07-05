@@ -34,10 +34,10 @@ def test_conversation_endpoint_error_handling(project_id, http_response):
         assert error.response_status_code == http_response.status_code
 
 
-def test_sms_endpoint_error_handling(project_id, sms_http_response):
+def test_sms_endpoint_error_handling(sinch_client_sync, sms_http_response):
     numbers_endpoint = SMSEndpoint(
-        project_id=project_id,
-        request_data={}
+        request_data={},
+        sinch=sinch_client_sync
     )
     with pytest.raises(SMSException) as error:
         numbers_endpoint.handle_response(sms_http_response)
