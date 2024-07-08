@@ -9,14 +9,14 @@ class SMSEndpoint(HTTPEndpoint):
         self.request_data = request_data
         self.sinch = sinch
 
-        if sinch.configuration.get_sms_authentication_method() == HTTPAuthentication.OAUTH.value:
+        if sinch.configuration.sms_authentication_method == HTTPAuthentication.OAUTH.value:
             self.project_or_service_id = sinch.configuration.project_id
             self.sms_origin = self.sinch.configuration.sms_origin
 
-        elif sinch.configuration.get_sms_authentication_method() == HTTPAuthentication.SMS_TOKEN.value:
+        elif sinch.configuration.sms_authentication_method == HTTPAuthentication.SMS_TOKEN.value:
             self.project_or_service_id = sinch.configuration.service_plan_id
             self.HTTP_AUTHENTICATION = HTTPAuthentication.SMS_TOKEN.value
-            self.sms_origin = self.sinch.configuration.sms_domain_with_service_plan_id
+            self.sms_origin = self.sinch.configuration._sms_origin_with_service_plan_id
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:

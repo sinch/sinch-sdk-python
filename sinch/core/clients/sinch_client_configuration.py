@@ -66,7 +66,7 @@ class Configuration:
             self.logger = logging.getLogger("Sinch")
 
     def _set_sms_origin_with_service_plan_id(self):
-        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(self._sms_region)
+        self._sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(self._sms_region)
 
     def _set_sms_region_with_service_plan_id(self, region):
         self._sms_region = region
@@ -88,11 +88,6 @@ class Configuration:
     def _get_sms_domain_with_service_plan_id(self):
         return self._sms_domain_with_service_plan_id
 
-    def set_sms_authentication_method(
-        self,
-        auth_type: str
-    ) -> None:
-        self._sms_authentication = auth_type
 
     sms_domain_with_service_plan_id = property(
         _get_sms_domain_with_service_plan_id,
@@ -100,8 +95,20 @@ class Configuration:
         doc="SMS Domain for service plan id version of the SMS API"
     )
 
-    def get_sms_authentication_method(self) -> str:
+    def _set_sms_authentication_method(
+        self,
+        auth_type: str
+    ) -> None:
+        self._sms_authentication = auth_type
+
+    def _get_sms_authentication_method(self) -> str:
         return self._sms_authentication
+
+    sms_authentication_method = property(
+        _get_sms_authentication_method,
+        _set_sms_authentication_method,
+        doc="SMS Authentication method"
+    )
 
     def _set_voice_origin(self):
         if not self._voice_region:
