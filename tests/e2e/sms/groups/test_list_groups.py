@@ -1,8 +1,15 @@
 from sinch.core.pagination import IntBasedPaginator, AsyncIntBasedPaginator
 from sinch.domains.sms.models.groups.responses import SinchListSMSGroupResponse
+from sinch.core.enums import HTTPAuthentication
 
 
 def test_list_sms_groups(sinch_client_sync):
+    list_group_response = sinch_client_sync.sms.groups.list()
+    assert isinstance(list_group_response.result, SinchListSMSGroupResponse)
+
+
+def test_list_sms_groups_with_service_plan_id(sinch_client_sync):
+    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
     list_group_response = sinch_client_sync.sms.groups.list()
     assert isinstance(list_group_response.result, SinchListSMSGroupResponse)
 

@@ -1,7 +1,7 @@
 from sinch.domains.sms.models.batches.responses import CancelSMSBatchResponse
 
 
-def test_cancel_sms_batch(sinch_client_sync, phone_number, origin_phone_number):
+def test_cancel_sms__batch_with_service_plan_id(sinch_client_sync, phone_number, origin_phone_number):
     send_batch_response = sinch_client_sync.sms.batches.send(
         delivery_report="none",
         to=[phone_number],

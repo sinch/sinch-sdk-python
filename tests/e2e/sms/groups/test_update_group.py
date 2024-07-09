@@ -1,4 +1,5 @@
 from sinch.domains.sms.models.groups.responses import UpdateSMSGroupResponse
+from sinch.core.enums import HTTPAuthentication
 
 
 def test_update_sms_group(sinch_client_sync, phone_number):
@@ -10,6 +11,7 @@ def test_update_sms_group(sinch_client_sync, phone_number):
     )
     assert isinstance(update_group_response, UpdateSMSGroupResponse)
     assert update_group_response.name == "KillerRabbit222"
+
 
 
 def test_add_phone_number_to_sms_group(sinch_client_sync, phone_number):

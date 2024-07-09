@@ -1,4 +1,5 @@
 from sinch.domains.sms.models.groups.responses import ReplaceSMSGroupResponse
+from sinch.core.enums import HTTPAuthentication
 
 
 def test_replace_sms_group(sinch_client_sync):
