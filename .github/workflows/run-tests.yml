@@ -13,6 +13,8 @@ env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
   NUMBERS_ORIGIN: ${{ secrets.NUMBERS_ORIGIN }}
   SMS_ORIGIN: ${{ secrets.SMS_ORIGIN }}
+  SERVICE_PLAN_ID: ${{ secrets.SERVICE_PLAN_ID }}
+  SMS_API_TOKEN: ${{ secrets.SMS_API_TOKEN }}
   CONVERSATION_ORIGIN: ${{ secrets.CONVERSATION_ORIGIN }}
   AUTH_ORIGIN: ${{ secrets.AUTH_ORIGIN }}
   DISABLE_SSL: ${{ secrets.DISABLE_SSL }}
