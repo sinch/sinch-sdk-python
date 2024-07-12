@@ -12,6 +12,7 @@ def test_list_sms_batches_using_service_plan_id(sinch_client_sync):
     sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
     list_batches_response = sinch_client_sync.sms.batches.list()
     assert isinstance(list_batches_response, IntBasedPaginator)
+    assert len(list_batches_response.result.batches) > 0
 
 
 def test_list_sms_batches_with_page_size_1(sinch_client_sync):

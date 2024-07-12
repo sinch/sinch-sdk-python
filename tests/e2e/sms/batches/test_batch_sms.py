@@ -1,6 +1,7 @@
 import pytest
-from sinch.domains.sms.models.batches.responses import SendSMSBatchResponse
 from sinch.core.enums import HTTPAuthentication
+from sinch.domains.sms.models.batches.responses import SendSMSBatchResponse
+
 
 
 @pytest.mark.skip()
@@ -34,7 +35,6 @@ def test_send_sms_zen_of_python(sinch_client_sync, phone_number, origin_phone_nu
             body=line,
             feedback_enabled=True
         )
-
         assert isinstance(send_sms_response, SendSMSBatchResponse)
 
 
