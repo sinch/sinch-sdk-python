@@ -88,7 +88,6 @@ class Configuration:
     def _get_sms_domain_with_service_plan_id(self):
         return self._sms_domain_with_service_plan_id
 
-
     sms_domain_with_service_plan_id = property(
         _get_sms_domain_with_service_plan_id,
         _set_sms_domain_with_service_plan_id,

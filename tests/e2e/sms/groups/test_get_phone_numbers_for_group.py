@@ -13,6 +13,7 @@ def test_get_group_phone_numbers_sms_with_service_plan_id(sinch_client_sync):
     assert isinstance(get_group_response, SinchGetSMSGroupPhoneNumbersResponse)
     assert get_group_response.phone_numbers
 
+
 def test_get_group_phone_numbers_sms(sinch_client_sync):
     list_group_response = sinch_client_sync.sms.groups.list()
 

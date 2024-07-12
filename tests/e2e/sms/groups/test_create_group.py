@@ -1,6 +1,7 @@
 from sinch.domains.sms.models.groups.responses import CreateSMSGroupResponse
 from sinch.core.enums import HTTPAuthentication
 
+
 def test_create_sms_group(sinch_client_sync, phone_number):
     create_group_response = sinch_client_sync.sms.groups.create(
         name="KillerRabbit",

@@ -18,6 +18,7 @@ def test_get_sms_batch_with_service_plan_id(sinch_client_sync):
     )
     assert isinstance(get_batch_response, GetSMSBatchResponse)
 
+
 async def test_get_sms_batch_async(sinch_client_async):
     list_batch_response = await sinch_client_async.sms.batches.list()
     get_batch_response = await sinch_client_async.sms.batches.get(

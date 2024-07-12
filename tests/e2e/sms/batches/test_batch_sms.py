@@ -3,7 +3,6 @@ from sinch.core.enums import HTTPAuthentication
 from sinch.domains.sms.models.batches.responses import SendSMSBatchResponse
 
 
-
 @pytest.mark.skip()
 def test_send_sms_zen_of_python(sinch_client_sync, phone_number, origin_phone_number):
     zen = """
