@@ -305,6 +305,7 @@ def int_based_pagination_request_data():
     )
 
 
+@pytest.fixture
 def first_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
