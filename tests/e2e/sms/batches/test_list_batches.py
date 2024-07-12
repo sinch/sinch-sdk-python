@@ -1,6 +1,5 @@
 from sinch.domains.sms.models.batches.responses import ListSMSBatchesResponse
 from sinch.core.pagination import IntBasedPaginator, AsyncIntBasedPaginator
-from sinch.core.enums import HTTPAuthentication
 
 
 def test_list_sms_batches(sinch_client_sync):
@@ -8,9 +7,8 @@ def test_list_sms_batches(sinch_client_sync):
     assert isinstance(list_batches_response, IntBasedPaginator)
 
 
-def test_list_sms_batches_using_service_plan_id(sinch_client_sync):
-    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
-    list_batches_response = sinch_client_sync.sms.batches.list()
+def test_list_sms_batches_using_service_plan_id(sinch_client_sync_with_sms_token_authentication):
+    list_batches_response = sinch_client_sync_with_sms_token_authentication.sms.batches.list()
     assert isinstance(list_batches_response, IntBasedPaginator)
     assert len(list_batches_response.result.batches) > 0
 

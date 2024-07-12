@@ -1,14 +1,12 @@
-from sinch.core.enums import HTTPAuthentication
 from sinch.domains.sms.models.batches.responses import UpdateSMSBatchResponse
 
 
 def test_update_sms_batch_with_service_plan_id(
-    sinch_client_sync,
+    sinch_client_sync_with_sms_token_authentication,
     phone_number,
     origin_phone_number
 ):
-    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
-    send_batch_response = sinch_client_sync.sms.batches.send(
+    send_batch_response = sinch_client_sync_with_sms_token_authentication.sms.batches.send(
         delivery_report="none",
         to=[phone_number],
         from_=origin_phone_number,
@@ -16,7 +14,7 @@ def test_update_sms_batch_with_service_plan_id(
         feedback_enabled=True,
         send_at="2024-12-01T21:37:00Z"
     )
-    update_batch_response = sinch_client_sync.sms.batches.update(
+    update_batch_response = sinch_client_sync_with_sms_token_authentication.sms.batches.update(
         batch_id=send_batch_response.id,
         body="Update Batch Test After Update"
     )

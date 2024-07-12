@@ -1,4 +1,3 @@
-from sinch.core.enums import HTTPAuthentication
 from sinch.domains.sms.models.batches.responses import SendSMSDeliveryFeedbackResponse
 
 
@@ -14,10 +13,9 @@ def test_send_delivery_feedback(sinch_client_sync, phone_number):
     assert isinstance(delivery_feedback_response, SendSMSDeliveryFeedbackResponse)
 
 
-def test_send_delivery_feedback_with_service_plan_id(sinch_client_sync, phone_number):
-    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
-    list_batches_response = sinch_client_sync.sms.batches.list()
-    delivery_feedback_response = sinch_client_sync.sms.batches.send_delivery_feedback(
+def test_send_delivery_feedback_with_service_plan_id(sinch_client_sync_with_sms_token_authentication, phone_number):
+    list_batches_response = sinch_client_sync_with_sms_token_authentication.sms.batches.list()
+    delivery_feedback_response = sinch_client_sync_with_sms_token_authentication.sms.batches.send_delivery_feedback(
         batch_id=list_batches_response.result.batches[0].id,
         recipients=[phone_number]
     )

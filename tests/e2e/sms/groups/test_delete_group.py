@@ -1,5 +1,4 @@
 from sinch.domains.sms.models.groups.responses import SinchDeleteSMSGroupResponse
-from sinch.core.enums import HTTPAuthentication
 
 
 def test_delete_sms_group(sinch_client_sync):
@@ -11,11 +10,10 @@ def test_delete_sms_group(sinch_client_sync):
     assert isinstance(delete_group_response, SinchDeleteSMSGroupResponse)
 
 
-def test_delete_sms_group_with_service_plan_id(sinch_client_sync):
-    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
-    list_group_response = sinch_client_sync.sms.groups.list()
+def test_delete_sms_group_with_service_plan_id(sinch_client_sync_with_sms_token_authentication):
+    list_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.list()
 
-    delete_group_response = sinch_client_sync.sms.groups.delete(
+    delete_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.delete(
         group_id=list_group_response.result.groups[0].id
     )
     assert isinstance(delete_group_response, SinchDeleteSMSGroupResponse)

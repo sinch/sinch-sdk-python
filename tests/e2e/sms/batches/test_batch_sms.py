@@ -1,5 +1,4 @@
 import pytest
-from sinch.core.enums import HTTPAuthentication
 from sinch.domains.sms.models.batches.responses import SendSMSBatchResponse
 
 
@@ -60,12 +59,11 @@ def test_send_sms_sync(sinch_client_sync, phone_number, origin_phone_number):
 
 
 def test_send_sms_sync_with_service_plan_id(
-    sinch_client_sync,
+    sinch_client_sync_with_sms_token_authentication,
     phone_number,
     origin_phone_number
 ):
-    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
-    send_sms_response = sinch_client_sync.sms.batches.send(
+    send_sms_response = sinch_client_sync_with_sms_token_authentication.sms.batches.send(
         delivery_report="none",
         to=[phone_number],
         from_=origin_phone_number,

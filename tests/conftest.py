@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from sinch import SinchClient
 from sinch import SinchClientAsync
+from sinch.core.enums import HTTPAuthentication
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
@@ -411,3 +412,9 @@ def sinch_client_async(
         voice_origin,
         disable_ssl
     )
+
+
+@pytest.fixture
+def sinch_client_sync_with_sms_token_authentication(sinch_client_sync):
+    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
+    return sinch_client_sync
