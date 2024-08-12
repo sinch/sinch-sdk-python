@@ -80,7 +80,7 @@ class Verifications:
             )
         )
 
-    def start_callout(
+    def start_phone_call(
         self,
         identity: VerificationIdentity,
         reference: str = None,
@@ -98,7 +98,7 @@ class Verifications:
             )
         )
 
-    def start_seamless(
+    def start_data(
         self,
         identity: VerificationIdentity,
         reference: str = None,
