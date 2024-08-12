@@ -55,11 +55,11 @@ def test_start_verification_flash_call(
     assert isinstance(verification_response, StartFlashCallInitiateVerificationResponse)
 
 
-def test_start_verification_callout(
+def test_start_verification_phone_call(
     sinch_client_sync,
     phone_number
 ):
-    verification_response = sinch_client_sync.verification.verifications.start_callout(
+    verification_response = sinch_client_sync.verification.verifications.start_phone_call(
         identity={
             "type": "number",
             "endpoint": phone_number
