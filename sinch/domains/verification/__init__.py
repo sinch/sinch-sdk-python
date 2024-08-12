@@ -61,16 +61,14 @@ class Verifications:
         self,
         identity: VerificationIdentity,
         reference: str = None,
-        custom: str = None,
-        dial_timeout: int = None
+        custom: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
                 request_data=StartFlashCallVerificationRequest(
                     identity=identity,
                     reference=reference,
-                    custom=custom,
-                    dial_timeout=dial_timeout
+                    custom=custom
                 )
             )
         )

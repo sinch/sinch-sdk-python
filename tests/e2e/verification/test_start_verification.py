@@ -48,8 +48,7 @@ def test_start_verification_flash_call(
             "type": "number",
             "endpoint": phone_number
         },
-        reference="random5",
-        dial_timeout=5
+        reference="random5"
     )
 
     assert isinstance(verification_response, StartFlashCallInitiateVerificationResponse)
