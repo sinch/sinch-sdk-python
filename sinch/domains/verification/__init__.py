@@ -5,9 +5,6 @@ from sinch.domains.verification.endpoints.report_verification_using_identity imp
 from sinch.domains.verification.endpoints.report_verification_using_id import (
     ReportVerificationByIdEndpoint
 )
-from sinch.domains.verification.endpoints.get_verification_by_id import (
-    GetVerificationStatusByIdEndpoint
-)
 from sinch.domains.verification.endpoints.get_verification_by_identity import (
     GetVerificationStatusByIdentityEndpoint
 )
@@ -19,7 +16,6 @@ from sinch.domains.verification.models.responses import (
     ReportVerificationByIdentityResponse,
     ReportVerificationByIdResponse,
     GetVerificationStatusByIdentityResponse,
-    GetVerificationStatusByIdResponse,
     GetVerificationStatusByReferenceResponse
 )
 from sinch.domains.verification.models.requests import (
@@ -29,7 +25,6 @@ from sinch.domains.verification.models.requests import (
     StartSeamlessVerificationRequest,
     ReportVerificationByIdentityRequest,
     ReportVerificationByIdRequest,
-    GetVerificationStatusByIdRequest,
     GetVerificationStatusByIdentityRequest,
     GetVerificationStatusByReferenceRequest
 )
@@ -156,14 +151,6 @@ class VerificationStatus:
             )
         )
 
-    def get_by_id(self, id) -> GetVerificationStatusByIdResponse:
-        return self._sinch.configuration.transport.request(
-            GetVerificationStatusByIdEndpoint(
-                request_data=GetVerificationStatusByIdRequest(
-                    id=id
-                )
-            )
-        )
 
     def get_by_identity(self, endpoint, method) -> GetVerificationStatusByIdentityResponse:
         return self._sinch.configuration.transport.request(

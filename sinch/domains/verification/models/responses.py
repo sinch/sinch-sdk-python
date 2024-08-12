@@ -84,10 +84,5 @@ class GetVerificationStatusByReferenceResponse(VerificationResponse):
 
 
 @dataclass
-class GetVerificationStatusByIdResponse(VerificationResponse):
-    pass
-
-
-@dataclass
 class GetVerificationStatusByIdentityResponse(VerificationResponse):
     pass
