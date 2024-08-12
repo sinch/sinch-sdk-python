@@ -76,7 +76,7 @@ def test_start_verification_seamless(
     sinch_client_sync,
     phone_number
 ):
-    verification_response = sinch_client_sync.verification.verifications.start_seamless(
+    verification_response = sinch_client_sync.verification.verifications.start_data(
         identity={
             "type": "number",
             "endpoint": phone_number
