@@ -63,8 +63,7 @@ def test_start_verification_phone_call(
             "type": "number",
             "endpoint": phone_number
         },
-        reference="random32",
-        speech_locale="en-US"
+        reference="random32"
     )
 
     assert isinstance(verification_response, StartCalloutInitiateVerificationResponse)

@@ -44,18 +44,7 @@ class StartFlashCallVerificationRequest(StartVerificationRequest):
 
 @dataclass
 class StartCalloutVerificationRequest(StartVerificationRequest):
-    speech_locale: str
     method: str = VerificationMethod.CALLOUT.value
-
-    def as_dict(self):
-        payload = super().as_dict()
-        if payload.get("speech_locale"):
-            payload["calloutOptions"] = {
-                "speech": {
-                    "locale": payload.pop("speech_locale")
-                }
-            }
-        return payload
 
 
 @dataclass

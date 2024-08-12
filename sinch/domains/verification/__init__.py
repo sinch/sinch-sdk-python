@@ -77,16 +77,14 @@ class Verifications:
         self,
         identity: VerificationIdentity,
         reference: str = None,
-        custom: str = None,
-        speech_locale: str = None
+        custom: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
                 request_data=StartCalloutVerificationRequest(
                     identity=identity,
                     reference=reference,
-                    custom=custom,
-                    speech_locale=speech_locale
+                    custom=custom
                 )
             )
         )
