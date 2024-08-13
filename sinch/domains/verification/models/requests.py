@@ -48,7 +48,7 @@ class StartPhoneCallVerificationRequest(StartVerificationRequest):
 
 
 @dataclass
-class StartSeamlessVerificationRequest(StartVerificationRequest):
+class StartDataVerificationRequest(StartVerificationRequest):
     method: str = VerificationMethod.SEAMLESS.value
 
 
