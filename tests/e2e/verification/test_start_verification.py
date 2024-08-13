@@ -1,9 +1,9 @@
 import pytest
 from sinch.domains.verification.models.responses import (
-    StartSMSInitiateVerificationResponse,
-    StartFlashCallInitiateVerificationResponse,
-    StartCalloutInitiateVerificationResponse,
-    StartDataInitiateVerificationResponse
+    StartSMSVerificationResponse,
+    StartFlashCallVerificationResponse,
+    StartPhoneCallVerificationResponse,
+    StartDataVerificationResponse
 )
 from sinch.domains.verification.exceptions import VerificationException
 
@@ -21,7 +21,7 @@ def test_start_verification_sms(
         expiry="23:21:21"
     )
 
-    assert isinstance(verification_response, StartSMSInitiateVerificationResponse)
+    assert isinstance(verification_response, StartSMSVerificationResponse)
 
 
 def test_start_verification_sms_malformed_phone_number(
@@ -51,7 +51,7 @@ def test_start_verification_flash_call(
         reference="random5"
     )
 
-    assert isinstance(verification_response, StartFlashCallInitiateVerificationResponse)
+    assert isinstance(verification_response, StartFlashCallVerificationResponse)
 
 
 def test_start_verification_phone_call(
@@ -66,7 +66,7 @@ def test_start_verification_phone_call(
         reference="random32"
     )
 
-    assert isinstance(verification_response, StartCalloutInitiateVerificationResponse)
+    assert isinstance(verification_response, StartPhoneCallVerificationResponse)
 
 
 @pytest.mark.skip(reason="Data verification. Mobile carrier support required.")
@@ -82,7 +82,7 @@ def test_start_verification_seamless(
         reference="random99"
     )
 
-    assert isinstance(verification_response, StartDataInitiateVerificationResponse)
+    assert isinstance(verification_response, StartDataVerificationResponse)
 
 
 async def test_start_verification_sms_async(
@@ -98,4 +98,4 @@ async def test_start_verification_sms_async(
         expiry="23:21:21"
     )
 
-    assert isinstance(verification_response, StartSMSInitiateVerificationResponse)
+    assert isinstance(verification_response, StartSMSVerificationResponse)

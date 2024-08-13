@@ -43,7 +43,7 @@ class StartFlashCallVerificationRequest(StartVerificationRequest):
 
 
 @dataclass
-class StartCalloutVerificationRequest(StartVerificationRequest):
+class StartPhoneCallVerificationRequest(StartVerificationRequest):
     method: str = VerificationMethod.CALLOUT.value
 
 

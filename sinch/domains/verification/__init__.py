@@ -21,7 +21,7 @@ from sinch.domains.verification.models.responses import (
 from sinch.domains.verification.models.requests import (
     StartSMSVerificationRequest,
     StartFlashCallVerificationRequest,
-    StartCalloutVerificationRequest,
+    StartPhoneCallVerificationRequest,
     StartSeamlessVerificationRequest,
     ReportVerificationByIdentityRequest,
     ReportVerificationByIdRequest,
@@ -81,7 +81,7 @@ class Verifications:
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartCalloutVerificationRequest(
+                request_data=StartPhoneCallVerificationRequest(
                     identity=identity,
                     reference=reference,
                     custom=custom

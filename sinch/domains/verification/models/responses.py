@@ -30,22 +30,22 @@ class StartVerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class StartSMSInitiateVerificationResponse(StartVerificationResponse):
+class StartSMSVerificationResponse(StartVerificationResponse):
     sms: SMSResponse
 
 
 @dataclass
-class StartFlashCallInitiateVerificationResponse(StartVerificationResponse):
+class StartFlashCallVerificationResponse(StartVerificationResponse):
     flash_call: FlashCallResponse
 
 
 @dataclass
-class StartDataInitiateVerificationResponse(StartVerificationResponse):
+class StartDataVerificationResponse(StartVerificationResponse):
     seamless: DataResponse
 
 
 @dataclass
-class StartCalloutInitiateVerificationResponse(StartVerificationResponse):
+class StartPhoneCallVerificationResponse(StartVerificationResponse):
     pass
 
 
