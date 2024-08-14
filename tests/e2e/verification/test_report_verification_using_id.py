@@ -8,12 +8,7 @@ def test_report_verification_using_id_and_sms(
 ):
     verification_response = sinch_client_sync.verification.verifications.report_sms_by_id(
         id=verification_id,
-        verification_report_request={
-            "method": "sms",
-            "sms": {
-                "code": "2302"
-            }
-        }
+        code="2302"
     )
     assert isinstance(verification_response, ReportVerificationByIdResponse)
 
@@ -25,12 +20,7 @@ def test_report_verification_using_id_and_flash_call(
 ):
     verification_response = sinch_client_sync.verification.verifications.report_flash_call_by_id(
         id=verification_id,
-        verification_report_request={
-            "method": "sms",
-            "sms": {
-                "code": "2302"
-            }
-        }
+        cli="2332"
     )
     assert isinstance(verification_response, ReportVerificationByIdResponse)
 
@@ -42,12 +32,7 @@ def test_report_verification_using_id_and_and_phone_call(
 ):
     verification_response = sinch_client_sync.verification.verifications.report_phone_call_by_id(
         id=verification_id,
-        verification_report_request={
-            "method": "sms",
-            "sms": {
-                "code": "2302"
-            }
-        }
+        code="2302"
     )
     assert isinstance(verification_response, ReportVerificationByIdResponse)
 

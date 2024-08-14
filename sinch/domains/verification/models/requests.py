@@ -55,7 +55,22 @@ class StartDataVerificationRequest(StartVerificationRequest):
 @dataclass
 class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
     endpoint: str
-    verification_report_request: dict
+
+
+@dataclass
+class ReportVerificationByIdentityAndSMSRequest(ReportVerificationByIdentityRequest):
+    code: str
+    cli: str
+
+
+@dataclass
+class ReportVerificationByIdentityAndFlashCallRequest(ReportVerificationByIdentityRequest):
+    cli: str
+
+
+@dataclass
+class ReportVerificationByIdentityAndPhoneCallRequest(ReportVerificationByIdentityRequest):
+    code: str
 
 
 @dataclass
