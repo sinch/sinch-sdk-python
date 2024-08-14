@@ -61,7 +61,22 @@ class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
 @dataclass
 class ReportVerificationByIdRequest(SinchRequestBaseModel):
     id: str
-    verification_report_request: dict
+
+
+@dataclass
+class ReportVerificationByIdAndSMSRequest(ReportVerificationByIdRequest):
+    code: str
+    cli: str
+
+
+@dataclass
+class ReportVerificationByIdAndFlashCallRequest(ReportVerificationByIdRequest):
+    cli: str
+
+
+@dataclass
+class ReportVerificationByIdAndPhoneCallRequest(ReportVerificationByIdRequest):
+    code: str
 
 
 @dataclass
