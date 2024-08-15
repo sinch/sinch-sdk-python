@@ -61,16 +61,49 @@ class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
 class ReportVerificationByIdentityAndSMSRequest(ReportVerificationByIdentityRequest):
     code: str
     cli: str
+    method: str = VerificationMethod.SMS.value
+
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "sms": {}}
+
+        if request_data.get("code"):
+            payload["sms"]["code"] = request_data["code"]
+
+        if request_data.get("cli"):
+            payload["sms"]["cli"] = request_data["cli"]
+
+        return payload
 
 
 @dataclass
 class ReportVerificationByIdentityAndFlashCallRequest(ReportVerificationByIdentityRequest):
     cli: str
+    method: str = VerificationMethod.FLASH_CALL.value
+
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "flashCall": {}}
+
+        if request_data.get("cli"):
+            payload["flashCall"]["cli"] = request_data["cli"]
+
+        return payload
 
 
 @dataclass
 class ReportVerificationByIdentityAndPhoneCallRequest(ReportVerificationByIdentityRequest):
     code: str
+    method: str = VerificationMethod.CALLOUT.value
+
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "callout": {}}
+
+        if request_data.get("cli"):
+            payload["callout"]["code"] = request_data["code"]
+
+        return payload
 
 
 @dataclass
@@ -82,16 +115,49 @@ class ReportVerificationByIdRequest(SinchRequestBaseModel):
 class ReportVerificationByIdAndSMSRequest(ReportVerificationByIdRequest):
     code: str
     cli: str
+    method: str = VerificationMethod.SMS.value
+
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "sms": {}}
+
+        if request_data.get("code"):
+            payload["sms"]["code"] = request_data["code"]
+
+        if request_data.get("cli"):
+            payload["sms"]["cli"] = request_data["cli"]
+
+        return payload
 
 
 @dataclass
 class ReportVerificationByIdAndFlashCallRequest(ReportVerificationByIdRequest):
     cli: str
+    method: str = VerificationMethod.FLASH_CALL.value
+
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "flashCall": {}}
+
+        if request_data.get("cli"):
+            payload["flashCall"]["cli"] = request_data["cli"]
+
+        return payload
 
 
 @dataclass
 class ReportVerificationByIdAndPhoneCallRequest(ReportVerificationByIdRequest):
     code: str
+    method: str = VerificationMethod.CALLOUT.value
+
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "callout": {}}
+
+        if request_data.get("cli"):
+            payload["callout"]["code"] = request_data["code"]
+
+        return payload
 
 
 @dataclass

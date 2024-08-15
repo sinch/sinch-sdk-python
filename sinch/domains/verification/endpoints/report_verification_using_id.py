@@ -21,7 +21,7 @@ class ReportVerificationByIdEndpoint(VerificationEndpoint):
         )
 
     def request_body(self):
-        return json.dumps(self.request_data.verification_report_request)
+        return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> ReportVerificationByIdResponse:
         super().handle_response(response)

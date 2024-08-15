@@ -174,7 +174,7 @@ class Verifications:
     def report_flash_call_by_identity(
         self,
         endpoint: str,
-        cli: str
+        cli: str = None
     ) -> ReportVerificationByIdentityResponse:
         return self._sinch.configuration.transport.request(
             ReportVerificationByIdentityEndpoint(
