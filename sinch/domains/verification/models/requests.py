@@ -100,7 +100,7 @@ class ReportVerificationByIdentityAndPhoneCallRequest(ReportVerificationByIdenti
         request_data = super().as_dict()
         payload = {"method": request_data["method"], "callout": {}}
 
-        if request_data.get("cli"):
+        if request_data.get("code"):
             payload["callout"]["code"] = request_data["code"]
 
         return payload
@@ -154,7 +154,7 @@ class ReportVerificationByIdAndPhoneCallRequest(ReportVerificationByIdRequest):
         request_data = super().as_dict()
         payload = {"method": request_data["method"], "callout": {}}
 
-        if request_data.get("cli"):
+        if request_data.get("code"):
             payload["callout"]["code"] = request_data["code"]
 
         return payload

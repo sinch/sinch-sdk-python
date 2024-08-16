@@ -20,7 +20,6 @@ def test_start_verification_sms(
         reference="random",
         expiry="23:21:21"
     )
-
     assert isinstance(verification_response, StartSMSVerificationResponse)
 
 
@@ -50,7 +49,6 @@ def test_start_verification_flash_call(
         },
         reference="random7"
     )
-
     assert isinstance(verification_response, StartFlashCallVerificationResponse)
 
 
@@ -65,7 +63,6 @@ def test_start_verification_phone_call(
         },
         reference="random32"
     )
-
     assert isinstance(verification_response, StartPhoneCallVerificationResponse)
 
 
@@ -81,7 +78,6 @@ def test_start_verification_seamless(
         },
         reference="random99"
     )
-
     assert isinstance(verification_response, StartDataVerificationResponse)
 
 
@@ -97,5 +93,4 @@ async def test_start_verification_sms_async(
         reference="random",
         expiry="23:21:21"
     )
-
     assert isinstance(verification_response, StartSMSVerificationResponse)
