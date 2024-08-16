@@ -1,4 +1,3 @@
-import json
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods

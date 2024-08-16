@@ -153,7 +153,6 @@ class Verifications:
             )
         )
 
-
     def report_sms_by_identity(
         self,
         endpoint: str,
@@ -170,7 +169,6 @@ class Verifications:
             )
         )
 
-
     def report_flash_call_by_identity(
         self,
         endpoint: str,
@@ -185,8 +183,7 @@ class Verifications:
             )
         )
 
-
-    def report_phone_call_by_identity (
+    def report_phone_call_by_identity(
         self,
         endpoint: str,
         code: str
@@ -213,7 +210,6 @@ class VerificationStatus:
                 )
             )
         )
-
 
     def get_by_identity(
         self,
