@@ -4,7 +4,7 @@ from sinch.domains.verification.enums import VerificationMethod
 from sinch.domains.verification.models import VerificationIdentity
 
 
-class ReporPhoneCallVerificationDataTransfromationMixin:
+class ReportPhoneCallVerificationDataTransformationMixin:
     def as_dict(self):
         request_data = super().as_dict()
         payload = {"method": request_data["method"], "callout": {}}
@@ -15,7 +15,7 @@ class ReporPhoneCallVerificationDataTransfromationMixin:
         return payload
 
 
-class ReporFlashCallVerificationDataTransfromationMixin:
+class ReportFlashCallVerificationDataTransformationMixin:
     def as_dict(self):
         request_data = super().as_dict()
         payload = {"method": request_data["method"], "flashCall": {}}
@@ -26,7 +26,7 @@ class ReporFlashCallVerificationDataTransfromationMixin:
         return payload
 
 
-class ReporSMSVerificationDataTransfromationMixin:
+class ReportSMSVerificationDataTransformationMixin:
     def as_dict(self):
         request_data = super().as_dict()
         payload = {"method": request_data["method"], "sms": {}}
@@ -95,7 +95,7 @@ class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
 
 @dataclass
 class ReportVerificationByIdentityAndSMSRequest(
-    ReporSMSVerificationDataTransfromationMixin,
+    ReportSMSVerificationDataTransformationMixin,
     ReportVerificationByIdentityRequest
 ):
     code: str
@@ -105,7 +105,7 @@ class ReportVerificationByIdentityAndSMSRequest(
 
 @dataclass
 class ReportVerificationByIdentityAndFlashCallRequest(
-    ReporFlashCallVerificationDataTransfromationMixin,
+    ReportFlashCallVerificationDataTransformationMixin,
     ReportVerificationByIdentityRequest
 ):
     cli: str
@@ -114,7 +114,7 @@ class ReportVerificationByIdentityAndFlashCallRequest(
 
 @dataclass
 class ReportVerificationByIdentityAndPhoneCallRequest(
-    ReporPhoneCallVerificationDataTransfromationMixin,
+    ReportPhoneCallVerificationDataTransformationMixin,
     ReportVerificationByIdentityRequest
 ):
     code: str
@@ -128,7 +128,7 @@ class ReportVerificationByIdRequest(SinchRequestBaseModel):
 
 @dataclass
 class ReportVerificationByIdAndSMSRequest(
-    ReporSMSVerificationDataTransfromationMixin,
+    ReportSMSVerificationDataTransformationMixin,
     ReportVerificationByIdRequest
 ):
     code: str
@@ -138,7 +138,7 @@ class ReportVerificationByIdAndSMSRequest(
 
 @dataclass
 class ReportVerificationByIdAndFlashCallRequest(
-    ReporFlashCallVerificationDataTransfromationMixin,
+    ReportFlashCallVerificationDataTransformationMixin,
     ReportVerificationByIdRequest
 ):
     cli: str
@@ -147,7 +147,7 @@ class ReportVerificationByIdAndFlashCallRequest(
 
 @dataclass
 class ReportVerificationByIdAndPhoneCallRequest(
-    ReporPhoneCallVerificationDataTransfromationMixin,
+    ReportPhoneCallVerificationDataTransformationMixin,
     ReportVerificationByIdRequest
 ):
     code: str
