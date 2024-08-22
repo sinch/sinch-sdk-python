@@ -64,6 +64,11 @@ class VerificationResponse(SinchBaseModel):
 
 
 @dataclass
+class GetVerificationStatusByIdResponse(VerificationResponse):
+    pass
+
+
+@dataclass
 class ReportVerificationResponse(VerificationResponse):
     pass
 

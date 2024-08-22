@@ -11,12 +11,16 @@ from sinch.domains.verification.endpoints.get_verification_by_identity import (
 from sinch.domains.verification.endpoints.get_verification_by_reference import (
     GetVerificationStatusByReferenceEndpoint
 )
+from sinch.domains.verification.endpoints.get_verification_by_id import (
+    GetVerificationStatusByIdEndpoint
+)
 from sinch.domains.verification.models.responses import (
     StartVerificationResponse,
     ReportVerificationByIdentityResponse,
     ReportVerificationByIdResponse,
     GetVerificationStatusByIdentityResponse,
-    GetVerificationStatusByReferenceResponse
+    GetVerificationStatusByReferenceResponse,
+    GetVerificationStatusByIdResponse
 )
 from sinch.domains.verification.models.requests import (
     StartSMSVerificationRequest,
@@ -30,7 +34,8 @@ from sinch.domains.verification.models.requests import (
     ReportVerificationByIdAndFlashCallRequest,
     ReportVerificationByIdAndPhoneCallRequest,
     GetVerificationStatusByIdentityRequest,
-    GetVerificationStatusByReferenceRequest
+    GetVerificationStatusByReferenceRequest,
+    GetVerificationStatusByIdRequest
 )
 from sinch.domains.verification.models import VerificationIdentity
 
@@ -201,6 +206,15 @@ class Verifications:
 class VerificationStatus:
     def __init__(self, sinch):
         self._sinch = sinch
+
+    def get_by_id(self, id: str) -> GetVerificationStatusByIdResponse:
+        return self._sinch.configuration.transport.request(
+            GetVerificationStatusByIdEndpoint(
+                request_data=GetVerificationStatusByIdRequest(
+                    id=id
+                )
+            )
+        )
 
     def get_by_reference(self, reference: str) -> GetVerificationStatusByReferenceResponse:
         return self._sinch.configuration.transport.request(

@@ -163,3 +163,8 @@ class GetVerificationStatusByReferenceRequest(SinchRequestBaseModel):
 class GetVerificationStatusByIdentityRequest(SinchRequestBaseModel):
     endpoint: str
     method: str
+
+
+@dataclass
+class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
+    id: str
