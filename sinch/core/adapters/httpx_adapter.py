@@ -28,7 +28,8 @@ class HTTPXTransport(AsyncHTTPTransport):
                 url=request_data.url,
                 content=request_data.request_body,
                 auth=request_data.auth,
-                params=request_data.query_params
+                params=request_data.query_params,
+                timeout=self.sinch.configuration.connection_timeout
             )
         else:
             response = await self.http_session.request(
@@ -37,7 +38,8 @@ class HTTPXTransport(AsyncHTTPTransport):
                 url=request_data.url,
                 data=request_data.request_body,
                 auth=request_data.auth,
-                params=request_data.query_params
+                params=request_data.query_params,
+                timeout=self.sinch.configuration.connection_timeout,
             )
 
         if response.content:
