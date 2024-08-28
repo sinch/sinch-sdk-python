@@ -9,7 +9,6 @@ def test_sending_unicode_potato_using_verification_api(
     sinch_client_sync,
     phone_number
 ):
-
     verification_response = sinch_client_sync.verification.verifications.start_flash_call(
         identity={
             "type": "number",
@@ -29,5 +28,6 @@ async def test_receiving_unicode_potato_using_verification_api_async(
     verification_response = await sinch_client_async.verification.verification_status.get_by_id(
         id=verification_id
     )
+
     assert isinstance(verification_response, GetVerificationStatusByIdResponse)
     assert verification_response.reference == UNICODE_POTATO
