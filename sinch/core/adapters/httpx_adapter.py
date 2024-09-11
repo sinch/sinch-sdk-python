@@ -60,3 +60,6 @@ class HTTPXTransport(AsyncHTTPTransport):
                 headers=response.headers
             )
         )
+
+    async def close_session(self):
+        await self.http_session.aclose()
