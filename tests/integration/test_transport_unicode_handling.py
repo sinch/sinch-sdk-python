@@ -5,6 +5,7 @@ from sinch.domains.verification.models.responses import (
 
 UNICODE_POTATO = '🥔'
 
+
 def test_sending_unicode_potato_using_verification_api(
     sinch_client_sync,
     phone_number
