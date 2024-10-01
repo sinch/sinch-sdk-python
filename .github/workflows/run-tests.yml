@@ -1,11 +1,5 @@
 name: Test Python SDK
-
-on:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches: [ main ]
+on: [ push ]
 
 env:
   KEY_ID: ${{ secrets.KEY_ID }}
