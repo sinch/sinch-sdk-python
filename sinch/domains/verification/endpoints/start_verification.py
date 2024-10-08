@@ -8,10 +8,10 @@ from sinch.domains.verification.models.responses import (
     SMSResponse,
     DataResponse,
     StartVerificationResponse,
-    StartSMSInitiateVerificationResponse,
-    StartDataInitiateVerificationResponse,
-    StartCalloutInitiateVerificationResponse,
-    StartFlashCallInitiateVerificationResponse
+    StartSMSVerificationResponse,
+    StartDataVerificationResponse,
+    StartPhoneCallVerificationResponse,
+    StartFlashCallVerificationResponse
 )
 
 
@@ -35,7 +35,7 @@ class StartVerificationEndpoint(VerificationEndpoint):
         super().handle_response(response)
         if self.request_data.method == VerificationMethod.SMS.value:
             sms_response = response.body.get("sms")
-            return StartSMSInitiateVerificationResponse(
+            return StartSMSVerificationResponse(
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
@@ -46,7 +46,7 @@ class StartVerificationEndpoint(VerificationEndpoint):
             )
         elif self.request_data.method == VerificationMethod.FLASH_CALL.value:
             flash_call_response = response.body.get("flashCall")
-            return StartFlashCallInitiateVerificationResponse(
+            return StartFlashCallVerificationResponse(
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
@@ -58,14 +58,14 @@ class StartVerificationEndpoint(VerificationEndpoint):
                 ) if flash_call_response else None
             )
         elif self.request_data.method == VerificationMethod.CALLOUT.value:
-            return StartCalloutInitiateVerificationResponse(
+            return StartPhoneCallVerificationResponse(
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links")
             )
         elif self.request_data.method == VerificationMethod.SEAMLESS.value:
             seamless_response = response.body.get("seamless")
-            return StartDataInitiateVerificationResponse(
+            return StartDataVerificationResponse(
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),

@@ -5,33 +5,37 @@ from sinch.domains.verification.endpoints.report_verification_using_identity imp
 from sinch.domains.verification.endpoints.report_verification_using_id import (
     ReportVerificationByIdEndpoint
 )
-from sinch.domains.verification.endpoints.get_verification_by_id import (
-    GetVerificationStatusByIdEndpoint
-)
 from sinch.domains.verification.endpoints.get_verification_by_identity import (
     GetVerificationStatusByIdentityEndpoint
 )
 from sinch.domains.verification.endpoints.get_verification_by_reference import (
     GetVerificationStatusByReferenceEndpoint
 )
+from sinch.domains.verification.endpoints.get_verification_by_id import (
+    GetVerificationStatusByIdEndpoint
+)
 from sinch.domains.verification.models.responses import (
     StartVerificationResponse,
     ReportVerificationByIdentityResponse,
     ReportVerificationByIdResponse,
     GetVerificationStatusByIdentityResponse,
-    GetVerificationStatusByIdResponse,
-    GetVerificationStatusByReferenceResponse
+    GetVerificationStatusByReferenceResponse,
+    GetVerificationStatusByIdResponse
 )
 from sinch.domains.verification.models.requests import (
     StartSMSVerificationRequest,
     StartFlashCallVerificationRequest,
-    StartCalloutVerificationRequest,
-    StartSeamlessVerificationRequest,
-    ReportVerificationByIdentityRequest,
-    ReportVerificationByIdRequest,
-    GetVerificationStatusByIdRequest,
+    StartPhoneCallVerificationRequest,
+    StartDataVerificationRequest,
+    ReportVerificationByIdentityAndSMSRequest,
+    ReportVerificationByIdentityAndFlashCallRequest,
+    ReportVerificationByIdentityAndPhoneCallRequest,
+    ReportVerificationByIdAndSMSRequest,
+    ReportVerificationByIdAndFlashCallRequest,
+    ReportVerificationByIdAndPhoneCallRequest,
     GetVerificationStatusByIdentityRequest,
-    GetVerificationStatusByReferenceRequest
+    GetVerificationStatusByReferenceRequest,
+    GetVerificationStatusByIdRequest
 )
 from sinch.domains.verification.models import VerificationIdentity
 
@@ -66,47 +70,11 @@ class Verifications:
         self,
         identity: VerificationIdentity,
         reference: str = None,
-        custom: str = None,
-        dial_timeout: int = None
-    ) -> StartVerificationResponse:
-        return self._sinch.configuration.transport.request(
-            StartVerificationEndpoint(
-                request_data=StartFlashCallVerificationRequest(
-                    identity=identity,
-                    reference=reference,
-                    custom=custom,
-                    dial_timeout=dial_timeout
-                )
-            )
-        )
-
-    def start_callout(
-        self,
-        identity: VerificationIdentity,
-        reference: str = None,
-        custom: str = None,
-        speech_locale: str = None
-    ) -> StartVerificationResponse:
-        return self._sinch.configuration.transport.request(
-            StartVerificationEndpoint(
-                request_data=StartCalloutVerificationRequest(
-                    identity=identity,
-                    reference=reference,
-                    custom=custom,
-                    speech_locale=speech_locale
-                )
-            )
-        )
-
-    def start_seamless(
-        self,
-        identity: VerificationIdentity,
-        reference: str = None,
         custom: str = None
     ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartSeamlessVerificationRequest(
+                request_data=StartFlashCallVerificationRequest(
                     identity=identity,
                     reference=reference,
                     custom=custom
@@ -114,30 +82,122 @@ class Verifications:
             )
         )
 
-    def report_by_id(
+    def start_phone_call(
         self,
-        id: str,
-        verification_report_request: dict
-    ) -> ReportVerificationByIdResponse:
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None
+    ) -> StartVerificationResponse:
         return self._sinch.configuration.transport.request(
-            ReportVerificationByIdEndpoint(
-                request_data=ReportVerificationByIdRequest(
-                    id,
-                    verification_report_request
+            StartVerificationEndpoint(
+                request_data=StartPhoneCallVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom
                 )
             )
         )
 
-    def report_by_identity(
+    def start_data(
         self,
-        endpoint,
-        verification_report_request
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None
+    ) -> StartVerificationResponse:
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartDataVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom
+                )
+            )
+        )
+
+    def report_sms_by_id(
+        self,
+        id: str,
+        code: str,
+        cli: str = None
+    ) -> ReportVerificationByIdResponse:
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdEndpoint(
+                request_data=ReportVerificationByIdAndSMSRequest(
+                    id,
+                    code,
+                    cli
+                )
+            )
+        )
+
+    def report_flash_call_by_id(
+        self,
+        id: str,
+        cli: str
+    ) -> ReportVerificationByIdResponse:
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdEndpoint(
+                request_data=ReportVerificationByIdAndFlashCallRequest(
+                    id,
+                    cli
+                )
+            )
+        )
+
+    def report_phone_call_by_id(
+        self,
+        id: str,
+        code: str = None
+    ) -> ReportVerificationByIdResponse:
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdEndpoint(
+                request_data=ReportVerificationByIdAndPhoneCallRequest(
+                    id,
+                    code
+                )
+            )
+        )
+
+    def report_sms_by_identity(
+        self,
+        endpoint: str,
+        code: str,
+        cli: str = None
     ) -> ReportVerificationByIdentityResponse:
         return self._sinch.configuration.transport.request(
             ReportVerificationByIdentityEndpoint(
-                request_data=ReportVerificationByIdentityRequest(
+                request_data=ReportVerificationByIdentityAndSMSRequest(
                     endpoint,
-                    verification_report_request
+                    code,
+                    cli
+                )
+            )
+        )
+
+    def report_flash_call_by_identity(
+        self,
+        endpoint: str,
+        cli: str = None
+    ) -> ReportVerificationByIdentityResponse:
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdentityEndpoint(
+                request_data=ReportVerificationByIdentityAndFlashCallRequest(
+                    endpoint,
+                    cli
+                )
+            )
+        )
+
+    def report_phone_call_by_identity(
+        self,
+        endpoint: str,
+        code: str
+    ) -> ReportVerificationByIdentityResponse:
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdentityEndpoint(
+                request_data=ReportVerificationByIdentityAndPhoneCallRequest(
+                    endpoint,
+                    code
                 )
             )
         )
@@ -147,16 +207,7 @@ class VerificationStatus:
     def __init__(self, sinch):
         self._sinch = sinch
 
-    def get_by_reference(self, reference) -> GetVerificationStatusByReferenceResponse:
-        return self._sinch.configuration.transport.request(
-            GetVerificationStatusByReferenceEndpoint(
-                request_data=GetVerificationStatusByReferenceRequest(
-                    reference=reference
-                )
-            )
-        )
-
-    def get_by_id(self, id) -> GetVerificationStatusByIdResponse:
+    def get_by_id(self, id: str) -> GetVerificationStatusByIdResponse:
         return self._sinch.configuration.transport.request(
             GetVerificationStatusByIdEndpoint(
                 request_data=GetVerificationStatusByIdRequest(
@@ -165,7 +216,20 @@ class VerificationStatus:
             )
         )
 
-    def get_by_identity(self, endpoint, method) -> GetVerificationStatusByIdentityResponse:
+    def get_by_reference(self, reference: str) -> GetVerificationStatusByReferenceResponse:
+        return self._sinch.configuration.transport.request(
+            GetVerificationStatusByReferenceEndpoint(
+                request_data=GetVerificationStatusByReferenceRequest(
+                    reference=reference
+                )
+            )
+        )
+
+    def get_by_identity(
+        self,
+        endpoint: str,
+        method: str
+    ) -> GetVerificationStatusByIdentityResponse:
         return self._sinch.configuration.transport.request(
             GetVerificationStatusByIdentityEndpoint(
                 request_data=GetVerificationStatusByIdentityRequest(

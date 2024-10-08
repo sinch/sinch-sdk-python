@@ -4,6 +4,42 @@ from sinch.domains.verification.enums import VerificationMethod
 from sinch.domains.verification.models import VerificationIdentity
 
 
+class ReportPhoneCallVerificationDataTransformationMixin:
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "callout": {}}
+
+        if request_data.get("code"):
+            payload["callout"]["code"] = request_data["code"]
+
+        return payload
+
+
+class ReportFlashCallVerificationDataTransformationMixin:
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "flashCall": {}}
+
+        if request_data.get("cli"):
+            payload["flashCall"]["cli"] = request_data["cli"]
+
+        return payload
+
+
+class ReportSMSVerificationDataTransformationMixin:
+    def as_dict(self):
+        request_data = super().as_dict()
+        payload = {"method": request_data["method"], "sms": {}}
+
+        if request_data.get("code"):
+            payload["sms"]["code"] = request_data["code"]
+
+        if request_data.get("cli"):
+            payload["sms"]["cli"] = request_data["cli"]
+
+        return payload
+
+
 @dataclass
 class StartVerificationRequest(SinchRequestBaseModel):
     identity: VerificationIdentity
@@ -39,49 +75,83 @@ class StartSMSVerificationRequest(StartVerificationRequest):
 
 @dataclass
 class StartFlashCallVerificationRequest(StartVerificationRequest):
-    dial_timeout: int
     method: str = VerificationMethod.FLASH_CALL.value
 
-    def as_dict(self):
-        payload = super().as_dict()
-        if payload.get("dial_timeout"):
-            payload["flashCallOptions"] = {
-                "dialTimeout": payload.pop("dial_timeout")
-            }
-        return payload
-
 
 @dataclass
-class StartCalloutVerificationRequest(StartVerificationRequest):
-    speech_locale: str
+class StartPhoneCallVerificationRequest(StartVerificationRequest):
     method: str = VerificationMethod.CALLOUT.value
 
-    def as_dict(self):
-        payload = super().as_dict()
-        if payload.get("speech_locale"):
-            payload["calloutOptions"] = {
-                "speech": {
-                    "locale": payload.pop("speech_locale")
-                }
-            }
-        return payload
-
 
 @dataclass
-class StartSeamlessVerificationRequest(StartVerificationRequest):
+class StartDataVerificationRequest(StartVerificationRequest):
     method: str = VerificationMethod.SEAMLESS.value
 
 
 @dataclass
 class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
     endpoint: str
-    verification_report_request: dict
+
+
+@dataclass
+class ReportVerificationByIdentityAndSMSRequest(
+    ReportSMSVerificationDataTransformationMixin,
+    ReportVerificationByIdentityRequest
+):
+    code: str
+    cli: str
+    method: str = VerificationMethod.SMS.value
+
+
+@dataclass
+class ReportVerificationByIdentityAndFlashCallRequest(
+    ReportFlashCallVerificationDataTransformationMixin,
+    ReportVerificationByIdentityRequest
+):
+    cli: str
+    method: str = VerificationMethod.FLASH_CALL.value
+
+
+@dataclass
+class ReportVerificationByIdentityAndPhoneCallRequest(
+    ReportPhoneCallVerificationDataTransformationMixin,
+    ReportVerificationByIdentityRequest
+):
+    code: str
+    method: str = VerificationMethod.CALLOUT.value
 
 
 @dataclass
 class ReportVerificationByIdRequest(SinchRequestBaseModel):
     id: str
-    verification_report_request: dict
+
+
+@dataclass
+class ReportVerificationByIdAndSMSRequest(
+    ReportSMSVerificationDataTransformationMixin,
+    ReportVerificationByIdRequest
+):
+    code: str
+    cli: str
+    method: str = VerificationMethod.SMS.value
+
+
+@dataclass
+class ReportVerificationByIdAndFlashCallRequest(
+    ReportFlashCallVerificationDataTransformationMixin,
+    ReportVerificationByIdRequest
+):
+    cli: str
+    method: str = VerificationMethod.FLASH_CALL.value
+
+
+@dataclass
+class ReportVerificationByIdAndPhoneCallRequest(
+    ReportPhoneCallVerificationDataTransformationMixin,
+    ReportVerificationByIdRequest
+):
+    code: str
+    method: str = VerificationMethod.CALLOUT.value
 
 
 @dataclass
@@ -90,11 +160,11 @@ class GetVerificationStatusByReferenceRequest(SinchRequestBaseModel):
 
 
 @dataclass
-class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
-    id: str
+class GetVerificationStatusByIdentityRequest(SinchRequestBaseModel):
+    endpoint: str
+    method: str
 
 
 @dataclass
-class GetVerificationStatusByIdentityRequest(SinchRequestBaseModel):
-    endpoint: str
-    method: VerificationMethod
+class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
+    id: str
