@@ -6,19 +6,17 @@ from sinch.domains.sms.models.groups.responses import CreateSMSGroupResponse
 
 
 class CreateSMSGroupEndpoint(SMSEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/groups"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_or_service_id}/groups"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: CreateSMSGroupRequest):
-        super(CreateSMSGroupEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    def __init__(self, request_data: CreateSMSGroupRequest, sinch):
+        super().__init__(request_data, sinch)
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
-            project_id=self.project_id
+            project_or_service_id=self.project_or_service_id
         )
 
     def request_body(self):
