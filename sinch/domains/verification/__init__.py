@@ -104,6 +104,48 @@ class Verifications:
             )
         )
 
+    def start_callout(
+        self,
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None,
+        speech_locale: str = None
+    ) -> StartVerificationResponse:
+        """
+        This method is not supported anymore.
+        It should be used only for backward compatibility reasons.
+        """
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartCalloutVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom,
+                    speech_locale=speech_locale
+                )
+            )
+        )
+
+    def start_seamless(
+        self,
+        identity: VerificationIdentity,
+        reference: str = None,
+        custom: str = None
+    ) -> StartVerificationResponse:
+        """
+        This method is not supported anymore.
+        It should be used only for backward compatibility reasons.
+        """
+        return self._sinch.configuration.transport.request(
+            StartVerificationEndpoint(
+                request_data=StartSeamlessVerificationRequest(
+                    identity=identity,
+                    reference=reference,
+                    custom=custom
+                )
+            )
+        )
+
     def start_data(
         self,
         identity: VerificationIdentity,
