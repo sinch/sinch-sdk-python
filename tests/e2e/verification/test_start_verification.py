@@ -1,11 +1,14 @@
 import pytest
+from sinch.domains.verification.exceptions import VerificationException
 from sinch.domains.verification.models.responses import (
     StartSMSVerificationResponse,
     StartFlashCallVerificationResponse,
     StartPhoneCallVerificationResponse,
-    StartDataVerificationResponse
+    StartDataVerificationResponse,
+    StartFlashCallInitiateVerificationResponse,
+    StartCalloutInitiateVerificationResponse,
+    StartDataInitiateVerificationResponse
 )
-from sinch.domains.verification.exceptions import VerificationException
 
 
 def test_start_verification_sms(
