@@ -93,6 +93,22 @@ class StartPhoneCallVerificationRequest(StartVerificationRequest):
 
 
 @dataclass
+class StartCalloutVerificationRequest(StartVerificationRequest):
+    speech_locale: str
+    method: str = VerificationMethod.CALLOUT.value
+
+    def as_dict(self):
+        payload = super().as_dict()
+        if payload.get("speech_locale"):
+            payload["calloutOptions"] = {
+                "speech": {
+                    "locale": payload.pop("speech_locale")
+                }
+            }
+        return payload
+
+
+@dataclass
 class StartDataVerificationRequest(StartVerificationRequest):
     method: str = VerificationMethod.SEAMLESS.value
 
@@ -177,3 +193,13 @@ class GetVerificationStatusByIdentityRequest(SinchRequestBaseModel):
 @dataclass
 class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
     id: str
+
+
+@dataclass
+class ReportVerificationByIdentityRequestLegacy(ReportVerificationByIdentityRequest):
+    verification_report_request: dict
+
+
+@dataclass
+class ReportVerificationByIdRequestLegacy(ReportVerificationByIdRequest):
+    verification_report_request: dict

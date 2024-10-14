@@ -26,7 +26,10 @@ from sinch.domains.verification.models.requests import (
     StartSMSVerificationRequest,
     StartFlashCallVerificationRequest,
     StartPhoneCallVerificationRequest,
+    StartCalloutVerificationRequest,
     StartDataVerificationRequest,
+    ReportVerificationByIdentityRequestLegacy,
+    ReportVerificationByIdRequestLegacy,
     ReportVerificationByIdentityAndSMSRequest,
     ReportVerificationByIdentityAndFlashCallRequest,
     ReportVerificationByIdentityAndPhoneCallRequest,
@@ -138,7 +141,7 @@ class Verifications:
         """
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
-                request_data=StartSeamlessVerificationRequest(
+                request_data=StartDataVerificationRequest(
                     identity=identity,
                     reference=reference,
                     custom=custom
@@ -261,7 +264,7 @@ class Verifications:
         """
         return self._sinch.configuration.transport.request(
             ReportVerificationByIdEndpoint(
-                request_data=ReportVerificationByIdRequest(
+                request_data=ReportVerificationByIdRequestLegacy(
                     id,
                     verification_report_request
                 )
@@ -279,7 +282,7 @@ class Verifications:
         """
         return self._sinch.configuration.transport.request(
             ReportVerificationByIdentityEndpoint(
-                request_data=ReportVerificationByIdentityRequest(
+                request_data=ReportVerificationByIdentityRequestLegacy(
                     endpoint,
                     verification_report_request
                 )
