@@ -1,3 +1,4 @@
+import json
 from dataclasses import dataclass
 from sinch.core.models.base_model import SinchRequestBaseModel
 from sinch.domains.verification.enums import VerificationMethod
@@ -199,7 +200,13 @@ class GetVerificationStatusByIdRequest(SinchRequestBaseModel):
 class ReportVerificationByIdentityRequestLegacy(ReportVerificationByIdentityRequest):
     verification_report_request: dict
 
+    def as_json(self):
+        return json.dumps(self.verification_report_request)
+
 
 @dataclass
 class ReportVerificationByIdRequestLegacy(ReportVerificationByIdRequest):
     verification_report_request: dict
+
+    def as_json(self):
+        return json.dumps(self.verification_report_request)
