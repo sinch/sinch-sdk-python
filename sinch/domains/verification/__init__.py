@@ -250,6 +250,42 @@ class Verifications:
             )
         )
 
+    def report_by_id(
+        self,
+        id: str,
+        verification_report_request: dict
+    ) -> ReportVerificationByIdResponse:
+        """
+        This method is not supported anymore.
+        It should be used only for backward compatibility reasons.
+        """
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdEndpoint(
+                request_data=ReportVerificationByIdRequest(
+                    id,
+                    verification_report_request
+                )
+            )
+        )
+
+    def report_by_identity(
+        self,
+        endpoint,
+        verification_report_request
+    ) -> ReportVerificationByIdentityResponse:
+        """
+        This method is not supported anymore.
+        It should be used only for backward compatibility reasons.
+        """
+        return self._sinch.configuration.transport.request(
+            ReportVerificationByIdentityEndpoint(
+                request_data=ReportVerificationByIdentityRequest(
+                    endpoint,
+                    verification_report_request
+                )
+            )
+        )
+
 
 class VerificationStatus:
     def __init__(self, sinch):
