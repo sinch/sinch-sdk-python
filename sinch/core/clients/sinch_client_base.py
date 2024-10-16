@@ -30,7 +30,9 @@ class SinchClientBase(ABC):
         logger_name: str = None,
         logger: Logger = None,
         application_key: str = None,
-        application_secret: str = None
+        application_secret: str = None,
+        service_plan_id: str = None,
+        sms_api_token: str = None
     ):
         pass
 
