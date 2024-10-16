@@ -1,5 +1,4 @@
 import httpx
-from sinch.core.exceptions import SinchException
 from sinch.core.ports.http_transport import AsyncHTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse

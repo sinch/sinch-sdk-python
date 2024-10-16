@@ -1,5 +1,4 @@
 import requests
-import json
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
