@@ -1,4 +1,5 @@
 import httpx
+from sinch.core.exceptions import SinchException
 from sinch.core.ports.http_transport import AsyncHTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
@@ -42,10 +43,7 @@ class HTTPXTransport(AsyncHTTPTransport):
                 timeout=self.sinch.configuration.connection_timeout,
             )
 
-        if response.content:
-            response_body = response.json()
-        else:
-            response_body = {}
+        response_body = self.deserialize_json_response(response)
 
         self.sinch.configuration.logger.debug(
             f"Async HTTP {response.status_code} response with headers: {response.headers}"
