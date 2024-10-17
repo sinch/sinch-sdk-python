@@ -2,7 +2,7 @@ from logging import Logger
 from sinch.core.clients.sinch_client_base import SinchClientBase
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManagerAsync
-from sinch.core.adapters.asyncio_http_adapter import HTTPTransportAioHTTP
+from sinch.core.adapters.httpx_adapter import HTTPXTransport
 from sinch.domains.authentication import AuthenticationAsync
 from sinch.domains.numbers import NumbersAsync
 from sinch.domains.conversation import ConversationAsync
@@ -33,7 +33,7 @@ class SinchClientAsync(SinchClientBase):
             project_id=project_id,
             logger_name=logger_name,
             logger=logger,
-            transport=HTTPTransportAioHTTP(self),
+            transport=HTTPXTransport(self),
             token_manager=TokenManagerAsync(self),
             application_secret=application_secret,
             application_key=application_key

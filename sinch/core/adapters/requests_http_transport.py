@@ -1,5 +1,4 @@
 import requests
-import json
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
@@ -29,9 +28,7 @@ class HTTPTransportRequests(HTTPTransport):
             params=request_data.query_params
         )
 
-        response_body = response.content
-        if response_body:
-            response_body = json.loads(response_body)
+        response_body = self.deserialize_json_response(response)
 
         self.sinch.configuration.logger.debug(
             f"Sync HTTP {response.status_code} response with headers: {response.headers}"

@@ -27,7 +27,7 @@ keywords = ["sinch", "sdk"]
 [tool.poetry.dependencies]
 python = ">=3.9"
 requests = "*"
-aiohttp = "*"
+httpx = "*"
 
 [build-system]
 requires = ["poetry-core"]

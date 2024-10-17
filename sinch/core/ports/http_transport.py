@@ -5,7 +5,7 @@ from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.signature import Signature
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
-from sinch.core.exceptions import ValidationException
+from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.enums import HTTPAuthentication
 from sinch.core.token_manager import TokenState
 from sinch import __version__ as sdk_version
@@ -82,6 +82,25 @@ class HTTPTransport(ABC):
             query_params=url_query_params,
             auth=()
         )
+
+    @staticmethod
+    def deserialize_json_response(response):
+        if response.content:
+            try:
+                response_body = response.json()
+            except ValueError as err:
+                raise SinchException(
+                    message=(
+                        "Error while parsing json response.",
+                        err.msg
+                    ),
+                    is_from_server=True,
+                    response=response
+                )
+        else:
+            response_body = {}
+
+        return response_body
 
     def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
         if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
