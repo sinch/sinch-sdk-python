@@ -30,11 +30,6 @@ class StartVerificationResponse(SinchBaseModel):
 
 
 @dataclass
-class StartSMSInitiateVerificationResponse(StartVerificationResponse):
-    sms: SMSResponse
-
-
-@dataclass
 class StartFlashCallInitiateVerificationResponse(StartVerificationResponse):
     flash_call: FlashCallResponse
 
@@ -50,6 +45,26 @@ class StartCalloutInitiateVerificationResponse(StartVerificationResponse):
 
 
 @dataclass
+class StartSMSVerificationResponse(StartVerificationResponse):
+    sms: SMSResponse
+
+
+@dataclass
+class StartFlashCallVerificationResponse(StartVerificationResponse):
+    flash_call: FlashCallResponse
+
+
+@dataclass
+class StartDataVerificationResponse(StartVerificationResponse):
+    seamless: DataResponse
+
+
+@dataclass
+class StartPhoneCallVerificationResponse(StartVerificationResponse):
+    pass
+
+
+@dataclass
 class VerificationResponse(SinchBaseModel):
     id: str
     method: VerificationMethod
@@ -61,6 +76,11 @@ class VerificationResponse(SinchBaseModel):
     reference: str
     reason: str
     call_complete: bool
+
+
+@dataclass
+class GetVerificationStatusByIdResponse(VerificationResponse):
+    pass
 
 
 @dataclass
@@ -80,11 +100,6 @@ class ReportVerificationByIdResponse(ReportVerificationResponse):
 
 @dataclass
 class GetVerificationStatusByReferenceResponse(VerificationResponse):
-    pass
-
-
-@dataclass
-class GetVerificationStatusByIdResponse(VerificationResponse):
     pass
 
 
