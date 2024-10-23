@@ -69,6 +69,22 @@ def test_start_verification_phone_call(
     assert isinstance(verification_response, StartPhoneCallVerificationResponse)
 
 
+def test_start_verification_callout(
+    sinch_client_sync,
+    phone_number
+):
+    verification_response = sinch_client_sync.verification.verifications.start_callout(
+        identity={
+            "type": "number",
+            "endpoint": phone_number
+        },
+        reference="random32",
+        speech_locale="en-US"
+    )
+
+    assert isinstance(verification_response, StartPhoneCallVerificationResponse)
+
+
 @pytest.mark.skip(reason="Data verification. Mobile carrier support required.")
 def test_start_verification_seamless(
     sinch_client_sync,
