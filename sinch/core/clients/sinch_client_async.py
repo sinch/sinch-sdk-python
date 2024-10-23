@@ -25,7 +25,9 @@ class SinchClientAsync(SinchClientBase):
         logger_name: str = None,
         logger: Logger = None,
         application_key: str = None,
-        application_secret: str = None
+        application_secret: str = None,
+        service_plan_id: str = None,
+        sms_api_token: str = None
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -36,7 +38,9 @@ class SinchClientAsync(SinchClientBase):
             transport=HTTPXTransport(self),
             token_manager=TokenManagerAsync(self),
             application_secret=application_secret,
-            application_key=application_key
+            application_key=application_key,
+            service_plan_id=service_plan_id,
+            sms_api_token=sms_api_token
         )
 
         self.authentication = AuthenticationAsync(self)

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from sinch import SinchClient
 from sinch import SinchClientAsync
+from sinch.core.enums import HTTPAuthentication
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
@@ -60,6 +61,7 @@ def configure_origin(
 
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
+        sinch_client.configuration._sms_origin_with_service_plan_id = sms_origin
 
     if verification_origin:
         sinch_client.configuration.verification_origin = verification_origin
@@ -152,6 +154,16 @@ def application_key():
 @pytest.fixture
 def application_secret():
     return os.getenv("APPLICATION_SECRET")
+
+
+@pytest.fixture
+def service_plan_id():
+    return os.getenv("SERVICE_PLAN_ID")
+
+
+@pytest.fixture
+def sms_api_token():
+    return os.getenv("SMS_API_TOKEN")
 
 
 @pytest.fixture
@@ -287,6 +299,14 @@ def second_token_based_pagination_response():
 
 
 @pytest.fixture
+def int_based_pagination_request_data():
+    return IntBasedPaginationRequest(
+        page=0,
+        page_size=2
+    )
+
+
+@pytest.fixture
 def first_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
@@ -317,19 +337,13 @@ def third_int_based_pagination_response():
 
 
 @pytest.fixture
-def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
-        page=0,
-        page_size=2
-    )
-
-
-@pytest.fixture
 def sinch_client_sync(
     key_id,
     key_secret,
     application_key,
     application_secret,
+    service_plan_id,
+    sms_api_token,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -346,7 +360,9 @@ def sinch_client_sync(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret
+            application_secret=application_secret,
+            service_plan_id=service_plan_id,
+            sms_api_token=sms_api_token
         ),
         numbers_origin,
         conversation_origin,
@@ -365,6 +381,8 @@ def sinch_client_async(
     key_secret,
     application_key,
     application_secret,
+    service_plan_id,
+    sms_api_token,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -381,7 +399,9 @@ def sinch_client_async(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret
+            application_secret=application_secret,
+            service_plan_id=service_plan_id,
+            sms_api_token=sms_api_token
         ),
         numbers_origin,
         conversation_origin,
@@ -392,3 +412,9 @@ def sinch_client_async(
         voice_origin,
         disable_ssl
     )
+
+
+@pytest.fixture
+def sinch_client_sync_with_sms_token_authentication(sinch_client_sync):
+    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
+    return sinch_client_sync
