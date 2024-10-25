@@ -117,6 +117,7 @@ class Verifications:
         """
         This method is not supported anymore.
         It should be used only for backward compatibility reasons.
+        Use start_phone_call method instead.
         """
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
@@ -138,6 +139,7 @@ class Verifications:
         """
         This method is not supported anymore.
         It should be used only for backward compatibility reasons.
+        Use start_data method instead.
         """
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
