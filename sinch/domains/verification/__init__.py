@@ -76,10 +76,6 @@ class Verifications:
         dial_timeout: int = None,
         custom: str = None
     ) -> StartVerificationResponse:
-        """
-        dial_timeout argument is not supported anymore.
-        It should be used only for backward compatibility reasons.
-        """
         return self._sinch.configuration.transport.request(
             StartVerificationEndpoint(
                 request_data=StartFlashCallVerificationRequest(
