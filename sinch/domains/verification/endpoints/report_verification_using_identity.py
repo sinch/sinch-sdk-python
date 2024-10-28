@@ -1,4 +1,3 @@
-import json
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.verification.endpoints.verification_endpoint import VerificationEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -21,7 +20,7 @@ class ReportVerificationByIdentityEndpoint(VerificationEndpoint):
         )
 
     def request_body(self):
-        return json.dumps(self.request_data.verification_report_request)
+        return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> ReportVerificationByIdentityResponse:
         super().handle_response(response)
