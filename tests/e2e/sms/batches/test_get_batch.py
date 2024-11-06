@@ -9,9 +9,9 @@ def test_get_sms_batch(sinch_client_sync):
     assert isinstance(get_batch_response, GetSMSBatchResponse)
 
 
-def test_get_sms_batch_with_service_plan_id(sinch_client_sync_with_sms_token_authentication):
-    list_batch_response = sinch_client_sync_with_sms_token_authentication.sms.batches.list()
-    get_batch_response = sinch_client_sync_with_sms_token_authentication.sms.batches.get(
+def test_get_sms_batch_with_service_plan_id(sinch_client_sync_with_service_plan_id):
+    list_batch_response = sinch_client_sync_with_service_plan_id.sms.batches.list()
+    get_batch_response = sinch_client_sync_with_service_plan_id.sms.batches.get(
         batch_id=list_batch_response.result.batches[0].id
     )
     assert isinstance(get_batch_response, GetSMSBatchResponse)

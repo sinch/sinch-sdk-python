@@ -94,21 +94,6 @@ class Configuration:
         doc="SMS Domain for service plan id version of the SMS API"
     )
 
-    def _set_sms_authentication_method(
-        self,
-        auth_type: str
-    ) -> None:
-        self._sms_authentication = auth_type
-
-    def _get_sms_authentication_method(self) -> str:
-        return self._sms_authentication
-
-    sms_authentication_method = property(
-        _get_sms_authentication_method,
-        _set_sms_authentication_method,
-        doc="SMS Authentication method"
-    )
-
     def _set_voice_origin(self):
         if not self._voice_region:
             self.voice_origin = self._voice_domain.format("calling")

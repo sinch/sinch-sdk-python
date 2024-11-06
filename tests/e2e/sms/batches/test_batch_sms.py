@@ -59,11 +59,11 @@ def test_send_sms_sync(sinch_client_sync, phone_number, origin_phone_number):
 
 
 def test_send_sms_sync_with_service_plan_id(
-    sinch_client_sync_with_sms_token_authentication,
+        sinch_client_sync_with_service_plan_id,
     phone_number,
     origin_phone_number
 ):
-    send_sms_response = sinch_client_sync_with_sms_token_authentication.sms.batches.send(
+    send_sms_response = sinch_client_sync_with_service_plan_id.sms.batches.send(
         delivery_report="none",
         to=[phone_number],
         from_=origin_phone_number,

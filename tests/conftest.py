@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 from sinch import SinchClient
 from sinch import SinchClientAsync
-from sinch.core.enums import HTTPAuthentication
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
@@ -342,7 +341,6 @@ def sinch_client_sync(
     key_secret,
     application_key,
     application_secret,
-    service_plan_id,
     sms_api_token,
     numbers_origin,
     conversation_origin,
@@ -361,7 +359,6 @@ def sinch_client_sync(
             project_id=project_id,
             application_key=application_key,
             application_secret=application_secret,
-            service_plan_id=service_plan_id,
             sms_api_token=sms_api_token
         ),
         numbers_origin,
@@ -381,7 +378,6 @@ def sinch_client_async(
     key_secret,
     application_key,
     application_secret,
-    service_plan_id,
     sms_api_token,
     numbers_origin,
     conversation_origin,
@@ -400,7 +396,6 @@ def sinch_client_async(
             project_id=project_id,
             application_key=application_key,
             application_secret=application_secret,
-            service_plan_id=service_plan_id,
             sms_api_token=sms_api_token
         ),
         numbers_origin,
@@ -415,6 +410,6 @@ def sinch_client_async(
 
 
 @pytest.fixture
-def sinch_client_sync_with_sms_token_authentication(sinch_client_sync):
-    sinch_client_sync.configuration.sms_authentication_method = HTTPAuthentication.SMS_TOKEN.value
+def sinch_client_sync_with_service_plan_id(sinch_client_sync, service_plan_id):
+    sinch_client_sync.configuration.service_plan_id = service_plan_id
     return sinch_client_sync

@@ -13,10 +13,10 @@ def test_update_sms_group(sinch_client_sync, phone_number):
     assert update_group_response.name == "KillerRabbit222"
 
 
-def test_update_sms_group_with_service_plan_id(sinch_client_sync_with_sms_token_authentication, phone_number):
-    list_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.list()
+def test_update_sms_group_with_service_plan_id(sinch_client_sync_with_service_plan_id, phone_number):
+    list_group_response = sinch_client_sync_with_service_plan_id.sms.groups.list()
 
-    update_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.update(
+    update_group_response = sinch_client_sync_with_service_plan_id.sms.groups.update(
         name="KillerRabbit222",
         group_id=list_group_response.result.groups[0].id
     )

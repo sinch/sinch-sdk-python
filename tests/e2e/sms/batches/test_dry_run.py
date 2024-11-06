@@ -13,11 +13,11 @@ def test_send_sms_dry_run(sinch_client_sync, phone_number, origin_phone_number):
 
 
 def test_send_sms_dry_run_with_service_plan_id(
-    sinch_client_sync_with_sms_token_authentication,
+        sinch_client_sync_with_service_plan_id,
     phone_number,
     origin_phone_number
 ):
-    send_dry_run_response = sinch_client_sync_with_sms_token_authentication.sms.batches.send_dry_run(
+    send_dry_run_response = sinch_client_sync_with_service_plan_id.sms.batches.send_dry_run(
         number_of_recipients=10,
         per_recipient=True,
         to=[phone_number],

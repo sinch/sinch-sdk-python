@@ -9,8 +9,8 @@ def test_create_sms_group(sinch_client_sync, phone_number):
     assert isinstance(create_group_response, CreateSMSGroupResponse)
 
 
-def test_create_sms_group_with_service_plan_id(sinch_client_sync_with_sms_token_authentication, phone_number):
-    create_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.create(
+def test_create_sms_group_with_service_plan_id(sinch_client_sync_with_service_plan_id, phone_number):
+    create_group_response = sinch_client_sync_with_service_plan_id.sms.groups.create(
         name="KillerRabbit",
         members=[phone_number]
     )

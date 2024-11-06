@@ -1,10 +1,10 @@
 from sinch.domains.sms.models.groups.responses import ReplaceSMSGroupResponse
 
 
-def test_replace_sms_group_with_service_plan_id(sinch_client_sync_with_sms_token_authentication):
-    list_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.list()
+def test_replace_sms_group_with_service_plan_id(sinch_client_sync_with_service_plan_id):
+    list_group_response = sinch_client_sync_with_service_plan_id.sms.groups.list()
 
-    replace_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.replace(
+    replace_group_response = sinch_client_sync_with_service_plan_id.sms.groups.replace(
         group_id=list_group_response.result.groups[0].id,
         members=["48111111111"]
     )

@@ -7,8 +7,8 @@ def test_list_sms_groups(sinch_client_sync):
     assert isinstance(list_group_response.result, SinchListSMSGroupResponse)
 
 
-def test_list_sms_groups_with_service_plan_id(sinch_client_sync_with_sms_token_authentication):
-    list_group_response = sinch_client_sync_with_sms_token_authentication.sms.groups.list()
+def test_list_sms_groups_with_service_plan_id(sinch_client_sync_with_service_plan_id):
+    list_group_response = sinch_client_sync_with_service_plan_id.sms.groups.list()
     assert isinstance(list_group_response.result, SinchListSMSGroupResponse)
 
 

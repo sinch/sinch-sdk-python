@@ -20,11 +20,11 @@ def test_get_delivery_reports_for_specific_batch(sinch_client_sync, phone_number
 
 
 def test_get_delivery_reports_for_specific_batch_with_service_plan_id(
-    sinch_client_sync_with_sms_token_authentication,
+        sinch_client_sync_with_service_plan_id,
     phone_number,
     origin_phone_number
 ):
-    send_batch_response = sinch_client_sync_with_sms_token_authentication.sms.batches.send(
+    send_batch_response = sinch_client_sync_with_service_plan_id.sms.batches.send(
         delivery_report="summary",
         to=[phone_number],
         from_=origin_phone_number,
@@ -32,7 +32,7 @@ def test_get_delivery_reports_for_specific_batch_with_service_plan_id(
         feedback_enabled=True,
         callback_url="http://testcallback.pl"
     )
-    get_delivery_report_response = sinch_client_sync_with_sms_token_authentication.sms.delivery_reports.get_for_batch(
+    get_delivery_report_response = sinch_client_sync_with_service_plan_id.sms.delivery_reports.get_for_batch(
         batch_id=send_batch_response.id,
         type_="summary",
         status=["Queued"],
