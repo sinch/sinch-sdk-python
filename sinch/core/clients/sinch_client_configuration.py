@@ -45,7 +45,7 @@ class Configuration:
         self._conversation_domain = ".conversation.api.sinch.com"
         self._sms_region = "us"
         self._sms_domain = "zt.{}.sms.api.sinch.com"
-        self._sms_domain_with_service_plan_id = "sms.api.sinch.com"
+        self._sms_domain_with_service_plan_id = "{}.sms.api.sinch.com"
         self._sms_authentication = HTTPAuthentication.OAUTH.value
         self._templates_region = "eu"
         self._templates_domain = ".template.api.sinch.com"
