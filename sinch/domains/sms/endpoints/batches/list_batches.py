@@ -24,7 +24,7 @@ class ListSMSBatchesEndpoint(SMSEndpoint):
         return self.request_data.as_dict()
 
     def handle_response(self, response: HTTPResponse):
-        super().handle_response(response)
+        super(ListSMSBatchesEndpoint, self).handle_response(response)
         return ListSMSBatchesResponse(
             batches=[
                 Batch(
