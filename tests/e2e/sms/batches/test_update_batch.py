@@ -2,7 +2,7 @@ from sinch.domains.sms.models.batches.responses import UpdateSMSBatchResponse
 
 
 def test_update_sms_batch_with_service_plan_id(
-        sinch_client_sync_with_service_plan_id,
+    sinch_client_sync_with_service_plan_id,
     phone_number,
     origin_phone_number
 ):
