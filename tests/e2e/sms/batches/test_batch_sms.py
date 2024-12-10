@@ -59,7 +59,7 @@ def test_send_sms_sync(sinch_client_sync, phone_number, origin_phone_number):
 
 
 def test_send_sms_sync_with_service_plan_id(
-        sinch_client_sync_with_service_plan_id,
+    sinch_client_sync_with_service_plan_id,
     phone_number,
     origin_phone_number
 ):
