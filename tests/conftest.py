@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from sinch import SinchClient
 from sinch import SinchClientAsync
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.http_request import HttpRequest
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 
@@ -213,6 +214,19 @@ def verification_request_with_empty_body_signature():
 @pytest.fixture
 def verification_request_signature_timestamp():
     return os.getenv("VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP")
+
+
+@pytest.fixture
+def empty_http_request():
+    return HttpRequest(
+        headers={},
+        protocol=None,
+        http_method=None,
+        request_body=None,
+        query_params=None,
+        url=None,
+        auth=None
+    )
 
 
 @pytest.fixture
