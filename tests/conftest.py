@@ -61,7 +61,7 @@ def configure_origin(
 
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
-        sinch_client.configuration._sms_origin_with_service_plan_id = sms_origin
+        sinch_client.configuration.sms_origin_with_service_plan_id = sms_origin
 
     if verification_origin:
         sinch_client.configuration.verification_origin = verification_origin

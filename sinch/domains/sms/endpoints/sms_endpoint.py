@@ -12,7 +12,7 @@ class SMSEndpoint(HTTPEndpoint):
         if sinch.configuration.service_plan_id:
             self.project_or_service_id = sinch.configuration.service_plan_id
             self.HTTP_AUTHENTICATION = HTTPAuthentication.SMS_TOKEN.value
-            self.sms_origin = self.sinch.configuration._sms_origin_with_service_plan_id
+            self.sms_origin = self.sinch.configuration.sms_origin_with_service_plan_id
 
         else:
             self.project_or_service_id = sinch.configuration.project_id

@@ -66,7 +66,7 @@ class Configuration:
             self.logger = logging.getLogger("Sinch")
 
     def _set_sms_origin_with_service_plan_id(self):
-        self._sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(self._sms_region)
+        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(self._sms_region)
 
     def _set_sms_region_with_service_plan_id(self, region):
         self._sms_region = region

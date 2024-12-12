@@ -30,7 +30,7 @@ def test_set_sms_region_with_service_plan_id_property_and_check_that_sms_origin_
     sinch_client_sync.configuration.sms_region_with_service_plan_id = (
         "Herring"
     )
-    assert sinch_client_sync.configuration._sms_origin_with_service_plan_id.startswith("Herring")
+    assert sinch_client_sync.configuration.sms_origin_with_service_plan_id.startswith("Herring")
 
 
 def test_set_sms_domain_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
