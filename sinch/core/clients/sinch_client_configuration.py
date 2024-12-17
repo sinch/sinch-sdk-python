@@ -44,6 +44,7 @@ class Configuration:
         self._conversation_region = "eu"
         self._conversation_domain = ".conversation.api.sinch.com"
         self._sms_region = "us"
+        self._sms_region_with_service_plan_id = "us"
         self._sms_domain = "zt.{}.sms.api.sinch.com"
         self._sms_domain_with_service_plan_id = "{}.sms.api.sinch.com"
         self._sms_authentication = HTTPAuthentication.OAUTH.value
@@ -55,6 +56,7 @@ class Configuration:
 
         self._set_conversation_origin()
         self._set_sms_origin()
+        self._set_sms_origin_with_service_plan_id()
         self._set_templates_origin()
         self._set_voice_origin()
 
@@ -66,14 +68,16 @@ class Configuration:
             self.logger = logging.getLogger("Sinch")
 
     def _set_sms_origin_with_service_plan_id(self):
-        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(self._sms_region)
+        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(
+            self._sms_region_with_service_plan_id
+        )
 
     def _set_sms_region_with_service_plan_id(self, region):
-        self._sms_region = region
+        self._sms_region_with_service_plan_id = region
         self._set_sms_origin_with_service_plan_id()
 
     def _get_sms_region_with_service_plan_id(self):
-        return self._sms_region
+        return self._sms_region_with_service_plan_id
 
     sms_region_with_service_plan_id = property(
         _get_sms_region_with_service_plan_id,
@@ -82,8 +86,8 @@ class Configuration:
     )
 
     def _set_sms_domain_with_service_plan_id(self, domain):
-        self._sms_domain = domain
-        self._set_sms_origin()
+        self._sms_domain_with_service_plan_id = domain
+        self._set_sms_origin_with_service_plan_id()
 
     def _get_sms_domain_with_service_plan_id(self):
         return self._sms_domain_with_service_plan_id
@@ -92,25 +96,6 @@ class Configuration:
         _get_sms_domain_with_service_plan_id,
         _set_sms_domain_with_service_plan_id,
         doc="SMS Domain for service plan id version of the SMS API"
-    )
-
-    def _set_voice_origin(self):
-        if not self._voice_region:
-            self.voice_origin = self._voice_domain.format("calling")
-        else:
-            self.voice_origin = self._voice_domain.format("calling-" + self._voice_region)
-
-    def _set_voice_region(self, region):
-        self._voice_region = region
-        self._set_voice_origin()
-
-    def _get_voice_region(self):
-        return self._voice_region
-
-    voice_region = property(
-        _get_voice_region,
-        _set_voice_region,
-        doc="Voice Region"
     )
 
     def _set_sms_origin(self):
@@ -198,4 +183,23 @@ class Configuration:
         _get_templates_domain,
         _set_templates_domain,
         doc="Conversation API Templates Domain"
+    )
+
+    def _set_voice_origin(self):
+        if not self._voice_region:
+            self.voice_origin = self._voice_domain.format("calling")
+        else:
+            self.voice_origin = self._voice_domain.format("calling-" + self._voice_region)
+
+    def _set_voice_region(self, region):
+        self._voice_region = region
+        self._set_voice_origin()
+
+    def _get_voice_region(self):
+        return self._voice_region
+
+    voice_region = property(
+        _get_voice_region,
+        _set_voice_region,
+        doc="Voice Region"
     )
