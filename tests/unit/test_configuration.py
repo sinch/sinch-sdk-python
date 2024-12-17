@@ -19,22 +19,17 @@ def test_configuration_initialization_happy_path(sinch_client_sync):
 
 
 def test_set_sms_region_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
-    sinch_client_sync.configuration.sms_region = (
-        "We interrupt this program to annoy you" 
-        "and make things generally more irritating."
-    )
-    assert "irritating" in sinch_client_sync.configuration.sms_origin
-
-
-def test_set_sms_domain_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
-    sinch_client_sync.configuration.sms_domain = "pl"
+    sinch_client_sync.configuration.sms_region = "pl"
     assert "pl" in sinch_client_sync.configuration.sms_origin
 
 
+def test_set_sms_domain_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
+    sinch_client_sync.configuration.sms_domain = "monty.python"
+    assert "monty.python" in sinch_client_sync.configuration.sms_origin
+
+
 def test_set_sms_region_with_service_plan_id_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
-    sinch_client_sync.configuration.sms_region_with_service_plan_id = (
-        "Herring"
-    )
+    sinch_client_sync.configuration.sms_region_with_service_plan_id = "Herring"
     assert sinch_client_sync.configuration.sms_origin_with_service_plan_id.startswith("Herring")
 
 
