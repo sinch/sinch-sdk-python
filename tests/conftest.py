@@ -355,7 +355,6 @@ def sinch_client_sync(
     key_secret,
     application_key,
     application_secret,
-    sms_api_token,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -372,8 +371,7 @@ def sinch_client_sync(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret,
-            sms_api_token=sms_api_token
+            application_secret=application_secret
         ),
         numbers_origin,
         conversation_origin,
@@ -392,7 +390,6 @@ def sinch_client_async(
     key_secret,
     application_key,
     application_secret,
-    sms_api_token,
     numbers_origin,
     conversation_origin,
     templates_origin,
@@ -409,8 +406,7 @@ def sinch_client_async(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret,
-            sms_api_token=sms_api_token
+            application_secret=application_secret
         ),
         numbers_origin,
         conversation_origin,
@@ -424,6 +420,11 @@ def sinch_client_async(
 
 
 @pytest.fixture
-def sinch_client_sync_with_service_plan_id(sinch_client_sync, service_plan_id):
+def sinch_client_sync_with_service_plan_id(
+    sinch_client_sync,
+    service_plan_id,
+    sms_api_token
+):
     sinch_client_sync.configuration.service_plan_id = service_plan_id
+    sinch_client_sync.configuration.sms_api_token = sms_api_token
     return sinch_client_sync
