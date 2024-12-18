@@ -1,4 +1,7 @@
-from sinch.domains.conversation.models.contact.responses import MergeConversationContactsResponse, ListConversationContactsResponse
+from sinch.domains.conversation.models.contact.responses import (
+    MergeConversationContactsResponse,
+    ListConversationContactsResponse
+)
 
 
 def test_merge_contacts(sinch_client_sync):

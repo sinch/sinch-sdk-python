@@ -1,6 +1,16 @@
 from sinch.domains.sms.models.groups.responses import ReplaceSMSGroupResponse
 
 
+def test_replace_sms_group_with_service_plan_id(sinch_client_sync_with_service_plan_id):
+    list_group_response = sinch_client_sync_with_service_plan_id.sms.groups.list()
+
+    replace_group_response = sinch_client_sync_with_service_plan_id.sms.groups.replace(
+        group_id=list_group_response.result.groups[0].id,
+        members=["48111111111"]
+    )
+    assert isinstance(replace_group_response, ReplaceSMSGroupResponse)
+
+
 def test_replace_sms_group(sinch_client_sync):
     list_group_response = sinch_client_sync.sms.groups.list()
 

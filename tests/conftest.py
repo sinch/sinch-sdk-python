@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from sinch import SinchClient
 from sinch import SinchClientAsync
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.http_request import HttpRequest
 from sinch.domains.authentication.models.authentication import OAuthToken
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 
@@ -60,6 +61,7 @@ def configure_origin(
 
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
+        sinch_client.configuration.sms_origin_with_service_plan_id = sms_origin
 
     if verification_origin:
         sinch_client.configuration.verification_origin = verification_origin
@@ -155,6 +157,16 @@ def application_secret():
 
 
 @pytest.fixture
+def service_plan_id():
+    return os.getenv("SERVICE_PLAN_ID")
+
+
+@pytest.fixture
+def sms_api_token():
+    return os.getenv("SMS_API_TOKEN")
+
+
+@pytest.fixture
 def verification_id():
     return os.getenv("VERIFICATION_ID")
 
@@ -202,6 +214,19 @@ def verification_request_with_empty_body_signature():
 @pytest.fixture
 def verification_request_signature_timestamp():
     return os.getenv("VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP")
+
+
+@pytest.fixture
+def empty_http_request():
+    return HttpRequest(
+        headers={},
+        protocol=None,
+        http_method=None,
+        request_body=None,
+        query_params=None,
+        url=None,
+        auth=None
+    )
 
 
 @pytest.fixture
@@ -287,6 +312,14 @@ def second_token_based_pagination_response():
 
 
 @pytest.fixture
+def int_based_pagination_request_data():
+    return IntBasedPaginationRequest(
+        page=0,
+        page_size=2
+    )
+
+
+@pytest.fixture
 def first_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
@@ -313,14 +346,6 @@ def third_int_based_pagination_response():
         page=2,
         page_size=0,
         pig_dogs=[]
-    )
-
-
-@pytest.fixture
-def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
-        page=0,
-        page_size=2
     )
 
 
@@ -392,3 +417,14 @@ def sinch_client_async(
         voice_origin,
         disable_ssl
     )
+
+
+@pytest.fixture
+def sinch_client_sync_with_service_plan_id(
+    sinch_client_sync,
+    service_plan_id,
+    sms_api_token
+):
+    sinch_client_sync.configuration.service_plan_id = service_plan_id
+    sinch_client_sync.configuration.sms_api_token = sms_api_token
+    return sinch_client_sync
