@@ -98,7 +98,7 @@ class Configuration:
         self._set_sms_origin()
 
     def _get_sms_domain(self):
-        return self.sms_domain
+        return self._sms_domain
 
     sms_domain = property(
         _get_sms_domain,
