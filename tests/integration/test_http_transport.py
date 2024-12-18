@@ -15,6 +15,10 @@ def test_authenticate_method_with_service_plan_id_version_of_sms_api(
 
     assert empty_http_request.headers
     assert "Bearer" in empty_http_request.headers["Authorization"]
+    assert (
+        empty_http_request.headers["Authorization"] ==
+        f"Bearer {sinch_client_sync_with_service_plan_id.configuration.sms_api_token}"
+    )
     assert empty_http_request.headers["Content-Type"] == "application/json"
 
 
@@ -30,5 +34,8 @@ def test_authenticate_method_with_project_id_version_of_sms_api(
     http_transport.authenticate(endpoint=sms_endpoint, request_data=empty_http_request)
 
     assert empty_http_request.headers
-    assert "Bearer" in empty_http_request.headers["Authorization"]
+    assert (
+        empty_http_request.headers["Authorization"] ==
+        f"Bearer {sinch_client_sync.configuration.token_manager.token.access_token}"
+    )
     assert empty_http_request.headers["Content-Type"] == "application/json"
