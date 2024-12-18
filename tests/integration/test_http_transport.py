@@ -1,13 +1,12 @@
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
-from sinch.domains.sms.endpoints.sms_endpoint import SMSEndpoint
-from sinch.core.enums import HTTPAuthentication
+from sinch.domains.sms.endpoints.batches.send_batch import SendBatchSMSEndpoint
 
 
 def test_authenticate_method_with_service_plan_id_version_of_sms_api(
     sinch_client_sync_with_service_plan_id,
     empty_http_request
 ):
-    sms_endpoint = SMSEndpoint(
+    sms_endpoint = SendBatchSMSEndpoint(
         sinch=sinch_client_sync_with_service_plan_id,
         request_data=empty_http_request
     )
@@ -23,11 +22,10 @@ def test_authenticate_method_with_project_id_version_of_sms_api(
     sinch_client_sync,
     empty_http_request
 ):
-    sms_endpoint = SMSEndpoint(
+    sms_endpoint = SendBatchSMSEndpoint(
         sinch=sinch_client_sync,
         request_data=empty_http_request,
     )
-    sms_endpoint.HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
     http_transport = HTTPTransportRequests(sinch=sinch_client_sync)
     http_transport.authenticate(endpoint=sms_endpoint, request_data=empty_http_request)
 
