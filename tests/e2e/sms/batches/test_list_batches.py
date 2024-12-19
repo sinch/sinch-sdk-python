@@ -7,9 +7,15 @@ def test_list_sms_batches(sinch_client_sync):
     assert isinstance(list_batches_response, IntBasedPaginator)
 
 
+def test_list_sms_batches_using_service_plan_id(sinch_client_sync_with_service_plan_id):
+    list_batches_response = sinch_client_sync_with_service_plan_id.sms.batches.list()
+    assert isinstance(list_batches_response, IntBasedPaginator)
+    assert len(list_batches_response.result.batches) > 0
+
+
 def test_list_sms_batches_with_page_size_1(sinch_client_sync):
     list_batches_response = sinch_client_sync.sms.batches.list(
-        page_size=1,
+        page_size=1
     )
     assert isinstance(list_batches_response.result, ListSMSBatchesResponse)
     assert len(list_batches_response.result.batches) == 1

@@ -33,7 +33,6 @@ def test_send_sms_zen_of_python(sinch_client_sync, phone_number, origin_phone_nu
             body=line,
             feedback_enabled=True
         )
-
         assert isinstance(send_sms_response, SendSMSBatchResponse)
 
 
@@ -43,7 +42,7 @@ async def test_send_sms_async(sinch_client_async, phone_number, origin_phone_num
         to=[phone_number],
         from_=origin_phone_number,
         body="Asynchronous Spanish Inquisition",
-        feedback_enabled=True,
+        feedback_enabled=True
     )
     assert isinstance(send_sms_response, SendSMSBatchResponse)
 
@@ -54,6 +53,21 @@ def test_send_sms_sync(sinch_client_sync, phone_number, origin_phone_number):
         to=[phone_number],
         from_=origin_phone_number,
         body="Synchronous Spanish Inquisition",
-        feedback_enabled=True,
+        feedback_enabled=True
+    )
+    assert isinstance(send_sms_response, SendSMSBatchResponse)
+
+
+def test_send_sms_sync_with_service_plan_id(
+    sinch_client_sync_with_service_plan_id,
+    phone_number,
+    origin_phone_number
+):
+    send_sms_response = sinch_client_sync_with_service_plan_id.sms.batches.send(
+        delivery_report="none",
+        to=[phone_number],
+        from_=origin_phone_number,
+        body="Synchronous Spanish Inquisition",
+        feedback_enabled=True
     )
     assert isinstance(send_sms_response, SendSMSBatchResponse)

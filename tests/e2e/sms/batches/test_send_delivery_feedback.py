@@ -13,6 +13,15 @@ def test_send_delivery_feedback(sinch_client_sync, phone_number):
     assert isinstance(delivery_feedback_response, SendSMSDeliveryFeedbackResponse)
 
 
+def test_send_delivery_feedback_with_service_plan_id(sinch_client_sync_with_service_plan_id, phone_number):
+    list_batches_response = sinch_client_sync_with_service_plan_id.sms.batches.list()
+    delivery_feedback_response = sinch_client_sync_with_service_plan_id.sms.batches.send_delivery_feedback(
+        batch_id=list_batches_response.result.batches[0].id,
+        recipients=[phone_number]
+    )
+    assert isinstance(delivery_feedback_response, SendSMSDeliveryFeedbackResponse)
+
+
 async def test_send_delivery_feedback_async(sinch_client_async, phone_number):
     list_batches_response = await sinch_client_async.sms.batches.list(
         start_date="2019-08-24T14:15:22Z",

@@ -13,3 +13,4 @@ class HTTPAuthentication(Enum):
     BASIC = "BASIC"
     OAUTH = "OAUTH"
     SIGNED = "SIGNED"
+    SMS_TOKEN = "SMS_TOKEN"
