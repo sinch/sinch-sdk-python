@@ -1,4 +1,4 @@
-import aiohttp
+import httpx
 from abc import ABC, abstractmethod
 from platform import python_version
 from sinch.core.endpoint import HTTPEndpoint
@@ -128,7 +128,7 @@ class HTTPTransport(ABC):
 class AsyncHTTPTransport(HTTPTransport):
     async def authenticate(self, endpoint, request_data):
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
-            request_data.auth = aiohttp.BasicAuth(
+            request_data.auth = httpx.BasicAuth(
                 self.sinch.configuration.key_id,
                 self.sinch.configuration.key_secret
             )

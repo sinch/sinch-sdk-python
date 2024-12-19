@@ -14,7 +14,7 @@ from sinch.domains.voice import VoiceAsync
 class SinchClientAsync(SinchClientBase):
     """
     Asynchronous implementation of the Sinch Client
-    By default this implementation uses HTTPTransportAioHTTP based on AioHTTP library
+    By default this implementation uses HTTPXTransport based on httpx library
     Custom Async HTTPTransport implementation can be provided via `transport` argument
     """
     def __init__(

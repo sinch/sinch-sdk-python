@@ -136,7 +136,7 @@ For handling all possible exceptions thrown by this SDK use `SinchException` (su
 
 By default, two HTTP implementations are provided:
 - Synchronous using `requests` HTTP library
-- Asynchronous using `aiohttp` HTTP library
+- Asynchronous using `httpx` HTTP library
 
 For creating custom HTTP client code, use either `SinchClient` or `SinchClientAsync` client and inject your transport during initialisation:
 ```python
