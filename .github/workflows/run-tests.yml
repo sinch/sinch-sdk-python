@@ -51,7 +51,3 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 sinch --count --max-complexity=10 --max-line-length=120 --statistics
-
-    - name: Test coverage report
-      run: |
-        python -m coverage report
