@@ -1,9 +1,11 @@
+# Testing
 pytest
-flake8
-bandit
-requests
-flask
-fastapi
-httpx
 pytest-asyncio
 coverage
+
+# Code Quality
+flake8
+
+# HTTP Libraries
+httpx
+requests

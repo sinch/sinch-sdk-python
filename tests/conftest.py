@@ -1,13 +1,13 @@
+# This file that contains fixtures that are shared across all tests in the tests directory.
 import os
-import pytest
 from dataclasses import dataclass
 
-from sinch import SinchClient
-from sinch import SinchClientAsync
-from sinch.core.models.http_response import HTTPResponse
-from sinch.core.models.http_request import HttpRequest
-from sinch.domains.authentication.models.authentication import OAuthToken
+import pytest
+
+from sinch import SinchClient, SinchClientAsync
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
+from sinch.core.models.http_response import HTTPResponse
+from sinch.domains.authentication.models.authentication import OAuthToken
 
 
 @dataclass
@@ -132,21 +132,6 @@ def disable_ssl():
 
 
 @pytest.fixture
-def phone_number():
-    return os.getenv("PHONE_NUMBER")
-
-
-@pytest.fixture
-def origin_phone_number():
-    return os.getenv("ORIGIN_PHONE_NUMBER")
-
-
-@pytest.fixture
-def voice_origin_phone_number():
-    return os.getenv("VOICE_ORIGIN_PHONE_NUMBER")
-
-
-@pytest.fixture
 def application_key():
     return os.getenv("APPLICATION_KEY")
 
@@ -162,74 +147,6 @@ def service_plan_id():
 
 
 @pytest.fixture
-def sms_api_token():
-    return os.getenv("SMS_API_TOKEN")
-
-
-@pytest.fixture
-def verification_id():
-    return os.getenv("VERIFICATION_ID")
-
-
-@pytest.fixture()
-def call_id():
-    return os.getenv("VOICE_CALL_ID")
-
-
-@pytest.fixture()
-def conference_id():
-    return os.getenv("CONFERENCE_ID")
-
-
-@pytest.fixture()
-def conference_call_id():
-    return os.getenv("CONFERENCE_CALL_ID")
-
-
-@pytest.fixture
-def app_id():
-    return os.getenv("APP_ID")
-
-
-@pytest.fixture
-def contact_id():
-    return os.getenv("CONTACT_ID")
-
-
-@pytest.fixture
-def empty_project_id():
-    return os.getenv("EMPTY_PROJECT_ID")
-
-
-@pytest.fixture
-def verification_request_signature():
-    return os.getenv("VERIFICATION_REQUEST_SIGNATURE")
-
-
-@pytest.fixture
-def verification_request_with_empty_body_signature():
-    return os.getenv("VERIFICATION_REQUEST_WITH_EMPTY_BODY_SIGNATURE")
-
-
-@pytest.fixture
-def verification_request_signature_timestamp():
-    return os.getenv("VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP")
-
-
-@pytest.fixture
-def empty_http_request():
-    return HttpRequest(
-        headers={},
-        protocol=None,
-        http_method=None,
-        request_body=None,
-        query_params=None,
-        url=None,
-        auth=None
-    )
-
-
-@pytest.fixture
 def http_response():
     return HTTPResponse(
         status_code=404,
@@ -241,30 +158,6 @@ def http_response():
         headers={
             "SAMPLE_HEADER": "test"
         }
-    )
-
-
-@pytest.fixture
-def sms_http_response():
-    return HTTPResponse(
-        status_code=404,
-        body={
-            "text": "Nobody expects the Spanish Inquisition!"
-        },
-        headers={
-            "SAMPLE_HEADER": "test"
-        }
-    )
-
-
-@pytest.fixture
-def expired_token_http_response():
-    return HTTPResponse(
-        status_code=401,
-        headers={
-            "www-authenticate": "Bearer error='invalid_token', error_description='Jwt expired at...'"
-        },
-        body={}
     )
 
 
@@ -417,14 +310,3 @@ def sinch_client_async(
         voice_origin,
         disable_ssl
     )
-
-
-@pytest.fixture
-def sinch_client_sync_with_service_plan_id(
-    sinch_client_sync,
-    service_plan_id,
-    sms_api_token
-):
-    sinch_client_sync.configuration.service_plan_id = service_plan_id
-    sinch_client_sync.configuration.sms_api_token = sms_api_token
-    return sinch_client_sync
