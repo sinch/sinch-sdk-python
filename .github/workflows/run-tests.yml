@@ -2,33 +2,21 @@ name: Test Python SDK
 on: [ push ]
 
 env:
+  APPLICATION_KEY: ${{ secrets.APPLICATION_KEY }}
+  APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET }}
+  AUTH_ORIGIN: ${{ secrets.AUTH_ORIGIN }}
+  CONVERSATION_ORIGIN: ${{ secrets.CONVERSATION_ORIGIN }}
+  DISABLE_SSL: ${{ secrets.DISABLE_SSL }}
   KEY_ID: ${{ secrets.KEY_ID }}
   KEY_SECRET: ${{ secrets.KEY_SECRET }}
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
   NUMBERS_ORIGIN: ${{ secrets.NUMBERS_ORIGIN }}
-  SMS_ORIGIN: ${{ secrets.SMS_ORIGIN }}
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
   SERVICE_PLAN_ID: ${{ secrets.SERVICE_PLAN_ID }}
-  SMS_API_TOKEN: ${{ secrets.SMS_API_TOKEN }}
-  CONVERSATION_ORIGIN: ${{ secrets.CONVERSATION_ORIGIN }}
-  AUTH_ORIGIN: ${{ secrets.AUTH_ORIGIN }}
-  DISABLE_SSL: ${{ secrets.DISABLE_SSL }}
-  PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
-  ORIGIN_PHONE_NUMBER: ${{ secrets.ORIGIN_PHONE_NUMBER }}
-  APP_ID: ${{ secrets.APP_ID }}
-  EMPTY_PROJECT_ID: ${{ secrets.EMPTY_PROJECT_ID }}
+  SMS_ORIGIN: ${{ secrets.SMS_ORIGIN }}
   TEMPLATES_ORIGIN: ${{ secrets.TEMPLATES_ORIGIN }}
-  APPLICATION_SECRET: ${{ secrets.APPLICATION_SECRET }}
-  APPLICATION_KEY: ${{ secrets.APPLICATION_KEY }}
-  VERIFICATION_ID: ${{ secrets.VERIFICATION_ID }}
   VERIFICATION_ORIGIN: ${{ secrets.VERIFICATION_ORIGIN }}
-  VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP: ${{ secrets.VERIFICATION_REQUEST_SIGNATURE_TIMESTAMP }}
-  VERIFICATION_REQUEST_WITH_EMPTY_BODY_SIGNATURE: ${{ secrets.VERIFICATION_REQUEST_WITH_EMPTY_BODY_SIGNATURE }}
-  VERIFICATION_REQUEST_SIGNATURE: ${{ secrets.VERIFICATION_REQUEST_SIGNATURE }}
-  VOICE_ORIGIN: ${{ secrets.VOICE_ORIGIN }}
-  VOICE_ORIGIN_PHONE_NUMBER: ${{ secrets.VOICE_ORIGIN_PHONE_NUMBER }}
   VOICE_CALL_ID: ${{ secrets.VOICE_CALL_ID }}
-  CONFERENCE_ID: ${{ secrets.CONFERENCE_ID }}
-  CONFERENCE_CALL_ID: ${{ secrets.CONFERENCE_CALL_ID }}
+  VOICE_ORIGIN: ${{ secrets.VOICE_ORIGIN }}
 
 jobs:
   build:
@@ -51,3 +39,9 @@ jobs:
     - name: Lint with flake8
       run: |
         flake8 sinch --count --max-complexity=10 --max-line-length=120 --statistics
+    - name: Test with Pytest
+      run: |
+        coverage run --source=. -m pytest
+    - name: Coverage Test Report
+      run: |
+        python -m coverage report --skip-empty
