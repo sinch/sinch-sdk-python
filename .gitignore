@@ -130,3 +130,6 @@ cython_debug/
 
 # Poetry
 poetry.lock
+
+# DS-Store files
+.DS_Store

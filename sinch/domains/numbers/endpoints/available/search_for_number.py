@@ -6,6 +6,9 @@ from sinch.domains.numbers.models.available.requests import CheckNumberAvailabil
 
 
 class SearchForNumberEndpoint(NumbersEndpoint):
+    """
+    Endpoint to check the availability of a virtual number for a project.
+    """
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers/{phone_number}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -16,6 +19,9 @@ class SearchForNumberEndpoint(NumbersEndpoint):
         self.request_data = request_data
 
     def build_url(self, sinch) -> str:
+        """
+        Constructs the full URL for the endpoint by formatting the placeholders with actual values.
+        """
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.numbers_origin,
             project_id=self.project_id,
@@ -23,14 +29,15 @@ class SearchForNumberEndpoint(NumbersEndpoint):
         )
 
     def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
+        """
+        Processes the API response and maps it to a response
+
+        Args:
+            response (HTTPResponse): The raw HTTP response object received from the API.
+
+        Returns:
+            CheckNumberAvailabilityResponse: The response model containing the parsed response data
+            of the requested phone number.
+        """
         super(SearchForNumberEndpoint, self).handle_response(response)
-        return CheckNumberAvailabilityResponse(
-            phone_number=response.body["phoneNumber"],
-            region_code=response.body["regionCode"],
-            type=response.body["type"],
-            capability=response.body["capability"],
-            setup_price=response.body["setupPrice"],
-            monthly_price=response.body["monthlyPrice"],
-            payment_interval_months=response.body["paymentIntervalMonths"],
-            supporting_documentation_required=response.body["supportingDocumentationRequired"]
-        )
+        return self.process_response_model(response.body, CheckNumberAvailabilityResponse)

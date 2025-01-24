@@ -1,36 +1,33 @@
-from dataclasses import dataclass
-
-from sinch.core.models.base_model import SinchRequestBaseModel
-
-
-@dataclass
-class ListAvailableNumbersRequest(SinchRequestBaseModel):
-    region_code: str
-    number_type: str
-    page_size: int
-    capabilities: list
-    number_search_pattern: str
-    number_pattern: str
+from typing import Optional, Dict
+from pydantic import Field, StrictStr, StrictInt, conlist
+from sinch.core.models.base_model import BaseModelConfig
 
 
-@dataclass
-class ActivateNumberRequest(SinchRequestBaseModel):
-    phone_number: str
-    sms_configuration: dict
-    voice_configuration: dict
+class ListAvailableNumbersRequest(BaseModelConfig):
+    region_code: StrictStr = Field(alias="regionCode")
+    number_type: StrictStr = Field(alias="type")
+    page_size: Optional[StrictInt] = Field(default=None, alias="size")
+    capabilities: Optional[conlist(StrictStr)] = None
+    number_search_pattern: Optional[StrictStr] = Field(default=None, alias="numberPattern.searchPattern")
+    number_pattern: Optional[StrictStr] = Field(default=None, alias="numberPattern.pattern")
 
 
-@dataclass
-class RentAnyNumberRequest(SinchRequestBaseModel):
-    region_code: str
-    type_: str
-    number_pattern: str
-    capabilities: list
-    sms_configuration: dict
-    voice_configuration: dict
-    callback_url: str
+class ActivateNumberRequest(BaseModelConfig):
+    phone_number: str = Field(alias="phoneNumber")
+    sms_configuration: Optional[Dict] = Field(default=None, alias="smsConfiguration")
+    voice_configuration: Optional[Dict] = Field(default=None, alias="voiceConfiguration")
+    callback_url: Optional[str] = Field(default=None, alias="callbackUrl")
 
 
-@dataclass
-class CheckNumberAvailabilityRequest(SinchRequestBaseModel):
-    phone_number: str
+class RentAnyNumberRequest(BaseModelConfig):
+    region_code: Optional[str] = Field(default=None, alias="regionCode")
+    type_: Optional[str] = Field(default=None, alias="type")
+    number_pattern: Optional[Dict] = Field(default=None, alias="numberPattern")
+    capabilities: Optional[list] = None
+    sms_configuration: Optional[Dict] = Field(default=None, alias="smsConfiguration")
+    voice_configuration: Optional[Dict] = Field(default=None, alias="voiceConfiguration")
+    callback_url: Optional[str] = Field(default=None, alias="callbackUrl")
+
+
+class CheckNumberAvailabilityRequest(BaseModelConfig):
+    phone_number: str = Field(alias="phoneNumber")

@@ -1,11 +1,7 @@
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
-from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
-from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
-from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
-from sinch.domains.numbers.endpoints.available.rent_any_number import RentAnyNumberEndpoint
+from sinch.domains.numbers.available_numbers import AvailableNumbers
 from sinch.domains.numbers.endpoints.callbacks.get_configuration import GetNumbersCallbackConfigurationEndpoint
 from sinch.domains.numbers.endpoints.callbacks.update_configuration import UpdateNumbersCallbackConfigurationEndpoint
-
 from sinch.domains.numbers.endpoints.active.list_active_numbers_for_project import ListActiveNumbersEndpoint
 from sinch.domains.numbers.endpoints.active.update_number_configuration import UpdateNumberConfigurationEndpoint
 from sinch.domains.numbers.endpoints.active.get_number_configuration import GetNumberConfigurationEndpoint
@@ -17,15 +13,7 @@ from sinch.domains.numbers.models.active.requests import (
     ListActiveNumbersRequest, GetNumberConfigurationRequest,
     UpdateNumberConfigurationRequest, ReleaseNumberFromProjectRequest
 )
-from sinch.domains.numbers.models.available.requests import (
-    ListAvailableNumbersRequest, ActivateNumberRequest,
-    CheckNumberAvailabilityRequest, RentAnyNumberRequest
-)
 from sinch.domains.numbers.models.regions.responses import ListAvailableRegionsResponse
-from sinch.domains.numbers.models.available.responses import (
-    ListAvailableNumbersResponse, ActivateNumberResponse,
-    CheckNumberAvailabilityResponse
-)
 from sinch.domains.numbers.models.active.responses import (
     ListActiveNumbersResponse, UpdateNumberConfigurationResponse,
     GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
@@ -37,98 +25,6 @@ from sinch.domains.numbers.models.callbacks.responses import (
 from sinch.domains.numbers.models.callbacks.requests import (
     UpdateNumbersCallbackConfigurationRequest
 )
-
-
-class AvailableNumbers:
-    def __init__(self, sinch):
-        self._sinch = sinch
-
-    def list(
-        self,
-        region_code: str,
-        number_type: str,
-        number_pattern: str = None,
-        number_search_pattern: str = None,
-        capabilities: list = None,
-        page_size: int = None
-    ) -> ListAvailableNumbersResponse:
-        """
-        Search for available virtual numbers using a variety of parameters to filter results.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            AvailableNumbersEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListAvailableNumbersRequest(
-                    region_code=region_code,
-                    number_type=number_type,
-                    page_size=page_size,
-                    capabilities=capabilities,
-                    number_search_pattern=number_search_pattern,
-                    number_pattern=number_pattern
-                )
-            )
-        )
-
-    def activate(
-        self,
-        phone_number: str,
-        sms_configuration: dict = None,
-        voice_configuration: dict = None
-    ) -> ActivateNumberResponse:
-        """
-        Activate a virtual number to use with SMS products, Voice products, or both.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            ActivateNumberEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ActivateNumberRequest(
-                    phone_number=phone_number,
-                    sms_configuration=sms_configuration,
-                    voice_configuration=voice_configuration
-                )
-            )
-        )
-
-    def rent_any(
-        self,
-        region_code: str,
-        type_: str,
-        number_pattern: str = None,
-        capabilities: list = None,
-        sms_configuration: dict = None,
-        voice_configuration: dict = None,
-        callback_url: str = None
-    ) -> RentAnyNumberRequest:
-        return self._sinch.configuration.transport.request(
-            RentAnyNumberEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=RentAnyNumberRequest(
-                    region_code=region_code,
-                    type_=type_,
-                    number_pattern=number_pattern,
-                    capabilities=capabilities,
-                    sms_configuration=sms_configuration,
-                    voice_configuration=voice_configuration,
-                    callback_url=callback_url
-                )
-            )
-        )
-
-    def check_availability(self, phone_number: str) -> CheckNumberAvailabilityResponse:
-        """
-        Enter a specific phone number to check availability.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            SearchForNumberEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=CheckNumberAvailabilityRequest(
-                    phone_number=phone_number
-                )
-            )
-        )
 
 
 class ActiveNumbers:
