@@ -4,18 +4,22 @@ from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist
 from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
 
+NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
+CapabilityTypeValues = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
+NumberSearchPatternTypeValues = Union[Literal["START", "CONTAINS", "END"], StrictStr]
+
 CapabilityType = Annotated[
-    conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1),
+    CapabilityTypeValues,
     Field(default=None)
 ]
 
 NumberSearchPatternType = Annotated[
-    Union[Literal["START", "CONTAINS", "END"], StrictStr],
+    NumberSearchPatternTypeValues,
     Field(default=None)
 ]
 
 NumberType = Annotated[
-    Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr],
+    NumberTypeValues,
     Field(default=None)
 ]
 

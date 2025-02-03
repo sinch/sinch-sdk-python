@@ -1,6 +1,6 @@
 from typing import Optional, TypedDict, overload, Literal, Union, Annotated
 from typing_extensions import NotRequired
-from pydantic import conlist, StrictInt, StrictStr, Field
+from pydantic import StrictInt, StrictStr, Field
 from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
 from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
 from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
@@ -16,10 +16,7 @@ from sinch.domains.numbers.models.available.activate_number_response import Acti
 from sinch.domains.numbers.models.available.check_number_availability_response import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
 
-# Define type aliases
-NumberType = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
-CapabilityType = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
-NumberSearchPatternType = Union[Literal["START", "CONTAINS", "END"], StrictStr]
+from sinch.domains.numbers.models.numbers import NumberTypeValues, CapabilityTypeValues, NumberSearchPatternTypeValues
 
 
 class SmsConfigurationDict(TypedDict):
@@ -48,7 +45,7 @@ class VoiceConfigurationDictCustom(TypedDict):
 
 class NumberPatternDict(TypedDict):
     pattern: NotRequired[str]
-    search_pattern: NotRequired[NumberSearchPatternType]
+    search_pattern: NotRequired[NumberSearchPatternTypeValues]
 
 
 VoiceConfigurationDictType = Annotated[
@@ -83,10 +80,10 @@ class AvailableNumbers:
     def list(
         self,
         region_code: StrictStr,
-        number_type: NumberType,
+        number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
-        number_search_pattern: Optional[NumberSearchPatternType] = None,
-        capabilities: Optional[CapabilityType] = None,
+        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
+        capabilities: Optional[CapabilityTypeValues] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> ListAvailableNumbersResponse:
@@ -203,11 +200,11 @@ class AvailableNumbers:
     def rent_any(
             self,
             region_code: StrictStr,
-            type_: NumberType,
+            type_: NumberTypeValues,
             sms_configuration: None,
             voice_configuration: None,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityType] = None,
+            capabilities: Optional[CapabilityTypeValues] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -216,11 +213,11 @@ class AvailableNumbers:
     def rent_any(
             self,
             region_code: StrictStr,
-            type_: NumberType,
+            type_: NumberTypeValues,
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictRTC,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityType] = None,
+            capabilities: Optional[CapabilityTypeValues] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -229,11 +226,11 @@ class AvailableNumbers:
     def rent_any(
             self,
             region_code: StrictStr,
-            type_: NumberType,
+            type_: NumberTypeValues,
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictFAX,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityType] = None,
+            capabilities: Optional[CapabilityTypeValues] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -242,11 +239,11 @@ class AvailableNumbers:
     def rent_any(
             self,
             region_code: StrictStr,
-            type_: NumberType,
+            type_: NumberTypeValues,
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictEST,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityType] = None,
+            capabilities: Optional[CapabilityTypeValues] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -254,9 +251,9 @@ class AvailableNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        type_: NumberType,
+        type_: NumberTypeValues,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityType] = None,
+        capabilities: Optional[CapabilityTypeValues] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[str] = None,
