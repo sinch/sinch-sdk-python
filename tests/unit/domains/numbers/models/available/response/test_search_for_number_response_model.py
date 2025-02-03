@@ -57,21 +57,21 @@ def test_check_number_availability_response_missing_optional_fields_expects_vali
     assert response.payment_interval_months is None
     assert response.supporting_documentation_required is None
 
-def test_check_number_availability_response_expects_validation_error_for_invalid_data():
+def test_check_number_availability_response_expects_parsed_new_type():
     """
     Test CheckNumberAvailabilityResponse with invalid data.
     """
     data = {
         "phoneNumber": "+1234567890",
         "regionCode": "US",
-        "type": "INVALID_TYPE",
+        "type": "NEW_TYPE",
         "capability": ["SMS", "VOICE"],
         "setupPrice": {"amount": "10.00", "currencyCode": "USD"},
         "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"}
     }
 
-    with pytest.raises(ValidationError):
-        CheckNumberAvailabilityResponse(**data)
+    response = CheckNumberAvailabilityResponse(**data)
+    assert response.type == "NEW_TYPE"
 
 def test_check_number_availability_response_expects_validation_error_for_missing_required_fields():
     """

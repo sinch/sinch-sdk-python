@@ -1,16 +1,9 @@
-from typing import Optional, Dict, Literal
+from typing import Optional, Dict
 from pydantic import Field, StrictStr
-from sinch.core.models.base_model import BaseModelConfigRequest
-
-
-class SmsConfiguration(BaseModelConfigRequest):
-    service_plan_id: StrictStr = Field(alias="servicePlanId")
-    campaign_id: Optional[StrictStr] = Field(default=None, alias="campaignId")
-
-
-class VoiceConfiguration(BaseModelConfigRequest):
-    type: Literal["RTC", "EST", "FAX"]
-    app_id: Optional[StrictStr] = Field(default=None, alias="appId")
+from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest
+from sinch.domains.numbers.models.numbers import (SmsConfigurationRequest, VoiceConfigurationFAX,
+                                                  VoiceConfigurationEST, VoiceConfigurationRTC,
+                                                  VoiceConfigurationCustom)
 
 
 class ActivateNumberRequest(BaseModelConfigRequest):
@@ -24,11 +17,20 @@ class ActivateNumberRequest(BaseModelConfigRequest):
         """
         Custom initializer to validate nested dictionaries.
         """
-        if "smsConfiguration" in data:
-            # Validate dictionary and ensure correct structure
-            SmsConfiguration(**data["smsConfiguration"])
+        for key in ("smsConfiguration", "sms_configuration"):
+            if key in data and data[key] is not None:
+                SmsConfigurationRequest(**data[key])
 
-        if "voiceConfiguration" in data:
-            VoiceConfiguration(**data["voiceConfiguration"])
+        voice_config_map = {
+            "RTC": VoiceConfigurationRTC,
+            "EST": VoiceConfigurationEST,
+            "FAX": VoiceConfigurationFAX,
+        }
+
+        for key in ("voiceConfiguration", "voice_configuration"):
+            if key in data and data[key] is not None:
+                voice_type = data[key].get("type")
+                voice_config_class = voice_config_map.get(voice_type, VoiceConfigurationCustom)
+                voice_config_class(**data[key])
 
         super().__init__(**data)

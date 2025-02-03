@@ -1,15 +1,14 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import Field, StrictInt, StrictStr
-from sinch.domains.numbers.models.numbers import Money, SmsConfigurationResponse, VoiceConfigurationResponse
+from pydantic import Field, StrictStr, StrictInt
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigResponse
-from sinch.domains.numbers.models.numbers import CapabilityType, NumberType
+from sinch.domains.numbers.models.numbers import (CapabilityType, Money, NumberType,
+                                                  SmsConfigurationResponse, VoiceConfigurationResponse)
 
 
-class ActivateNumberResponse(BaseModelConfigResponse):
+class RentAnyNumberResponse(BaseModelConfigResponse):
     phone_number: Optional[StrictStr] = Field(default=None, alias="phoneNumber")
     project_id: Optional[StrictStr] = Field(default=None, alias="projectId")
-    display_name: Optional[StrictStr] = Field(default=None, alias="displayName")
     region_code: Optional[StrictStr] = Field(default=None, alias="regionCode")
     type: Optional[NumberType] = Field(default=None)
     capability: Optional[CapabilityType] = Field(default=None)

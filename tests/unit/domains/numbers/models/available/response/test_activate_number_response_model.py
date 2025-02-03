@@ -68,7 +68,7 @@ def assert_voice_configuration(voice_config):
         datetime(2025, 1, 22, 13, 19, 31, 95000, tzinfo=timezone.utc))
     assert scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert scheduled_voice_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
-    assert scheduled_voice_provisioning.trunk_id == "string"
+    assert scheduled_voice_provisioning.app_id == "string"
 
 def test_activate_number_response_expects_all_fields_mapped_correctly(test_data):
     """
@@ -103,7 +103,7 @@ def test_activate_number_response_expects_all_fields_mapped_correctly(test_data)
                 "type": "RTC",
                 "lastUpdatedTime": "2025-01-22T13:19:31.095Z",
                 "status": "PROVISIONING_STATUS_UNSPECIFIED",
-                "trunkId": "string",
+                "appId": "string",
             },
             "appId": "string",
         },

@@ -1,5 +1,5 @@
 from pydantic import Field, StrictStr
-from sinch.core.models.base_model import BaseModelConfigRequest
+from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest
 
 
 class CheckNumberAvailabilityRequest(BaseModelConfigRequest):
