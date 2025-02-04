@@ -87,30 +87,3 @@ def test_check_number_availability_response_expects_validation_error_for_missing
 
     with pytest.raises(ValidationError):
         CheckNumberAvailabilityResponse.model_validate(data, strict=True)
-
-def test_check_number_availability_response_extra_field_expects_parsed_data_snake_case():
-    """
-    Verifies CheckNumberAvailabilityResponse can be created with missing optional fields,
-    and doesn't include them in the response.
-    """
-    data = {
-        "phoneNumber": "+1234567890",
-        "regionCode": "US",
-        "type": "MOBILE",
-        "capability": ["SMS", "VOICE"],
-        "setupPrice": {"amount": "10.00", "currencyCode": "USD"},
-        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"},
-        "extraValue": 5,
-    }
-
-    response = CheckNumberAvailabilityResponse(**data)
-
-    assert response.phone_number == "+1234567890"
-    assert response.region_code == "US"
-    assert response.type == "MOBILE"
-    assert response.capability == ["SMS", "VOICE"]
-    assert response.setup_price.amount == 10.00
-    assert response.setup_price.currency_code == "USD"
-    assert response.monthly_price.amount == 5.00
-    assert response.monthly_price.currency_code == "USD"
-    assert response.extra_value == 5

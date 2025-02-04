@@ -28,30 +28,6 @@ def test_activate_number_request_expects_snake_case_input():
     }
     assert request.callback_url == "https://example.com/callback"
 
-def test_activate_number_request_expects_camel_case_input():
-    """
-    Test that the model correctly handles camelCase input.
-    """
-    data = {
-        "phoneNumber": "+1234567890",
-        "smsConfiguration": {"servicePlanId": "YOUR_SMS_servicePlanId"},
-        "voice_configuration": {
-            "appId": "YOUR_voice_appID",
-            "type": "RTC"
-        },
-        "callback_url": "https://example.com/callback"
-    }
-    request = ActivateNumberRequest(**data)
-
-    # Assert fields are populated correctly
-    assert request.phone_number == "+1234567890"
-    assert request.sms_configuration == {"servicePlanId": "YOUR_SMS_servicePlanId"}
-    assert request.voice_configuration == {
-         "appId": "YOUR_voice_appID",
-         "type": "RTC"
-        }
-    assert request.callback_url == "https://example.com/callback"
-
 def test_activate_number_request_expects_mixed_case_input():
     """
     Test that the model correctly handles mixed camelCase and snake_case input.

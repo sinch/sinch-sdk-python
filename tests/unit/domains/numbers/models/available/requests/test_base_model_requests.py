@@ -28,3 +28,22 @@ def test_to_camel_case_expects_single_word():
     """
     assert BaseModelConfigRequest._to_camel_case("word") == "word"
     assert BaseModelConfigRequest._to_camel_case("single") == "single"
+
+def test_dict_expects_camel_case_input():
+    """
+    Test that the model correctly handles camelCase input.
+    """
+    data = {
+        "sms_configuration": {"service_plan_id": "YOUR_SMS_servicePlanId"},
+        "voice_configuration": {
+            "appId": "YOUR_voice_appID",
+            "type": "RTC"
+        }
+    }
+    request = BaseModelConfigRequest(**data)
+    response = request.model_dump()
+
+    assert response == {
+        'smsConfiguration': {'servicePlanId': 'YOUR_SMS_servicePlanId'},
+        'voiceConfiguration': {'appId': 'YOUR_voice_appID', 'type': 'RTC'}
+    }
