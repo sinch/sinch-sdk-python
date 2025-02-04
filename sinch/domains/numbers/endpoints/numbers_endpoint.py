@@ -31,15 +31,11 @@ class NumbersEndpoint(HTTPEndpoint):
         if not self.ENDPOINT_URL:
             raise NotImplementedError("ENDPOINT_URL must be defined in the subclass.")
 
-        placeholders = {
-            "origin": sinch.configuration.numbers_origin,
-            "project_id": self.project_id,
-        }
-
-        if "phone_number" in self.ENDPOINT_URL and hasattr(self.request_data, "phone_number"):
-            placeholders["phone_number"] = self.request_data.phone_number
-
-        return self.ENDPOINT_URL.format(**placeholders)
+        return self.ENDPOINT_URL.format(
+            origin=sinch.configuration.numbers_origin,
+            project_id=self.project_id,
+            **vars(self.request_data)
+        )
 
     def request_body(self):
         """
