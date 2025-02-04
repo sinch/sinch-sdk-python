@@ -15,18 +15,9 @@ class SearchForNumberEndpoint(NumbersEndpoint):
 
     def __init__(self, project_id: str, request_data: CheckNumberAvailabilityRequest):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
 
-    def build_url(self, sinch) -> str:
-        """
-        Constructs the full URL for the endpoint by formatting the placeholders with actual values.
-        """
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.numbers_origin,
-            project_id=self.project_id,
-            phone_number=self.request_data.phone_number
-        )
+    def request_body(self):
+        pass
 
     def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
         """
@@ -39,4 +30,5 @@ class SearchForNumberEndpoint(NumbersEndpoint):
             CheckNumberAvailabilityResponse: The response model containing the parsed response data
             of the requested phone number.
         """
+        super(SearchForNumberEndpoint, self).handle_response(response)
         return self.process_response_model(response.body, CheckNumberAvailabilityResponse)

@@ -14,6 +14,23 @@ class BaseModelConfigRequest(BaseModel):
         components = snake_str.split('_')
         return components[0] + ''.join(x.capitalize() if x else '_' for x in components[1:])
 
+    @classmethod
+    def _convert_dict_keys(cls, obj):
+        """Recursively convert dictionary keys to camelCase."""
+        if isinstance(obj, dict):
+            new_dict = {}
+            for key, value in obj.items():
+                # Convert dict key to camelCase
+                camel_key = cls._to_camel_case(key)
+                # Recurse on the value
+                new_dict[camel_key] = cls._convert_dict_keys(value)
+            return new_dict
+        elif isinstance(obj, list):
+            # Recurse through any list elements (they might be dicts too)
+            return [cls._convert_dict_keys(item) for item in obj]
+        else:
+            return obj
+
     model_config = ConfigDict(
         # Allows using both alias (camelCase) and field name (snake_case)
         populate_by_name=True,
@@ -23,30 +40,37 @@ class BaseModelConfigRequest(BaseModel):
 
     def model_dump(self, **kwargs) -> dict:
         """Converts extra fields from snake_case to camelCase when dumping the model in endpoint."""
-        # Get the standard model dump
+        # Get the standard model dump.
         data = super().model_dump(**kwargs)
 
         # Get extra fields
         extra_data = self.__pydantic_extra__ or {}
 
-        # Convert extra fields to camelCase and collect the original snake_case keys
-        converted_extra = {}
-        for key, value in extra_data.items():
-            camel_case_key = self._to_camel_case(key)
-            converted_extra[camel_case_key] = value
+        # Merge known + unknown into one dictionary first
+        combined = {**data, **extra_data}
 
-        # Remove snake_case keys from `data` before merging converted extras
-        for key in extra_data.keys():
-            data.pop(key, None)  # Ensure snake_case fields are removed from final output
+        final_dict = {}
 
-        # Merge the cleaned base data with the converted extra fields
-        return {**data, **converted_extra}
+        for key, value in combined.items():
+            if key in extra_data:
+                # This is an unknown field to be converted
+                new_key = self._to_camel_case(key)
+            else:
+                # Known field - keep the top-level key as given
+                new_key = key
+
+            # Recursively convert any nested dict keys
+            converted_value = self._convert_dict_keys(value)
+
+            # Add to final dictionary
+            final_dict[new_key] = converted_value
+
+        return final_dict
 
 
 class BaseModelConfigResponse(BaseModel):
     """
-    A base model that allows extra fields and converts camelCase to snake_case,
-    and serializes datetime fields to ISO format.
+    A base model that allows extra fields and converts camelCase to snake_case
     """
 
     @staticmethod

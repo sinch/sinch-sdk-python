@@ -27,6 +27,9 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
         query_params = self.request_data.model_dump(exclude_none=True, by_alias=True)
         return query_params
 
+    def request_body(self):
+        pass
+
     def handle_response(self, response: HTTPResponse) -> ListAvailableNumbersResponse:
         """
         Processes the API response and maps it to a response model.
@@ -37,4 +40,5 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
         Returns:
             ListAvailableNumbersResponse: The response model containing the parsed response data.
         """
+        super(AvailableNumbersEndpoint, self).handle_response(response)
         return self.process_response_model(response.body, ListAvailableNumbersResponse)

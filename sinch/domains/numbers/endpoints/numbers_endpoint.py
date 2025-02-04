@@ -1,3 +1,4 @@
+import json
 from pydantic import BaseModel
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
@@ -30,10 +31,26 @@ class NumbersEndpoint(HTTPEndpoint):
         if not self.ENDPOINT_URL:
             raise NotImplementedError("ENDPOINT_URL must be defined in the subclass.")
 
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.numbers_origin,
-            project_id=self.project_id
-        )
+        placeholders = {
+            "origin": sinch.configuration.numbers_origin,
+            "project_id": self.project_id,
+        }
+
+        if "phone_number" in self.ENDPOINT_URL and hasattr(self.request_data, "phone_number"):
+            placeholders["phone_number"] = self.request_data.phone_number
+
+        return self.ENDPOINT_URL.format(**placeholders)
+
+    def request_body(self):
+        """
+        Returns the request body as a JSON string.
+
+        Returns:
+            str: The request body as a JSON string.
+        """
+        # Convert the request data to a dictionary and remove None values
+        request_data = self.request_data.model_dump(by_alias=True, exclude_none=True)
+        return json.dumps(request_data)
 
     def process_response_model(self, response_body: dict, response_model: type[BaseModel]) -> BaseModel:
         """
@@ -47,14 +64,7 @@ class NumbersEndpoint(HTTPEndpoint):
             Parsed response object.
         """
         try:
-            model_instance = response_model.model_validate(response_body)
-            # Remove None values while preserving nested objects
-            cleaned_data = model_instance.model_dump(exclude_none=True)
-            # Remove attributes that are not in cleaned data
-            for key in model_instance.model_fields:
-                if key not in cleaned_data:
-                    delattr(model_instance, key)
-            return model_instance
+            return response_model.model_validate(response_body)
         except Exception as e:
             raise ValueError(f"Invalid response structure: {e}") from e
 

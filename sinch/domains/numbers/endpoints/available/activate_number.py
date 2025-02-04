@@ -16,21 +16,6 @@ class ActivateNumberEndpoint(NumbersEndpoint):
     def __init__(self, project_id: str, request_data: ActivateNumberRequest):
         super(ActivateNumberEndpoint, self).__init__(project_id, request_data)
 
-    def build_url(self, sinch) -> str:
-        """
-        Constructs the full URL for the endpoint by formatting the placeholders with actual values.
-
-        Args:
-            sinch (Sinch): The Sinch client instance containing configuration details like the API origin.
-
-        Returns:
-            str: The fully constructed URL for this API call.
-        """
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.numbers_origin,
-            project_id=self.project_id,
-            phone_number=self.request_data.phone_number
-        )
-
     def handle_response(self, response: HTTPResponse) -> ActivateNumberResponse:
+        super(ActivateNumberEndpoint, self).handle_response(response)
         return self.process_response_model(response.body, ActivateNumberResponse)

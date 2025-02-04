@@ -101,4 +101,4 @@ def test_handle_response_expects_missing_fields(mock_response):
     assert response.monthly_price.currency_code == "USD"
     assert response.monthly_price.amount == 2.00
     assert response.supporting_documentation_required is True
-    assert "payment_interval_months" not in response.model_dump()
+    assert response.payment_interval_months is None

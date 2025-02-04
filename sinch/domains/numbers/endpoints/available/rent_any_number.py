@@ -1,4 +1,3 @@
-import json
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -17,17 +16,6 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
     def __init__(self, project_id: str, request_data: RentAnyNumberRequest):
         super(RentAnyNumberEndpoint, self).__init__(project_id, request_data)
 
-    def request_body(self):
-        """
-        Returns the request body as a JSON string.
-
-        Returns:
-            str: The request body as a JSON string.
-        """
-        # Convert the request data to a dictionary and remove None values
-        request_data = self.request_data.model_dump(by_alias=True, exclude_none=True)
-        return json.dumps(request_data)
-
     def handle_response(self, response: HTTPResponse) -> RentAnyNumberResponse:
         """
         Handles the response from the API call.
@@ -38,4 +26,5 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
         Returns:
             RentAnyNumberResponse: The response data mapped to the RentAnyNumberResponse model.
         """
+        super(RentAnyNumberEndpoint, self).handle_response(response)
         return self.process_response_model(response.body, RentAnyNumberResponse)

@@ -41,7 +41,7 @@ class VoiceConfigurationFAX(BaseModelConfigRequest):
 
 class VoiceConfigurationEST(BaseModelConfigRequest):
     type: Literal["EST"] = "EST"
-    trunk_id: Optional[StrictStr] = Field(default=None, alias="truckId")
+    trunk_id: Optional[StrictStr] = Field(default=None, alias="trunkId")
 
 
 class VoiceConfigurationRTC(BaseModelConfigRequest):
@@ -74,28 +74,25 @@ class SmsConfigurationResponse(BaseModelConfigResponse):
         Field(default=None, alias="scheduledProvisioning"))
 
 
+class ScheduledVoiceProvisioningVoiceConfigurationBase(BaseModelConfigResponse):
+    type: Literal["FAX", "EST", "RTC"]
+    last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
+    status: Optional[StatusScheduledProvisioning] = None
+
+
 class ScheduledVoiceProvisioningVoiceConfigurationCustom(BaseModelConfigResponse):
     type: StrictStr
 
 
-class ScheduledVoiceProvisioningVoiceConfigurationFAX(BaseModelConfigResponse):
-    type: Literal["FAX"] = "FAX"
-    last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
-    status: Optional[StatusScheduledProvisioning] = None
+class ScheduledVoiceProvisioningVoiceConfigurationFAX(ScheduledVoiceProvisioningVoiceConfigurationBase):
     service_id: Optional[StrictStr] = Field(default=None, alias="serviceId")
 
 
-class ScheduledVoiceProvisioningVoiceConfigurationEST(BaseModelConfigResponse):
-    type: Literal["EST"] = "EST"
-    last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
-    status: Optional[StatusScheduledProvisioning] = None
+class ScheduledVoiceProvisioningVoiceConfigurationEST(ScheduledVoiceProvisioningVoiceConfigurationBase):
     trunk_id: Optional[StrictStr] = Field(default=None, alias="trunkId")
 
 
-class ScheduledVoiceProvisioningVoiceConfigurationRTC(BaseModelConfigResponse):
-    type: Literal["RTC"] = "RTC"
-    last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
-    status: Optional[StatusScheduledProvisioning] = None
+class ScheduledVoiceProvisioningVoiceConfigurationRTC(ScheduledVoiceProvisioningVoiceConfigurationBase):
     app_id: Optional[StrictStr] = Field(default=None, alias="appId")
 
 

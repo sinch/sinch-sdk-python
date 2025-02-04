@@ -93,3 +93,22 @@ def test_activate_number_request_expects_validation_error_for_missing_field():
 
     # Assert the error mentions the missing phone_number field
     assert "phone_number" in str(exc_info.value) or "phoneNumber" in str(exc_info.value)
+
+def test_activate_number_request_expects_optional_param_none():
+    """
+    Test that the model correctly handles snake_case input.
+    """
+    data = {
+        "phone_number": "+1234567890",
+        "sms_configuration": {"service_plan_id": "YOUR_SMS_servicePlanId"},
+        "callback_url": "https://example.com/callback"
+    }
+
+    # Instantiate the model
+    request = ActivateNumberRequest(**data)
+
+    # Assert the field values
+    assert request.phone_number == "+1234567890"
+    assert request.sms_configuration == {"service_plan_id": "YOUR_SMS_servicePlanId"}
+    assert request.voice_configuration is None
+    assert request.callback_url == "https://example.com/callback"
