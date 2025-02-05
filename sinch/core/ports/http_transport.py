@@ -81,7 +81,6 @@ class HTTPTransport(ABC):
         return request_data
 
     def prepare_request(self, endpoint: HTTPEndpoint) -> HttpRequest:
-        protocol = "http://" if self.sinch.configuration.disable_https else "https://"
         url_query_params = endpoint.build_query_params()
 
         return HttpRequest(
@@ -89,8 +88,7 @@ class HTTPTransport(ABC):
                 "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
                               f" {self.__class__.__name__};)"
             },
-            protocol=protocol,
-            url=protocol + endpoint.build_url(self.sinch),
+            url=endpoint.build_url(self.sinch),
             http_method=endpoint.HTTP_METHOD,
             request_body=endpoint.request_body(),
             query_params=url_query_params,

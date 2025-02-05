@@ -20,7 +20,6 @@ class Configuration:
         token_manager: Union[TokenManager, TokenManagerAsync],
         logger: Logger = None,
         logger_name: str = None,
-        disable_https=False,
         connection_timeout=10,
         application_key: str = None,
         application_secret: str = None,
@@ -51,7 +50,6 @@ class Configuration:
         self._templates_region = "eu"
         self._templates_domain = ".template.api.sinch.com"
         self.token_manager = token_manager
-        self.disable_https = disable_https
         self.transport: HTTPTransport = transport
 
         self._set_conversation_origin()
