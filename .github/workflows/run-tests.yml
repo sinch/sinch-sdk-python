@@ -63,12 +63,14 @@ jobs:
       run: |
         cd sinch-sdk-mockserver
         docker-compose up -d
-      env:
-        DOCKER_NETWORK_MODE: "host"
 
     - name: Copy feature files
       run: |
         cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
+
+    - name: Wait for mock server
+      run: ./wait-for-mockserver.sh
+      shell: bash
 
     - name: Run e2e tests
       run: behave tests/e2e/**/features
