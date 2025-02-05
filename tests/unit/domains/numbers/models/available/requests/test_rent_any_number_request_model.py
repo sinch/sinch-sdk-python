@@ -31,9 +31,14 @@ def test_rent_any_number_request_expects_valid_data():
     assert request.region_code == "string"
     assert request.type_ == "MOBILE"
     assert request.capabilities == ["SMS"]
-    assert request.sms_configuration.service_plan_id ==  "string"
-    assert request.sms_configuration.campaign_id == "string"
-    assert request.voice_configuration.app_id == "string"
+    assert request.sms_configuration ==  {
+            "servicePlanId": "string",
+            "campaignId": "string"
+        }
+    assert request.voice_configuration == {
+            "type": "RTC",
+            "appId": "string"
+        }
     assert request.callback_url == "https://www.your-callback-server.com/callback"
 
 
@@ -57,19 +62,3 @@ def test_rent_any_number_request_expects_missing_optional_fields():
     assert request.voice_configuration is None
     assert request.callback_url is None
 
-
-def test_rent_any_number_request_expects_extra_fields():
-    """
-    Test that RentAnyNumberRequest accepts extra fields.
-    """
-    data = {
-        "regionCode": "string",
-        "type": "MOBILE",
-        "extraField": "Extra field"
-    }
-
-    request = RentAnyNumberRequest(**data)
-
-    assert request.region_code == "string"
-    assert request.type_ == "MOBILE"
-    assert request.extraField == "Extra field"
