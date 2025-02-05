@@ -1,4 +1,3 @@
-import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint

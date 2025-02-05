@@ -126,8 +126,10 @@ class Number(BaseModelConfigResponse):
     supporting_documentation_required: Optional[StrictBool] = (
         Field(default=None, alias="supportingDocumentationRequired"))
 
+
 def to_snake(string: str) -> str:
     return re.sub(r'(?<!^)(?=[A-Z])', '_', string).lower()
+
 
 class NotFoundError(BaseModelConfigResponse):
     code: StrictInt

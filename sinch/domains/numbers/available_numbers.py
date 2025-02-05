@@ -11,7 +11,6 @@ from sinch.domains.numbers.models.available.activate_number_request import Activ
 from sinch.domains.numbers.models.available.check_number_availability_request import CheckNumberAvailabilityRequest
 from sinch.domains.numbers.models.available.rent_any_number_request import RentAnyNumberRequest
 
-from sinch.domains.numbers.models.available.list_available_numbers_response import ListAvailableNumbersResponse
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.check_number_availability_response import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
@@ -102,7 +101,7 @@ class AvailableNumbers:
             **kwargs: Additional filters for the request.
 
         Returns:
-            ListAvailableNumbersResponse: A response object with available numbers and their details.
+            list[Number]: A response array with available numbers and their details.
 
         For detailed documentation, visit https://developers.sinch.com
         """
