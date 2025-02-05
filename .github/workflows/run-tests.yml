@@ -45,3 +45,29 @@ jobs:
     - name: Coverage Test Report
       run: |
         python -m coverage report --skip-empty
+
+    - name: Checkout sinch-sdk-mockserver repository
+      uses: actions/checkout@v3
+      with:
+        repository: sinch/sinch-sdk-mockserver
+        token: ${{ secrets.PAT_CI }}
+        fetch-depth: 0
+        path: sinch-sdk-mockserver
+
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: Start mock servers with Docker Compose
+      run: |
+        cd sinch-sdk-mockserver
+        docker-compose up -d
+
+    - name: Copy feature files
+      run: |
+        cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
+
+    - name: Run e2e tests
+      run: behave tests/e2e/
+      
