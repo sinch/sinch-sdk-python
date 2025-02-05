@@ -69,7 +69,7 @@ jobs:
         cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
 
     - name: Wait for mock server
-      run: ./wait-for-mockserver.sh
+      run: .github/scripts/wait-for-mockserver.sh
       shell: bash
 
     - name: Run e2e tests
