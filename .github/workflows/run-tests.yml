@@ -69,5 +69,5 @@ jobs:
         cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
 
     - name: Run e2e tests
-      run: behave tests/e2e/
+      run: behave tests/e2e/**/features
       
