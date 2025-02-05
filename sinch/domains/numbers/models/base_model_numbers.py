@@ -49,7 +49,8 @@ class BaseModelConfigRequest(BaseModel):
         """Converts extra fields from snake_case to camelCase when dumping the model in endpoint."""
         # Get the standard model dump.
         data = super().model_dump(**kwargs)
-        data = self._convert_dict_to_camel_case(data)
+        if not kwargs or kwargs['by_alias']:
+            data = self._convert_dict_to_camel_case(data)
 
         # Get extra fields
         extra_data = self.__pydantic_extra__ or {}

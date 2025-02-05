@@ -251,7 +251,6 @@ def sinch_client_sync(
     sms_origin,
     verification_origin,
     voice_origin,
-    disable_ssl,
     project_id
 ):
     return configure_origin(
@@ -268,8 +267,7 @@ def sinch_client_sync(
         auth_origin,
         sms_origin,
         verification_origin,
-        voice_origin,
-        disable_ssl
+        voice_origin
     )
 
 
@@ -286,7 +284,6 @@ def sinch_client_async(
     sms_origin,
     verification_origin,
     voice_origin,
-    disable_ssl,
     project_id
 ):
     return configure_origin(
@@ -303,6 +300,5 @@ def sinch_client_async(
         auth_origin,
         sms_origin,
         verification_origin,
-        voice_origin,
-        disable_ssl
+        voice_origin
     )
