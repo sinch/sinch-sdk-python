@@ -3,6 +3,7 @@ pytest
 pytest-asyncio
 pytest-mock
 coverage
+behave
 
 # Code Quality
 flake8

@@ -1,10 +1,10 @@
 from typing import Optional, TypedDict, overload, Literal, Union, Annotated
 from typing_extensions import NotRequired
 from pydantic import StrictInt, StrictStr, Field
-from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
-from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
-from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
-from sinch.domains.numbers.endpoints.available.rent_any_number import RentAnyNumberEndpoint
+from sinch.domains.numbers.endpoints.available.search_for_number_endpoint import SearchForNumberEndpoint
+from sinch.domains.numbers.endpoints.available.list_available_numbers_endpoint import AvailableNumbersEndpoint
+from sinch.domains.numbers.endpoints.available.activate_number_endpoint import ActivateNumberEndpoint
+from sinch.domains.numbers.endpoints.available.rent_any_number_endpoint import RentAnyNumberEndpoint
 
 from sinch.domains.numbers.models.available.list_available_numbers_request import ListAvailableNumbersRequest
 from sinch.domains.numbers.models.available.activate_number_request import ActivateNumberRequest
@@ -15,6 +15,7 @@ from sinch.domains.numbers.models.available.list_available_numbers_response impo
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.check_number_availability_response import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
+from sinch.domains.numbers.models.numbers import Number
 
 from sinch.domains.numbers.models.numbers import NumberTypeValues, CapabilityTypeValues, NumberSearchPatternTypeValues
 
@@ -86,7 +87,7 @@ class AvailableNumbers:
         capabilities: Optional[CapabilityTypeValues] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
-    ) -> ListAvailableNumbersResponse:
+    ) -> list[Number]:
         """
         Search for available virtual numbers for you to activate using a variety of parameters to filter results.
 

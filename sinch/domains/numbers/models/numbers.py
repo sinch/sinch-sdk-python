@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Optional, Literal, Union, Annotated
-from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist
+from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict, model_validator
 from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
+import re
 
 NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
 CapabilityTypeValues = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
@@ -64,7 +65,7 @@ class ScheduledProvisioningSmsConfiguration(BaseModelConfigResponse):
     campaign_id: Optional[StrictStr] = Field(default=None, alias="campaignId")
     status: Optional[StatusScheduledProvisioning] = None
     last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
-    error_codes: Optional[conlist(StrictStr, min_length=1)] = Field(default=None, alias="errorCodes")
+    error_codes: Optional[conlist(StrictStr, min_length=0)] = Field(default=None, alias="errorCodes")
 
 
 class SmsConfigurationResponse(BaseModelConfigResponse):
@@ -124,3 +125,24 @@ class Number(BaseModelConfigResponse):
     payment_interval_months: Optional[StrictInt] = Field(default=None, alias="paymentIntervalMonths")
     supporting_documentation_required: Optional[StrictBool] = (
         Field(default=None, alias="supportingDocumentationRequired"))
+
+def to_snake(string: str) -> str:
+    return re.sub(r'(?<!^)(?=[A-Z])', '_', string).lower()
+
+class NotFoundError(BaseModelConfigResponse):
+    code: StrictInt
+    message: StrictStr
+    status: Literal['NOT_FOUND']
+    details: list[dict]
+
+    model_config = ConfigDict(populate_by_name=True, alias_generator=to_snake)
+
+    @model_validator(mode="before")
+    @classmethod
+    def transform_details(cls, values: dict) -> dict:
+        """Automatically convert details keys to snake_case"""
+        if "details" in values and isinstance(values["details"], list):
+            values["details"] = [
+                {to_snake(k): v for k, v in item.items()} for item in values["details"]
+            ]
+        return values

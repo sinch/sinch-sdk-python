@@ -29,7 +29,7 @@ class ActivateNumberRequest(BaseModelConfigRequest):
 
         for key in ("voiceConfiguration", "voice_configuration"):
             if key in data and data[key] is not None:
-                voice_type = data[key].get("type")
+                voice_type = data[key].get('type') or 'RTC'
                 voice_config_class = voice_config_map.get(voice_type, VoiceConfigurationCustom)
                 voice_config_class(**data[key])
 
