@@ -14,8 +14,8 @@ def step_service_is_available(context):
         key_id='keyId',
         key_secret='keySecret',
     )
-    sinch.configuration.auth_origin = 'http://localhost:3011'
-    sinch.configuration.numbers_origin = 'http://localhost:3013'
+    sinch.configuration.auth_origin = 'http://127.0.0.1:3011'
+    sinch.configuration.numbers_origin = 'http://127.0.0.1:3013'
     context.sinch = sinch
 
 @when('I send a request to search for available phone numbers')
