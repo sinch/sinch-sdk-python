@@ -63,6 +63,8 @@ jobs:
       run: |
         cd sinch-sdk-mockserver
         docker-compose up -d
+        env:
+          DOCKER_NETWORK_MODE: "host"
 
     - name: Copy feature files
       run: |
