@@ -1,5 +1,5 @@
 import pytest
-from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
+from sinch.domains.numbers.endpoints.available.list_available_numbers_endpoint import AvailableNumbersEndpoint
 from sinch.domains.numbers.models.available.list_available_numbers_request import ListAvailableNumbersRequest
 from sinch.domains.numbers.models.available.list_available_numbers_response import ListAvailableNumbersResponse
 from sinch.core.models.http_response import HTTPResponse

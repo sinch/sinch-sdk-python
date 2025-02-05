@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import MagicMock
 from sinch.domains.numbers.available_numbers import AvailableNumbers
-from sinch.domains.numbers.endpoints.available.list_available_numbers import AvailableNumbersEndpoint
-from sinch.domains.numbers.endpoints.available.activate_number import ActivateNumberEndpoint
-from sinch.domains.numbers.endpoints.available.search_for_number import SearchForNumberEndpoint
+from sinch.domains.numbers.endpoints.available.list_available_numbers_endpoint import AvailableNumbersEndpoint
+from sinch.domains.numbers.endpoints.available.activate_number_endpoint import ActivateNumberEndpoint
+from sinch.domains.numbers.endpoints.available.search_for_number_endpoint import SearchForNumberEndpoint
 
 from sinch.domains.numbers.models.available.list_available_numbers_request import ListAvailableNumbersRequest
 from sinch.domains.numbers.models.available.activate_number_request import ActivateNumberRequest

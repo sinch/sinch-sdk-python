@@ -30,5 +30,7 @@ class SearchForNumberEndpoint(NumbersEndpoint):
             CheckNumberAvailabilityResponse: The response model containing the parsed response data
             of the requested phone number.
         """
-        super(SearchForNumberEndpoint, self).handle_response(response)
+        error = super(SearchForNumberEndpoint, self).handle_response(response)
+        if error:
+            return error
         return self.process_response_model(response.body, CheckNumberAvailabilityResponse)
