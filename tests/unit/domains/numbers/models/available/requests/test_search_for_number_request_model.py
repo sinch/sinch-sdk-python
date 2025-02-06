@@ -29,7 +29,6 @@ def test_check_number_availability_request_expects_alias_mapping_correct():
     request = CheckNumberAvailabilityRequest(phoneNumber="+1234567890")
 
     assert request.model_dump(by_alias=True)["phoneNumber"] == "+1234567890"
-    print(request.model_dump(by_alias=False))
     assert request.model_dump(by_alias=False)["phone_number"] == "+1234567890"
 
 

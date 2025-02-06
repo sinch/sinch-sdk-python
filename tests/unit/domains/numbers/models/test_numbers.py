@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from sinch.domains.numbers.models.numbers import (
     ScheduledProvisioningSmsConfiguration,
     SmsConfigurationResponse,
-    VoiceConfigurationResponse,
+    VoiceConfigurationResponse, NotFoundError,
 )
 
 def test_scheduled_provisioning_sms_configuration_valid_expects_parsed_data():
@@ -108,3 +108,30 @@ def test_voice_configuration_fax_valid_expects_parsed_data():
     assert config.scheduled_voice_provisioning.type == "FAX"
     assert config.scheduled_voice_provisioning.status == "ACTIVE"
     assert config.scheduled_voice_provisioning.service_id == "test_service"
+
+def test_not_found_error_deserialize_with_snake_case():
+    data = {
+        'code': 404,
+        'message': '',
+        'status': 'NOT_FOUND',
+        'details': [
+            {
+                'type': 'ResourceInfo',
+                'resourceType': 'AvailableNumber',
+                'resourceName': '+1234567890',
+                'owner': '',
+                'description': ''
+            }
+        ]
+    }
+
+    not_found_error = NotFoundError.model_validate(data)
+
+    assert not_found_error.code == 404
+    assert not_found_error.message == ''
+    assert not_found_error.status == 'NOT_FOUND'
+    assert not_found_error.details[0]['type'] == 'ResourceInfo'
+    assert not_found_error.details[0]['resource_type'] == 'AvailableNumber'
+    assert not_found_error.details[0]['resource_name'] == '+1234567890'
+    assert not_found_error.details[0]['owner'] == ''
+    assert not_found_error.details[0]['description'] == ''

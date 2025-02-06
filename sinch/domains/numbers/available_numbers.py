@@ -121,8 +121,8 @@ class AvailableNumbers:
     def activate(
             self,
             phone_number: StrictStr,
-            sms_configuration: None,
-            voice_configuration: None,
+            sms_configuration: Optional[SmsConfigurationDict] = None,
+            voice_configuration: Optional[VoiceConfigurationDictType] = None,
             callback_url: Optional[StrictStr] = None
     ) -> ActivateNumberResponse:
         pass

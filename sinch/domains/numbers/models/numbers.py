@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Literal, Union, Annotated
+from typing import Optional, Literal, Union, Annotated, Dict
 from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict, model_validator
 from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
@@ -135,7 +135,7 @@ class NotFoundError(BaseModelConfigResponse):
     code: StrictInt
     message: StrictStr
     status: StrictStr
-    details: list[dict]
+    details: list[Dict]
 
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_snake)
 

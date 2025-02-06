@@ -100,7 +100,7 @@ def step_validate_rented_number(context):
     assert data.money.currency_code == 'EUR'
     assert data.money.amount == Decimal('0.80')
     assert data.payment_interval_months == 1
-    assert data.next_charge_date == datetime.fromisoformat('2024-06-06T14:42:42.022227').replace(tzinfo=timezone.utc)
+    assert data.next_charge_date == datetime.fromisoformat('2024-06-06T14:42:42.022227').astimezone(tz=timezone.utc)
     assert data.expire_at == None
     assert data.callback_url == ''
     assert data.sms_configuration.service_plan_id == ''
@@ -108,7 +108,7 @@ def step_validate_rented_number(context):
     assert data.sms_configuration.scheduled_provisioning.service_plan_id == 'SpaceMonkeySquadron'
     assert data.sms_configuration.scheduled_provisioning.campaign_id == ''
     assert data.sms_configuration.scheduled_provisioning.status == 'WAITING'
-    assert data.sms_configuration.scheduled_provisioning.last_updated_time == datetime.fromisoformat('2024-06-06T14:42:42.596223').replace(tzinfo=timezone.utc)
+    assert data.sms_configuration.scheduled_provisioning.last_updated_time == datetime.fromisoformat('2024-06-06T14:42:42.596223').astimezone(tz=timezone.utc)
     assert data.sms_configuration.scheduled_provisioning.error_codes == []
     assert data.voice_configuration.type == 'RTC'
     assert data.voice_configuration.app_id == ''
@@ -119,7 +119,7 @@ def step_validate_rented_number(context):
     assert data.voice_configuration.scheduled_voice_provisioning.trunk_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.service_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.status == 'WAITING'
-    assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat('2024-06-06T14:42:42.604092').replace(tzinfo=timezone.utc)
+    assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat('2024-06-06T14:42:42.604092').astimezone(tz=timezone.utc)
 
 @when('I send a request to rent the phone number "{phone_number}"')
 def step_rent_specific_number(context, phone_number):

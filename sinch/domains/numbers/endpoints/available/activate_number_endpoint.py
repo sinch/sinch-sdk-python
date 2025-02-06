@@ -16,7 +16,6 @@ class ActivateNumberEndpoint(NumbersEndpoint):
 
     def __init__(self, project_id: str, request_data: ActivateNumberRequest):
         super(ActivateNumberEndpoint, self).__init__(project_id, request_data)
-        self.request_data = request_data
 
     def handle_response(self, response: HTTPResponse) -> ActivateNumberResponse:
         try:
