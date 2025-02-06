@@ -3,7 +3,6 @@ from typing import Optional, Literal, Union, Annotated, Dict
 from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict, model_validator
 from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
-import re
 
 NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
 CapabilityTypeValues = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
