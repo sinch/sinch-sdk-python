@@ -54,7 +54,8 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code == 404:
-            return NotFoundError(**response.body['error'])
+            error = NotFoundError(**response.body['error'])
+            raise NumbersException(message=error, response=response, is_from_server=True)
 
         if response.status_code >= 400:
             raise NumbersException(

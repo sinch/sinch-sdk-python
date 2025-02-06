@@ -134,7 +134,7 @@ def to_snake(string: str) -> str:
 class NotFoundError(BaseModelConfigResponse):
     code: StrictInt
     message: StrictStr
-    status: Literal['NOT_FOUND']
+    status: StrictStr
     details: list[dict]
 
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_snake)

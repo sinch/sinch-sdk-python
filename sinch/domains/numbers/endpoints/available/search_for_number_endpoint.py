@@ -1,6 +1,7 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.domains.numbers.exceptions import NumberNotFoundException, NumbersException
 from sinch.domains.numbers.models.available.check_number_availability_response import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.available.check_number_availability_request import CheckNumberAvailabilityRequest
 
@@ -30,7 +31,8 @@ class SearchForNumberEndpoint(NumbersEndpoint):
             CheckNumberAvailabilityResponse: The response model containing the parsed response data
             of the requested phone number.
         """
-        error = super(SearchForNumberEndpoint, self).handle_response(response)
-        if error:
-            return error
+        try:
+            super(SearchForNumberEndpoint, self).handle_response(response)
+        except NumbersException as e:
+            raise NumberNotFoundException(message=e.args[0], response=e.http_response, is_from_server=e.is_from_server)
         return self.process_response_model(response.body, CheckNumberAvailabilityResponse)

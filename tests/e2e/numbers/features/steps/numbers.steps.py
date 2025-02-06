@@ -2,6 +2,7 @@ from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
 from sinch import SinchClient
+from sinch.domains.numbers.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
 from sinch.domains.numbers.models.numbers import NotFoundError
@@ -47,8 +48,12 @@ def step_check_number_properties(context):
 
 @when('I send a request to check the availability of the phone number "{phone_number}"')
 def step_check_number_availability(context, phone_number):
-    response = context.sinch.numbers.available.check_availability(phone_number)
-    context.response = response
+    try:
+        response = context.sinch.numbers.available.check_availability(phone_number)
+        context.response = response
+    except NumberNotFoundException as e:
+        context.error = e
+
 
 @then('the response displays the phone number "{phone_number}" details')
 def step_validate_number_details(context, phone_number):
@@ -57,7 +62,7 @@ def step_validate_number_details(context, phone_number):
 
 @then('the response contains an error about the number "{phone_number}" not being available')
 def step_check_unavailable_number(context, phone_number):
-    data: NotFoundError = context.response
+    data: NotFoundError = context.error.args[0]
     assert data.code == 404
     assert data.status == 'NOT_FOUND'
     assert data.details[0]['resource_name'] == phone_number
@@ -138,16 +143,19 @@ def step_validate_rented_specific_number(context, phone_number):
 @when('I send a request to rent the unavailable phone number "{phone_number}"')
 def step_rent_unavailable_number(context, phone_number):
     sinch_client: SinchClient = context.sinch
-    response = sinch_client.numbers.available.activate(
-        phone_number=phone_number,
-        sms_configuration={
-            'service_plan_id': 'SpaceMonkeySquadron',
-        },
-        voice_configuration={
-            'app_id': 'sunshine-rain-drop-very-beautifulday'
-        }
-    )
-    context.response = response
+    try:
+        response = sinch_client.numbers.available.activate(
+            phone_number=phone_number,
+            sms_configuration={
+                'service_plan_id': 'SpaceMonkeySquadron',
+            },
+            voice_configuration={
+                'app_id': 'sunshine-rain-drop-very-beautifulday'
+            }
+        )
+        context.response = response
+    except NumberNotFoundException as e:
+        context.error = e
 
 @when("I send a request to list the phone numbers")
 def step_when_list_phone_numbers(context):
