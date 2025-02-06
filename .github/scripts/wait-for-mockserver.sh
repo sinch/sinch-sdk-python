@@ -4,16 +4,19 @@ wait_for_server() {
   local url=$1
   echo "Waiting for $url to be ready..."
 
-  for i in {1..30}; do
+  MAX_RETRIES="${MAX_RETRIES:-30}"
+  SLEEP_SECONDS="${SLEEP_SECONDS:-2}"
+
+  for ((i = 1; i <= MAX_RETRIES; i++)); do
     if curl -sSf "$url" > /dev/null; then
       echo "$url is ready!"
       return 0
     fi
-    echo "Still waiting for $url..."
-    sleep 2
+    echo "Attempt $i/$MAX_RETRIES: Still waiting for $url..."
+    sleep "$SLEEP_SECONDS"
   done
 
-  echo "Error: $url did not start in time"
+  echo "Error: $url was not available after $((MAX_RETRIES * SLEEP_SECONDS)) seconds"
   exit 1
 }
 

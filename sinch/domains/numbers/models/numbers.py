@@ -127,17 +127,13 @@ class Number(BaseModelConfigResponse):
         Field(default=None, alias="supportingDocumentationRequired"))
 
 
-def to_snake(string: str) -> str:
-    return re.sub(r'(?<!^)(?=[A-Z])', '_', string).lower()
-
-
 class NotFoundError(BaseModelConfigResponse):
     code: StrictInt
     message: StrictStr
     status: StrictStr
     details: list[Dict]
 
-    model_config = ConfigDict(populate_by_name=True, alias_generator=to_snake)
+    model_config = ConfigDict(populate_by_name=True, alias_generator=BaseModelConfigResponse._to_snake_case)
 
     @model_validator(mode="before")
     @classmethod
@@ -145,6 +141,6 @@ class NotFoundError(BaseModelConfigResponse):
         """Automatically convert details keys to snake_case"""
         if "details" in values and isinstance(values["details"], list):
             values["details"] = [
-                {to_snake(k): v for k, v in item.items()} for item in values["details"]
+                {BaseModelConfigResponse._to_snake_case(k): v for k, v in item.items()} for item in values["details"]
             ]
         return values
