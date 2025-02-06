@@ -39,6 +39,7 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+tox.ini
 .nox/
 .coverage
 .coverage.*
@@ -130,3 +131,8 @@ cython_debug/
 
 # Poetry
 poetry.lock
+
+# .DS_Store files
+.DS_Store
+
+qodana.yaml
