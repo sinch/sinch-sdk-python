@@ -125,21 +125,19 @@ class Number(BaseModelConfigResponse):
     supporting_documentation_required: Optional[StrictBool] = (
         Field(default=None, alias="supportingDocumentationRequired"))
 
+class ErrorDetails(BaseModelConfigResponse):
+    type: Optional[StrictStr] = Field(default=None, alias="type")
+    resource_type: Optional[StrictStr] = Field(default=None, alias="resourceType")
+    resource_name: Optional[StrictStr] = Field(default=None, alias="resourceName")
+    owner: Optional[StrictStr] = Field(default=None, alias="owner")
+    description: Optional[StrictStr] = Field(default=None, alias="description")
+
 
 class NotFoundError(BaseModelConfigResponse):
-    code: StrictInt
-    message: StrictStr
-    status: StrictStr
-    details: list[Dict]
+    code: Optional[StrictInt] = Field(default=None, alias="code")
+    message: Optional[StrictStr] = Field(default=None, alias="message")
+    status: Optional[StrictStr] = Field(default=None, alias="status")
+    details: Optional[list[ErrorDetails]] = Field(default=None, alias="details")
 
     model_config = ConfigDict(populate_by_name=True, alias_generator=BaseModelConfigResponse._to_snake_case)
 
-    @model_validator(mode="before")
-    @classmethod
-    def transform_details(cls, values: dict) -> dict:
-        """Automatically convert details keys to snake_case"""
-        if "details" in values and isinstance(values["details"], list):
-            values["details"] = [
-                {BaseModelConfigResponse._to_snake_case(k): v for k, v in item.items()} for item in values["details"]
-            ]
-        return values
