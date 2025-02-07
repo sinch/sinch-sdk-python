@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import Optional, Literal, Union, Annotated, Dict
-from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict, model_validator
+from typing import Optional, Literal, Union, Annotated
+from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict
 from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
 
@@ -125,6 +125,7 @@ class Number(BaseModelConfigResponse):
     supporting_documentation_required: Optional[StrictBool] = (
         Field(default=None, alias="supportingDocumentationRequired"))
 
+
 class ErrorDetails(BaseModelConfigResponse):
     type: Optional[StrictStr] = Field(default=None, alias="type")
     resource_type: Optional[StrictStr] = Field(default=None, alias="resourceType")
@@ -140,4 +141,3 @@ class NotFoundError(BaseModelConfigResponse):
     details: Optional[list[ErrorDetails]] = Field(default=None, alias="details")
 
     model_config = ConfigDict(populate_by_name=True, alias_generator=BaseModelConfigResponse._to_snake_case)
-
