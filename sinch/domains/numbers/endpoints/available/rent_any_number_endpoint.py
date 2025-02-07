@@ -15,6 +15,7 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
 
     def __init__(self, project_id: str, request_data: RentAnyNumberRequest):
         super(RentAnyNumberEndpoint, self).__init__(project_id, request_data)
+        self.request_data = request_data
 
     def handle_response(self, response: HTTPResponse) -> RentAnyNumberResponse:
         """
@@ -26,5 +27,7 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
         Returns:
             RentAnyNumberResponse: The response data mapped to the RentAnyNumberResponse model.
         """
-        super(RentAnyNumberEndpoint, self).handle_response(response)
+        error = super(RentAnyNumberEndpoint, self).handle_response(response)
+        if error:
+            return error
         return self.process_response_model(response.body, RentAnyNumberResponse)

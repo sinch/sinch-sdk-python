@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional, Literal, Union, Annotated
-from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist
+from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict
 from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
 
@@ -64,7 +64,7 @@ class ScheduledProvisioningSmsConfiguration(BaseModelConfigResponse):
     campaign_id: Optional[StrictStr] = Field(default=None, alias="campaignId")
     status: Optional[StatusScheduledProvisioning] = None
     last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
-    error_codes: Optional[conlist(StrictStr, min_length=1)] = Field(default=None, alias="errorCodes")
+    error_codes: Optional[conlist(StrictStr, min_length=0)] = Field(default=None, alias="errorCodes")
 
 
 class SmsConfigurationResponse(BaseModelConfigResponse):
@@ -124,3 +124,20 @@ class Number(BaseModelConfigResponse):
     payment_interval_months: Optional[StrictInt] = Field(default=None, alias="paymentIntervalMonths")
     supporting_documentation_required: Optional[StrictBool] = (
         Field(default=None, alias="supportingDocumentationRequired"))
+
+
+class ErrorDetails(BaseModelConfigResponse):
+    type: Optional[StrictStr] = Field(default=None, alias="type")
+    resource_type: Optional[StrictStr] = Field(default=None, alias="resourceType")
+    resource_name: Optional[StrictStr] = Field(default=None, alias="resourceName")
+    owner: Optional[StrictStr] = Field(default=None, alias="owner")
+    description: Optional[StrictStr] = Field(default=None, alias="description")
+
+
+class NotFoundError(BaseModelConfigResponse):
+    code: Optional[StrictInt] = Field(default=None, alias="code")
+    message: Optional[StrictStr] = Field(default=None, alias="message")
+    status: Optional[StrictStr] = Field(default=None, alias="status")
+    details: Optional[list[ErrorDetails]] = Field(default=None, alias="details")
+
+    model_config = ConfigDict(populate_by_name=True, alias_generator=BaseModelConfigResponse._to_snake_case)

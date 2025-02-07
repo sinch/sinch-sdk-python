@@ -44,8 +44,7 @@ def configure_origin(
     auth_origin,
     sms_origin,
     verification_origin,
-    voice_origin,
-    disable_ssl
+    voice_origin
 ):
     if auth_origin:
         sinch_client.configuration.auth_origin = auth_origin
@@ -69,9 +68,6 @@ def configure_origin(
     if voice_origin:
         sinch_client.configuration.voice_origin = voice_origin
         sinch_client.configuration.voice_applications_origin = voice_origin
-
-    if disable_ssl:
-        sinch_client.configuration.disable_https = True
 
     return sinch_client
 
@@ -255,7 +251,6 @@ def sinch_client_sync(
     sms_origin,
     verification_origin,
     voice_origin,
-    disable_ssl,
     project_id
 ):
     return configure_origin(
@@ -272,8 +267,7 @@ def sinch_client_sync(
         auth_origin,
         sms_origin,
         verification_origin,
-        voice_origin,
-        disable_ssl
+        voice_origin
     )
 
 
@@ -290,7 +284,6 @@ def sinch_client_async(
     sms_origin,
     verification_origin,
     voice_origin,
-    disable_ssl,
     project_id
 ):
     return configure_origin(
@@ -307,6 +300,5 @@ def sinch_client_async(
         auth_origin,
         sms_origin,
         verification_origin,
-        voice_origin,
-        disable_ssl
+        voice_origin
     )
