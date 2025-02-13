@@ -7,10 +7,12 @@ from sinch.core.endpoint import HTTPEndpoint
 from sinch.domains.numbers.exceptions import NumbersException
 from sinch.domains.numbers.models.numbers import NotFoundError
 
+BM = TypeVar("BM", bound=BaseModel)
+
 
 class NumbersEndpoint(HTTPEndpoint, ABC):
 
-    def __init__(self, project_id: str, request_data: object):
+    def __init__(self, project_id: str, request_data: BM):
         super().__init__(project_id, request_data)
 
     def build_url(self, sinch) -> str:
@@ -23,6 +25,16 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
             **vars(self.request_data)
         )
 
+    def build_query_params(self) -> dict:
+        """
+        Constructs the query parameters for the endpoint.
+
+        Returns:
+            dict: The query parameters to be sent with the API request.
+        """
+        query_params = self.request_data.model_dump(exclude_none=True, by_alias=True)
+        return query_params
+
     def request_body(self):
         """
         Returns the request body as a JSON string.
@@ -33,8 +45,6 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
         # Convert the request data to a dictionary and remove None values
         request_data = self.request_data.model_dump(by_alias=True, exclude_none=True)
         return json.dumps(request_data)
-
-    BM = TypeVar("BM", bound=BaseModel)
 
     def process_response_model(self, response_body: dict, response_model: Type[BM]) -> BM:
         """

@@ -2,6 +2,7 @@ from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
 from sinch import SinchClient
+from sinch.core.pagination import TokenBasedPaginatorNumbers
 from sinch.domains.numbers.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
@@ -159,19 +160,44 @@ def step_rent_unavailable_number(context, phone_number):
 
 @when("I send a request to list the phone numbers")
 def step_when_list_phone_numbers(context):
-    pass  # Placeholder
-
-@when("I send a request to list all the phone numbers")
-def step_when_list_all_phone_numbers(context):
-    pass  # Placeholder
+    sinch_client: SinchClient = context.sinch
+    response = sinch_client.numbers.active.list(
+        region_code='US',
+        number_type='LOCAL'
+    )
+    context.response = response
 
 @then('the response contains "{count}" phone numbers')
 def step_then_response_contains_x_phone_numbers(context, count):
-    pass  # Placeholder
+    data : TokenBasedPaginatorNumbers = context.response
+    assert len(data.result.active_numbers) == int(count), \
+        f'Expected {count}, got {len(context.response.data)}'
+
+@when("I send a request to list all the phone numbers")
+def step_when_list_all_phone_numbers(context):
+    sinch_client: SinchClient = context.sinch
+    response = sinch_client.numbers.active.list(
+        region_code='US',
+        number_type='LOCAL'
+    )
+    active_numbers_list = []
+
+    for number in response.numbers_iterator():
+        active_numbers_list.append(number)
+    context.active_numbers_list = active_numbers_list
 
 @then('the phone numbers list contains "{count}" phone numbers')
 def step_then_phone_numbers_list_contains_x_phone_numbers(context, count):
-    pass  # Placeholder
+    assert len(context.active_numbers_list) == int(count), f'Expected {count}, got {len(context.active_numbers_list)}'
+    phone_number1 = context.active_numbers_list[0]
+    assert phone_number1.voice_configuration.type == 'FAX'
+    assert phone_number1.voice_configuration.service_id == '01W4FFL35P4NC4K35FAXSERVICE'
+    phone_number2 = context.active_numbers_list[1]
+    assert phone_number2.voice_configuration.type == 'EST'
+    assert phone_number2.voice_configuration.trunk_id == '01W4FFL35P4NC4K35SIPTRUNK00'
+    phone_number3 = context.active_numbers_list[2]
+    assert phone_number3.voice_configuration.type == 'RTC'
+    assert phone_number3.voice_configuration.app_id == 'sunshine-rain-drop-very-beautifulday'
 
 @when('I send a request to update the phone number "{phone_number}"')
 def step_when_update_phone_number(context, phone_number):

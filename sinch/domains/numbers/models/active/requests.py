@@ -4,17 +4,6 @@ from sinch.core.models.base_model import SinchRequestBaseModel
 
 
 @dataclass
-class ListActiveNumbersRequest(SinchRequestBaseModel):
-    region_code: str
-    number_type: str
-    page_size: int
-    capabilities: list
-    number_search_pattern: str
-    number_pattern: str
-    page_token: str
-
-
-@dataclass
 class GetNumberConfigurationRequest(SinchRequestBaseModel):
     phone_number: str
 

@@ -1,81 +1,23 @@
-from typing import Optional, TypedDict, overload, Literal, Union, Annotated
-from typing_extensions import NotRequired
-from pydantic import StrictInt, StrictStr, Field
-from sinch.domains.numbers.endpoints.available.search_for_number_endpoint import SearchForNumberEndpoint
-from sinch.domains.numbers.endpoints.available.list_available_numbers_endpoint import AvailableNumbersEndpoint
-from sinch.domains.numbers.endpoints.available.activate_number_endpoint import ActivateNumberEndpoint
-from sinch.domains.numbers.endpoints.available.rent_any_number_endpoint import RentAnyNumberEndpoint
-
-from sinch.domains.numbers.models.available.list_available_numbers_request import ListAvailableNumbersRequest
-from sinch.domains.numbers.models.available.activate_number_request import ActivateNumberRequest
-from sinch.domains.numbers.models.available.check_number_availability_request import CheckNumberAvailabilityRequest
-from sinch.domains.numbers.models.available.rent_any_number_request import RentAnyNumberRequest
-
-from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
-from sinch.domains.numbers.models.available.check_number_availability_response import CheckNumberAvailabilityResponse
-from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
-from sinch.domains.numbers.models.numbers import Number
-
-from sinch.domains.numbers.models.numbers import NumberTypeValues, CapabilityTypeValues, NumberSearchPatternTypeValues
+from typing import Optional, overload
+from pydantic import StrictInt, StrictStr
+from sinch.domains.numbers.base_numbers import (
+    BaseNumbers, SmsConfigurationDict, VoiceConfigurationDictRTC, VoiceConfigurationDictType,
+    VoiceConfigurationDictEST, VoiceConfigurationDictFAX, NumberPatternDict)
+from sinch.domains.numbers.endpoints.available import (
+    ActivateNumberEndpoint, AvailableNumbersEndpoint, RentAnyNumberEndpoint, SearchForNumberEndpoint
+)
+from sinch.domains.numbers.models.available import (
+    ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest
+)
+from sinch.domains.numbers.models.available import (
+    ActivateNumberResponse, CheckNumberAvailabilityResponse, RentAnyNumberResponse
+)
+from sinch.domains.numbers.models.numbers import (
+    CapabilityTypeValues, Number, NumberSearchPatternTypeValues, NumberTypeValues
+)
 
 
-class SmsConfigurationDict(TypedDict):
-    service_plan_id: str
-    campaign_id: NotRequired[str]
-
-
-class VoiceConfigurationDictRTC(TypedDict):
-    type: Literal["RTC"]
-    app_id: NotRequired[str]
-
-
-class VoiceConfigurationDictEST(TypedDict):
-    type: Literal["EST"]
-    trunk_id: NotRequired[str]
-
-
-class VoiceConfigurationDictFAX(TypedDict):
-    type: Literal["FAX"]
-    service_id: NotRequired[str]
-
-
-class VoiceConfigurationDictCustom(TypedDict):
-    type: str
-
-
-class NumberPatternDict(TypedDict):
-    pattern: NotRequired[str]
-    search_pattern: NotRequired[NumberSearchPatternTypeValues]
-
-
-VoiceConfigurationDictType = Annotated[
-    Union[VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
-          VoiceConfigurationDictEST, VoiceConfigurationDictCustom],
-    Field(discriminator="type")
-]
-
-
-class AvailableNumbers:
-    def __init__(self, sinch):
-        self._sinch = sinch
-
-    def _request(self, endpoint_class, request_data):
-        """
-        A helper method to make requests to endpoints.
-
-        Args:
-            endpoint_class: The endpoint class to call.
-            request_data: The request data to pass to the endpoint.
-
-        Returns:
-            The response from the Sinch transport request.
-        """
-        return self._sinch.configuration.transport.request(
-            endpoint_class(
-                project_id=self._sinch.configuration.project_id,
-                request_data=request_data,
-            )
-        )
+class AvailableNumbers(BaseNumbers):
 
     def list(
         self,

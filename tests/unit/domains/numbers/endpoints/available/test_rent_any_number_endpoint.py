@@ -8,17 +8,6 @@ from sinch.domains.numbers.models.available.rent_any_number_response import Rent
 
 
 @pytest.fixture
-def mock_sinch_client():
-    class MockConfiguration:
-        numbers_origin = "https://api.sinch.com"
-
-    class MockSinchClient:
-        configuration = MockConfiguration()
-
-    return MockSinchClient()
-
-
-@pytest.fixture
 def valid_request_data():
     """
     Provides valid mock request data for RentAnyNumberRequest.

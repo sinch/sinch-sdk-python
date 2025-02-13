@@ -17,6 +17,9 @@ class ActivateNumberEndpoint(NumbersEndpoint):
     def __init__(self, project_id: str, request_data: ActivateNumberRequest):
         super(ActivateNumberEndpoint, self).__init__(project_id, request_data)
 
+    def build_query_params(self) -> dict:
+        pass
+
     def handle_response(self, response: HTTPResponse) -> ActivateNumberResponse:
         try:
             super(ActivateNumberEndpoint, self).handle_response(response)

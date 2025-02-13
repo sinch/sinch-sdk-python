@@ -4,18 +4,6 @@ from sinch.domains.numbers.endpoints.available.activate_number_endpoint import A
 from sinch.domains.numbers.models.available.activate_number_request import ActivateNumberRequest
 from sinch.core.models.http_response import HTTPResponse
 
-
-@pytest.fixture
-def mock_sinch_client():
-    class MockConfiguration:
-        numbers_origin = "https://api.sinch.com"
-
-    class MockSinchClient:
-        configuration = MockConfiguration()
-
-    return MockSinchClient()
-
-
 @pytest.fixture
 def mock_request_data():
     return ActivateNumberRequest(

@@ -196,6 +196,14 @@ def first_token_based_pagination_response():
 def second_token_based_pagination_response():
     return TokenBasedPaginationResponse(
         pig_dogs=["Bartosz", "Piotr"],
+        next_page_token="ka#556"
+    )
+
+
+@pytest.fixture
+def third_token_based_pagination_response():
+    return TokenBasedPaginationResponse(
+        pig_dogs=["Madrid", "Spain"],
         next_page_token=""
     )
 
@@ -302,3 +310,13 @@ def sinch_client_async(
         verification_origin,
         voice_origin
     )
+
+@pytest.fixture
+def mock_sinch_client():
+    class MockConfiguration:
+        numbers_origin = "https://api.sinch.com"
+
+    class MockSinchClient:
+        configuration = MockConfiguration()
+
+    return MockSinchClient()
