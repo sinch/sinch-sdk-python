@@ -121,7 +121,7 @@ class AsyncIntBasedPaginator(IntBasedPaginator):
         return cls(sinch, endpoint, result)
 
 
-class TokenBasedPaginatorBase(Paginator):
+class TokenBasedPaginator(Paginator):
     """Base paginator for token-based pagination."""
 
     def __init__(self, sinch, endpoint, yield_first_page=False, result=None):
@@ -131,9 +131,6 @@ class TokenBasedPaginatorBase(Paginator):
         self.yield_first_page = yield_first_page
         self.result = result or self._sinch.configuration.transport.request(self.endpoint)
         self.has_next_page = bool(self.result.next_page_token)
-
-    def __repr__(self):
-        pass
 
     def _calculate_next_page(self):
         self.has_next_page = bool(self.result.next_page_token)
@@ -156,12 +153,7 @@ class TokenBasedPaginatorBase(Paginator):
         return cls(sinch, endpoint, yield_first_page=False, result=result)
 
 
-class TokenBasedPaginator(TokenBasedPaginatorBase):
-    """Paginator that skips the first page."""
-    pass
-
-
-class TokenBasedPaginatorNumbers(TokenBasedPaginatorBase):
+class TokenBasedPaginatorNumbers(TokenBasedPaginator):
     """
     Paginator for handling token-based pagination specifically for phone numbers.
 
@@ -231,7 +223,7 @@ class TokenBasedPaginatorNumbers(TokenBasedPaginatorBase):
         return wrapper
 
 
-class AsyncTokenBasedPaginator(TokenBasedPaginatorBase):
+class AsyncTokenBasedPaginator(TokenBasedPaginator):
     """Asynchronous token-based paginator."""
 
     async def next_page(self):

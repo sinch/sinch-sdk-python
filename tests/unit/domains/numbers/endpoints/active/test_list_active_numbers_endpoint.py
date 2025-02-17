@@ -1,3 +1,6 @@
+from datetime import datetime, timezone
+from decimal import Decimal
+
 import pytest
 from sinch.domains.numbers.endpoints.active.list_active_numbers_endpoint import ListActiveNumbersEndpoint
 from sinch.domains.numbers.models.active.list_active_numbers_request import ListActiveNumbersRequest
@@ -10,7 +13,7 @@ def request_data():
         region_code="AR",
         number_type="LOCAL",
         page_size=15,
-        capabilities=["SMS"],
+        capabilities=["SMS", "VOICE"],
         number_pattern="123",
         number_search_pattern="STARTS_WITH"
     )
@@ -35,7 +38,9 @@ def mock_response():
                    "paymentIntervalMonths": 1,
                    "nextChargeDate": "2025-02-28T14:04:26.190127Z",
                    "expireAt": "2025-02-28T14:04:26.190127Z",
-                "callbackUrl": "https://yourcallback/numbers"}],
+                   "callbackUrl": "https://yourcallback/numbers"
+               }
+            ],
             "nextPageToken": "CgtwaG9uoLnNDQzajQSDCsxMzE1OTA0MzM1OQ==",
             "totalSize": 10
         },
@@ -57,7 +62,7 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "regionCode": "AR",
         "type": "LOCAL",
         "pageSize": 15,
-        "capabilities": ["SMS"],
+        "capabilities": ["SMS", "VOICE"],
         "numberPattern.pattern": "123",
         "numberPattern.searchPattern": "STARTS_WITH"
     }
@@ -72,3 +77,18 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     assert parsed_response.active_numbers[0].phone_number == "+1234567890"
     assert parsed_response.active_numbers[0].project_id == "37b62a7b-0177-429a-bb0b-e10f848de0b8"
     assert parsed_response.active_numbers[0].display_name == ""
+    assert parsed_response.active_numbers[0].region_code == "US"
+    assert parsed_response.active_numbers[0].type == "LOCAL"
+    assert parsed_response.active_numbers[0].capability == ["SMS", "VOICE"]
+    assert parsed_response.active_numbers[0].money.currency_code == "EUR"
+    assert parsed_response.active_numbers[0].money.amount == Decimal("0.80")
+    assert parsed_response.active_numbers[0].payment_interval_months == 1
+    expected_next_charge_date = (
+        datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
+    assert parsed_response.active_numbers[0].next_charge_date == expected_next_charge_date
+    expected_expire_at = (
+        datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
+    assert parsed_response.active_numbers[0].expire_at == expected_expire_at
+    assert parsed_response.active_numbers[0].callback_url == "https://yourcallback/numbers"
+    assert parsed_response.next_page_token == "CgtwaG9uoLnNDQzajQSDCsxMzE1OTA0MzM1OQ=="
+    assert parsed_response.total_size == 10

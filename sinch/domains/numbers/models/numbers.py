@@ -5,12 +5,12 @@ from decimal import Decimal
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
 
 NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
-CapabilityTypeValues = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
+CapabilityTypeValuesList = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
 NumberSearchPatternTypeValues = Union[Literal["START", "CONTAINS", "END"], StrictStr]
 OrderByValues = Union[Literal["phoneNumber", "displayName"], StrictStr]
 
 CapabilityType = Annotated[
-    CapabilityTypeValues,
+    CapabilityTypeValuesList,
     Field(default=None)
 ]
 
@@ -128,6 +128,7 @@ class ActiveNumber(BaseModelConfigResponse):
     expire_at: Optional[datetime] = Field(default=None, alias="expireAt")
     sms_configuration: Optional[SmsConfigurationResponse] = Field(default=None, alias="smsConfiguration")
     voice_configuration: Optional[VoiceConfigurationResponse] = Field(default=None, alias="voiceConfiguration")
+    callback_url: Optional[StrictStr] = Field(default=None, alias="callbackUrl")
 
 
 class Number(BaseModelConfigResponse):

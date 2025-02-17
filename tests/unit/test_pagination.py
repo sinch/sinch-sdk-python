@@ -130,12 +130,13 @@ async def test_page_int_iterator_async_using_auto_pagination(
     page_counter = 0
     assert int_based_paginator.result.page == page_counter
 
-    page_counter = 0
+    # Previous implementation starts from second page
+    page_counter = 1
     async for page in int_based_paginator.auto_paging_iter():
         page_counter += 1
         assert isinstance(page, AsyncIntBasedPaginator)
 
-    assert page_counter == 2
+    assert page_counter == 3
     assert not int_based_paginator.result.pig_dogs
 
 
@@ -188,12 +189,12 @@ def test_page_token_iterator_sync_using_auto_pagination(
     )
     assert token_based_paginator
 
-    page_counter = 0
+    page_counter = 1
     for page in token_based_paginator.auto_paging_iter():
         page_counter += 1
         assert isinstance(page, TokenBasedPaginator)
 
-    assert page_counter == 1
+    assert page_counter == 2
 
 def test_page_token_iterator_numbers_sync_using_auto_pagination_expects_iter(int_based_pagination_request_data):
     """ Test that the pagination iterates correctly through multiple pages. """
@@ -264,13 +265,13 @@ async def test_page_token_iterator_async_using_manual_pagination(
     )
     assert token_based_paginator
 
-    page_counter = 0
+    page_counter = 1
     while token_based_paginator.has_next_page:
         token_based_paginator = await token_based_paginator.next_page()
         page_counter += 1
         assert isinstance(token_based_paginator, AsyncTokenBasedPaginator)
 
-    assert page_counter == 2
+    assert page_counter == 3
 
 
 async def test_page_token_iterator_async_using_auto_pagination(
@@ -294,9 +295,9 @@ async def test_page_token_iterator_async_using_auto_pagination(
     )
     assert token_based_paginator
 
-    page_counter = 0
+    page_counter = 1
     async for page in token_based_paginator.auto_paging_iter():
         page_counter += 1
         assert isinstance(page, AsyncTokenBasedPaginator)
 
-    assert page_counter == 2
+    assert page_counter == 3

@@ -13,7 +13,7 @@ from sinch.domains.numbers.models.available import (
     ActivateNumberResponse, CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
 from sinch.domains.numbers.models.numbers import (
-    CapabilityTypeValues, Number, NumberSearchPatternTypeValues, NumberTypeValues
+    CapabilityTypeValuesList, Number, NumberSearchPatternTypeValues, NumberTypeValues
 )
 
 
@@ -25,7 +25,7 @@ class AvailableNumbers(BaseNumbers):
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValues] = None,
+        capabilities: Optional[CapabilityTypeValuesList] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> list[Number]:
@@ -146,7 +146,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: None,
             voice_configuration: None,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValues] = None,
+            capabilities: Optional[CapabilityTypeValuesList] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -159,7 +159,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictRTC,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValues] = None,
+            capabilities: Optional[CapabilityTypeValuesList] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -172,7 +172,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictFAX,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValues] = None,
+            capabilities: Optional[CapabilityTypeValuesList] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -185,7 +185,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictEST,
             number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValues] = None,
+            capabilities: Optional[CapabilityTypeValuesList] = None,
             callback_url: Optional[str] = None,
     ) -> RentAnyNumberResponse:
         pass
@@ -195,7 +195,7 @@ class AvailableNumbers(BaseNumbers):
         region_code: StrictStr,
         type_: NumberTypeValues,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityTypeValues] = None,
+        capabilities: Optional[CapabilityTypeValuesList] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[str] = None,

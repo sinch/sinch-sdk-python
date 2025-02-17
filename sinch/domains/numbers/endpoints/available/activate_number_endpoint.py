@@ -2,8 +2,7 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.domains.numbers.exceptions import NumberNotFoundException, NumbersException
-from sinch.domains.numbers.models.available.activate_number_request import ActivateNumberRequest
-from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
+from sinch.domains.numbers.models.available import ActivateNumberRequest, ActivateNumberResponse
 
 
 class ActivateNumberEndpoint(NumbersEndpoint):

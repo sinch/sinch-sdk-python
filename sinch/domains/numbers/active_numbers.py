@@ -16,7 +16,7 @@ from sinch.domains.numbers.models.active.responses import (
     UpdateNumberConfigurationResponse, GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
 )
 from sinch.domains.numbers.models.numbers import (
-    NumberTypeValues, CapabilityTypeValues, NumberSearchPatternTypeValues, OrderByValues
+    CapabilityTypeValuesList, NumberTypeValues, NumberSearchPatternTypeValues, OrderByValues
 )
 
 
@@ -28,7 +28,7 @@ class ActiveNumbers(BaseNumbers):
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValues] = None,
+        capability: Optional[CapabilityTypeValuesList] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,
@@ -43,7 +43,7 @@ class ActiveNumbers(BaseNumbers):
             number_pattern (Optional[StrictStr]): Specific sequence of digits to search for.
             number_search_pattern (Optional[NumberSearchPatternType]):
                 Pattern to apply (e.g., "START", "CONTAINS", "END").
-            capabilities (Optional[CapabilityType]): Capabilities required for the number. (e.g., ["SMS", "VOICE"])
+            capability (Optional[CapabilityType]): Capabilities required for the number. (e.g., ["SMS", "VOICE"])
             page_size (StrictInt): Maximum number of items to return.
             page_token (Optional[StrictStr]): Token for the next page of results.
             order_by (Optional[OrderByValues]): Field to order the results by. (e.g., "phoneNumber", "displayName")
@@ -54,7 +54,6 @@ class ActiveNumbers(BaseNumbers):
 
         For detailed documentation, visit https://developers.sinch.com
         """
-
         return TokenBasedPaginatorNumbers(
             sinch=self._sinch,
             endpoint=ListActiveNumbersEndpoint(
@@ -63,10 +62,11 @@ class ActiveNumbers(BaseNumbers):
                     region_code=region_code,
                     number_type=number_type,
                     page_size=page_size,
-                    capabilities=capabilities,
+                    capabilities=capability,
                     number_pattern=number_pattern,
                     number_search_pattern=number_search_pattern,
                     page_token=page_token,
+                    order_by=order_by,
                     **kwargs
                 )
             )
