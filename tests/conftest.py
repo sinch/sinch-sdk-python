@@ -1,6 +1,7 @@
 # This file that contains fixtures that are shared across all tests in the tests directory.
 import os
 from dataclasses import dataclass
+from unittest.mock import Mock
 
 import pytest
 
@@ -8,6 +9,7 @@ from sinch import SinchClient, SinchClientAsync
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
+from sinch.domains.numbers.models.numbers import ActiveNumber
 
 
 @dataclass
@@ -312,11 +314,24 @@ def sinch_client_async(
     )
 
 @pytest.fixture
-def mock_sinch_client():
+def mock_sinch_client_numbers():
     class MockConfiguration:
-        numbers_origin = "https://api.sinch.com"
+        numbers_origin = "https://mock-numbers-api.sinch.com"
 
     class MockSinchClient:
         configuration = MockConfiguration()
 
     return MockSinchClient()
+
+@pytest.fixture
+def mock_pagination_active_number_responses():
+    return [
+        Mock(content=[ActiveNumber(phone_number="+12345678901"),
+                      ActiveNumber(phone_number="+12345678902")],
+             next_page_token="token_1"),
+        Mock(content=[ActiveNumber(phone_number="+12345678903"),
+                      ActiveNumber(phone_number="+12345678904")],
+             next_page_token="token_2"),
+        Mock(content=[ActiveNumber(phone_number="+12345678905")],
+             next_page_token=None)
+    ]

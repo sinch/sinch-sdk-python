@@ -6,9 +6,12 @@ from sinch.domains.numbers.models.active.list_active_numbers_request import List
     "order_by_input, expected_order_by",
     [
         ("phone_number", "phoneNumber"),
+        ("PHONE_NUMBER", "phoneNumber"),
         ("display_name", "displayName"),
+        ("DISPLAY_NAME", "displayName"),
         ("new_field", "newField"),
-        ("newField", "newField")
+        ("newField", "newField"),
+        (None, None)
     ]
 )
 

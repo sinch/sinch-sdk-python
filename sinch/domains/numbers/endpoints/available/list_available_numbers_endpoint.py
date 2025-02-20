@@ -18,8 +18,11 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
         super(AvailableNumbersEndpoint, self).__init__(project_id, request_data)
         self.request_data = request_data
 
-    def request_body(self):
-        pass
+    def build_query_params(self) -> dict:
+        return self.request_data.model_dump(exclude_none=True, by_alias=True)
+
+    def request_body(self) -> str:
+        return ""
 
     def handle_response(self, response: HTTPResponse) -> list[Number]:
         """

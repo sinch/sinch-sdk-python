@@ -18,10 +18,10 @@ class SearchForNumberEndpoint(NumbersEndpoint):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
 
     def build_query_params(self) -> dict:
-        pass
+        return self.request_data.model_dump(exclude_none=True, by_alias=True)
 
-    def request_body(self):
-        pass
+    def request_body(self) -> str:
+        return ""
 
     def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
         """

@@ -2,7 +2,7 @@ from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
 from sinch import SinchClient
-from sinch.core.pagination import TokenBasedPaginatorNumbers
+from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.numbers.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
@@ -165,12 +165,13 @@ def step_when_list_phone_numbers(context):
         region_code='US',
         number_type='LOCAL'
     )
-    context.response = response
+    # Get the first page
+    context.response = response.list()
+
 
 @then('the response contains "{count}" phone numbers')
 def step_then_response_contains_x_phone_numbers(context, count):
-    data : TokenBasedPaginatorNumbers = context.response
-    assert len(data.result.active_numbers) == int(count), \
+    assert len(context.response.result) == int(count), \
         f'Expected {count}, got {len(context.response.data)}'
 
 @when("I send a request to list all the phone numbers")
@@ -182,7 +183,7 @@ def step_when_list_all_phone_numbers(context):
     )
     active_numbers_list = []
 
-    for number in response.numbers_iterator():
+    for number in response.iterator():
         active_numbers_list.append(number)
     context.active_numbers_list = active_numbers_list
 

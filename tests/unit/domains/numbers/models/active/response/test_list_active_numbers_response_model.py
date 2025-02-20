@@ -90,3 +90,7 @@ def test_list_active_numbers_response_expects_correct_mapping(test_data):
     assert_voice_configuration(response.active_numbers[0].voice_configuration)
     assert response.next_page_token == "CgtwaG9uZU51bWJlchJnCjl0eXBlLmdvb2dsZWFwaXMuY29tL3NpbmNoLn=="
     assert response.total_size == 10
+
+def test_list_active_numbers_response_expects_content_mapping(test_data):
+    response = ListActiveNumbersResponse(**test_data)
+    assert response.content == response.active_numbers

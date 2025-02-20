@@ -7,6 +7,8 @@ def test_to_camel_case_expects_parsed_standard_cases():
     assert BaseModelConfigRequest._to_camel_case("foo_bar") == "fooBar"
     assert BaseModelConfigRequest._to_camel_case("hello_world") == "helloWorld"
     assert BaseModelConfigRequest._to_camel_case("this_is_a_test") == "thisIsATest"
+    assert BaseModelConfigRequest._to_camel_case("PHONE_NUMBER") == "phoneNumber"
+    assert BaseModelConfigRequest._to_camel_case("appId") == "appId"
 
 def test_to_camel_case_expects_parsed_edge_cases():
     """

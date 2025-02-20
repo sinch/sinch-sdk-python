@@ -17,9 +17,6 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
         super(RentAnyNumberEndpoint, self).__init__(project_id, request_data)
         self.request_data = request_data
 
-    def build_query_params(self) -> dict:
-        pass
-
     def handle_response(self, response: HTTPResponse) -> RentAnyNumberResponse:
         """
         Handles the response from the API call.

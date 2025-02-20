@@ -68,12 +68,12 @@ def mock_response():
 def endpoint(request_data):
     return AvailableNumbersEndpoint("test_project_id", request_data)
 
-def test_build_url(endpoint, mock_sinch_client):
+def test_build_url(endpoint, mock_sinch_client_numbers):
     """
     Check if endpoint URL is constructed correctly based on input data.
     """
-    expected_url = "https://api.sinch.com/v1/projects/test_project_id/availableNumbers"
-    assert endpoint.build_url(mock_sinch_client) == expected_url
+    expected_url = "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/availableNumbers"
+    assert endpoint.build_url(mock_sinch_client_numbers) == expected_url
 
 def test_build_query_params_expects_correct_mapping(endpoint):
     """

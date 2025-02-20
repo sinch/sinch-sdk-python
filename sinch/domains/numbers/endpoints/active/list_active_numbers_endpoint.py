@@ -3,7 +3,6 @@ from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.numbers.models.active.list_active_numbers_request import ListActiveNumbersRequest
 from sinch.domains.numbers.models.active.list_active_numbers_response import ListActiveNumbersResponse
-from sinch.domains.numbers.models.numbers import ActiveNumber
 
 
 class ListActiveNumbersEndpoint(NumbersEndpoint):
@@ -16,9 +15,12 @@ class ListActiveNumbersEndpoint(NumbersEndpoint):
         self.project_id = project_id
         self.request_data = request_data
 
-    def request_body(self):
-        pass
+    def build_query_params(self) -> dict:
+        return self.request_data.model_dump(exclude_none=True, by_alias=True)
 
-    def handle_response(self, response: HTTPResponse) -> list[ActiveNumber]:
+    def request_body(self) -> str:
+        return ""
+
+    def handle_response(self, response: HTTPResponse) -> ListActiveNumbersResponse:
         super(ListActiveNumbersEndpoint, self).handle_response(response)
         return self.process_response_model(response.body, ListActiveNumbersResponse)

@@ -1,13 +1,15 @@
 from datetime import datetime
-from typing import Optional, Literal, Union, Annotated
-from pydantic import Field, StrictStr, StrictInt, StrictBool, conlist, ConfigDict
 from decimal import Decimal
+from typing import Annotated, Literal, Optional, TypeVar, Union
+from pydantic import BaseModel, ConfigDict, conlist, Field, StrictBool, StrictInt, StrictStr
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
+
+BM = TypeVar("BM", bound=BaseModel)
 
 NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
 CapabilityTypeValuesList = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
 NumberSearchPatternTypeValues = Union[Literal["START", "CONTAINS", "END"], StrictStr]
-OrderByValues = Union[Literal["phoneNumber", "displayName"], StrictStr]
+OrderByValues = Union[Literal["PHONE_NUMBER", "DISPLAY_NAME"], StrictStr]
 
 CapabilityType = Annotated[
     CapabilityTypeValuesList,
@@ -121,7 +123,7 @@ class ActiveNumber(BaseModelConfigResponse):
     display_name: Optional[StrictStr] = Field(default=None, alias="displayName")
     region_code: Optional[StrictStr] = Field(default=None, alias="regionCode")
     type: Optional[NumberType] = Field(default=None)
-    capability: Optional[CapabilityType] = Field(default=None)
+    capabilities: Optional[CapabilityType] = Field(default=None)
     money: Optional[Money] = Field(default=None)
     payment_interval_months: Optional[StrictInt] = Field(default=None, alias="paymentIntervalMonths")
     next_charge_date: Optional[datetime] = Field(default=None, alias="nextChargeDate")

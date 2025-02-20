@@ -65,13 +65,13 @@ def valid_response_data():
     }
 
 
-def test_build_url_expects_correct_format(mock_sinch_client, valid_request_data):
+def test_build_url_expects_correct_format(mock_sinch_client_numbers, valid_request_data):
     """
     Test that the build_url method constructs the URL correctly.
     """
     endpoint = RentAnyNumberEndpoint(project_id="test_project", request_data=valid_request_data)
-    expected_url = "https://api.sinch.com/v1/projects/test_project/availableNumbers:rentAny"
-    assert endpoint.build_url(mock_sinch_client) == expected_url
+    expected_url = "https://mock-numbers-api.sinch.com/v1/projects/test_project/availableNumbers:rentAny"
+    assert endpoint.build_url(mock_sinch_client_numbers) == expected_url
 
 
 def test_request_body_expects_correct_json(valid_request_data):

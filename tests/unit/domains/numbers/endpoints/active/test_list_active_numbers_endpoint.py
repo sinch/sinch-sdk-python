@@ -10,7 +10,7 @@ from sinch.core.models.http_response import HTTPResponse
 @pytest.fixture
 def request_data():
     return ListActiveNumbersRequest(
-        region_code="AR",
+        region_code="US",
         number_type="LOCAL",
         page_size=15,
         capabilities=["SMS", "VOICE"],
@@ -51,15 +51,16 @@ def mock_response():
 def endpoint(request_data):
     return ListActiveNumbersEndpoint("test_project_id", request_data)
 
-def test_build_url(endpoint, mock_sinch_client):
-    assert endpoint.build_url(mock_sinch_client) == "https://api.sinch.com/v1/projects/test_project_id/activeNumbers"
+def test_build_url(endpoint, mock_sinch_client_numbers):
+    assert (endpoint.build_url(mock_sinch_client_numbers) ==
+            "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers")
 
 def test_build_query_params_expects_correct_mapping(endpoint):
     """
     Check if Query params is handled and mapped to the appropriate fields correctly.
     """
     expected_params = {
-        "regionCode": "AR",
+        "regionCode": "US",
         "type": "LOCAL",
         "pageSize": 15,
         "capabilities": ["SMS", "VOICE"],

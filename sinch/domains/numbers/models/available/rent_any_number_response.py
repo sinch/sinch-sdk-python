@@ -11,7 +11,7 @@ class RentAnyNumberResponse(BaseModelConfigResponse):
     project_id: Optional[StrictStr] = Field(default=None, alias="projectId")
     region_code: Optional[StrictStr] = Field(default=None, alias="regionCode")
     type: Optional[NumberTypeValues] = Field(default=None)
-    capability: Optional[CapabilityTypeValuesList] = Field(default=None)
+    capabilities: Optional[CapabilityTypeValuesList] = Field(default=None)
     money: Optional[Money] = Field(default=None)
     payment_interval_months: Optional[StrictInt] = Field(default=None, alias="paymentIntervalMonths")
     next_charge_date: Optional[datetime] = Field(default=None, alias="nextChargeDate")

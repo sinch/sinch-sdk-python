@@ -9,5 +9,11 @@ class ListActiveNumbersResponse(BaseModel):
     total_size: Optional[StrictInt] = Field(default=None, alias="totalSize")
 
     model_config = ConfigDict(
-            populate_by_name=True
-        )
+        populate_by_name=True,
+        extra="allow",
+    )
+
+    @property
+    def content(self):
+        """Returns the active numbers as part of the response object to be used in the pagination."""
+        return self.active_numbers or []

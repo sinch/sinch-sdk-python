@@ -4,21 +4,6 @@ from sinch.domains.numbers.models.available.check_number_availability_response i
 from sinch.domains.numbers.models.available.check_number_availability_request import CheckNumberAvailabilityRequest
 from sinch.core.models.http_response import HTTPResponse
 
-
-@pytest.fixture
-def mock_sinch_client():
-    """
-    Mock the Sinch client with configuration.
-    """
-    class MockConfiguration:
-        numbers_origin = "https://api.sinch.com"
-
-    class MockSinchClient:
-        configuration = MockConfiguration()
-
-    return MockSinchClient()
-
-
 @pytest.fixture
 def mock_request_data():
     """
@@ -57,13 +42,13 @@ def mock_response():
     )
 
 
-def test_build_url_expects_correct_url(mock_sinch_client, mock_request_data):
+def test_build_url_expects_correct_url(mock_sinch_client_numbers, mock_request_data):
     """
     Check if endpoint URL is constructed correctly based on input data.
     """
     endpoint = SearchForNumberEndpoint(project_id="test_project", request_data=mock_request_data)
-    expected_url = "https://api.sinch.com/v1/projects/test_project/availableNumbers/+1234567890"
-    assert endpoint.build_url(mock_sinch_client) == expected_url
+    expected_url = "https://mock-numbers-api.sinch.com/v1/projects/test_project/availableNumbers/+1234567890"
+    assert endpoint.build_url(mock_sinch_client_numbers) == expected_url
 
 
 def test_handle_response_expects_correct_mapping(mock_request_data, mock_response):

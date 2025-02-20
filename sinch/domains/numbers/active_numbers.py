@@ -1,13 +1,13 @@
 from typing import Optional
 from pydantic import StrictStr, StrictInt
-from sinch.core.pagination import TokenBasedPaginatorNumbers, AsyncTokenBasedPaginator
+from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator, Paginator
 from sinch.domains.numbers.base_numbers import BaseNumbers
 from sinch.domains.numbers.endpoints.active import (
     GetNumberConfigurationEndpoint, ListActiveNumbersEndpoint, ReleaseNumberFromProjectEndpoint,
     UpdateNumberConfigurationEndpoint
 )
 from sinch.domains.numbers.models.active import (
-    ListActiveNumbersRequest, ListActiveNumbersResponse
+    ListActiveNumbersRequest
 )
 from sinch.domains.numbers.models.active.requests import (
     GetNumberConfigurationRequest, UpdateNumberConfigurationRequest, ReleaseNumberFromProjectRequest
@@ -16,7 +16,7 @@ from sinch.domains.numbers.models.active.responses import (
     UpdateNumberConfigurationResponse, GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
 )
 from sinch.domains.numbers.models.numbers import (
-    CapabilityTypeValuesList, NumberTypeValues, NumberSearchPatternTypeValues, OrderByValues
+    CapabilityTypeValuesList, NumberTypeValues, NumberSearchPatternTypeValues, OrderByValues, ActiveNumber
 )
 
 
@@ -33,17 +33,18 @@ class ActiveNumbers(BaseNumbers):
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,
         **kwargs
-    ) -> TokenBasedPaginatorNumbers:
+    ) -> Paginator[ActiveNumber]:
         """
         Search for all active virtual numbers associated with a certain project.
 
         Args:
             region_code (StrictStr): ISO 3166-1 alpha-2 country code of the phone number.
-            number_type (NumberType): Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
+            number_type (NumberTypeValues): Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
             number_pattern (Optional[StrictStr]): Specific sequence of digits to search for.
-            number_search_pattern (Optional[NumberSearchPatternType]):
+            number_search_pattern (Optional[NumberSearchPatternTypeValues]):
                 Pattern to apply (e.g., "START", "CONTAINS", "END").
-            capability (Optional[CapabilityType]): Capabilities required for the number. (e.g., ["SMS", "VOICE"])
+            capability (Optional[CapabilityTypeValuesList]): Capabilities required for the number.
+                (e.g., ["SMS", "VOICE"])
             page_size (StrictInt): Maximum number of items to return.
             page_token (Optional[StrictStr]): Token for the next page of results.
             order_by (Optional[OrderByValues]): Field to order the results by. (e.g., "phoneNumber", "displayName")
@@ -54,7 +55,7 @@ class ActiveNumbers(BaseNumbers):
 
         For detailed documentation, visit https://developers.sinch.com
         """
-        return TokenBasedPaginatorNumbers(
+        return TokenBasedPaginator(
             sinch=self._sinch,
             endpoint=ListActiveNumbersEndpoint(
                 project_id=self._sinch.configuration.project_id,
@@ -72,6 +73,10 @@ class ActiveNumbers(BaseNumbers):
             )
         )
 
+    # TODO: Refactor the update(), get(), release() functions to use Pydantic models:
+    #       - Replace primitive types with Pydantic for better validation and maintainability.
+    #       - Define Pydantic models for request and response data.
+    #       - Improve readability and maintainability through refactoring.
     def update(
         self,
         phone_number: str = None,
@@ -130,15 +135,16 @@ class ActiveNumbers(BaseNumbers):
 class ActiveNumbersWithAsyncPagination(ActiveNumbers):
     async def list(
         self,
-        region_code: str,
-        number_type: str,
-        number_pattern: str = None,
-        number_search_pattern: str = None,
-        capabilities: list = None,
-        page_size: int = None,
-        page_token: str = None,
+        region_code: StrictStr,
+        number_type: StrictStr,
+        number_pattern: Optional[StrictStr] = None,
+        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
+        capability: Optional[CapabilityTypeValuesList] = None,
+        page_size: Optional[StrictInt] = None,
+        page_token: Optional[StrictStr] = None,
+        order_by: Optional[OrderByValues] = None,
         **kwargs
-    ) -> ListActiveNumbersResponse:
+    ) -> AsyncTokenBasedPaginator:
         return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListActiveNumbersEndpoint(
@@ -147,10 +153,11 @@ class ActiveNumbersWithAsyncPagination(ActiveNumbers):
                     region_code=region_code,
                     number_type=number_type,
                     page_size=page_size,
-                    capabilities=capabilities,
+                    capabilities=capability,
                     number_pattern=number_pattern,
                     number_search_pattern=number_search_pattern,
-                    page_token=page_token
+                    page_token=page_token,
+                    order_by=order_by,
                 )
             )
         )

@@ -1,13 +1,10 @@
 import json
 from abc import ABC
-from pydantic import BaseModel
-from typing import TypeVar, Type
+from typing import Type
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.domains.numbers.exceptions import NumbersException
-from sinch.domains.numbers.models.numbers import NotFoundError
-
-BM = TypeVar("BM", bound=BaseModel)
+from sinch.domains.numbers.models.numbers import BM, NotFoundError
 
 
 class NumbersEndpoint(HTTPEndpoint, ABC):
@@ -32,10 +29,9 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
         Returns:
             dict: The query parameters to be sent with the API request.
         """
-        query_params = self.request_data.model_dump(exclude_none=True, by_alias=True)
-        return query_params
+        return {}
 
-    def request_body(self):
+    def request_body(self) -> str:
         """
         Returns the request body as a JSON string.
 
