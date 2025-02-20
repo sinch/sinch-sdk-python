@@ -144,7 +144,7 @@ class ActiveNumbersWithAsyncPagination(ActiveNumbers):
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,
         **kwargs
-    ) -> AsyncTokenBasedPaginator:
+    ) -> Paginator[ActiveNumber]:
         return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListActiveNumbersEndpoint(

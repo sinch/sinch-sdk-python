@@ -160,7 +160,7 @@ class TokenBasedPaginator(Paginator[BM]):
         self.endpoint.request_data.page_token = self.result.next_page_token
         next_result = self._sinch.configuration.transport.request(self.endpoint)
 
-        return TokenBasedPaginator(self._sinch, self.endpoint, result=next_result)
+        return self.__class__(self._sinch, self.endpoint, result=next_result)
 
     def auto_paging_iter(self):
         """Returns an iterator for automatic pagination."""
