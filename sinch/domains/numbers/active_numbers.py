@@ -28,7 +28,7 @@ class ActiveNumbers(BaseNumbers):
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capability: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[CapabilityTypeValuesList] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,
@@ -43,7 +43,7 @@ class ActiveNumbers(BaseNumbers):
             number_pattern (Optional[StrictStr]): Specific sequence of digits to search for.
             number_search_pattern (Optional[NumberSearchPatternTypeValues]):
                 Pattern to apply (e.g., "START", "CONTAINS", "END").
-            capability (Optional[CapabilityTypeValuesList]): Capabilities required for the number.
+            capabilities (Optional[CapabilityTypeValuesList]): Capabilities required for the number.
                 (e.g., ["SMS", "VOICE"])
             page_size (StrictInt): Maximum number of items to return.
             page_token (Optional[StrictStr]): Token for the next page of results.
@@ -63,7 +63,7 @@ class ActiveNumbers(BaseNumbers):
                     region_code=region_code,
                     number_type=number_type,
                     page_size=page_size,
-                    capabilities=capability,
+                    capabilities=capabilities,
                     number_pattern=number_pattern,
                     number_search_pattern=number_search_pattern,
                     page_token=page_token,
@@ -139,7 +139,7 @@ class ActiveNumbersWithAsyncPagination(ActiveNumbers):
         number_type: StrictStr,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capability: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[CapabilityTypeValuesList] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,
@@ -153,7 +153,7 @@ class ActiveNumbersWithAsyncPagination(ActiveNumbers):
                     region_code=region_code,
                     number_type=number_type,
                     page_size=page_size,
-                    capabilities=capability,
+                    capabilities=capabilities,
                     number_pattern=number_pattern,
                     number_search_pattern=number_search_pattern,
                     page_token=page_token,

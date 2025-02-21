@@ -6,6 +6,9 @@ from sinch.domains.numbers.models.active.list_active_numbers_response import Lis
 
 
 class ListActiveNumbersEndpoint(NumbersEndpoint):
+    """
+    Endpoint to list all active numbers for a project.
+    """
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -17,9 +20,6 @@ class ListActiveNumbersEndpoint(NumbersEndpoint):
 
     def build_query_params(self) -> dict:
         return self.request_data.model_dump(exclude_none=True, by_alias=True)
-
-    def request_body(self) -> str:
-        return ""
 
     def handle_response(self, response: HTTPResponse) -> ListActiveNumbersResponse:
         super(ListActiveNumbersEndpoint, self).handle_response(response)

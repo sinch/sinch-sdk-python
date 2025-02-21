@@ -1,10 +1,9 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import Annotated, Literal, Optional, TypeVar, Union
-from pydantic import BaseModel, ConfigDict, conlist, Field, StrictBool, StrictInt, StrictStr
+from typing import Annotated, Literal, Optional, Union
+from pydantic import ConfigDict, conlist, Field, StrictBool, StrictInt, StrictStr
 from sinch.domains.numbers.models.base_model_numbers import BaseModelConfigRequest, BaseModelConfigResponse
 
-BM = TypeVar("BM", bound=BaseModel)
 
 NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
 CapabilityTypeValuesList = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)

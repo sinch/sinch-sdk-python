@@ -21,9 +21,6 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
     def build_query_params(self) -> dict:
         return self.request_data.model_dump(exclude_none=True, by_alias=True)
 
-    def request_body(self) -> str:
-        return ""
-
     def handle_response(self, response: HTTPResponse) -> list[Number]:
         """
         Processes the API response and maps it to a response model.

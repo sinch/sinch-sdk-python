@@ -2,7 +2,6 @@ from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
 from sinch import SinchClient
-from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.numbers.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse

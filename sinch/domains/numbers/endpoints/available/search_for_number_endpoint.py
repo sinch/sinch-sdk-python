@@ -17,12 +17,6 @@ class SearchForNumberEndpoint(NumbersEndpoint):
     def __init__(self, project_id: str, request_data: CheckNumberAvailabilityRequest):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
 
-    def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
-
-    def request_body(self) -> str:
-        return ""
-
     def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
         """
         Processes the API response and maps it to a response
