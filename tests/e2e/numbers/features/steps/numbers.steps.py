@@ -165,7 +165,7 @@ def step_when_list_phone_numbers(context):
         number_type='LOCAL'
     )
     # Get the first page
-    context.response = response.list()
+    context.response = response.get_content()
 
 
 @then('the response contains "{count}" phone numbers')
