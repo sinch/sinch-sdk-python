@@ -136,7 +136,7 @@ class ActiveNumbersWithAsyncPagination(ActiveNumbers):
     async def list(
         self,
         region_code: StrictStr,
-        number_type: StrictStr,
+        number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
         capabilities: Optional[CapabilityTypeValuesList] = None,

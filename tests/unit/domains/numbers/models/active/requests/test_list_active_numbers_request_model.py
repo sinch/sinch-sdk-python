@@ -43,7 +43,7 @@ def test_list_active_numbers_request_expects_parsed_input():
         "number_search_pattern": "START",
         "number_pattern": "5678",
         "page_token": "abc123",
-        "order_by": "phoneNumber"
+        "order_by": "PHONE_NUMBER"
     }
 
     request = ListActiveNumbersRequest(**data)

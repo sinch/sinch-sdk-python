@@ -187,30 +187,6 @@ def token_based_pagination_request_data():
 
 
 @pytest.fixture
-def first_token_based_pagination_response():
-    return TokenBasedPaginationResponse(
-        pig_dogs=["Walaszek", "Połać"],
-        next_page_token="za30%wsze"
-    )
-
-
-@pytest.fixture
-def second_token_based_pagination_response():
-    return TokenBasedPaginationResponse(
-        pig_dogs=["Bartosz", "Piotr"],
-        next_page_token="ka#556"
-    )
-
-
-@pytest.fixture
-def third_token_based_pagination_response():
-    return TokenBasedPaginationResponse(
-        pig_dogs=["Madrid", "Spain"],
-        next_page_token=""
-    )
-
-
-@pytest.fixture
 def int_based_pagination_request_data():
     return IntBasedPaginationRequest(
         page=0,
@@ -334,4 +310,10 @@ def mock_pagination_active_number_responses():
              next_page_token="token_2"),
         Mock(content=[ActiveNumber(phone_number="+12345678905")],
              next_page_token=None)
+    ]
+
+@pytest.fixture
+def mock_pagination_expected_phone_numbers_response():
+    return [
+        "+12345678901", "+12345678902", "+12345678903", "+12345678904", "+12345678905"
     ]

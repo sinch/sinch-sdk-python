@@ -165,13 +165,13 @@ def step_when_list_phone_numbers(context):
         number_type='LOCAL'
     )
     # Get the first page
-    context.response = response.get_content()
+    context.response = response.content()
 
 
 @then('the response contains "{count}" phone numbers')
 def step_then_response_contains_x_phone_numbers(context, count):
-    assert len(context.response.result) == int(count), \
-        f'Expected {count}, got {len(context.response.data)}'
+    assert len(context.response) == int(count), \
+        f'Expected {count}, got {len(context.response)}'
 
 @when("I send a request to list all the phone numbers")
 def step_when_list_all_phone_numbers(context):

@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from collections import namedtuple
 from typing import Generic
 from sinch.core.types import BM
 
@@ -50,16 +49,6 @@ class AsyncPageIterator:
 class Paginator(ABC, Generic[BM]):
     """
     Pagination response object.
-
-    auto_paging_iter method returns an iterator object that can be used for iterator-based page traversing.
-    For example:
-        for page in paginated_response.auto_paging_iter():
-            ...process page object
-
-    For manual pagination use has_next_page property with next_page() method.
-    For example:
-        if paginated_response.has_next_page:
-            paginated_response = paginated_response.next_page()
     """
     def __init__(self, sinch, endpoint, result: BM):
         self._sinch = sinch
@@ -79,11 +68,6 @@ class Paginator(ABC, Generic[BM]):
     # TODO: Make iterator() method abstract in Parent class as we implement in the other domains:
     #  - Refactor pydantic models in other domains to have a content property.
     def iterator(self):
-        pass
-
-    # TODO: Make get_content() method abstract in Parent class as we implement in the other domains:
-    #  - Refactor pydantic models in other domains to have a content property.
-    def get_content(self):
         pass
 
     @abstractmethod
@@ -145,7 +129,7 @@ class AsyncIntBasedPaginator(IntBasedPaginator):
 class TokenBasedPaginator(Paginator[BM]):
     """Base paginator for token-based pagination with explicit page navigation and metadata."""
 
-    def __init__(self, sinch, endpoint, yield_first_page=False, result=None):
+    def __init__(self, sinch, endpoint, result=None):
         super().__init__(sinch, endpoint, result or sinch.configuration.transport.request(endpoint))
 
     def content(self) -> list[BM]:
@@ -157,9 +141,9 @@ class TokenBasedPaginator(Paginator[BM]):
             return None
 
         self.endpoint.request_data.page_token = self.result.next_page_token
-        next_result = self._sinch.configuration.transport.request(self.endpoint)
-
-        return self.__class__(self._sinch, self.endpoint, result=next_result)
+        self.result = self._sinch.configuration.transport.request(self.endpoint)
+        self._calculate_next_page()
+        return self
 
     def iterator(self):
         """Iterates over individual items across all pages."""
@@ -172,44 +156,6 @@ class TokenBasedPaginator(Paginator[BM]):
                 break
             paginator = next_page_instance
 
-    def get_content(self):
-        """Returns structured pagination metadata along with the first page's content (sync)."""
-        next_page_instance = self.next_page()
-        return self._get_content(next_page_instance, sync=True)
-
-    def _get_content(self, next_page_instance, sync=True):
-        """Core logic for `get_content()`, shared between sync and async versions."""
-        PagedListResponse = namedtuple(
-            "PagedResponse", ["result", "has_next_page", "next_page_info", "next_page"]
-        )
-
-        next_page_info = {
-            "result": self.content(),
-            "result.next": (
-                self.content() + (next_page_instance.content() if next_page_instance else [])
-            ),
-            "has_next_page": self.has_next_page,
-            "has_next_page.next": bool(next_page_instance and next_page_instance.has_next_page),
-        }
-
-        next_page_wrapper = self._get_next_page_wrapper(next_page_instance, sync)
-
-        return PagedListResponse(
-            result=self.content(),
-            has_next_page=self.has_next_page,
-            next_page_info=next_page_info,
-            next_page=next_page_wrapper
-        )
-
-    def _get_next_page_wrapper(self, next_page_instance, sync):
-        """Returns a function for fetching the next page."""
-        if sync:
-            return lambda: next_page_instance.get_content() if next_page_instance else None
-        else:
-            async def async_next_page_wrapper():
-                return await next_page_instance.get_content() if next_page_instance else None
-            return async_next_page_wrapper
-
     def _calculate_next_page(self):
         self.has_next_page = bool(getattr(self.result, "next_page_token", None))
 
@@ -217,7 +163,7 @@ class TokenBasedPaginator(Paginator[BM]):
     def _initialize(cls, sinch, endpoint):
         """Creates an instance of the paginator skipping first page."""
         result = sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, yield_first_page=False, result=result)
+        return cls(sinch, endpoint, result=result)
 
 
 class AsyncTokenBasedPaginator(TokenBasedPaginator):
@@ -244,12 +190,7 @@ class AsyncTokenBasedPaginator(TokenBasedPaginator):
                 break
             paginator = next_page_instance
 
-    async def get_content(self):
-        """Returns structured pagination metadata"""
-        next_page_instance = await self.next_page()
-        return self._get_content(next_page_instance, sync=False)
-
     @classmethod
     async def _initialize(cls, sinch, endpoint):
         result = await sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, yield_first_page=False, result=result)
+        return cls(sinch, endpoint, result=result)
