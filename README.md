@@ -141,8 +141,8 @@ By default, two HTTP implementations are provided:
 For creating custom HTTP client code, use either `SinchClient` or `SinchClientAsync` client and inject your transport during initialisation:
 ```python
 sinch_client = SinchClientAsync(
-    key_id="Spanish",
-    key_secret="Inquisition",
+    key_id="key_id",
+    key_secret="key_secret",
     project_id="some_project",
     transport=MyHTTPAsyncImplementation
 )

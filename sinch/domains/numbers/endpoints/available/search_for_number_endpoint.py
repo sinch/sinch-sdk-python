@@ -17,9 +17,6 @@ class SearchForNumberEndpoint(NumbersEndpoint):
     def __init__(self, project_id: str, request_data: CheckNumberAvailabilityRequest):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
 
-    def request_body(self):
-        pass
-
     def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
         """
         Processes the API response and maps it to a response

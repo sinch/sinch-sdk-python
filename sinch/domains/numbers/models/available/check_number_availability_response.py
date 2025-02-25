@@ -8,7 +8,7 @@ class CheckNumberAvailabilityResponse(BaseModelConfigResponse):
     phone_number: Optional[StrictStr] = Field(default=None, alias="phoneNumber")
     region_code: Optional[StrictStr] = Field(default=None, alias="regionCode")
     type: Optional[NumberType] = None
-    capability: Optional[CapabilityType] = None
+    capabilities: Optional[CapabilityType] = None
     setup_price: Optional[Money] = Field(default=None, alias="setupPrice")
     monthly_price: Optional[Money] = Field(default=None, alias="monthlyPrice")
     payment_interval_months: Optional[StrictInt] = Field(default=None, alias="paymentIntervalMonths")

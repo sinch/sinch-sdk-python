@@ -19,12 +19,7 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        # Serialize fields
-        query_params = self.request_data.model_dump(exclude_none=True, by_alias=True)
-        return query_params
-
-    def request_body(self):
-        pass
+        return self.request_data.model_dump(exclude_none=True, by_alias=True)
 
     def handle_response(self, response: HTTPResponse) -> list[Number]:
         """

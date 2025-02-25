@@ -11,8 +11,12 @@ class BaseModelConfigRequest(BaseModel):
     @staticmethod
     def _to_camel_case(snake_str: str) -> str:
         """Converts snake_case to camelCase while preserving multiple underscores."""
+        if not snake_str or "_" not in snake_str:
+            return snake_str
         components = snake_str.split('_')
-        return components[0] + ''.join(x.capitalize() if x else '_' for x in components[1:])
+        return components[0].lower() + ''.join(
+            (x.capitalize() if x else '_') for x in components[1:]
+        )
 
     @classmethod
     def _convert_dict_keys(cls, obj):

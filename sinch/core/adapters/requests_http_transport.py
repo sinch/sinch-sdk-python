@@ -17,7 +17,6 @@ class HTTPTransportRequests(HTTPTransport):
             f"Sync HTTP {request_data.http_method} call with headers:"
             f" {request_data.headers} and body: {request_data.request_body} to URL: {request_data.url}"
         )
-
         response = self.http_session.request(
             method=request_data.http_method,
             url=request_data.url,

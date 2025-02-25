@@ -1,18 +1,7 @@
 import pytest
 from sinch.domains.numbers.endpoints.available.list_available_numbers_endpoint import AvailableNumbersEndpoint
 from sinch.domains.numbers.models.available.list_available_numbers_request import ListAvailableNumbersRequest
-from sinch.domains.numbers.models.available.list_available_numbers_response import ListAvailableNumbersResponse
 from sinch.core.models.http_response import HTTPResponse
-
-@pytest.fixture
-def mock_sinch_client():
-    class MockConfiguration:
-        numbers_origin = "https://api.sinch.com"
-
-    class MockSinchClient:
-        configuration = MockConfiguration()
-
-    return MockSinchClient()
 
 @pytest.fixture
 def request_data():
@@ -79,12 +68,12 @@ def mock_response():
 def endpoint(request_data):
     return AvailableNumbersEndpoint("test_project_id", request_data)
 
-def test_build_url(endpoint, mock_sinch_client):
+def test_build_url(endpoint, mock_sinch_client_numbers):
     """
     Check if endpoint URL is constructed correctly based on input data.
     """
-    expected_url = "https://api.sinch.com/v1/projects/test_project_id/availableNumbers"
-    assert endpoint.build_url(mock_sinch_client) == expected_url
+    expected_url = "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/availableNumbers"
+    assert endpoint.build_url(mock_sinch_client_numbers) == expected_url
 
 def test_build_query_params_expects_correct_mapping(endpoint):
     """
