@@ -1,23 +1,31 @@
+import inspect
 from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
-from sinch import SinchClient
 from sinch.domains.numbers.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
 from sinch.domains.numbers.models.numbers import NotFoundError
 
+def execute_sync_or_async(context,call):
+    """
+    Ensures proper execution of both synchronous and asynchronous calls.
+    - If the call is synchronous, it executes directly.
+    - If the call is a coroutine (async), it runs using asyncio
+    This abstracts away execution differences, allowing test steps to be written uniformly.
+    """
+    if call is None:
+        return None
+    if inspect.iscoroutine(call):
+        # Reuse the single loop created in before_all
+        return context.loop.run_until_complete(call)
+    else:
+        return call
 
 @given('the Numbers service is available')
 def step_service_is_available(context):
-    sinch = SinchClient(
-        project_id='tinyfrog-jump-high-over-lilypadbasin',
-        key_id='keyId',
-        key_secret='keySecret',
-    )
-    sinch.configuration.auth_origin = 'http://localhost:3011'
-    sinch.configuration.numbers_origin = 'http://localhost:3013'
-    context.sinch = sinch
+    """Ensures the Sinch client is initialized"""
+    assert hasattr(context, 'sinch') and context.sinch, 'Sinch client was not initialized'
 
 @when('I send a request to search for available phone numbers')
 def step_search_available_numbers(context):
@@ -25,7 +33,7 @@ def step_search_available_numbers(context):
         region_code='US',
         number_type='LOCAL'
     )
-    context.response = response
+    context.response = execute_sync_or_async(context, response)
 
 @then('the response contains "{count}" available phone numbers')
 def step_check_available_numbers_count(context, count):
@@ -50,10 +58,9 @@ def step_check_number_properties(context):
 def step_check_number_availability(context, phone_number):
     try:
         response = context.sinch.numbers.available.check_availability(phone_number)
-        context.response = response
+        context.response = execute_sync_or_async(context, response)
     except NumberNotFoundException as e:
         context.error = e
-
 
 @then('the response displays the phone number "{phone_number}" details')
 def step_validate_number_details(context, phone_number):
@@ -69,8 +76,7 @@ def step_check_unavailable_number(context, phone_number):
 
 @when('I send a request to rent a number with some criteria')
 def step_rent_any_number(context):
-    sinch_client: SinchClient = context.sinch
-    response = sinch_client.numbers.available.rent_any(
+    response = context.sinch.numbers.available.rent_any(
         region_code = 'US',
         type_ = 'LOCAL',
         capabilities = ['SMS', 'VOICE'],
@@ -86,7 +92,7 @@ def step_rent_any_number(context):
             'search_pattern': 'END'
         },
     )
-    context.response = response
+    context.response = execute_sync_or_async(context, response)
 
 @then('the response contains a rented phone number')
 def step_validate_rented_number(context):
@@ -100,7 +106,9 @@ def step_validate_rented_number(context):
     assert data.money.currency_code == 'EUR'
     assert data.money.amount == Decimal('0.80')
     assert data.payment_interval_months == 1
-    assert data.next_charge_date == datetime.fromisoformat('2024-06-06T14:42:42.022227+00:00').astimezone(tz=timezone.utc)
+    assert data.next_charge_date == datetime.fromisoformat(
+        '2024-06-06T14:42:42.022227+00:00'
+    ).astimezone(tz=timezone.utc)
     assert data.expire_at == None
     assert data.callback_url == ''
     assert data.sms_configuration.service_plan_id == ''
@@ -108,7 +116,9 @@ def step_validate_rented_number(context):
     assert data.sms_configuration.scheduled_provisioning.service_plan_id == 'SpaceMonkeySquadron'
     assert data.sms_configuration.scheduled_provisioning.campaign_id == ''
     assert data.sms_configuration.scheduled_provisioning.status == 'WAITING'
-    assert data.sms_configuration.scheduled_provisioning.last_updated_time == datetime.fromisoformat('2024-06-06T14:42:42.596223+00:00').astimezone(tz=timezone.utc)
+    assert data.sms_configuration.scheduled_provisioning.last_updated_time == datetime.fromisoformat(
+        '2024-06-06T14:42:42.596223+00:00'
+    ).astimezone(tz=timezone.utc)
     assert data.sms_configuration.scheduled_provisioning.error_codes == []
     assert data.voice_configuration.type == 'RTC'
     assert data.voice_configuration.app_id == ''
@@ -119,12 +129,13 @@ def step_validate_rented_number(context):
     assert data.voice_configuration.scheduled_voice_provisioning.trunk_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.service_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.status == 'WAITING'
-    assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat('2024-06-06T14:42:42.604092+00:00').astimezone(tz=timezone.utc)
+    assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat(
+        '2024-06-06T14:42:42.604092+00:00'
+    ).astimezone(tz=timezone.utc)
 
 @when('I send a request to rent the phone number "{phone_number}"')
 def step_rent_specific_number(context, phone_number):
-    sinch_client: SinchClient = context.sinch
-    response = sinch_client.numbers.available.activate(
+    response = context.sinch.numbers.available.activate(
         phone_number = phone_number,
         sms_configuration= {
             'service_plan_id': 'SpaceMonkeySquadron',
@@ -133,7 +144,7 @@ def step_rent_specific_number(context, phone_number):
             'app_id': 'sunshine-rain-drop-very-beautifulday'
         }
     )
-    context.response = response
+    context.response = execute_sync_or_async(context, response)
 
 @then('the response contains this rented phone number "{phone_number}"')
 def step_validate_rented_specific_number(context, phone_number):
@@ -142,9 +153,8 @@ def step_validate_rented_specific_number(context, phone_number):
 
 @when('I send a request to rent the unavailable phone number "{phone_number}"')
 def step_rent_unavailable_number(context, phone_number):
-    sinch_client: SinchClient = context.sinch
     try:
-        response = sinch_client.numbers.available.activate(
+        response = context.sinch.numbers.available.activate(
             phone_number=phone_number,
             sms_configuration={
                 'service_plan_id': 'SpaceMonkeySquadron',
@@ -153,18 +163,18 @@ def step_rent_unavailable_number(context, phone_number):
                 'app_id': 'sunshine-rain-drop-very-beautifulday'
             }
         )
-        context.response = response
+        context.response = execute_sync_or_async(context, response)
     except NumberNotFoundException as e:
         context.error = e
 
 @when("I send a request to list the phone numbers")
 def step_when_list_phone_numbers(context):
-    sinch_client: SinchClient = context.sinch
-    response = sinch_client.numbers.active.list(
+    response = context.sinch.numbers.active.list(
         region_code='US',
         number_type='LOCAL'
     )
     # Get the first page
+    response = execute_sync_or_async(context, response)
     context.response = response.content()
 
 
@@ -175,15 +185,23 @@ def step_then_response_contains_x_phone_numbers(context, count):
 
 @when("I send a request to list all the phone numbers")
 def step_when_list_all_phone_numbers(context):
-    sinch_client: SinchClient = context.sinch
-    response = sinch_client.numbers.active.list(
+    response = context.sinch.numbers.active.list(
         region_code='US',
         number_type='LOCAL'
     )
     active_numbers_list = []
 
-    for number in response.iterator():
-        active_numbers_list.append(number)
+    response = execute_sync_or_async(context, response)
+    if inspect.isasyncgen(response.iterator()):
+        async def collect_async_numbers():
+            async for number in response.iterator():
+                active_numbers_list.append(number)
+
+        execute_sync_or_async(context, collect_async_numbers())
+    else:
+        for number in response.iterator():
+            active_numbers_list.append(number)
+
     context.active_numbers_list = active_numbers_list
 
 @then('the phone numbers list contains "{count}" phone numbers')
