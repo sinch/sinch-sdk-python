@@ -1,62 +1,30 @@
+import pytest
 from sinch import SinchClient, SinchClientAsync
 from sinch.core.clients.sinch_client_configuration import Configuration
 
-
-def test_sinch_client_initialization():
-    sinch_client_sync = SinchClient(
+@pytest.mark.parametrize("client", [SinchClient, SinchClientAsync])
+def test_sinch_client_initialization(client):
+    """ Test that SinchClient and SinchClientAsync can be initialized with or without parameters """
+    sinch_client = client(
         key_id="test",
         key_secret="test_secret",
         project_id="test_project_id"
     )
-    assert sinch_client_sync
+    assert sinch_client
+
+    sinch_client_empty = client()
+    assert sinch_client_empty
 
 
-def test_sinch_client_async_initialization():
-    sinch_client_async = SinchClientAsync(
-        key_id="test",
-        key_secret="test_secret",
-        project_id="test_project_id"
-    )
-    assert sinch_client_async
-
-
-def test_sinch_client_empty_expects_initialization():
-    """ Test that SinchClient can be initialized with no parameters """
-    sinch_client_sync = SinchClient()
-    assert sinch_client_sync
-
-
-def test_sinch_client_async_empty_expects_initialization():
-    """ Test that SinchClientAsync can be initialized with no parameters """
-    sinch_client_async = SinchClientAsync()
-    assert sinch_client_async
-
-
-def test_sinch_client_has_all_business_domains(sinch_client_sync):
-    """ Test that SinchClient has all domains """
-    assert hasattr(sinch_client_sync, "authentication")
-    assert hasattr(sinch_client_sync, "sms")
-    assert hasattr(sinch_client_sync, "conversation")
-    assert hasattr(sinch_client_sync, "numbers")
-    assert hasattr(sinch_client_sync, "verification")
-    assert hasattr(sinch_client_sync, "voice")
-
-
-def test_sinch_client_async_has_all_business_domains(sinch_client_async):
-    """ Test that SinchClientAsync has all domains """
-    assert hasattr(sinch_client_async, "authentication")
-    assert hasattr(sinch_client_async, "sms")
-    assert hasattr(sinch_client_async, "conversation")
-    assert hasattr(sinch_client_async, "numbers")
-    assert hasattr(sinch_client_async, "verification")
-    assert hasattr(sinch_client_async, "voice")
-
-
-def test_sinch_client_has_configuration_object(sinch_client_sync):
-    assert hasattr(sinch_client_sync, "configuration")
-    assert isinstance(sinch_client_sync.configuration, Configuration)
-
-
-def test_sinch_client_async_has_configuration_object(sinch_client_async):
-    assert hasattr(sinch_client_async, "configuration")
-    assert isinstance(sinch_client_async.configuration, Configuration)
+@pytest.mark.parametrize("client", ["sinch_client_sync", "sinch_client_async"])
+def test_sinch_client_expects_all_attributes(request, client):
+    """ Test that SinchClient and SinchClientAsync have all attributes"""
+    client_instance = request.getfixturevalue(client)
+    assert hasattr(client_instance, "authentication")
+    assert hasattr(client_instance, "sms")
+    assert hasattr(client_instance, "conversation")
+    assert hasattr(client_instance, "numbers")
+    assert hasattr(client_instance, "verification")
+    assert hasattr(client_instance, "voice")
+    assert hasattr(client_instance, "configuration")
+    assert isinstance(client_instance.configuration, Configuration)

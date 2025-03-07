@@ -35,10 +35,10 @@ You can install this package by typing:
 
 ## Products
 
-Sinch client provides access to the following Sinch products:
-- Numbers
-- SMS
-- Verification
+The Sinch client provides access to the following Sinch products:
+- Numbers API
+- SMS API
+- Verification API
 - Voice API
 - Conversation API (beta release)
 
@@ -86,9 +86,9 @@ For all other Sinch APIs, including SMS in US and EU regions, use the following 
 from sinch import SinchClient
 
 sinch_client = SinchClient(
-    key_id="key_id",
-    key_secret="key_secret",
     project_id="project_id",
+    key_id="key_id",
+    key_secret="key_secret"
 )
 ```
 
