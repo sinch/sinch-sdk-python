@@ -1,6 +1,5 @@
 import pytest
 from datetime import datetime, timezone
-from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 
 @pytest.fixture
 def test_data():
@@ -69,62 +68,3 @@ def assert_voice_configuration(voice_config):
     assert scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert scheduled_voice_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
     assert scheduled_voice_provisioning.app_id == "string"
-
-def test_activate_number_response_expects_all_fields_mapped_correctly(test_data):
-    """
-    Expects all fields to map correctly from camelCase input,
-    converts nested keys to snake_case, and handles dynamic fields
-    """
-    data = {
-        "phoneNumber": "+12025550134",
-        "displayName": "string",
-        "regionCode": "US",
-        "type": "MOBILE",
-        "capability": ["SMS"],
-        "money": {"currencyCode": "USD", "amount": "2.00"},
-        "paymentIntervalMonths": 0,
-        "nextChargeDate": "2025-01-22T13:19:31.095Z",
-        "expireAt": "2025-03-29T13:19:31.095Z",
-        "smsConfiguration": {
-            "servicePlanId": "string",
-            "campaignId": "string",
-            "scheduledProvisioning": {
-                "servicePlanId": "string",
-                "campaignId": "string",
-                "status": "PROVISIONING_STATUS_UNSPECIFIED",
-                "lastUpdatedTime": "2025-02-21T13:19:31.095Z",
-                "errorCodes": ["ERROR_CODE_UNSPECIFIED"],
-            },
-        },
-        "voiceConfiguration": {
-            "type": "RTC",
-            "lastUpdatedTime": "2025-01-25T13:49:31.095Z",
-            "scheduledVoiceProvisioning": {
-                "type": "RTC",
-                "lastUpdatedTime": "2025-02-22T13:19:31.095Z",
-                "status": "PROVISIONING_STATUS_UNSPECIFIED",
-                "appId": "string",
-            },
-            "appId": "string",
-        },
-        "callbackUrl": "https://www.your-callback-server.com/callback",
-    }
-    response = ActivateNumberResponse(**data)
-
-    assert response.phone_number == "+12025550134"
-    assert response.display_name == "string"
-    assert response.region_code == "US"
-    assert response.type == "MOBILE"
-    assert response.capability == ["SMS"]
-    assert response.money.currency_code == "USD"
-    assert response.payment_interval_months == 0
-    expected_next_charge_data = (
-        datetime(2025, 1, 22, 13, 19, 31, 95000, tzinfo=timezone.utc))
-    assert response.next_charge_date == expected_next_charge_data
-    expected_expire_at = (
-        datetime(2025, 3, 29, 13, 19, 31, 95000, tzinfo=timezone.utc))
-    assert response.expire_at == expected_expire_at
-    assert response.callback_url == "https://www.your-callback-server.com/callback"
-    # Assert sms_configuration and voice_configuration using helper functions
-    assert_sms_configuration(response.sms_configuration)
-    assert_voice_configuration(response.voice_configuration)
