@@ -1,21 +1,48 @@
+import pytest
+from logging import Logger, getLogger
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
-from sinch.core.token_manager import TokenManager
+from sinch.core.adapters.httpx_adapter import HTTPXTransport
+from sinch.core.token_manager import TokenManager, TokenManagerAsync
 
 
-def test_configuration_initialization_happy_path(sinch_client_sync):
+@pytest.mark.parametrize(
+    "transport_class, token_manager_class, client_fixture",
+    [
+        (HTTPTransportRequests, TokenManager, "sinch_client_sync"),
+        (HTTPXTransport, TokenManagerAsync, "sinch_client_async")
+    ]
+)
+def test_configuration_happy_capy_expects_initialization(
+        request, transport_class, token_manager_class, client_fixture
+    ):
+    """ Test that Configuration can be initialized with all parameters """
+    sinch_client = request.getfixturevalue(client_fixture)
+
     client_configuration = Configuration(
-        key_id="Rodney",
-        key_secret="Mullen",
-        project_id="Is the King!",
-        transport=HTTPTransportRequests(sinch_client_sync),
-        token_manager=TokenManager(sinch_client_sync)
+        key_id="CapyKey",
+        key_secret="CapybaraWhisper",
+        project_id="CapybaraProjectX",
+        logger=getLogger("CapyTrace"),
+        connection_timeout=10,
+        application_key="AppybaraKey",
+        application_secret="SecretHabitatEntry",
+        service_plan_id="CappyPremiumPlan",
+        sms_api_token="HappyCappyToken",
+        transport=transport_class(sinch_client),
+        token_manager=token_manager_class(sinch_client)
     )
-    assert client_configuration.key_id == "Rodney"
-    assert client_configuration.key_secret == "Mullen"
-    assert client_configuration.project_id == "Is the King!"
-    assert isinstance(client_configuration.transport, HTTPTransportRequests)
-    assert isinstance(client_configuration.token_manager, TokenManager)
+
+    assert client_configuration.key_id == "CapyKey"
+    assert client_configuration.key_secret == "CapybaraWhisper"
+    assert client_configuration.project_id == "CapybaraProjectX"
+    assert isinstance(client_configuration.logger, Logger)
+    assert client_configuration.application_key == "AppybaraKey"
+    assert client_configuration.application_secret == "SecretHabitatEntry"
+    assert client_configuration.service_plan_id == "CappyPremiumPlan"
+    assert client_configuration.sms_api_token == "HappyCappyToken"
+    assert isinstance(client_configuration.transport, transport_class)
+    assert isinstance(client_configuration.token_manager, token_manager_class)
 
 
 def test_set_sms_region_property_and_check_that_sms_origin_was_updated(sinch_client_sync):

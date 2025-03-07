@@ -33,47 +33,64 @@ For more information on the Sinch APIs on which this SDK is based, refer to the 
 You can install this package by typing:
 `pip install sinch`
 
+## Products
+
+The Sinch client provides access to the following Sinch products:
+- Numbers API
+- SMS API
+- Verification API
+- Voice API
+- Conversation API (beta release)
+
+
 ## Getting started
+
 
 ### Client initialization
 
 
-To initialize communication with Sinch backed, credentials obtained from Sinch portal have to be provided to the main client class of this SDK.
-It's highly advised to not hardcode those credentials, but to fetch them from environment variables:
+To establish a connection with the Sinch backend, you must provide the appropriate credentials based on the API
+you intend to use. For security best practices, avoid hardcoding credentials.
+Instead, retrieve them from environment variables.
+
+#### Verification and Voice APIs
+
+To initialize the client for the **Verification** and **Voice** APIs, use the following credentials:
 
 ```python
 from sinch import SinchClient
 
 sinch_client = SinchClient(
-    key_id="key_id",
-    key_secret="key_secret",
-    project_id="some_project",
     application_key="application_key",
     application_secret="application_secret"
 )
 ```
 
+#### SMS API
+For the SMS API in **Australia (AU)**, **Brazil (BR)**, **Canada (CA)**, **the United States (US)**, 
+and **the European Union (EU)**,  provide the following parameters:
+
 ```python
-import os
 from sinch import SinchClient
 
 sinch_client = SinchClient(
-    key_id=os.getenv("KEY_ID"),
-    key_secret=os.getenv("KEY_SECRET"),
-    project_id=os.getenv("PROJECT_ID"),
-    application_key=os.getenv("APPLICATION_KEY"),
-    application_secret=os.getenv("APPLICATION_SECRET")
+    service_plan_id="service_plan_id",
+    sms_api_token="api_token"
 )
 ```
 
-## Products
+#### All Other Sinch APIs
+For all other Sinch APIs, including SMS in US and EU regions, use the following parameters:
 
-Sinch client provides access to the following Sinch products:
-- Numbers
-- SMS
-- Verification
-- Voice API
-- Conversation API (beta release)
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id="project_id",
+    key_id="key_id",
+    key_secret="key_secret"
+)
+```
 
 ## Logging
 
