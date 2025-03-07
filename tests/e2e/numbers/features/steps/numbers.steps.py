@@ -2,8 +2,8 @@ import inspect
 from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
+from sinch.domains.numbers.models.numbers import ActiveNumber
 from sinch.domains.numbers.exceptions import NumberNotFoundException
-from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.rent_any_number_response import RentAnyNumberResponse
 from sinch.domains.numbers.models.numbers import NotFoundError
 
@@ -148,7 +148,7 @@ def step_rent_specific_number(context, phone_number):
 
 @then('the response contains this rented phone number "{phone_number}"')
 def step_validate_rented_specific_number(context, phone_number):
-    data: ActivateNumberResponse = context.response
+    data: ActiveNumber = context.response
     assert data.phone_number == phone_number, f'Expected {phone_number}, got {data.phone_number}'
 
 @when('I send a request to rent the unavailable phone number "{phone_number}"')

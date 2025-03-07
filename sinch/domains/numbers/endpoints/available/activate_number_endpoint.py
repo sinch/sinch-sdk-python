@@ -1,9 +1,10 @@
 import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
+from sinch.domains.numbers.models.numbers import ActiveNumber
 from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
 from sinch.domains.numbers.exceptions import NumberNotFoundException, NumbersException
-from sinch.domains.numbers.models.available import ActivateNumberRequest, ActivateNumberResponse
+from sinch.domains.numbers.models.available import ActivateNumberRequest
 
 
 class ActivateNumberEndpoint(NumbersEndpoint):
@@ -22,10 +23,10 @@ class ActivateNumberEndpoint(NumbersEndpoint):
         request_data = self.request_data.model_dump(by_alias=True, exclude_none=True)
         return json.dumps(request_data)
 
-    def handle_response(self, response: HTTPResponse) -> ActivateNumberResponse:
+    def handle_response(self, response: HTTPResponse) -> ActiveNumber:
         try:
             super(ActivateNumberEndpoint, self).handle_response(response)
         except NumbersException as ex:
             raise NumberNotFoundException(message=ex.args[0], response=ex.http_response,
                                           is_from_server=ex.is_from_server)
-        return self.process_response_model(response.body, ActivateNumberResponse)
+        return self.process_response_model(response.body, ActiveNumber)

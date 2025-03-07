@@ -1,5 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
+
 from sinch.domains.numbers.available_numbers import AvailableNumbers
 from sinch.domains.numbers.endpoints.available.list_available_numbers_endpoint import AvailableNumbersEndpoint
 from sinch.domains.numbers.endpoints.available.activate_number_endpoint import ActivateNumberEndpoint
@@ -10,8 +11,9 @@ from sinch.domains.numbers.models.available.activate_number_request import Activ
 from sinch.domains.numbers.models.available.check_number_availability_request import CheckNumberAvailabilityRequest
 
 from sinch.domains.numbers.models.available.list_available_numbers_response import ListAvailableNumbersResponse
-from sinch.domains.numbers.models.available.activate_number_response import ActivateNumberResponse
 from sinch.domains.numbers.models.available.check_number_availability_response import CheckNumberAvailabilityResponse
+
+from sinch.domains.numbers.models.numbers import ActiveNumber
 
 @pytest.fixture
 def mock_sinch():
@@ -66,7 +68,7 @@ def test_activate_number_expects_correct_request(mock_sinch, mocker):
     Test that the AvailableNumbers.activate method sends the correct request
     and handles the response properly.
     """
-    mock_response = ActivateNumberResponse.model_construct()
+    mock_response = ActiveNumber.model_construct()
     mock_sinch.configuration.transport.request.return_value = mock_response
 
     spy_endpoint = mocker.spy(ActivateNumberEndpoint, "__init__")

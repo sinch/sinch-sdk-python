@@ -10,10 +10,10 @@ from sinch.domains.numbers.models.available import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest
 )
 from sinch.domains.numbers.models.available import (
-    ActivateNumberResponse, CheckNumberAvailabilityResponse, RentAnyNumberResponse
+    CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
 from sinch.domains.numbers.models.numbers import (
-    CapabilityTypeValuesList, Number, NumberSearchPatternTypeValues, NumberTypeValues
+    ActiveNumber, CapabilityTypeValuesList, Number, NumberSearchPatternTypeValues, NumberTypeValues
 )
 
 
@@ -66,7 +66,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: Optional[SmsConfigurationDict] = None,
             voice_configuration: Optional[VoiceConfigurationDictType] = None,
             callback_url: Optional[StrictStr] = None
-    ) -> ActivateNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     @overload
@@ -76,7 +76,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictEST,
             callback_url: Optional[StrictStr] = None
-    ) -> ActivateNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     @overload
@@ -86,7 +86,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictFAX,
             callback_url: Optional[StrictStr] = None
-    ) -> ActivateNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     @overload
@@ -96,7 +96,7 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictRTC,
             callback_url: Optional[StrictStr] = None
-    ) -> ActivateNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     def activate(
@@ -106,7 +106,7 @@ class AvailableNumbers(BaseNumbers):
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
-    ) -> ActivateNumberResponse:
+    ) -> ActiveNumber:
         """
         Activate a virtual number to use with SMS, Voice, or both products.
 
@@ -125,7 +125,7 @@ class AvailableNumbers(BaseNumbers):
             **kwargs: Additional parameters for the request.
 
         Returns:
-            ActivateNumberResponse: A response object with the activated number and its details.
+            ActiveNumber: A response object with the activated number and its details.
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -147,7 +147,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: None,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[str] = None,
+            callback_url: Optional[StrictStr] = None,
     ) -> RentAnyNumberResponse:
         pass
 
@@ -160,7 +160,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: VoiceConfigurationDictRTC,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[str] = None,
+            callback_url: Optional[StrictStr] = None,
     ) -> RentAnyNumberResponse:
         pass
 
@@ -173,7 +173,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: VoiceConfigurationDictFAX,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[str] = None,
+            callback_url: Optional[StrictStr] = None,
     ) -> RentAnyNumberResponse:
         pass
 
@@ -186,7 +186,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: VoiceConfigurationDictEST,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[str] = None,
+            callback_url: Optional[StrictStr] = None,
     ) -> RentAnyNumberResponse:
         pass
 
@@ -198,7 +198,7 @@ class AvailableNumbers(BaseNumbers):
         capabilities: Optional[CapabilityTypeValuesList] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
-        callback_url: Optional[str] = None,
+        callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> RentAnyNumberResponse:
         """
@@ -219,7 +219,7 @@ class AvailableNumbers(BaseNumbers):
                     - `VoiceConfigurationDictRTC`: type 'RTC' with an `app_id` field.
                     - `VoiceConfigurationDictEST`: type 'EST' with a `trunk_id` field.
                     - `VoiceConfigurationDictFAX`: type 'FAX' with a `service_id` field.
-            callback_url (str): The callback URL to receive notifications.
+            callback_url (StrictStr): The callback URL to receive notifications.
             **kwargs: Additional parameters for the request.
 
         Returns:
