@@ -1,5 +1,7 @@
-from sinch.domains.numbers.available_numbers import AvailableNumbers
-from sinch.domains.numbers.active_numbers import ActiveNumbers, ActiveNumbersWithAsyncPagination
+from sinch.domains.numbers.api.v1.available_numbers.available_numbers_apis import AvailableNumbers
+from sinch.domains.numbers.api.v1.active_numbers.active_numbers_apis import (
+    ActiveNumbers, ActiveNumbersWithAsyncPagination
+)
 from sinch.domains.numbers.endpoints.callbacks.get_configuration import GetNumbersCallbackConfigurationEndpoint
 from sinch.domains.numbers.endpoints.callbacks.update_configuration import UpdateNumbersCallbackConfigurationEndpoint
 from sinch.domains.numbers.endpoints.regions.list_available_regions import ListAvailableRegionsEndpoint
