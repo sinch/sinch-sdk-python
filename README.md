@@ -135,7 +135,7 @@ Each API throws a custom, API related exception for an unsuccessful backed call.
 Example for Numbers API:
 
 ```python
-from sinch.domains.numbers.exceptions import NumbersException
+from sinch.domains.numbers.api.v1.exceptions import NumbersException
 
 try:
     nums = sinch_client.numbers.available.list(

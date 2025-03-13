@@ -3,7 +3,7 @@ from typing import Type
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.types import BM
-from sinch.domains.numbers.exceptions import NumbersException
+from sinch.domains.numbers.api.v1.exceptions import NumbersException
 from sinch.domains.numbers.models.v1.errors import NotFoundError
 
 

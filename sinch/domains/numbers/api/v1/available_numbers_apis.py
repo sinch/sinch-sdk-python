@@ -1,8 +1,8 @@
 from typing import Optional, overload
 from pydantic import StrictInt, StrictStr
-from sinch.domains.numbers.base_numbers import BaseNumbers
+from sinch.domains.numbers.api.v1.base_numbers import BaseNumbers
 from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse, RentAnyNumberResponse
-from sinch.domains.numbers.api.v1.available_numbers import (
+from sinch.domains.numbers.api.v1.internal import (
     ActivateNumberEndpoint, AvailableNumbersEndpoint, RentAnyNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1.shared_params.available_number import AvailableNumber

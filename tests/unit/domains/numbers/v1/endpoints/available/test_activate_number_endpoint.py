@@ -1,6 +1,6 @@
 import pytest
 import json
-from sinch.domains.numbers.api.v1.available_numbers import ActivateNumberEndpoint
+from sinch.domains.numbers.api.v1.internal import ActivateNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import ActivateNumberRequest
 from sinch.core.models.http_response import HTTPResponse
 

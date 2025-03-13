@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
 
-from sinch.domains.numbers.api.v1.available_numbers.available_numbers_apis import AvailableNumbers
-from sinch.domains.numbers.api.v1.available_numbers import (
+from sinch.domains.numbers.api.v1.available_numbers_apis import AvailableNumbers
+from sinch.domains.numbers.api.v1.internal import (
     AvailableNumbersEndpoint, ActivateNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse

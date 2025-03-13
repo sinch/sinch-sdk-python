@@ -2,7 +2,7 @@ import inspect
 from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
-from sinch.domains.numbers.exceptions import NumberNotFoundException
+from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.v1 import RentAnyNumberResponse
 from sinch.domains.numbers.models.v1.errors import NotFoundError
 from sinch.domains.numbers.models.v1.shared_params import ActiveNumber

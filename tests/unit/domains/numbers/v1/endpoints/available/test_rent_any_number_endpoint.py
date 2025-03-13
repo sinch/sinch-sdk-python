@@ -2,7 +2,7 @@ import pytest
 import json
 from datetime import datetime, timezone
 from sinch.core.models.http_response import HTTPResponse
-from sinch.domains.numbers.api.v1.available_numbers.available_numbers_apis import RentAnyNumberEndpoint
+from sinch.domains.numbers.api.v1.available_numbers_apis import RentAnyNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import RentAnyNumberRequest
 from sinch.domains.numbers.models.v1 import RentAnyNumberResponse
 
