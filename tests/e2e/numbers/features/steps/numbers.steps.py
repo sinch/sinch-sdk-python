@@ -3,8 +3,10 @@ from datetime import timezone, datetime
 from behave import given, when, then
 from decimal import Decimal
 from sinch.domains.numbers.exceptions import NumberNotFoundException
+from sinch.domains.numbers.models.v1 import RentAnyNumberResponse
 from sinch.domains.numbers.models.v1.errors import NotFoundError
-from sinch.domains.numbers.models.v1 import ActiveNumber, RentAnyNumberResponse
+from sinch.domains.numbers.models.v1.shared_params import ActiveNumber
+
 
 def execute_sync_or_async(context,call):
     """

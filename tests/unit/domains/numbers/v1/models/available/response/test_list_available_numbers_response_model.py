@@ -1,5 +1,5 @@
 import pytest
-from sinch.domains.numbers.models.v1 import ListAvailableNumbersResponse
+from sinch.domains.numbers.models.v1.internal import ListAvailableNumbersResponse
 
 @pytest.fixture
 def test_data():

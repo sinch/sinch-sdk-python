@@ -1,8 +1,7 @@
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.domains.numbers.models.v1.internal.list_active_numbers_request import ListActiveNumbersRequest
-from sinch.domains.numbers.models.v1 import ListActiveNumbersResponse
+from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest, ListActiveNumbersResponse
 
 
 class ListActiveNumbersEndpoint(NumbersEndpoint):

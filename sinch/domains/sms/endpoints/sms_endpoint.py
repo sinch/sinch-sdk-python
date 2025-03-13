@@ -19,6 +19,7 @@ class SMSEndpoint(HTTPEndpoint):
             self.sms_origin = self.sinch.configuration.sms_origin
 
     def handle_response(self, response: HTTPResponse):
+        print(response)
         if response.status_code >= 400:
             raise SMSException(
                 message=response.body["text"],

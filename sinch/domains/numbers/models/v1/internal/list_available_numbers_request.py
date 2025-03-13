@@ -1,9 +1,9 @@
 from typing import Optional
 from pydantic import Field, StrictInt, StrictStr
-from sinch.domains.numbers.models.v1.capability_type import CapabilityTypeValuesList
 from sinch.domains.numbers.models.v1.internal import BaseModelConfigRequest
-from sinch.domains.numbers.models.v1.number_search_pattern_type import NumberSearchPatternTypeValues
-from sinch.domains.numbers.models.v1.number_type import NumberType
+from sinch.domains.numbers.models.v1.shared_params import (
+    CapabilityTypeValuesList, NumberType, NumberSearchPatternTypeValues
+)
 
 
 class ListAvailableNumbersRequest(BaseModelConfigRequest):

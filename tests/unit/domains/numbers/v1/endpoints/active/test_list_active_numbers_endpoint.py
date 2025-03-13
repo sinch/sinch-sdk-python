@@ -3,8 +3,7 @@ from decimal import Decimal
 
 import pytest
 from sinch.domains.numbers.api.v1.active_numbers.active_numbers_endpoints import ListActiveNumbersEndpoint
-from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
-from sinch.domains.numbers.models.v1.list_active_numbers_response import ListActiveNumbersResponse
+from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest, ListActiveNumbersResponse
 from sinch.core.models.http_response import HTTPResponse
 
 @pytest.fixture

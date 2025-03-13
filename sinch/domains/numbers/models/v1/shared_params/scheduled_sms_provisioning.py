@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import StrictStr, Field, conlist
 
 from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
-from sinch.domains.numbers.models.v1.status_scheduled_provisioning import StatusScheduledProvisioning
+from sinch.domains.numbers.models.v1.shared_params.status_scheduled_provisioning import StatusScheduledProvisioning
 
 
 class ScheduledSmsProvisioning(BaseModelConfigResponse):

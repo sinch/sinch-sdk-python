@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
-from sinch.domains.numbers.models.v1 import AvailableNumber
+from sinch.domains.numbers.models.v1.shared_params.available_number import AvailableNumber
 
 
 class ListAvailableNumbersResponse(BaseModel):

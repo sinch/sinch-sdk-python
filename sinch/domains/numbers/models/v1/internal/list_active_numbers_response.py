@@ -1,6 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, StrictStr, StrictInt
-from sinch.domains.numbers.models.v1.active_number import ActiveNumber
+from sinch.domains.numbers.models.v1.shared_params.active_number import ActiveNumber
 
 
 class ListActiveNumbersResponse(BaseModel):

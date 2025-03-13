@@ -1,7 +1,6 @@
 from typing import Optional, Dict
 from pydantic import Field, StrictStr
-from sinch.domains.numbers.models.v1.capability_type import CapabilityType
-from sinch.domains.numbers.models.v1.number_pattern import NumberPattern
+from sinch.domains.numbers.models.v1.shared_params import CapabilityType, NumberPattern
 from sinch.domains.numbers.models.v1.utils.validators import validate_sms_voice_configuration
 from sinch.domains.numbers.models.v1.internal import BaseModelConfigRequest
 

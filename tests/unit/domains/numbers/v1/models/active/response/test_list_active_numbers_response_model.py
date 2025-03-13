@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 import pytest
-from sinch.domains.numbers.models.v1 import ListActiveNumbersResponse
+from sinch.domains.numbers.models.v1.internal import ListActiveNumbersResponse
 
 @pytest.fixture
 def test_data():

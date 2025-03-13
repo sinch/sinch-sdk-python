@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import StrictStr, Field
 
 from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
-from sinch.domains.numbers.models.v1.scheduled_sms_provisioning import ScheduledSmsProvisioning
+from sinch.domains.numbers.models.v1.shared_params.scheduled_sms_provisioning import ScheduledSmsProvisioning
 
 
 class SmsConfigurationResponse(BaseModelConfigResponse):
