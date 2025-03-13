@@ -13,7 +13,6 @@ from sinch.domains.numbers.api.v1.internal.numbers_endpoint import NumbersEndpoi
 from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException, NumbersException
 
 
-
 class ActivateNumberEndpoint(NumbersEndpoint):
     """
     Endpoint to activate a virtual number for a project.
