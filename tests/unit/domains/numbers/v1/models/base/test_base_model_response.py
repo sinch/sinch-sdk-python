@@ -1,4 +1,4 @@
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
 
 def test_base_model_response_expects_unrecognized_fields_snake_case():
     """

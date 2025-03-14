@@ -1,4 +1,4 @@
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigRequest
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
 
 def test_to_camel_case_expects_parsed_standard_cases():
     """

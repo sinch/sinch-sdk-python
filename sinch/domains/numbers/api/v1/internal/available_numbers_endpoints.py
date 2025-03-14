@@ -5,11 +5,11 @@ from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest,
     ListAvailableNumbersResponse
 )
-from sinch.domains.numbers.models.v1.shared_params import AvailableNumber, ActiveNumber
+from sinch.domains.numbers.models.v1.shared import AvailableNumber, ActiveNumber
 from sinch.domains.numbers.models.v1 import (
     CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
-from sinch.domains.numbers.api.v1.internal.numbers_endpoint import NumbersEndpoint
+from sinch.domains.numbers.api.v1.internal.base.numbers_endpoint import NumbersEndpoint
 from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException, NumbersException
 
 

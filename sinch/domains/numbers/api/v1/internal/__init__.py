@@ -3,7 +3,6 @@ from sinch.domains.numbers.api.v1.internal.available_numbers_endpoints import (
 )
 from sinch.domains.numbers.api.v1.internal.active_numbers_endpoints import ListActiveNumbersEndpoint
 
-
 __all__ = [
     "ActivateNumberEndpoint",
     "AvailableNumbersEndpoint",

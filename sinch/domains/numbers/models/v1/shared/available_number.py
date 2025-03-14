@@ -1,9 +1,8 @@
 from typing import Optional
 from pydantic import Field, StrictBool, StrictInt, StrictStr
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
-from sinch.domains.numbers.models.v1.shared_params import (
-    CapabilityType, Money, NumberType
-)
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.shared import Money
+from sinch.domains.numbers.models.v1.types import CapabilityType, NumberType
 
 
 class AvailableNumber(BaseModelConfigResponse):

@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Literal, Optional
 from pydantic import Field
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
-from sinch.domains.numbers.models.v1.shared_params.status_scheduled_provisioning import StatusScheduledProvisioning
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.types import StatusScheduledProvisioning
 
 
 class ScheduledVoiceProvisioning(BaseModelConfigResponse):

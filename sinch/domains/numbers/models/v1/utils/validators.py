@@ -1,11 +1,11 @@
 from typing import Dict, Any
-from sinch.domains.numbers.models.v1.internal.voice_configuration_request import (
+from sinch.domains.numbers.models.v1.internal.shared.voice_configuration_request import (
     VoiceConfigurationRTC,
     VoiceConfigurationEST,
     VoiceConfigurationFAX,
     VoiceConfigurationCustom,
 )
-from sinch.domains.numbers.models.v1.internal.sms_configuration_request import SmsConfigurationRequest
+from sinch.domains.numbers.models.v1.internal.shared.sms_configuration_request import SmsConfigurationRequest
 
 
 def validate_sms_voice_configuration(data: Dict[str, Any]) -> None:

@@ -1,8 +1,9 @@
 from typing import Optional
 from pydantic import Field, StrictInt, StrictStr, field_validator
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigRequest
-from sinch.domains.numbers.models.v1.shared_params import (
-    CapabilityType, NumberTypeValues, OrderByValues, NumberSearchPatternTypeValues
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
+from sinch.domains.numbers.models.v1.types import (
+    CapabilityType, OrderByValues, NumberSearchPatternTypeValues, NumberTypeValues,
+
 )
 
 

@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Literal, Optional, Union
 from pydantic import Field, StrictStr
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
-from sinch.domains.numbers.models.v1.shared_params import (
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.shared import (
     ScheduledVoiceProvisioningCustom, ScheduledVoiceProvisioningEST, ScheduledVoiceProvisioningFAX,
     ScheduledVoiceProvisioningRTC
 )

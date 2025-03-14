@@ -1,11 +1,11 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import Field, StrictStr, StrictInt
-from sinch.domains.numbers.models.v1.internal.base_model_config import BaseModelConfigResponse
-from sinch.domains.numbers.models.v1.shared_params import (
-    CapabilityTypeValuesList, Money, NumberTypeValues, SmsConfigurationResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.shared import (
+    Money, SmsConfigurationResponse, VoiceConfigurationResponse
 )
-from sinch.domains.numbers.models.v1.shared_params import VoiceConfigurationResponse
+from sinch.domains.numbers.models.v1.types import CapabilityTypeValuesList, NumberTypeValues
 
 
 class RentAnyNumberResponse(BaseModelConfigResponse):

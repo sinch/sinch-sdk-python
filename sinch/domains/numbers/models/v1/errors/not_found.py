@@ -1,4 +1,4 @@
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
 from sinch.domains.numbers.models.v1.errors.error_details import ErrorDetails
 from typing import Optional
 from pydantic import ConfigDict, conlist, Field, StrictInt, StrictStr

@@ -1,7 +1,7 @@
 from typing import Optional, Dict
 from pydantic import Field, StrictStr
 from sinch.domains.numbers.models.v1.utils.validators import validate_sms_voice_configuration
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigRequest
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
 
 
 class ActivateNumberRequest(BaseModelConfigRequest):

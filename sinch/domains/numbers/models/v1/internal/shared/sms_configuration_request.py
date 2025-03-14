@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import Field, StrictStr
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigRequest
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
 
 
 class SmsConfigurationRequest(BaseModelConfigRequest):

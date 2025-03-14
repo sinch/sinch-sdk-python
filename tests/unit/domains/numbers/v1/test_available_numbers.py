@@ -9,7 +9,7 @@ from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, ListAvailableNumbersResponse
 )
-from sinch.domains.numbers.models.v1.shared_params.active_number import ActiveNumber
+from sinch.domains.numbers.models.v1.shared.active_number import ActiveNumber
 
 
 

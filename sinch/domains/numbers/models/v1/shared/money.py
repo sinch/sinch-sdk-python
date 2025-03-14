@@ -1,6 +1,6 @@
 from decimal import Decimal
 from pydantic import StrictStr, Field
-from sinch.domains.numbers.models.v1.internal import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
 
 
 class Money(BaseModelConfigResponse):

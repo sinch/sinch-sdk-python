@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import StrictStr, StrictInt
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator, Paginator
-from sinch.domains.numbers.api.v1.base_numbers import BaseNumbers
+from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import ListActiveNumbersEndpoint
 from sinch.domains.numbers.endpoints.active import (
     GetNumberConfigurationEndpoint, ReleaseNumberFromProjectEndpoint,
@@ -14,9 +14,9 @@ from sinch.domains.numbers.models.active.responses import (
     UpdateNumberConfigurationResponse, GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
 )
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
-from sinch.domains.numbers.models.v1.shared_params import (
-    CapabilityTypeValuesList, NumberTypeValues, OrderByValues, NumberSearchPatternTypeValues,
-    ActiveNumber
+from sinch.domains.numbers.models.v1.shared import ActiveNumber
+from sinch.domains.numbers.models.v1.types import (
+    CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues
 )
 
 

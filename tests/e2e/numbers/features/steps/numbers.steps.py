@@ -5,7 +5,7 @@ from decimal import Decimal
 from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.v1 import RentAnyNumberResponse
 from sinch.domains.numbers.models.v1.errors import NotFoundError
-from sinch.domains.numbers.models.v1.shared_params import ActiveNumber
+from sinch.domains.numbers.models.v1.shared import ActiveNumber
 
 
 def execute_sync_or_async(context,call):
