@@ -1,18 +1,17 @@
 from typing import Optional, overload
 from pydantic import StrictInt, StrictStr
 from sinch.domains.numbers.api.v1.base import BaseNumbers
-from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse, RentAnyNumberResponse
 from sinch.domains.numbers.api.v1.internal import (
     ActivateNumberEndpoint, AvailableNumbersEndpoint, RentAnyNumberEndpoint, SearchForNumberEndpoint
 )
-from sinch.domains.numbers.models.v1.shared.available_number import AvailableNumber
+from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse, RentAnyNumberResponse
 from sinch.domains.numbers.models.v1.internal import (
-    ActivateNumberRequest, CheckNumberAvailabilityRequest, RentAnyNumberRequest, ListAvailableNumbersRequest
+    ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest
 )
-from sinch.domains.numbers.models.v1.shared import ActiveNumber
+from sinch.domains.numbers.models.v1.shared.response import ActiveNumber, AvailableNumber
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberPatternDict, NumberTypeValues, SmsConfigurationDict,
-    VoiceConfigurationDictType, VoiceConfigurationDictEST, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC
+    CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues, NumberTypeValues, SmsConfigurationDict,
+    VoiceConfigurationDictEST, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC, VoiceConfigurationDictType
 )
 
 

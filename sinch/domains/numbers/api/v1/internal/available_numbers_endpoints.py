@@ -1,16 +1,16 @@
 import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
+from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException, NumbersException
+from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
+from sinch.domains.numbers.models.v1 import (
+    CheckNumberAvailabilityResponse, RentAnyNumberResponse
+)
 from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest,
     ListAvailableNumbersResponse
 )
-from sinch.domains.numbers.models.v1.shared import AvailableNumber, ActiveNumber
-from sinch.domains.numbers.models.v1 import (
-    CheckNumberAvailabilityResponse, RentAnyNumberResponse
-)
-from sinch.domains.numbers.api.v1.internal.base.numbers_endpoint import NumbersEndpoint
-from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException, NumbersException
+from sinch.domains.numbers.models.v1.shared.response import AvailableNumber, ActiveNumber
 
 
 class ActivateNumberEndpoint(NumbersEndpoint):

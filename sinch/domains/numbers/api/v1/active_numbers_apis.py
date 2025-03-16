@@ -14,7 +14,7 @@ from sinch.domains.numbers.models.active.responses import (
     UpdateNumberConfigurationResponse, GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
 )
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
-from sinch.domains.numbers.models.v1.shared import ActiveNumber
+from sinch.domains.numbers.models.v1.shared.response import ActiveNumber
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues
 )
