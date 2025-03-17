@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timezone
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1 import RentAnyNumberResponse
+from sinch.domains.numbers.models.v1.response import RentAnyNumberResponse
 
 @pytest.fixture
 def valid_data():

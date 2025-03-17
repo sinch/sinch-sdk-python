@@ -5,11 +5,11 @@ from sinch.domains.numbers.api.v1.available_numbers_apis import AvailableNumbers
 from sinch.domains.numbers.api.v1.internal import (
     AvailableNumbersEndpoint, ActivateNumberEndpoint, SearchForNumberEndpoint
 )
-from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, ListAvailableNumbersResponse
 )
-from sinch.domains.numbers.models.v1.shared.response import ActiveNumber
+from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
+from sinch.domains.numbers.models.v1.response.shared import ActiveNumber
 
 
 

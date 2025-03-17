@@ -4,11 +4,11 @@ from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
     ActivateNumberEndpoint, AvailableNumbersEndpoint, RentAnyNumberEndpoint, SearchForNumberEndpoint
 )
-from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse, RentAnyNumberResponse
 from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest
 )
-from sinch.domains.numbers.models.v1.shared.response import ActiveNumber, AvailableNumber
+from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse, RentAnyNumberResponse
+from sinch.domains.numbers.models.v1.response.shared import ActiveNumber, AvailableNumber
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues, NumberTypeValues, SmsConfigurationDict,
     VoiceConfigurationDictEST, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC, VoiceConfigurationDictType
