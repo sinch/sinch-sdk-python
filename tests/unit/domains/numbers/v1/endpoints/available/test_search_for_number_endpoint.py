@@ -1,6 +1,6 @@
 import pytest
+from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.api.v1.internal import SearchForNumberEndpoint
-from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
 from sinch.domains.numbers.models.v1.internal import CheckNumberAvailabilityRequest
 from sinch.core.models.http_response import HTTPResponse
 

@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
+from sinch.domains.numbers.models.v1 import ActiveNumber
 from sinch.domains.numbers.models.v1.errors import NotFoundError
 from sinch.domains.numbers.models.v1.shared import (
     ScheduledSmsProvisioning, SmsConfigurationResponse, VoiceConfigurationResponse
 )
-from sinch.domains.numbers.models.v1.response.shared import ActiveNumber
 
 def test_scheduled_provisioning_sms_configuration_valid_expects_parsed_data():
     """

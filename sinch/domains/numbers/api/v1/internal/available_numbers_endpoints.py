@@ -6,11 +6,10 @@ from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest,
     ListAvailableNumbersResponse
 )
-from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
-from sinch.domains.numbers.models.v1.response import (
-    CheckNumberAvailabilityResponse, RentAnyNumberResponse
+from sinch.domains.numbers.models.v1 import (
+    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
-from sinch.domains.numbers.models.v1.response.shared import ActiveNumber, AvailableNumber
+from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 
 
 class ActivateNumberEndpoint(NumbersEndpoint):

@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
+from sinch.domains.numbers.models.v1 import CheckNumberAvailabilityResponse
 
 def test_check_number_availability_response_expects_valid_data():
     """
