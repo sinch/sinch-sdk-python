@@ -9,7 +9,7 @@ from sinch import SinchClient, SinchClientAsync
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
-from sinch.domains.numbers.models.v1 import ActiveNumber
+from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 
 @dataclass

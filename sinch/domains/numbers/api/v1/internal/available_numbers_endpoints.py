@@ -6,7 +6,7 @@ from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest,
     ListAvailableNumbersResponse
 )
-from sinch.domains.numbers.models.v1 import (
+from sinch.domains.numbers.models.v1.response import (
     ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
