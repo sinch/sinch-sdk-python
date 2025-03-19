@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from sinch.domains.numbers.models.v1.internal.activate_number_request import ActivateNumberRequest
 from sinch.domains.numbers.models.v1.internal.check_number_availability_request import CheckNumberAvailabilityRequest
 from sinch.domains.numbers.models.v1.internal.list_active_numbers_request import ListActiveNumbersRequest

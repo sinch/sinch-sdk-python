@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from sinch.domains.numbers.models.v1.types.capability_type import (
     CapabilityType, CapabilityTypeValuesList
 )
