@@ -1,5 +1,5 @@
 from sinch.core.models.http_response import HTTPResponse
-from sinch.domains.numbers.endpoints.numbers_endpoint import NumbersEndpoint
+from sinch.domains.numbers.api.v1.internal.base.numbers_endpoint import NumbersEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 
 from sinch.domains.numbers.models.active.requests import GetNumberConfigurationRequest
