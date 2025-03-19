@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1.internal.list_active_numbers_request import ListActiveNumbersRequest
+from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
 
 @pytest.mark.parametrize(
     "order_by_input, expected_order_by",

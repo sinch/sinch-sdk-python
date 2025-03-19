@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 import pytest
-from sinch.domains.numbers.api.v1.internal.active_numbers_endpoints import ListActiveNumbersEndpoint
+from sinch.domains.numbers.api.v1.internal import ListActiveNumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest, ListActiveNumbersResponse
 from sinch.core.models.http_response import HTTPResponse
 
