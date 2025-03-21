@@ -136,11 +136,11 @@ def step_validate_rented_number(context):
 @when('I send a request to rent the phone number "{phone_number}"')
 def step_rent_specific_number(context, phone_number):
     response = context.sinch.numbers.available.activate(
-        phone_number = phone_number,
-        sms_configuration= {
+        phone_number=phone_number,
+        sms_configuration={
             'service_plan_id': 'SpaceMonkeySquadron',
         },
-        voice_configuration= {
+        voice_configuration={
             'app_id': 'sunshine-rain-drop-very-beautifulday'
         }
     )
@@ -219,32 +219,101 @@ def step_then_phone_numbers_list_contains_x_phone_numbers(context, count):
 
 @when('I send a request to update the phone number "{phone_number}"')
 def step_when_update_phone_number(context, phone_number):
-    pass  # Placeholder
+    response = context.sinch.numbers.active.update(
+        phone_number=phone_number,
+        display_name= 'Updated description during E2E tests',
+        sms_configuration={
+            'service_plan_id': 'SingingMooseSociety'
+        },
+        voice_configuration={
+            'type': 'FAX',
+            'service_id': '01W4FFL35P4NC4K35FAXSERVICE'
+        },
+        callback_url='https://my-callback-server.com/numbers'
+    )
+    response = execute_sync_or_async(context, response)
+    context.response = response
 
 @then('the response contains a phone number with updated parameters')
 def step_then_response_contains_updated_number(context):
-    pass  # Placeholder
+    data: ActiveNumber = context.response
+    assert data.display_name == 'Updated description during E2E tests'
+    assert data.sms_configuration.service_plan_id == 'SpaceMonkeySquadron'
+    assert data.sms_configuration.campaign_id == ''
+    assert data.sms_configuration.scheduled_provisioning.service_plan_id == 'SingingMooseSociety'
+    assert data.sms_configuration.scheduled_provisioning.campaign_id == ''
+    assert data.sms_configuration.scheduled_provisioning.status == 'WAITING'
+    assert data.sms_configuration.scheduled_provisioning.last_updated_time == datetime.fromisoformat(
+        '2024-06-06T20:02:20.432220+00:00'
+    ).astimezone(tz=timezone.utc)
+    assert data.sms_configuration.scheduled_provisioning.error_codes == []
+    assert data.voice_configuration.type == 'RTC'
+    assert data.voice_configuration.app_id == 'sunshine-rain-drop-very-beautifulday'
+    assert data.voice_configuration.trunk_id == ''
+    assert data.voice_configuration.service_id == ''
+    assert data.voice_configuration.scheduled_voice_provisioning.status == 'WAITING'
+    assert data.voice_configuration.scheduled_voice_provisioning.type == 'FAX'
+    assert data.voice_configuration.scheduled_voice_provisioning.app_id == ''
+    assert data.voice_configuration.scheduled_voice_provisioning.trunk_id == ''
+    assert data.voice_configuration.scheduled_voice_provisioning.service_id == '01W4FFL35P4NC4K35FAXSERVICE'
+    assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat(
+        '2024-06-06T20:02:20.437509+00:00'
+    ).astimezone(tz=timezone.utc)
+    assert data.callback_url == 'https://my-callback-server.com/numbers'
 
 @when('I send a request to retrieve the phone number "{phone_number}"')
 def step_when_retrieve_phone_number(context, phone_number):
-    pass  # Placeholder
+    try:
+        response = context.sinch.numbers.active.get(
+            phone_number=phone_number,
+        )
+        context.response = execute_sync_or_async(context, response)
+    except NumberNotFoundException as e:
+        context.error = e
 
 @then('the response contains details about the phone number "{phone_number}"')
 def step_then_response_contains_phone_details(context, phone_number):
-    pass  # Placeholder
+    data: ActiveNumber = context.response
+    assert data.phone_number == phone_number
+    assert data.next_charge_date == datetime.fromisoformat(
+        '2024-06-06T14:42:42.677575+00:00'
+    ).astimezone(tz=timezone.utc)
+    assert data.expire_at == None
+    assert data.sms_configuration.service_plan_id == 'SpaceMonkeySquadron'
 
 @then('the response contains details about the phone number "{phone_number}" with an SMS provisioning error')
 def step_then_response_contains_sms_provisioning_error(context, phone_number):
-    pass  # Placeholder
+    data: ActiveNumber = context.response
+    assert data.phone_number == phone_number
+    assert data.next_charge_date == datetime.fromisoformat('2024-07-06T14:42:42.677575+00:00').astimezone(
+        tz=timezone.utc)
+    assert data.expire_at is None
+    assert data.sms_configuration.service_plan_id == ''
+    assert data.sms_configuration.scheduled_provisioning.status == 'FAILED'
+    assert data.sms_configuration.scheduled_provisioning.error_codes == ['SMS_PROVISIONING_FAILED']
 
 @then('the response contains an error about the number "{phone_number}" not being a rented number')
 def step_then_response_contains_error_not_rented(context, phone_number):
-    pass  # Placeholder
+    data: NotFoundError = context.error.args[0]
+    assert data.code == 404
+    assert data.status == 'NOT_FOUND'
+    assert data.details[0].resource_name == phone_number
 
 @when('I send a request to release the phone number "{phone_number}"')
 def step_when_release_phone_number(context, phone_number):
-    pass  # Placeholder
+    response = context.sinch.numbers.active.release(
+        phone_number=phone_number
+    )
+    response = execute_sync_or_async(context, response)
+    context.response = response
 
 @then('the response contains details about the phone number "{phone_number}" to be released')
 def step_then_response_contains_released_number(context, phone_number):
-    pass  # Placeholder
+    data: ActiveNumber = context.response
+    assert data.phone_number == phone_number
+    assert data.next_charge_date == datetime.fromisoformat(
+        '2024-06-06T14:42:42.677575+00:00'
+    ).astimezone(tz=timezone.utc)
+    assert data.expire_at == datetime.fromisoformat(
+        '2024-06-06T14:42:42.677575+00:00'
+    ).astimezone(tz=timezone.utc)

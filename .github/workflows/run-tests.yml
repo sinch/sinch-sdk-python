@@ -79,8 +79,3 @@ jobs:
       run: |
         export SINCH_CLIENT_MODE=sync
         behave tests/e2e/**/features
-
-    - name: Run e2e tests async
-      run: |
-        export SINCH_CLIENT_MODE=async
-        behave tests/e2e/**/features

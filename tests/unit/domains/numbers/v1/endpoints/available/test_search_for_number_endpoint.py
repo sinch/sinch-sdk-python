@@ -1,6 +1,6 @@
 import pytest
 from sinch.domains.numbers.api.v1.internal import SearchForNumberEndpoint
-from sinch.domains.numbers.models.v1.internal import CheckNumberAvailabilityRequest
+from sinch.domains.numbers.models.v1.internal import NumberRequest
 from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
 from sinch.core.models.http_response import HTTPResponse
 
@@ -9,7 +9,7 @@ def mock_request_data():
     """
     Mock the request data for the endpoint.
     """
-    return CheckNumberAvailabilityRequest(phone_number="+1234567890")
+    return NumberRequest(phone_number="+1234567890")
 
 
 @pytest.fixture

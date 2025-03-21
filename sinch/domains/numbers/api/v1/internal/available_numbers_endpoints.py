@@ -3,8 +3,8 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException, NumbersException
 from sinch.domains.numbers.models.v1.internal import (
-    ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest,
-    ListAvailableNumbersResponse
+    ActivateNumberRequest, ListAvailableNumbersRequest, ListAvailableNumbersResponse,
+    NumberRequest, RentAnyNumberRequest
 )
 from sinch.domains.numbers.models.v1.response import (
     ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
@@ -89,7 +89,7 @@ class SearchForNumberEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: CheckNumberAvailabilityRequest):
+    def __init__(self, project_id: str, request_data: NumberRequest):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
 
     def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
