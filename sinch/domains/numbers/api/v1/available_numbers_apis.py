@@ -8,7 +8,7 @@ from sinch.domains.numbers.api.v1.internal import (
     ActivateNumberEndpoint, AvailableNumbersEndpoint, RentAnyNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1.internal import (
-    ActivateNumberRequest, CheckNumberAvailabilityRequest, ListAvailableNumbersRequest, RentAnyNumberRequest
+    ActivateNumberRequest, ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues, NumberTypeValues, SmsConfigurationDict,
@@ -146,7 +146,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: None,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
     ) -> RentAnyNumberResponse:
         pass
 
@@ -159,7 +159,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: VoiceConfigurationDictRTC,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
     ) -> RentAnyNumberResponse:
         pass
 
@@ -172,7 +172,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: VoiceConfigurationDictFAX,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
     ) -> RentAnyNumberResponse:
         pass
 
@@ -185,7 +185,7 @@ class AvailableNumbers(BaseNumbers):
             voice_configuration: VoiceConfigurationDictEST,
             number_pattern: Optional[NumberPatternDict] = None,
             capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
     ) -> RentAnyNumberResponse:
         pass
 
@@ -251,5 +251,5 @@ class AvailableNumbers(BaseNumbers):
 
         For detailed documentation, visit https://developers.sinch.com
         """
-        request_data = CheckNumberAvailabilityRequest(phone_number=phone_number, **kwargs)
+        request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(SearchForNumberEndpoint, request_data)

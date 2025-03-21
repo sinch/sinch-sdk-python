@@ -135,15 +135,11 @@ def step_validate_rented_number(context):
 
 @when('I send a request to rent the phone number "{phone_number}"')
 def step_rent_specific_number(context, phone_number):
-    response = context.sinch.numbers.available.activate(
-        phone_number = phone_number,
-        sms_configuration= {
-            'service_plan_id': 'SpaceMonkeySquadron',
-        },
-        voice_configuration= {
-            'app_id': 'sunshine-rain-drop-very-beautifulday'
-        }
-    )
+    response = context.sinch.numbers.available.activate(phone_number=phone_number, sms_configuration={
+        'service_plan_id': 'SpaceMonkeySquadron',
+    }, voice_configuration={
+        'app_id': 'sunshine-rain-drop-very-beautifulday'
+    })
     context.response = execute_sync_or_async(context, response)
 
 @then('the response contains this rented phone number "{phone_number}"')
@@ -154,15 +150,11 @@ def step_validate_rented_specific_number(context, phone_number):
 @when('I send a request to rent the unavailable phone number "{phone_number}"')
 def step_rent_unavailable_number(context, phone_number):
     try:
-        response = context.sinch.numbers.available.activate(
-            phone_number=phone_number,
-            sms_configuration={
-                'service_plan_id': 'SpaceMonkeySquadron',
-            },
-            voice_configuration={
-                'app_id': 'sunshine-rain-drop-very-beautifulday'
-            }
-        )
+        response = context.sinch.numbers.available.activate(phone_number=phone_number, sms_configuration={
+            'service_plan_id': 'SpaceMonkeySquadron',
+        }, voice_configuration={
+            'app_id': 'sunshine-rain-drop-very-beautifulday'
+        })
         context.response = execute_sync_or_async(context, response)
     except NumberNotFoundException as e:
         context.error = e

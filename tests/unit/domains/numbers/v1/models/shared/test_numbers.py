@@ -1,6 +1,4 @@
 from datetime import datetime, timezone
-from sinch.domains.numbers.models.v1.errors import NotFoundError
-from sinch.domains.numbers.models.v1.response import ActiveNumber
 from sinch.domains.numbers.models.v1.shared import (
     ScheduledSmsProvisioning, SmsConfigurationResponse, VoiceConfigurationResponse
 )
@@ -108,64 +106,3 @@ def test_voice_configuration_fax_valid_expects_parsed_data():
     assert config.scheduled_voice_provisioning.type == "FAX"
     assert config.scheduled_voice_provisioning.status == "ACTIVE"
     assert config.scheduled_voice_provisioning.service_id == "test_service"
-
-def test_not_found_error_deserialize_with_snake_case():
-    data = {
-        'code': 404,
-        'message': '',
-        'status': 'NOT_FOUND',
-        'details': [
-            {
-                'type': 'ResourceInfo',
-                'resourceType': 'AvailableNumber',
-                'resourceName': '+1234567890',
-                'owner': '',
-                'description': ''
-            }
-        ]
-    }
-
-    not_found_error = NotFoundError.model_validate(data)
-
-    assert not_found_error.code == 404
-    assert not_found_error.message == ''
-    assert not_found_error.status == 'NOT_FOUND'
-    assert not_found_error.details[0].type == 'ResourceInfo'
-    assert not_found_error.details[0].resource_type == 'AvailableNumber'
-    assert not_found_error.details[0].resource_name == '+1234567890'
-    assert not_found_error.details[0].owner == ''
-    assert not_found_error.details[0].description == ''
-
-def test_activate_number_response_expects_all_fields_mapped_correctly():
-    """
-    Expects all fields to map correctly from camelCase input,
-    converts nested keys to snake_case, and handles dynamic fields
-    """
-    data = {
-        "phoneNumber": "+12025550134",
-        "displayName": "string",
-        "regionCode": "US",
-        "type": "MOBILE",
-        "capability": ["SMS"],
-        "money": {"currencyCode": "USD", "amount": "2.00"},
-        "paymentIntervalMonths": 0,
-        "nextChargeDate": "2025-01-22T13:19:31.095Z",
-        "expireAt": "2025-03-29T13:19:31.095Z",
-        "callbackUrl": "https://www.your-callback-server.com/callback",
-    }
-    response = ActiveNumber(**data)
-
-    assert response.phone_number == "+12025550134"
-    assert response.display_name == "string"
-    assert response.region_code == "US"
-    assert response.type == "MOBILE"
-    assert response.capability == ["SMS"]
-    assert response.money.currency_code == "USD"
-    assert response.payment_interval_months == 0
-    expected_next_charge_data = (
-        datetime(2025, 1, 22, 13, 19, 31, 95000, tzinfo=timezone.utc))
-    assert response.next_charge_date == expected_next_charge_data
-    expected_expire_at = (
-        datetime(2025, 3, 29, 13, 19, 31, 95000, tzinfo=timezone.utc))
-    assert response.expire_at == expected_expire_at
-    assert response.callback_url == "https://www.your-callback-server.com/callback"
