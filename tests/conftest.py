@@ -323,12 +323,3 @@ def mock_pagination_expected_phone_numbers_response():
     return [
         "+12345678901", "+12345678902", "+12345678903", "+12345678904", "+12345678905"
     ]
-
-
-# @pytest.fixture
-# def mock_sinch_client_numbers():
-#     """Creates a mocked Sinch client."""
-#     mock_sinch = MagicMock()
-#     mock_sinch.configuration.project_id = "test_project_id"
-#     mock_sinch.configuration.transport.request = MagicMock()
-#     return mock_sinch
