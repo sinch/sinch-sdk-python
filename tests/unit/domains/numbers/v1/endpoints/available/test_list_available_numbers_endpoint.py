@@ -3,6 +3,7 @@ from sinch.domains.numbers.api.v1.internal import AvailableNumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import ListAvailableNumbersRequest
 from sinch.core.models.http_response import HTTPResponse
 
+
 @pytest.fixture
 def request_data():
     return ListAvailableNumbersRequest(
@@ -14,6 +15,7 @@ def request_data():
         number_search_pattern="STARTS_WITH",
         extra_field="extra value"
     )
+
 
 @pytest.fixture
 def mock_response():
@@ -64,9 +66,11 @@ def mock_response():
         headers={"Content-Type": "application/json"}
     )
 
+
 @pytest.fixture
 def endpoint(request_data):
     return AvailableNumbersEndpoint("test_project_id", request_data)
+
 
 def test_build_url(endpoint, mock_sinch_client_numbers):
     """
@@ -74,6 +78,7 @@ def test_build_url(endpoint, mock_sinch_client_numbers):
     """
     expected_url = "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/availableNumbers"
     assert endpoint.build_url(mock_sinch_client_numbers) == expected_url
+
 
 def test_build_query_params_expects_correct_mapping(endpoint):
     """
@@ -89,6 +94,7 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "extraField": "extra value"
     }
     assert endpoint.build_query_params() == expected_params
+
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """

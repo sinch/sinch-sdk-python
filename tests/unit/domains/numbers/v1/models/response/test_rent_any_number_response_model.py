@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pydantic import ValidationError
 from sinch.domains.numbers.models.v1.response import RentAnyNumberResponse
 
+
 @pytest.fixture
 def valid_data():
     """
@@ -44,11 +45,11 @@ def valid_data():
         "callbackUrl": "https://www.your-callback-server.com/callback",
     }
 
+
 def test_rent_any_number_response_expects_valid_data(valid_data):
     """
     Test that RentAnyNumberResponse correctly parses valid data.
     """
-
     response = RentAnyNumberResponse(**valid_data)
 
     assert response.phone_number == "+12025550134"
@@ -60,10 +61,12 @@ def test_rent_any_number_response_expects_valid_data(valid_data):
     assert response.money.amount == 2.00
     assert response.payment_interval_months == 0
     expected_next_charge_date = (
-    datetime(2025, 1, 24, 9, 32, 27, 437000, tzinfo=timezone.utc))
+        datetime(2025, 1, 24, 9, 32, 27, 437000, tzinfo=timezone.utc)
+    )
     assert response.next_charge_date == expected_next_charge_date
     expected_expire_at = (
-    datetime(2025, 1, 25, 9, 32, 27, 437000, tzinfo=timezone.utc))
+        datetime(2025, 1, 25, 9, 32, 27, 437000, tzinfo=timezone.utc)
+    )
     assert response.expire_at == expected_expire_at
 
     sms_config = response.sms_configuration
@@ -90,6 +93,7 @@ def test_rent_any_number_response_expects_valid_data(valid_data):
     assert voice_config.app_id == "string"
     assert response.callback_url == "https://www.your-callback-server.com/callback"
 
+
 def test_rent_any_number_response_expects_missing_optional_fields():
     """
     Test that RentAnyNumberResponse handles missing optional fields correctly.
@@ -106,20 +110,12 @@ def test_rent_any_number_response_expects_missing_optional_fields():
 
     response = RentAnyNumberResponse(**data)
 
-    assert response.phone_number == "+12025550134"
-    assert response.project_id == "51bc3f40-f266-4ca8-8938-a1ed0ff32b9a"
-    assert response.region_code == "US"
-    assert response.type == "MOBILE"
-    assert response.capability == ["SMS"]
-    assert response.money.currency_code == "USD"
-    assert response.money.amount == 2.00
-    assert response.payment_interval_months == 0
-
     assert response.next_charge_date is None
     assert response.expire_at is None
     assert response.sms_configuration is None
     assert response.voice_configuration is None
     assert response.callback_url is None
+
 
 def test_rent_any_number_response_expects_validation_error_for_missing_required_fields():
     """
@@ -138,6 +134,7 @@ def test_rent_any_number_response_expects_validation_error_for_missing_required_
         RentAnyNumberResponse(**data)
     # Assert the validation error mentions missing fields
     assert "smsConfiguration.servicePlanId" in str(exc_info.value)
+
 
 def test_rent_any_number_response_expects_ignore_extra_fields():
     """

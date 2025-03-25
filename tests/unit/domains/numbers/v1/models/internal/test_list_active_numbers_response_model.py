@@ -3,6 +3,7 @@ from decimal import Decimal
 import pytest
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersResponse
 
+
 @pytest.fixture
 def test_data():
     return {
@@ -51,6 +52,7 @@ def test_data():
         "totalSize": 10
     }
 
+
 def assert_voice_configuration(voice_config):
     assert voice_config.app_id == ""
     assert voice_config.scheduled_voice_provisioning.app_id == "123456"
@@ -62,10 +64,12 @@ def assert_voice_configuration(voice_config):
     assert voice_config.scheduled_voice_provisioning.trunk_id == ""
     assert voice_config.scheduled_voice_provisioning.service_id == ""
 
+
 def assert_sms_configuration(sms_config):
     assert sms_config.service_plan_id == "al_2308"
     assert sms_config.scheduled_provisioning is None
     assert sms_config.campaign_id == ""
+
 
 def test_list_active_numbers_response_expects_correct_mapping(test_data):
     """
@@ -90,6 +94,7 @@ def test_list_active_numbers_response_expects_correct_mapping(test_data):
     assert_voice_configuration(response.active_numbers[0].voice_configuration)
     assert response.next_page_token == "CgtwaG9uZU51bWJlchJnCjl0eXBlLmdvb2dsZWFwaXMuY29tL3NpbmNoLn=="
     assert response.total_size == 10
+
 
 def test_list_active_numbers_response_expects_content_mapping(test_data):
     response = ListActiveNumbersResponse(**test_data)

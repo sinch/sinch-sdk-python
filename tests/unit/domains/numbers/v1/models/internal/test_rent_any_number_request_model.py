@@ -27,11 +27,11 @@ def test_rent_any_number_request_expects_valid_data():
     request = RentAnyNumberRequest(**data)
 
     assert request.number_pattern.pattern == "string"
-    assert request.number_pattern.search_pattern =="START"
+    assert request.number_pattern.search_pattern == "START"
     assert request.region_code == "string"
     assert request.type_ == "MOBILE"
     assert request.capabilities == ["SMS"]
-    assert request.sms_configuration ==  {
+    assert request.sms_configuration == {
             "servicePlanId": "string",
             "campaignId": "string"
         }
@@ -61,4 +61,3 @@ def test_rent_any_number_request_expects_missing_optional_fields():
     assert request.sms_configuration is None
     assert request.voice_configuration is None
     assert request.callback_url is None
-

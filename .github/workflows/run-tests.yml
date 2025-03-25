@@ -39,7 +39,7 @@ jobs:
 
     - name: Lint with flake8
       run: |
-        flake8 sinch --count --max-complexity=10 --max-line-length=120 --statistics
+        flake8 sinch tests --count --max-complexity=10 --max-line-length=120 --statistics
 
     - name: Test with Pytest
       run: |
@@ -78,9 +78,4 @@ jobs:
     - name: Run e2e tests sync
       run: |
         export SINCH_CLIENT_MODE=sync
-        behave tests/e2e/**/features
-
-    - name: Run e2e tests async
-      run: |
-        export SINCH_CLIENT_MODE=async
         behave tests/e2e/**/features

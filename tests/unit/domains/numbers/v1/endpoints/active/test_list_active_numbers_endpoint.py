@@ -6,6 +6,7 @@ from sinch.domains.numbers.api.v1.internal import ListActiveNumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest, ListActiveNumbersResponse
 from sinch.core.models.http_response import HTTPResponse
 
+
 @pytest.fixture
 def request_data():
     return ListActiveNumbersRequest(
@@ -16,6 +17,7 @@ def request_data():
         number_pattern="123",
         number_search_pattern="STARTS_WITH"
     )
+
 
 @pytest.fixture
 def mock_response():
@@ -46,13 +48,16 @@ def mock_response():
         headers={"Content-Type": "application/json"}
     )
 
+
 @pytest.fixture
 def endpoint(request_data):
     return ListActiveNumbersEndpoint("test_project_id", request_data)
 
+
 def test_build_url(endpoint, mock_sinch_client_numbers):
     assert (endpoint.build_url(mock_sinch_client_numbers) ==
             "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers")
+
 
 def test_build_query_params_expects_correct_mapping(endpoint):
     """
@@ -67,6 +72,7 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "numberPattern.searchPattern": "STARTS_WITH"
     }
     assert endpoint.build_query_params() == expected_params
+
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """

@@ -1,7 +1,7 @@
 # This file that contains fixtures that are shared across all tests in the tests directory.
 import os
 from dataclasses import dataclass
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 import pytest
 
@@ -289,15 +289,20 @@ def sinch_client_async(
         voice_origin
     )
 
+
 @pytest.fixture
 def mock_sinch_client_numbers():
     class MockConfiguration:
         numbers_origin = "https://mock-numbers-api.sinch.com"
+        project_id = "test_project_id"
+        transport = MagicMock()
+        transport.request = MagicMock()
 
     class MockSinchClient:
         configuration = MockConfiguration()
 
     return MockSinchClient()
+
 
 @pytest.fixture
 def mock_pagination_active_number_responses():
@@ -311,6 +316,7 @@ def mock_pagination_active_number_responses():
         Mock(content=[ActiveNumber(phone_number="+12345678905")],
              next_page_token=None)
     ]
+
 
 @pytest.fixture
 def mock_pagination_expected_phone_numbers_response():

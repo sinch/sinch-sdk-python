@@ -2,6 +2,7 @@ import pytest
 from sinch import SinchClient, SinchClientAsync
 from sinch.core.clients.sinch_client_configuration import Configuration
 
+
 @pytest.mark.parametrize("client", [SinchClient, SinchClientAsync])
 def test_sinch_client_initialization(client):
     """ Test that SinchClient and SinchClientAsync can be initialized with or without parameters """

@@ -14,8 +14,8 @@ from sinch.core.token_manager import TokenManager, TokenManagerAsync
     ]
 )
 def test_configuration_happy_capy_expects_initialization(
-        request, transport_class, token_manager_class, client_fixture
-    ):
+    request, transport_class, token_manager_class, client_fixture
+):
     """ Test that Configuration can be initialized with all parameters """
     sinch_client = request.getfixturevalue(client_fixture)
 
@@ -67,7 +67,7 @@ def test_set_conversation_region_property_and_check_that_sms_origin_was_updated(
 
 
 def test_set_conversation_domain_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
-    sinch_client_sync.configuration.conversation_domain= "My_brain_hurts"
+    sinch_client_sync.configuration.conversation_domain = "My_brain_hurts"
     assert "brain" in sinch_client_sync.configuration.conversation_origin
     assert "hurts" in sinch_client_sync.configuration.conversation_origin
 

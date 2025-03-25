@@ -1,22 +1,20 @@
-from typing import Optional
+from typing import Optional, overload
 from pydantic import StrictStr, StrictInt
 from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.base import BaseNumbers
-from sinch.domains.numbers.api.v1.internal import ListActiveNumbersEndpoint
-from sinch.domains.numbers.endpoints.active import (
-    GetNumberConfigurationEndpoint, ReleaseNumberFromProjectEndpoint,
+from sinch.domains.numbers.api.v1.internal import (
+    GetNumberConfigurationEndpoint, ListActiveNumbersEndpoint, ReleaseNumberFromProjectEndpoint,
     UpdateNumberConfigurationEndpoint
 )
-from sinch.domains.numbers.models.active.requests import (
-    GetNumberConfigurationRequest, UpdateNumberConfigurationRequest, ReleaseNumberFromProjectRequest
-)
-from sinch.domains.numbers.models.active.responses import (
-    UpdateNumberConfigurationResponse, GetNumberConfigurationResponse, ReleaseNumberFromProjectResponse
-)
 from sinch.domains.numbers.models.v1.response import ActiveNumber
-from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
+
+from sinch.domains.numbers.models.v1.internal import (
+    ListActiveNumbersRequest, NumberRequest, UpdateNumberConfigurationRequest
+)
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues
+    CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
+    SmsConfigurationDict, VoiceConfigurationDictType, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
+    VoiceConfigurationDictEST
 )
 
 
@@ -37,21 +35,35 @@ class ActiveNumbers(BaseNumbers):
         """
         Search for all active virtual numbers associated with a certain project.
 
-        Args:
-            region_code (StrictStr): ISO 3166-1 alpha-2 country code of the phone number.
-            number_type (NumberTypeValues): Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
-            number_pattern (Optional[StrictStr]): Specific sequence of digits to search for.
-            number_search_pattern (Optional[NumberSearchPatternTypeValues]):
-                Pattern to apply (e.g., "START", "CONTAINS", "END").
-            capabilities (Optional[CapabilityTypeValuesList]): Capabilities required for the number.
-                (e.g., ["SMS", "VOICE"])
-            page_size (StrictInt): Maximum number of items to return.
-            page_token (Optional[StrictStr]): Token for the next page of results.
-            order_by (Optional[OrderByValues]): Field to order the results by. (e.g., "phoneNumber", "displayName")
-            **kwargs: Additional filters for the request.
+        :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
+        :type region_code: StrictStr
 
-        Returns:
-            TokenBasedPaginatorNumbers: A paginator for iterating through the results.
+        :param number_type: Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
+        :type number_type: NumberTypeValues
+
+        :param number_pattern: Specific sequence of digits to search for.
+        :type number_pattern: Optional[StrictStr]
+
+        :param number_search_pattern: Pattern to apply (e.g., "START", "CONTAINS", "END").
+        :type number_search_pattern: Optional[NumberSearchPatternTypeValues]
+
+        :param capabilities: Capabilities required for the number (e.g., ["SMS", "VOICE"]).
+        :type capabilities: Optional[CapabilityTypeValuesList]
+
+        :param page_size: Maximum number of items to return.
+        :type page_size: StrictInt
+
+        :param page_token: Token for the next page of results.
+        :type page_token: Optional[StrictStr]
+
+        :param order_by: Field to order the results by (e.g., "phoneNumber", "displayName").
+        :type order_by: Optional[OrderByValues]
+
+        :param kwargs: Additional filters for the request.
+        :type kwargs: dict
+
+        :returns: A paginator for iterating through the results.
+        :rtype: TokenBasedPaginatorNumbers
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -73,63 +85,136 @@ class ActiveNumbers(BaseNumbers):
             )
         )
 
-    # TODO: Refactor the update(), get(), release() functions to use Pydantic models:
-    #       - Replace primitive types with Pydantic for better validation and maintainability.
-    #       - Define Pydantic models for request and response data.
-    #       - Improve readability and maintainability through refactoring.
+    @overload
+    def update(
+            self,
+            phone_number: StrictStr,
+            sms_configuration: SmsConfigurationDict,
+            voice_configuration: VoiceConfigurationDictEST,
+            display_name: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
+    ) -> ActiveNumber:
+        pass
+
+    @overload
+    def update(
+            self,
+            phone_number: StrictStr,
+            sms_configuration: SmsConfigurationDict,
+            voice_configuration: VoiceConfigurationDictFAX,
+            display_name: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
+    ) -> ActiveNumber:
+        pass
+
+    @overload
+    def update(
+            self,
+            phone_number: StrictStr,
+            sms_configuration: SmsConfigurationDict,
+            voice_configuration: VoiceConfigurationDictRTC,
+            display_name: Optional[StrictStr] = None,
+            callback_url: Optional[StrictStr] = None
+    ) -> ActiveNumber:
+        pass
+
     def update(
         self,
-        phone_number: str = None,
-        display_name: str = None,
-        sms_configuration: dict = None,
-        voice_configuration: dict = None,
-        app_id: str = None
-    ) -> UpdateNumberConfigurationResponse:
+        phone_number: StrictStr,
+        display_name: Optional[StrictStr] = None,
+        sms_configuration: Optional[SmsConfigurationDict] = None,
+        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        callback_url: Optional[StrictStr] = None,
+        **kwargs
+    ) -> ActiveNumber:
         """
         Make updates to the configuration of your virtual number.
         Update the display name, change the currency type, or reconfigure for either SMS and/or Voice.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            UpdateNumberConfigurationEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=UpdateNumberConfigurationRequest(
-                    phone_number=phone_number,
-                    display_name=display_name,
-                    sms_configuration=sms_configuration,
-                    voice_configuration=voice_configuration,
-                    app_id=app_id
-                )
-            )
-        )
 
-    def get(self, phone_number: str) -> GetNumberConfigurationResponse:
+        :param phone_number: The phone number in E.164 format with leading +.
+        :type phone_number: str
+
+        :param display_name: The display name for the virtual number.
+        :type display_name: Optional[str]
+
+        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as:
+                                  - ``service_plan_id`` (str): The service plan ID.
+                                  - ``campaign_id`` (Optional[str]): The campaign ID.
+        :type sms_configuration: Optional[SmsConfigurationDict]
+
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include:
+                                    - ``VoiceConfigurationDictRTC``: type 'RTC' with an ``app_id`` field.
+                                    - ``VoiceConfigurationDictEST``: type 'EST' with a ``trunk_id`` field.
+                                    - ``VoiceConfigurationDictFAX``: type 'FAX' with a ``service_id`` field.
+        :type voice_configuration: Optional[VoiceConfigurationDictType]
+
+        :param callback_url: The callback URL for the virtual number.
+        :type callback_url: Optional[str]
+
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
+
+        For detailed documentation, visit https://developers.sinch.com
+        """
+        request_data = UpdateNumberConfigurationRequest(
+            phone_number=phone_number,
+            display_name=display_name,
+            sms_configuration=sms_configuration,
+            voice_configuration=voice_configuration,
+            callback_url=callback_url,
+            **kwargs
+        )
+        return self._request(UpdateNumberConfigurationEndpoint, request_data)
+
+    def get(
+        self,
+        phone_number: StrictStr,
+        **kwargs
+    ) -> ActiveNumber:
         """
         List of configuration settings for your virtual number.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            GetNumberConfigurationEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=GetNumberConfigurationRequest(
-                    phone_number=phone_number
-                )
-            )
-        )
 
-    def release(self, phone_number: str) -> ReleaseNumberFromProjectResponse:
+        :param phone_number: The phone number in E.164 format with leading +.
+        :type phone_number: str
+
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
+
+        :returns: The configuration settings for the virtual number.
+        :rtype: ActiveNumber
+
+        For detailed documentation, visit https://developers.sinch.com
         """
-        Release numbers you no longer need from your project.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            ReleaseNumberFromProjectEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ReleaseNumberFromProjectRequest(
-                    phone_number=phone_number
-                )
-            )
+        request_data = NumberRequest(
+            phone_number=phone_number,
+            **kwargs
         )
+        return self._request(GetNumberConfigurationEndpoint, request_data)
+
+    def release(
+            self,
+            phone_number: StrictStr,
+            **kwargs
+    ) -> ActiveNumber:
+        """
+        Release virtual numbers you no longer need from your project.
+
+        :param phone_number: The phone number in E.164 format with leading +.
+        :type phone_number: str
+
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
+
+        :returns: The configuration settings of the released virtual number.
+        :rtype: ActiveNumber
+
+        For detailed documentation, visit https://developers.sinch.com
+        """
+        request_data = NumberRequest(
+            phone_number=phone_number,
+            **kwargs
+        )
+        return self._request(ReleaseNumberFromProjectEndpoint, request_data)
 
 
 class ActiveNumbersWithAsyncPagination(ActiveNumbers):
