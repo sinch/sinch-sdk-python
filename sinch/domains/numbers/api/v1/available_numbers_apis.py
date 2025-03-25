@@ -73,16 +73,6 @@ class AvailableNumbers(BaseNumbers):
     def activate(
             self,
             phone_number: StrictStr,
-            sms_configuration: Optional[SmsConfigurationDict] = None,
-            voice_configuration: Optional[VoiceConfigurationDictType] = None,
-            callback_url: Optional[StrictStr] = None
-    ) -> ActiveNumber:
-        pass
-
-    @overload
-    def activate(
-            self,
-            phone_number: StrictStr,
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictEST,
             callback_url: Optional[StrictStr] = None
@@ -147,19 +137,6 @@ class AvailableNumbers(BaseNumbers):
             **kwargs
         )
         return self._request(ActivateNumberEndpoint, request_data)
-
-    @overload
-    def rent_any(
-            self,
-            region_code: StrictStr,
-            type_: NumberTypeValues,
-            sms_configuration: None,
-            voice_configuration: None,
-            number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
-        pass
 
     @overload
     def rent_any(

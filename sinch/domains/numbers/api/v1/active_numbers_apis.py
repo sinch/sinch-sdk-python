@@ -89,17 +89,6 @@ class ActiveNumbers(BaseNumbers):
     def update(
             self,
             phone_number: StrictStr,
-            display_name: Optional[StrictStr] = None,
-            sms_configuration: Optional[SmsConfigurationDict] = None,
-            voice_configuration: Optional[VoiceConfigurationDictType] = None,
-            callback_url: Optional[StrictStr] = None
-    ) -> ActiveNumber:
-        pass
-
-    @overload
-    def update(
-            self,
-            phone_number: StrictStr,
             sms_configuration: SmsConfigurationDict,
             voice_configuration: VoiceConfigurationDictEST,
             display_name: Optional[StrictStr] = None,
