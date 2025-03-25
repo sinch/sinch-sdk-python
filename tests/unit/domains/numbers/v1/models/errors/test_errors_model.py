@@ -1,5 +1,6 @@
 from sinch.domains.numbers.models.v1.errors import NotFoundError
 
+
 def test_not_found_error_deserialize_with_snake_case():
     data = {
         'code': 404,

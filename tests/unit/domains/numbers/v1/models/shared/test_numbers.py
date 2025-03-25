@@ -3,6 +3,7 @@ from sinch.domains.numbers.models.v1.shared import (
     ScheduledSmsProvisioning, SmsConfigurationResponse, VoiceConfigurationResponse
 )
 
+
 def test_scheduled_provisioning_sms_configuration_valid_expects_parsed_data():
     """
     Test a valid instance of ScheduledProvisioningSmsConfiguration
@@ -24,6 +25,7 @@ def test_scheduled_provisioning_sms_configuration_valid_expects_parsed_data():
     assert config.last_updated_time == expected_last_updated_time
     assert config.error_codes == ["ERROR_CODE_1"]
 
+
 def test_scheduled_provisioning_sms_configuration_optional_fields_expects_parsed_data():
     """
     Test missing optional fields in ScheduledProvisioningSmsConfiguration
@@ -38,6 +40,7 @@ def test_scheduled_provisioning_sms_configuration_optional_fields_expects_parsed
     assert config.status is None
     assert config.last_updated_time is None
     assert config.error_codes is None
+
 
 def test_sms_configuration_valid_expects_parsed_data():
     """
@@ -58,6 +61,7 @@ def test_sms_configuration_valid_expects_parsed_data():
     assert config.scheduled_provisioning is not None
     assert config.scheduled_provisioning.service_plan_id == "test_plan"
     assert config.scheduled_provisioning.status == "ACTIVE"
+
 
 def test_voice_configuration_rtc_valid_expects_parsed_data():
     """
@@ -84,6 +88,7 @@ def test_voice_configuration_rtc_valid_expects_parsed_data():
     assert config.scheduled_voice_provisioning is not None
     assert config.scheduled_voice_provisioning.type == "RTC"
     assert config.scheduled_voice_provisioning.status == "ACTIVE"
+
 
 def test_voice_configuration_fax_valid_expects_parsed_data():
     """

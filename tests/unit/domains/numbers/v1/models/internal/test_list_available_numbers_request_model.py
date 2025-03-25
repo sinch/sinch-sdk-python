@@ -111,6 +111,7 @@ def test_list_available_numbers_expects_parsed_extra_field_snake_case():
     # Assert known fields
     assert response.extraField == "Extra Value"
 
+
 def test_list_available_numbers_expects_snake_case_to_parsed_extra_field_snake_case():
     """
     Expects unrecognized fields to be dynamically added as snake_case attributes.
@@ -126,6 +127,7 @@ def test_list_available_numbers_expects_snake_case_to_parsed_extra_field_snake_c
 
     # Assert known fields
     assert response.extra_field == "Extra Value"
+
 
 def test_list_available_numbers_expects_extra_capability():
     """

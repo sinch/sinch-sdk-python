@@ -11,12 +11,12 @@ def test_update_number_configuration_request_valid_expects_parsed_response():
         "smsConfiguration": {
             "servicePlanId": "string",
             "campaignId": "YOUR_campaignId_from_TCR"
-          },
-          "voiceConfiguration": {
+        },
+        "voiceConfiguration": {
             "type": "RTC",
             "appId": "YOUR_Voice_appId"
-          },
-          "callbackUrl": "https://www.your-callback-server.com/callback"
+        },
+        "callbackUrl": "https://www.your-callback-server.com/callback"
     }
     request = UpdateNumberConfigurationRequest(**data)
     assert request.phone_number == "+1234567890"
@@ -31,6 +31,7 @@ def test_update_number_configuration_request_valid_expects_parsed_response():
     }
     assert request.callback_url == "https://www.your-callback-server.com/callback"
 
+
 def test_update_number_configuration_request_missing_phone_number_expects_error():
     """Test that the model raises a validation error for missing required fields. """
     data = {
@@ -39,6 +40,7 @@ def test_update_number_configuration_request_missing_phone_number_expects_error(
     }
     with pytest.raises(ValidationError):
         UpdateNumberConfigurationRequest(**data)
+
 
 def test_update_number_configuration_request_invalid_phone_number():
     """Test that the model raises a validation error for invalid phone number type. """
@@ -49,6 +51,7 @@ def test_update_number_configuration_request_invalid_phone_number():
     }
     with pytest.raises(ValidationError):
         UpdateNumberConfigurationRequest(**data)
+
 
 def test_update_number_configuration_request_optional_fields():
     data = {

@@ -1,5 +1,6 @@
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
 
+
 def test_to_camel_case_expects_parsed_standard_cases():
     """
     Test standard snake_case to camelCase conversion.
@@ -10,6 +11,7 @@ def test_to_camel_case_expects_parsed_standard_cases():
     assert BaseModelConfigRequest._to_camel_case("PHONE_NUMBER") == "phoneNumber"
     assert BaseModelConfigRequest._to_camel_case("appId") == "appId"
 
+
 def test_to_camel_case_expects_parsed_edge_cases():
     """
     Test edge cases like leading/trailing underscores and multiple underscores.
@@ -18,11 +20,13 @@ def test_to_camel_case_expects_parsed_edge_cases():
     assert BaseModelConfigRequest._to_camel_case("foo___bar") == "foo__Bar"
     assert BaseModelConfigRequest._to_camel_case("trailing_") == "trailing_"
 
+
 def test_to_camel_case_expects_empty_string():
     """
     Test empty string case.
     """
     assert BaseModelConfigRequest._to_camel_case("") == ""
+
 
 def test_to_camel_case_expects_single_word():
     """
@@ -30,6 +34,7 @@ def test_to_camel_case_expects_single_word():
     """
     assert BaseModelConfigRequest._to_camel_case("word") == "word"
     assert BaseModelConfigRequest._to_camel_case("single") == "single"
+
 
 def test_dict_expects_camel_case_input():
     """

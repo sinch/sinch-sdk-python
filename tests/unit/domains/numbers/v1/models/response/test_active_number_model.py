@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 import pytest
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
+
 @pytest.fixture
 def test_data():
     return {
@@ -37,7 +38,10 @@ def test_data():
             "appId": "string",
         },
         "callbackUrl": "https://www.your-callback-server.com/callback",
+        "extraField": "Extra content",
+        "extraDict": {"key": "value"}
     }
+
 
 def assert_sms_configuration(sms_config):
     """
@@ -53,6 +57,7 @@ def assert_sms_configuration(sms_config):
         datetime(2025, 1, 24, 13, 19, 31, 95000, tzinfo=timezone.utc))
     assert scheduled_provisioning.last_updated_time == expected_last_updated_time
     assert scheduled_provisioning.error_codes == ["ERROR_CODE_UNSPECIFIED"]
+
 
 def assert_voice_configuration(voice_config):
     """
@@ -70,6 +75,7 @@ def assert_voice_configuration(voice_config):
     assert scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert scheduled_voice_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
     assert scheduled_voice_provisioning.trunk_id == "string"
+
 
 def test_active_number_response_expects_all_fields_mapped_correctly(test_data):
     """
@@ -93,5 +99,9 @@ def test_active_number_response_expects_all_fields_mapped_correctly(test_data):
         datetime(2025, 2, 4, 13, 15, 31, 95000, tzinfo=timezone.utc))
     assert response.expire_at == expected_expire_at
     assert response.callback_url == "https://www.your-callback-server.com/callback"
+
     assert_sms_configuration(response.sms_configuration)
     assert_voice_configuration(response.voice_configuration)
+
+    assert response.extra_field == "Extra content"
+    assert response.extra_dict == {"key": "value"}

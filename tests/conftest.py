@@ -289,15 +289,20 @@ def sinch_client_async(
         voice_origin
     )
 
+
 @pytest.fixture
 def mock_sinch_client_numbers():
     class MockConfiguration:
         numbers_origin = "https://mock-numbers-api.sinch.com"
+        project_id = "test_project_id"
+        transport = MagicMock()
+        transport.request = MagicMock()
 
     class MockSinchClient:
         configuration = MockConfiguration()
 
     return MockSinchClient()
+
 
 @pytest.fixture
 def mock_pagination_active_number_responses():
@@ -312,16 +317,18 @@ def mock_pagination_active_number_responses():
              next_page_token=None)
     ]
 
+
 @pytest.fixture
 def mock_pagination_expected_phone_numbers_response():
     return [
         "+12345678901", "+12345678902", "+12345678903", "+12345678904", "+12345678905"
     ]
 
-@pytest.fixture
-def mock_sinch_numbers_api():
-    """Creates a mocked Sinch client."""
-    mock_sinch = MagicMock()
-    mock_sinch.configuration.project_id = "test_project_id"
-    mock_sinch.configuration.transport.request = MagicMock()
-    return mock_sinch
+
+# @pytest.fixture
+# def mock_sinch_client_numbers():
+#     """Creates a mocked Sinch client."""
+#     mock_sinch = MagicMock()
+#     mock_sinch.configuration.project_id = "test_project_id"
+#     mock_sinch.configuration.transport.request = MagicMock()
+#     return mock_sinch

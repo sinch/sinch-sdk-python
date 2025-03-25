@@ -3,6 +3,7 @@ import logging
 import asyncio
 from sinch import SinchClient, SinchClientAsync
 
+
 def get_logger():
     """Creates and returns a logger instance for this module only."""
     log = logging.getLogger(__name__)
@@ -15,7 +16,9 @@ def get_logger():
 
     return log
 
+
 logger = get_logger()
+
 
 def before_all(context):
     """
@@ -42,6 +45,7 @@ def before_all(context):
         context.sinch = SinchClient(**client_params)
     context.sinch.configuration.auth_origin = 'http://localhost:3011'
     context.sinch.configuration.numbers_origin = 'http://localhost:3013'
+
 
 def after_all(context):
     """

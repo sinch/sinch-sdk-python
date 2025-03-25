@@ -8,19 +8,21 @@ from sinch.domains.numbers.api.v1.internal import UpdateNumberConfigurationEndpo
 from sinch.domains.numbers.models.v1.internal import UpdateNumberConfigurationRequest
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
+
 @pytest.fixture
 def request_data():
     return UpdateNumberConfigurationRequest(
         phone_number="+1234567890",
         display_name="Display Name",
         sms_configuration={
-            "servicePlanId": "Service Plan Id"
+            "service_plan_id": "Service Plan Id"
         },
         voice_configuration={
             "type": "RTC",
-            "appId": "App Id"
+            "app_id": "App Id"
         }
     )
+
 
 @pytest.fixture
 def mock_response():
@@ -45,6 +47,7 @@ def mock_response():
         headers={"Content-Type": "application/json"}
     )
 
+
 @pytest.fixture
 def mock_response_body():
     expected_body = {
@@ -60,9 +63,11 @@ def mock_response_body():
     }
     return json.dumps(expected_body)
 
+
 @pytest.fixture
 def endpoint(request_data):
     return UpdateNumberConfigurationEndpoint("test_project_id", request_data)
+
 
 def test_request_body_expects_correct_json(request_data, mock_response_body):
     """
@@ -72,9 +77,11 @@ def test_request_body_expects_correct_json(request_data, mock_response_body):
     request_body = endpoint.request_body()
     assert request_body == mock_response_body
 
+
 def test_build_url(endpoint, mock_sinch_client_numbers):
     assert (endpoint.build_url(mock_sinch_client_numbers) ==
             "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers/+1234567890")
+
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """

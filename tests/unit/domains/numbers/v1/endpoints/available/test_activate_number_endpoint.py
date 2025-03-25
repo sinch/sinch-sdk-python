@@ -4,6 +4,7 @@ from sinch.domains.numbers.api.v1.internal import ActivateNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import ActivateNumberRequest
 from sinch.core.models.http_response import HTTPResponse
 
+
 @pytest.fixture
 def mock_request_data():
     return ActivateNumberRequest(
@@ -12,6 +13,7 @@ def mock_request_data():
         voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"}
     )
 
+
 @pytest.fixture
 def mock_request_data_snake_case():
     return ActivateNumberRequest(
@@ -19,6 +21,7 @@ def mock_request_data_snake_case():
         sms_configuration={"service_plan_id": "YOUR_SMS_servicePlanId"},
         voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"}
     )
+
 
 @pytest.fixture
 def mock_response():
@@ -32,6 +35,7 @@ def mock_response():
         },
         headers={"Content-Type": "application/json"}
     )
+
 
 @pytest.fixture
 def mock_response_body():
@@ -56,6 +60,7 @@ def test_build_url_expects_correct_url(mock_sinch_client_numbers, mock_request_d
     expected_url = "https://mock-numbers-api.sinch.com/v1/projects/test_project/availableNumbers/+1234567890:rent"
     assert endpoint.build_url(mock_sinch_client_numbers) == expected_url
 
+
 def test_request_body_expects_correct_json(mock_request_data, mock_response_body):
     """
     Check if request body is constructed correctly based on input data.
@@ -63,6 +68,7 @@ def test_request_body_expects_correct_json(mock_request_data, mock_response_body
     endpoint = ActivateNumberEndpoint(project_id="test_project", request_data=mock_request_data)
     request_body = endpoint.request_body()
     assert request_body == mock_response_body
+
 
 def test_request_body_snake_case_dict_expects_correct_json(mock_request_data_snake_case, mock_response_body):
     """
@@ -72,6 +78,7 @@ def test_request_body_snake_case_dict_expects_correct_json(mock_request_data_sna
     request_body = endpoint.request_body()
 
     assert request_body == mock_response_body
+
 
 def test_handle_response_expects_correct_mapping(mock_request_data, mock_response):
     """

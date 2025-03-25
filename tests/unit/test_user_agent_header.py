@@ -7,4 +7,3 @@ def test_user_agent_header_creation(sinch_client_sync):
     http_endpoint = DeleteConversationAppEndpoint(sinch_client_sync, endpoint)
     http_request = sinch_client_sync.configuration.transport.prepare_request(http_endpoint)
     assert "User-Agent" in http_request.headers
-

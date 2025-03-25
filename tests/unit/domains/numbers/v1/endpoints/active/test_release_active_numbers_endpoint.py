@@ -6,11 +6,13 @@ from sinch.domains.numbers.api.v1.internal import ReleaseNumberFromProjectEndpoi
 from sinch.domains.numbers.models.v1.internal import NumberRequest
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
+
 @pytest.fixture
 def request_data():
     return NumberRequest(
         phone_number="+1234567890"
     )
+
 
 @pytest.fixture
 def mock_response():
@@ -35,13 +37,16 @@ def mock_response():
         headers={"Content-Type": "application/json"}
     )
 
+
 @pytest.fixture
 def endpoint(request_data):
     return ReleaseNumberFromProjectEndpoint("test_project_id", request_data)
 
+
 def test_build_url(endpoint, mock_sinch_client_numbers):
     assert (endpoint.build_url(mock_sinch_client_numbers) ==
             "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers/+1234567890:release")
+
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """

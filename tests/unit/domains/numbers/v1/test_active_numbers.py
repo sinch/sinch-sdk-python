@@ -9,18 +9,18 @@ from sinch.domains.numbers.models.v1.internal import (
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 
-def test_list_active_numbers_expects_valid_request(mock_sinch_numbers_api, mocker):
+def test_list_active_numbers_expects_valid_request(mock_sinch_client_numbers, mocker):
     """
     Test that the ActiveNumbers.list() method sends the correct request
     and handles the response properly.
     """
     mock_response = ListActiveNumbersResponse(activeNumbers=[])
-    mock_sinch_numbers_api.configuration.transport.request.return_value = mock_response
+    mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
 
     # Spy on the ActiveNumbersEndpoint to capture calls
     spy_endpoint = mocker.spy(ListActiveNumbersEndpoint, "__init__")
 
-    active_numbers = ActiveNumbers(mock_sinch_numbers_api)
+    active_numbers = ActiveNumbers(mock_sinch_client_numbers)
     response = active_numbers.list(
         region_code="US",
         number_type="LOCAL",
@@ -41,21 +41,22 @@ def test_list_active_numbers_expects_valid_request(mock_sinch_numbers_api, mocke
         number_search_pattern="START",
     )
 
+    assert hasattr(response, 'has_next_page')
     assert response.result == mock_response
-    mock_sinch_numbers_api.configuration.transport.request.assert_called_once()
+    mock_sinch_client_numbers.configuration.transport.request.assert_called_once()
 
 
-def test_check_availability_expects_correct_request(mock_sinch_numbers_api, mocker):
+def test_check_availability_expects_correct_request(mock_sinch_client_numbers, mocker):
     """
     Test that the ActiveNumbers.get() method sends the correct request
     and handles the response properly.
     """
     mock_response = ActiveNumber.model_construct()
-    mock_sinch_numbers_api.configuration.transport.request.return_value = mock_response
+    mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
 
     spy_endpoint = mocker.spy(GetNumberConfigurationEndpoint, "__init__")
 
-    active_numbers = ActiveNumbers(mock_sinch_numbers_api)
+    active_numbers = ActiveNumbers(mock_sinch_client_numbers)
     response = active_numbers.get(phone_number="+1234567890")
 
     spy_endpoint.assert_called_once()
@@ -66,17 +67,17 @@ def test_check_availability_expects_correct_request(mock_sinch_numbers_api, mock
     assert response == mock_response
 
 
-def test_release_active_numbers_expects_valid_request(mock_sinch_numbers_api, mocker):
+def test_release_active_numbers_expects_valid_request(mock_sinch_client_numbers, mocker):
     """
     Test that the ActiveNumbers.update() method sends the correct request
     and handles the response properly.
     """
     mock_response = ActiveNumber.model_construct()
-    mock_sinch_numbers_api.configuration.transport.request.return_value = mock_response
+    mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
 
     spy_endpoint = mocker.spy(ReleaseNumberFromProjectEndpoint, "__init__")
 
-    active_numbers = ActiveNumbers(mock_sinch_numbers_api)
+    active_numbers = ActiveNumbers(mock_sinch_client_numbers)
     response = active_numbers.release(
         phone_number="+1234567890",
     )
@@ -91,17 +92,17 @@ def test_release_active_numbers_expects_valid_request(mock_sinch_numbers_api, mo
     assert response == mock_response
 
 
-def test_update_active_numbers_expects_valid_request(mock_sinch_numbers_api, mocker):
+def test_update_active_numbers_expects_valid_request(mock_sinch_client_numbers, mocker):
     """
     Test that the ActiveNumbers.update() method sends the correct request
     and handles the response properly.
     """
     mock_response = ActiveNumber.model_construct()
-    mock_sinch_numbers_api.configuration.transport.request.return_value = mock_response
+    mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
 
     spy_endpoint = mocker.spy(UpdateNumberConfigurationEndpoint, "__init__")
 
-    active_numbers = ActiveNumbers(mock_sinch_numbers_api)
+    active_numbers = ActiveNumbers(mock_sinch_client_numbers)
     response = active_numbers.update(
         phone_number="+1234567890",
         display_name="Test Display Name"

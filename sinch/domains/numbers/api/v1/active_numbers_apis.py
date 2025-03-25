@@ -35,21 +35,35 @@ class ActiveNumbers(BaseNumbers):
         """
         Search for all active virtual numbers associated with a certain project.
 
-        Args:
-            region_code (StrictStr): ISO 3166-1 alpha-2 country code of the phone number.
-            number_type (NumberTypeValues): Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
-            number_pattern (Optional[StrictStr]): Specific sequence of digits to search for.
-            number_search_pattern (Optional[NumberSearchPatternTypeValues]):
-                Pattern to apply (e.g., "START", "CONTAINS", "END").
-            capabilities (Optional[CapabilityTypeValuesList]): Capabilities required for the number.
-                (e.g., ["SMS", "VOICE"])
-            page_size (StrictInt): Maximum number of items to return.
-            page_token (Optional[StrictStr]): Token for the next page of results.
-            order_by (Optional[OrderByValues]): Field to order the results by. (e.g., "phoneNumber", "displayName")
-            **kwargs: Additional filters for the request.
+        :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
+        :type region_code: StrictStr
 
-        Returns:
-            TokenBasedPaginatorNumbers: A paginator for iterating through the results.
+        :param number_type: Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
+        :type number_type: NumberTypeValues
+
+        :param number_pattern: Specific sequence of digits to search for.
+        :type number_pattern: Optional[StrictStr]
+
+        :param number_search_pattern: Pattern to apply (e.g., "START", "CONTAINS", "END").
+        :type number_search_pattern: Optional[NumberSearchPatternTypeValues]
+
+        :param capabilities: Capabilities required for the number (e.g., ["SMS", "VOICE"]).
+        :type capabilities: Optional[CapabilityTypeValuesList]
+
+        :param page_size: Maximum number of items to return.
+        :type page_size: StrictInt
+
+        :param page_token: Token for the next page of results.
+        :type page_token: Optional[StrictStr]
+
+        :param order_by: Field to order the results by (e.g., "phoneNumber", "displayName").
+        :type order_by: Optional[OrderByValues]
+
+        :param kwargs: Additional filters for the request.
+        :type kwargs: dict
+
+        :returns: A paginator for iterating through the results.
+        :rtype: TokenBasedPaginatorNumbers
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -128,20 +142,28 @@ class ActiveNumbers(BaseNumbers):
         Make updates to the configuration of your virtual number.
         Update the display name, change the currency type, or reconfigure for either SMS and/or Voice.
 
-        Args:
-            phone_number (str): The phone number in E.164 format with leading +.
-            display_name (Optional[str]): The display name for the virtual number.
-            sms_configuration (Optional[SmsConfigurationDict]): A dictionary defining the SMS configuration.
-                Including fields such as:
-                    - service_plan_id (str): The service plan ID.
-                    - campaign_id (Optional[str]): The campaign ID.
-            voice_configuration (Optional[VoiceConfigurationDictType]): A dictionary defining the Voice configuration.
-                Supported types include:
-                    - `VoiceConfigurationDictRTC`: type 'RTC' with an `app_id` field.
-                    - `VoiceConfigurationDictEST`: type 'EST' with a `trunk_id` field.
-                    - `VoiceConfigurationDictFAX`: type 'FAX' with a `service_id` field.
-            callback_url (Optional[str]): The callback URL for the virtual number.
-            **kwargs: Additional parameters for the request.
+        :param phone_number: The phone number in E.164 format with leading +.
+        :type phone_number: str
+
+        :param display_name: The display name for the virtual number.
+        :type display_name: Optional[str]
+
+        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as:
+                                  - ``service_plan_id`` (str): The service plan ID.
+                                  - ``campaign_id`` (Optional[str]): The campaign ID.
+        :type sms_configuration: Optional[SmsConfigurationDict]
+
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include:
+                                    - ``VoiceConfigurationDictRTC``: type 'RTC' with an ``app_id`` field.
+                                    - ``VoiceConfigurationDictEST``: type 'EST' with a ``trunk_id`` field.
+                                    - ``VoiceConfigurationDictFAX``: type 'FAX' with a ``service_id`` field.
+        :type voice_configuration: Optional[VoiceConfigurationDictType]
+
+        :param callback_url: The callback URL for the virtual number.
+        :type callback_url: Optional[str]
+
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -163,12 +185,14 @@ class ActiveNumbers(BaseNumbers):
         """
         List of configuration settings for your virtual number.
 
-        Args:
-            phone_number (str): The phone number in E.164 format with leading +.
-            **kwargs: Additional parameters for the request.
+        :param phone_number: The phone number in E.164 format with leading +.
+        :type phone_number: str
 
-        Returns:
-            ActiveNumber: The configuration settings for the virtual number.
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
+
+        :returns: The configuration settings for the virtual number.
+        :rtype: ActiveNumber
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -184,14 +208,16 @@ class ActiveNumbers(BaseNumbers):
             **kwargs
     ) -> ActiveNumber:
         """
-        Release numbers you no longer need from your project.
+        Release virtual numbers you no longer need from your project.
 
-        Args:
-            phone_number (str): The phone number in E.164 format with leading +.
-            **kwargs: Additional parameters for the request.
+        :param phone_number: The phone number in E.164 format with leading +.
+        :type phone_number: str
 
-        Returns:
-            ActiveNumber: The configuration settings for the virtual number.
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
+
+        :returns: The configuration settings of the released virtual number.
+        :rtype: ActiveNumber
 
         For detailed documentation, visit https://developers.sinch.com
         """

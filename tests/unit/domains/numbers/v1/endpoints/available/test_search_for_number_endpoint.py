@@ -4,6 +4,7 @@ from sinch.domains.numbers.models.v1.internal import NumberRequest
 from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
 from sinch.core.models.http_response import HTTPResponse
 
+
 @pytest.fixture
 def mock_request_data():
     """

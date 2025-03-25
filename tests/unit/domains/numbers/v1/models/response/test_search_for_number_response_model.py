@@ -2,6 +2,7 @@ import pytest
 from pydantic import ValidationError
 from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
 
+
 def test_check_number_availability_response_expects_valid_data():
     """
     Expects CheckNumberAvailabilityResponse to be created with valid data.
@@ -30,6 +31,7 @@ def test_check_number_availability_response_expects_valid_data():
     assert response.payment_interval_months == 1
     assert response.supporting_documentation_required is True
 
+
 def test_check_number_availability_response_missing_optional_fields_expects_valid_data():
     """
     Verifies CheckNumberAvailabilityResponse can be created with missing optional fields,
@@ -46,16 +48,9 @@ def test_check_number_availability_response_missing_optional_fields_expects_vali
 
     response = CheckNumberAvailabilityResponse(**data)
 
-    assert response.phone_number == "+1234567890"
-    assert response.region_code == "US"
-    assert response.type == "MOBILE"
-    assert response.capability == ["SMS", "VOICE"]
-    assert response.setup_price.amount == 10.00
-    assert response.setup_price.currency_code == "USD"
-    assert response.monthly_price.amount == 5.00
-    assert response.monthly_price.currency_code == "USD"
     assert response.payment_interval_months is None
     assert response.supporting_documentation_required is None
+
 
 def test_check_number_availability_response_expects_parsed_new_type():
     """
@@ -72,6 +67,7 @@ def test_check_number_availability_response_expects_parsed_new_type():
 
     response = CheckNumberAvailabilityResponse(**data)
     assert response.type == "NEW_TYPE"
+
 
 def test_check_number_availability_response_expects_validation_error_for_missing_required_fields():
     """
