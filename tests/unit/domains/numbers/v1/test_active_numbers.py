@@ -1,3 +1,4 @@
+from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.numbers.api.v1 import ActiveNumbers
 from sinch.domains.numbers.api.v1.internal import (
     ListActiveNumbersEndpoint, GetNumberConfigurationEndpoint, UpdateNumberConfigurationEndpoint,
@@ -41,6 +42,7 @@ def test_list_active_numbers_expects_valid_request(mock_sinch_client_numbers, mo
         number_search_pattern="START",
     )
 
+    assert isinstance(response, TokenBasedPaginator)
     assert hasattr(response, 'has_next_page')
     assert response.result == mock_response
     mock_sinch_client_numbers.configuration.transport.request.assert_called_once()

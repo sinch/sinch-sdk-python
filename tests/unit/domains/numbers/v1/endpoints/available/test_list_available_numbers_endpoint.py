@@ -1,6 +1,6 @@
 import pytest
 from sinch.domains.numbers.api.v1.internal import AvailableNumbersEndpoint
-from sinch.domains.numbers.models.v1.internal import ListAvailableNumbersRequest
+from sinch.domains.numbers.models.v1.internal import ListAvailableNumbersRequest, ListAvailableNumbersResponse
 from sinch.core.models.http_response import HTTPResponse
 
 
@@ -101,7 +101,7 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     Check if response is handled and mapped to the appropriate fields correctly.
     """
     parsed_response = endpoint.handle_response(mock_response)
-    assert isinstance(parsed_response, list)
-    assert len(parsed_response) == 2
-    assert parsed_response[0].phone_number == "+1234567890"
-    assert parsed_response[1].phone_number == "+2345678901"
+    assert isinstance(parsed_response, ListAvailableNumbersResponse)
+    assert len(parsed_response.available_numbers) == 2
+    assert parsed_response.available_numbers[0].phone_number == "+1234567890"
+    assert parsed_response.available_numbers[1].phone_number == "+2345678901"

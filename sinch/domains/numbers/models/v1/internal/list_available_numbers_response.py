@@ -9,3 +9,8 @@ class ListAvailableNumbersResponse(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True
     )
+
+    @property
+    def content(self):
+        """Returns the available numbers as part of the response object to be used in the pagination."""
+        return self.available_numbers or []
