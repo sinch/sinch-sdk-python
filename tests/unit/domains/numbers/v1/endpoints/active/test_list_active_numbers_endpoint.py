@@ -80,21 +80,28 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """
     parsed_response = endpoint.handle_response(mock_response)
     assert isinstance(parsed_response, ListActiveNumbersResponse)
-    assert parsed_response.active_numbers[0].phone_number == "+1234567890"
-    assert parsed_response.active_numbers[0].project_id == "37b62a7b-0177-429a-bb0b-e10f848de0b8"
-    assert parsed_response.active_numbers[0].display_name == ""
-    assert parsed_response.active_numbers[0].region_code == "US"
-    assert parsed_response.active_numbers[0].type == "LOCAL"
-    assert parsed_response.active_numbers[0].capability == ["SMS", "VOICE"]
-    assert parsed_response.active_numbers[0].money.currency_code == "EUR"
-    assert parsed_response.active_numbers[0].money.amount == Decimal("0.80")
-    assert parsed_response.active_numbers[0].payment_interval_months == 1
-    expected_next_charge_date = (
-        datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
-    assert parsed_response.active_numbers[0].next_charge_date == expected_next_charge_date
-    expected_expire_at = (
-        datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
-    assert parsed_response.active_numbers[0].expire_at == expected_expire_at
-    assert parsed_response.active_numbers[0].callback_url == "https://yourcallback/numbers"
+    assert hasattr(parsed_response, "content")
+    assert parsed_response.content == parsed_response.active_numbers
+    assert len(parsed_response.active_numbers) == 1
+
+    number = parsed_response.active_numbers[0]
+    assert number.phone_number == "+1234567890"
+    assert number.project_id == "37b62a7b-0177-429a-bb0b-e10f848de0b8"
+    assert number.display_name == ""
+    assert number.region_code == "US"
+    assert number.type == "LOCAL"
+    assert number.capability == ["SMS", "VOICE"]
+    assert number.money.currency_code == "EUR"
+    assert number.money.amount == Decimal("0.80")
+    assert number.payment_interval_months == 1
+    expected_next_charge_date = datetime(
+        2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc
+    )
+    assert number.next_charge_date == expected_next_charge_date
+    expected_expire_at = datetime(
+        2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc
+    )
+    assert number.expire_at == expected_expire_at
+    assert number.callback_url == "https://yourcallback/numbers"
     assert parsed_response.next_page_token == "CgtwaG9uoLnNDQzajQSDCsxMzE1OTA0MzM1OQ=="
     assert parsed_response.total_size == 10

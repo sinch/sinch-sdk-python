@@ -18,23 +18,18 @@ def step_search_available_numbers(context):
         region_code='US',
         number_type='LOCAL'
     )
-    context.response = response
-    context.content = response.content()
+    context.response = response.content()
 
 
 @then('the response contains "{count}" available phone numbers')
 def step_check_available_numbers_count(context, count):
-    count_iterator = 0
-    for _ in context.response.iterator():
-        count_iterator += 1
-
-    assert count_iterator == int(count), \
-        f'Expected {count}, got {count_iterator}'
+    assert len(context.response) == int(count), \
+        f'Expected {count}, got {len(context.response)}'
 
 
 @then('a phone number contains all the expected properties')
 def step_check_number_properties(context):
-    number = context.content[0]
+    number = context.response[0]
     assert number.phone_number == '+12013504948'
     assert number.region_code == 'US'
     assert number.type == 'LOCAL'

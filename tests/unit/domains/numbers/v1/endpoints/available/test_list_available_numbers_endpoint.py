@@ -1,7 +1,8 @@
+from decimal import Decimal
 import pytest
+from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.internal import AvailableNumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import ListAvailableNumbersRequest, ListAvailableNumbersResponse
-from sinch.core.models.http_response import HTTPResponse
 
 
 @pytest.fixture
@@ -37,13 +38,13 @@ def mock_response():
                     },
                     "monthlyPrice": {
                         "currencyCode": "EUR",
-                        "amount": "0.80"
+                        "amount": "0.85"
                     },
                     "paymentIntervalMonths": 1,
                     "supportingDocumentationRequired": True
                 },
                 {
-                    "phoneNumber": "+2345678901",
+                    "phoneNumber": "+13456789012",
                     "regionCode": "US",
                     "type": "LOCAL",
                     "capability": [
@@ -56,9 +57,9 @@ def mock_response():
                     },
                     "monthlyPrice": {
                         "currencyCode": "EUR",
-                        "amount": "0.80"
+                        "amount": "1.00"
                     },
-                    "paymentIntervalMonths": 1,
+                    "paymentIntervalMonths": 2,
                     "supportingDocumentationRequired": True
                 }
             ],
@@ -102,6 +103,30 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """
     parsed_response = endpoint.handle_response(mock_response)
     assert isinstance(parsed_response, ListAvailableNumbersResponse)
+    assert hasattr(parsed_response, "content")
+    assert parsed_response.content == parsed_response.available_numbers
     assert len(parsed_response.available_numbers) == 2
-    assert parsed_response.available_numbers[0].phone_number == "+1234567890"
-    assert parsed_response.available_numbers[1].phone_number == "+2345678901"
+
+    first_number = parsed_response.available_numbers[0]
+    assert first_number.phone_number == "+1234567890"
+    assert first_number.region_code == "US"
+    assert first_number.type == "LOCAL"
+    assert first_number.capability == ["SMS", "VOICE"]
+    assert first_number.setup_price.currency_code == "EUR"
+    assert first_number.setup_price.amount == Decimal("0.80")
+    assert first_number.monthly_price.currency_code == "EUR"
+    assert first_number.monthly_price.amount == Decimal("0.85")
+    assert first_number.payment_interval_months == 1
+    assert first_number.supporting_documentation_required is True
+
+    second_number = parsed_response.available_numbers[1]
+    assert second_number.phone_number == "+13456789012"
+    assert second_number.region_code == "US"
+    assert second_number.type == "LOCAL"
+    assert second_number.capability == ["SMS", "VOICE"]
+    assert second_number.setup_price.currency_code == "EUR"
+    assert second_number.setup_price.amount == Decimal("0.80")
+    assert second_number.monthly_price.currency_code == "EUR"
+    assert second_number.monthly_price.amount == 1.00
+    assert second_number.payment_interval_months == 2
+    assert second_number.supporting_documentation_required is True
