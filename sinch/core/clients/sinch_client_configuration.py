@@ -1,9 +1,8 @@
 import logging
 from logging import Logger
-from typing import Union
 
 from sinch.core.ports.http_transport import HTTPTransport
-from sinch.core.token_manager import TokenManager, TokenManagerAsync
+from sinch.core.token_manager import TokenManager
 from sinch.core.enums import HTTPAuthentication
 
 
@@ -17,7 +16,7 @@ class Configuration:
         key_secret: str,
         project_id: str,
         transport: HTTPTransport,
-        token_manager: Union[TokenManager, TokenManagerAsync],
+        token_manager: TokenManager,
         logger: Logger = None,
         logger_name: str = None,
         connection_timeout=10,

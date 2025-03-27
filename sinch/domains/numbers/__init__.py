@@ -1,7 +1,5 @@
 from sinch.domains.numbers.api.v1 import AvailableNumbers
-from sinch.domains.numbers.api.v1 import (
-    ActiveNumbers, ActiveNumbersWithAsyncPagination
-)
+from sinch.domains.numbers.api.v1 import ActiveNumbers
 from sinch.domains.numbers.endpoints.callbacks.get_configuration import GetNumbersCallbackConfigurationEndpoint
 from sinch.domains.numbers.endpoints.callbacks.update_configuration import UpdateNumbersCallbackConfigurationEndpoint
 from sinch.domains.numbers.endpoints.regions.list_available_regions import ListAvailableRegionsEndpoint
@@ -84,18 +82,4 @@ class Numbers(NumbersBase):
         self.available = AvailableNumbers(self._sinch)
         self.regions = AvailableRegions(self._sinch)
         self.active = ActiveNumbers(self._sinch)
-        self.callbacks = Callbacks(self._sinch)
-
-
-class NumbersAsync(NumbersBase):
-    """
-    Asynchronous version of the Numbers Domain
-    """
-    __doc__ += NumbersBase.__doc__
-
-    def __init__(self, sinch):
-        super(NumbersAsync, self).__init__(sinch)
-        self.available = AvailableNumbers(self._sinch)
-        self.regions = AvailableRegions(self._sinch)
-        self.active = ActiveNumbersWithAsyncPagination(self._sinch)
         self.callbacks = Callbacks(self._sinch)

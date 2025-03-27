@@ -24,28 +24,6 @@ class PageIterator:
             raise StopIteration
 
 
-class AsyncPageIterator:
-    def __init__(self, paginator, yield_first_page=False):
-        self.paginator = paginator
-        self.started = not yield_first_page
-
-    def __aiter__(self):
-        return self
-
-    async def __anext__(self):
-        if not self.started:
-            self.started = True
-            return self.paginator
-
-        if self.paginator.has_next_page:
-            next_paginator = await self.paginator.next_page()
-            if next_paginator:
-                self.paginator = next_paginator
-                return self.paginator
-        else:
-            raise StopAsyncIteration
-
-
 class Paginator(ABC, Generic[BM]):
     """
     Pagination response object.
@@ -108,24 +86,6 @@ class IntBasedPaginator(Paginator):
         return cls(sinch, endpoint, result)
 
 
-class AsyncIntBasedPaginator(IntBasedPaginator):
-    __doc__ = IntBasedPaginator.__doc__
-
-    async def next_page(self):
-        self.endpoint.request_data.page += 1
-        self.result = await self._sinch.configuration.transport.request(self.endpoint)
-        self._calculate_next_page()
-        return self
-
-    def auto_paging_iter(self):
-        return AsyncPageIterator(self, yield_first_page=True)
-
-    @classmethod
-    async def _initialize(cls, sinch, endpoint):
-        result = await sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, result)
-
-
 class TokenBasedPaginator(Paginator[BM]):
     """Base paginator for token-based pagination with explicit page navigation and metadata."""
 
@@ -163,34 +123,4 @@ class TokenBasedPaginator(Paginator[BM]):
     def _initialize(cls, sinch, endpoint):
         """Creates an instance of the paginator skipping first page."""
         result = sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, result=result)
-
-
-class AsyncTokenBasedPaginator(TokenBasedPaginator):
-    """Asynchronous token-based paginator."""
-
-    async def next_page(self):
-        if not self.has_next_page:
-            return None
-
-        self.endpoint.request_data.page_token = self.result.next_page_token
-        next_result = await self._sinch.configuration.transport.request(self.endpoint)
-
-        return self.__class__(self._sinch, self.endpoint, result=next_result)
-
-    async def iterator(self):
-        """Iterates asynchronously over individual items across all pages."""
-        paginator = self
-        while paginator:
-            for item in paginator.content():
-                yield item
-
-            next_page_instance = await paginator.next_page()
-            if not next_page_instance:
-                break
-            paginator = next_page_instance
-
-    @classmethod
-    async def _initialize(cls, sinch, endpoint):
-        result = await sinch.configuration.transport.request(endpoint)
         return cls(sinch, endpoint, result=result)

@@ -1,5 +1,4 @@
 from sinch.core.pagination import IntBasedPaginator
-from sinch.core.pagination import AsyncIntBasedPaginator
 
 from sinch.domains.sms.endpoints.batches.send_batch import SendBatchSMSEndpoint
 from sinch.domains.sms.endpoints.batches.list_batches import ListSMSBatchesEndpoint
@@ -159,34 +158,6 @@ class SMSDeliveryReports:
         )
 
 
-class SMSDeliveryReportsWithAsyncPagination(SMSDeliveryReports):
-    async def list(
-        self,
-        page: int = 0,
-        start_date: str = None,
-        end_date: str = None,
-        status: str = None,
-        code: str = None,
-        page_size: int = None,
-        client_reference: str = None
-    ) -> ListSMSDeliveryReportsResponse:
-        return await AsyncIntBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListDeliveryReportsEndpoint(
-                sinch=self._sinch,
-                request_data=ListSMSDeliveryReportsRequest(
-                    page=page,
-                    page_size=page_size,
-                    start_date=start_date,
-                    end_date=end_date,
-                    status=status,
-                    code=code,
-                    client_reference=client_reference
-                )
-            )
-        )
-
-
 class SMSInbounds:
     def __init__(self, sinch):
         self._sinch = sinch
@@ -221,32 +192,6 @@ class SMSInbounds:
                 sinch=self._sinch,
                 request_data=GetSMSInboundMessageRequest(
                     inbound_id=inbound_id
-                )
-            )
-        )
-
-
-class SMSInboundsWithAsyncPagination(SMSInbounds):
-    async def list(
-        self,
-        page: int = 0,
-        start_date: str = None,
-        to: str = None,
-        end_date: str = None,
-        page_size: int = None,
-        client_reference: str = None
-    ) -> SinchListInboundMessagesResponse:
-        return await AsyncIntBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListInboundMessagesEndpoint(
-                sinch=self._sinch,
-                request_data=ListSMSInboundMessageRequest(
-                    page=page,
-                    page_size=page_size,
-                    to=to,
-                    end_date=end_date,
-                    start_date=start_date,
-                    client_reference=client_reference
                 )
             )
         )
@@ -468,32 +413,6 @@ class SMSBatches:
         )
 
 
-class SMSBatchesWithAsyncPagination(SMSBatches):
-    async def list(
-        self,
-        page: int = 0,
-        page_size: int = None,
-        from_s: str = None,
-        start_date: str = None,
-        end_date: str = None,
-        client_reference: str = None
-    ) -> ListSMSBatchesResponse:
-        return await AsyncIntBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListSMSBatchesEndpoint(
-                sinch=self._sinch,
-                request_data=ListBatchesRequest(
-                    page=page,
-                    page_size=page_size,
-                    from_s=from_s,
-                    start_date=start_date,
-                    end_date=end_date,
-                    client_reference=client_reference
-                )
-            )
-        )
-
-
 class SMSGroups:
     def __init__(self, sinch):
         self._sinch = sinch
@@ -615,24 +534,6 @@ class SMSGroups:
         )
 
 
-class SMSGroupsWithAsyncPagination(SMSGroups):
-    async def list(
-        self,
-        page=0,
-        page_size=None
-    ) -> SinchListSMSGroupResponse:
-        return await AsyncIntBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListSMSGroupEndpoint(
-                sinch=self._sinch,
-                request_data=ListSMSGroupRequest(
-                    page=page,
-                    page_size=page_size
-                )
-            )
-        )
-
-
 class SMSBase:
     """
     Documentation for the SMS API: https://developers.sinch.com/docs/sms/
@@ -653,17 +554,3 @@ class SMS(SMSBase):
         self.batches = SMSBatches(self._sinch)
         self.inbounds = SMSInbounds(self._sinch)
         self.delivery_reports = SMSDeliveryReports(self._sinch)
-
-
-class SMSAsync(SMSBase):
-    """
-    Asynchronous version of the SMS Domain
-    """
-    __doc__ += SMSBase.__doc__
-
-    def __init__(self, sinch):
-        super(SMSAsync, self).__init__(sinch)
-        self.groups = SMSGroupsWithAsyncPagination(self._sinch)
-        self.batches = SMSBatchesWithAsyncPagination(self._sinch)
-        self.inbounds = SMSInboundsWithAsyncPagination(self._sinch)
-        self.delivery_reports = SMSDeliveryReportsWithAsyncPagination(self._sinch)

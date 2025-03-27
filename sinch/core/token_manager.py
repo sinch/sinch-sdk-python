@@ -49,13 +49,3 @@ class TokenManager(TokenManagerBase):
         self.token = self.sinch.configuration.transport.request(OAuthEndpoint())
         self.token_state = TokenState.VALID
         return self.token
-
-
-class TokenManagerAsync(TokenManagerBase):
-    async def get_auth_token(self) -> OAuthToken:
-        if self.token:
-            return self.token
-
-        self.token = await self.sinch.configuration.transport.request(OAuthEndpoint())
-        self.token_state = TokenState.VALID
-        return self.token

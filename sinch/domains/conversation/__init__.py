@@ -1,6 +1,6 @@
 from typing import List
 
-from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator
+from sinch.core.pagination import TokenBasedPaginator
 
 from sinch.domains.conversation.models import (
     SinchConversationChannelIdentities,
@@ -244,36 +244,6 @@ class ConversationMessage:
         only_recipient_originated: bool = None
     ) -> ListConversationMessagesResponse:
         return TokenBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListConversationMessagesEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListConversationMessagesRequest(
-                    contact_id=contact_id,
-                    conversation_id=conversation_id,
-                    app_id=app_id,
-                    page_size=page_size,
-                    page_token=page_token,
-                    view=view,
-                    messages_source=messages_source,
-                    only_recipient_originated=only_recipient_originated
-                )
-            )
-        )
-
-
-class ConversationMessageWithAsyncPagination(ConversationMessage):
-    async def list(
-        self,
-        conversation_id: str = None,
-        contact_id: str = None,
-        app_id: str = None,
-        page_size: int = None,
-        page_token: str = None,
-        view: str = None,
-        messages_source: str = None,
-        only_recipient_originated: bool = None
-    ) -> ListConversationMessagesResponse:
-        return await AsyncTokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListConversationMessagesEndpoint(
                 project_id=self._sinch.configuration.project_id,
@@ -549,30 +519,6 @@ class ConversationContact:
                     app_id=app_id,
                     recipient=recipient,
                     channel=channel
-                )
-            )
-        )
-
-
-class ConversationContactWithAsyncPagination(ConversationContact):
-    async def list(
-        self,
-        page_size: int = None,
-        page_token: str = None,
-        external_id: str = None,
-        channel: str = None,
-        identity: str = None
-    ) -> ListConversationContactsResponse:
-        return await AsyncTokenBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListContactsEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListConversationContactRequest(
-                    page_size=page_size,
-                    page_token=page_token,
-                    external_id=external_id,
-                    channel=channel,
-                    identity=identity
                 )
             )
         )
@@ -1017,30 +963,6 @@ class ConversationConversation:
         )
 
 
-class ConversationConversationWithAsyncPagination(ConversationConversation):
-    async def list(
-        self,
-        only_active: bool,
-        page_size: int = None,
-        page_token: str = None,
-        app_id: str = None,
-        contact_id: str = None
-    ) -> SinchListConversationsResponse:
-        return await AsyncTokenBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListConversationsEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListConversationsRequest(
-                    only_active=only_active,
-                    page_size=page_size,
-                    page_token=page_token,
-                    app_id=app_id,
-                    contact_id=contact_id
-                )
-            )
-        )
-
-
 class ConversationBase:
     """
     Documentation for the Conversation API: https://developers.sinch.com/docs/conversation/
@@ -1069,24 +991,3 @@ class Conversation(ConversationBase):
         self.template = ConversationTemplate(self._sinch)
         self.webhook = ConversationWebhook(self._sinch)
         self.conversation = ConversationConversation(self._sinch)
-
-
-class ConversationAsync(ConversationBase):
-    """
-    Asynchronous version of the Conversation Domain
-    """
-    __doc__ += ConversationBase.__doc__
-
-    def __init__(self, sinch):
-        super(ConversationAsync, self).__init__(sinch)
-        self.message = ConversationMessageWithAsyncPagination(self._sinch)
-        self.app = ConversationApp(self._sinch)
-        self.contact = ConversationContactWithAsyncPagination(self._sinch)
-        self.event = ConversationEvent(self._sinch)
-        self.transcoding = ConversationTranscoding(self._sinch)
-        self.opt_in = ConversationOptIn(self._sinch)
-        self.opt_out = ConversationOptOut(self._sinch)
-        self.capability = ConversationCapability(self._sinch)
-        self.template = ConversationTemplate(self._sinch)
-        self.webhook = ConversationWebhook(self._sinch)
-        self.conversation = ConversationConversationWithAsyncPagination(self._sinch)

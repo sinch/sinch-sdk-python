@@ -410,17 +410,3 @@ class Voice(VoiceBase):
         self.calls = Calls(self._sinch)
         self.conferences = Conferences(self._sinch)
         self.applications = Applications(self._sinch)
-
-
-class VoiceAsync(VoiceBase):
-    """
-    Asynchronous version of the Voice Domain
-    """
-    __doc__ += VoiceBase.__doc__
-
-    def __init__(self, sinch):
-        super().__init__(sinch)
-        self.callouts = Callouts(self._sinch)
-        self.calls = Calls(self._sinch)
-        self.conferences = Conferences(self._sinch)
-        self.applications = Applications(self._sinch)
