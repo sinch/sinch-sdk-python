@@ -10,8 +10,7 @@ from sinch.domains.voice import VoiceBase
 
 class SinchClientBase(ABC):
     """
-    Sinch abstract base class for concrete Sinch Client implementations.
-    By default, this SDK provides two implementations - sync and async.
+    Sinch abstract base class for concrete Sinch Client implementation.
     Feel free to utilize any of them for you custom implementation.
     """
     configuration = Configuration

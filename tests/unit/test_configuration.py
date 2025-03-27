@@ -1,24 +1,11 @@
-import pytest
 from logging import Logger, getLogger
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
-from sinch.core.adapters.httpx_adapter import HTTPXTransport
-from sinch.core.token_manager import TokenManager, TokenManagerAsync
+from sinch.core.token_manager import TokenManager
 
 
-@pytest.mark.parametrize(
-    "transport_class, token_manager_class, client_fixture",
-    [
-        (HTTPTransportRequests, TokenManager, "sinch_client_sync"),
-        (HTTPXTransport, TokenManagerAsync, "sinch_client_async")
-    ]
-)
-def test_configuration_happy_capy_expects_initialization(
-    request, transport_class, token_manager_class, client_fixture
-):
+def test_configuration_happy_capy_expects_initialization(sinch_client_sync):
     """ Test that Configuration can be initialized with all parameters """
-    sinch_client = request.getfixturevalue(client_fixture)
-
     client_configuration = Configuration(
         key_id="CapyKey",
         key_secret="CapybaraWhisper",
@@ -29,8 +16,8 @@ def test_configuration_happy_capy_expects_initialization(
         application_secret="SecretHabitatEntry",
         service_plan_id="CappyPremiumPlan",
         sms_api_token="HappyCappyToken",
-        transport=transport_class(sinch_client),
-        token_manager=token_manager_class(sinch_client)
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync)
     )
 
     assert client_configuration.key_id == "CapyKey"
@@ -41,8 +28,8 @@ def test_configuration_happy_capy_expects_initialization(
     assert client_configuration.application_secret == "SecretHabitatEntry"
     assert client_configuration.service_plan_id == "CappyPremiumPlan"
     assert client_configuration.sms_api_token == "HappyCappyToken"
-    assert isinstance(client_configuration.transport, transport_class)
-    assert isinstance(client_configuration.token_manager, token_manager_class)
+    assert isinstance(client_configuration.transport, HTTPTransportRequests)
+    assert isinstance(client_configuration.token_manager, TokenManager)
 
 
 def test_set_sms_region_property_and_check_that_sms_origin_was_updated(sinch_client_sync):
@@ -72,15 +59,15 @@ def test_set_conversation_domain_property_and_check_that_sms_origin_was_updated(
     assert "hurts" in sinch_client_sync.configuration.conversation_origin
 
 
-def test_if_logger_name_was_preserved_correctly(sinch_client_async):
+def test_if_logger_name_was_preserved_correctly(sinch_client_sync):
     clever_monty_python_quote = "Its_just_a_flesh_wound"
     client_configuration = Configuration(
         key_id="Do",
         key_secret="a",
         project_id="Kickflip!",
         logger_name=clever_monty_python_quote,
-        transport=HTTPTransportRequests(sinch_client_async),
-        token_manager=TokenManager(sinch_client_async)
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync)
     )
     client_configuration.logger.name = clever_monty_python_quote
     assert client_configuration.logger.name == clever_monty_python_quote

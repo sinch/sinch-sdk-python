@@ -151,17 +151,15 @@ For handling all possible exceptions thrown by this SDK use `SinchException` (su
 
 ## Custom HTTP client implementation
 
-By default, two HTTP implementations are provided:
-- Synchronous using `requests` HTTP library
-- Asynchronous using `httpx` HTTP library
+By default, the HTTP implementation uses the `requests` library.
 
-For creating custom HTTP client code, use either `SinchClient` or `SinchClientAsync` client and inject your transport during initialisation:
+To use a custom HTTP client, inject your own transport during initialization:
 ```python
-sinch_client = SinchClientAsync(
+sinch_client = SinchClient(
     key_id="key_id",
     key_secret="key_secret",
     project_id="some_project",
-    transport=MyHTTPAsyncImplementation
+    transport=MyHTTPImplementation
 )
 ```
 
@@ -172,6 +170,10 @@ class HTTPTransport(ABC):
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 ```
+
+Note: Asynchronous HTTP clients are not supported.
+The transport must be a synchronous implementation.
+
 ## License
 
 This project is licensed under the Apache License. See the [LICENSE](license.md) file for the license text.

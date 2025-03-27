@@ -5,7 +5,7 @@ from unittest.mock import Mock, MagicMock
 
 import pytest
 
-from sinch import SinchClient, SinchClientAsync
+from sinch import SinchClient
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.authentication import OAuthToken
@@ -241,39 +241,6 @@ def sinch_client_sync(
 ):
     return configure_origin(
         SinchClient(
-            key_id=key_id,
-            key_secret=key_secret,
-            project_id=project_id,
-            application_key=application_key,
-            application_secret=application_secret
-        ),
-        numbers_origin,
-        conversation_origin,
-        templates_origin,
-        auth_origin,
-        sms_origin,
-        verification_origin,
-        voice_origin
-    )
-
-
-@pytest.fixture
-def sinch_client_async(
-    key_id,
-    key_secret,
-    application_key,
-    application_secret,
-    numbers_origin,
-    conversation_origin,
-    templates_origin,
-    auth_origin,
-    sms_origin,
-    verification_origin,
-    voice_origin,
-    project_id
-):
-    return configure_origin(
-        SinchClientAsync(
             key_id=key_id,
             key_secret=key_secret,
             project_id=project_id,

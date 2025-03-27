@@ -20,11 +20,3 @@ class Authentication(AuthenticationBase):
 
     def set_auth_token(self, token):
         self.sinch.configuration.token_manager.set_auth_token(token)
-
-
-class AuthenticationAsync(AuthenticationBase):
-    async def get_auth_token(self):
-        return await self.sinch.configuration.token_manager.get_auth_token()
-
-    async def set_auth_token(self, token):
-        return await self.sinch.configuration.token_manager.set_auth_token()

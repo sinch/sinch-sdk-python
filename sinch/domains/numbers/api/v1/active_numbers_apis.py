@@ -1,6 +1,6 @@
 from typing import Optional, overload
 from pydantic import StrictStr, StrictInt
-from sinch.core.pagination import TokenBasedPaginator, AsyncTokenBasedPaginator, Paginator
+from sinch.core.pagination import TokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
     GetNumberConfigurationEndpoint, ListActiveNumbersEndpoint, ReleaseNumberFromProjectEndpoint,
@@ -215,34 +215,3 @@ class ActiveNumbers(BaseNumbers):
             **kwargs
         )
         return self._request(ReleaseNumberFromProjectEndpoint, request_data)
-
-
-class ActiveNumbersWithAsyncPagination(ActiveNumbers):
-    async def list(
-        self,
-        region_code: StrictStr,
-        number_type: NumberTypeValues,
-        number_pattern: Optional[StrictStr] = None,
-        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
-        page_size: Optional[StrictInt] = None,
-        page_token: Optional[StrictStr] = None,
-        order_by: Optional[OrderByValues] = None,
-        **kwargs
-    ) -> Paginator[ActiveNumber]:
-        return await AsyncTokenBasedPaginator._initialize(
-            sinch=self._sinch,
-            endpoint=ListActiveNumbersEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListActiveNumbersRequest(
-                    region_code=region_code,
-                    number_type=number_type,
-                    page_size=page_size,
-                    capabilities=capabilities,
-                    number_pattern=number_pattern,
-                    number_search_pattern=number_search_pattern,
-                    page_token=page_token,
-                    order_by=order_by,
-                )
-            )
-        )

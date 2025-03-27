@@ -343,15 +343,3 @@ class Verification(VerificationBase):
         super(Verification, self).__init__(sinch)
         self.verifications = Verifications(self._sinch)
         self.verification_status = VerificationStatus(self._sinch)
-
-
-class VerificationAsync(VerificationBase):
-    """
-    Asynchronous version of the Verification Domain
-    """
-    __doc__ += VerificationBase.__doc__
-
-    def __init__(self, sinch):
-        super(VerificationAsync, self).__init__(sinch)
-        self.verifications = Verifications(self._sinch)
-        self.verification_status = VerificationStatus(self._sinch)

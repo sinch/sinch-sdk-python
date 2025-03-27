@@ -1,6 +1,5 @@
 # Testing
 pytest
-pytest-asyncio
 pytest-mock
 coverage
 behave
@@ -9,7 +8,6 @@ behave
 flake8
 
 # HTTP Libraries
-httpx
 requests
 
 # Data Validation
