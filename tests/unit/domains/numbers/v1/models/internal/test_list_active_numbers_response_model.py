@@ -76,26 +76,25 @@ def test_list_active_numbers_response_expects_correct_mapping(test_data):
     Check if response is handled and mapped to the appropriate fields correctly.
     """
     response = ListActiveNumbersResponse(**test_data)
-    assert response.active_numbers[0].phone_number == "+12085088605"
-    assert response.active_numbers[0].project_id == "37b62a7b-0177-429a-bb0b-e10f848de0b8"
-    assert response.active_numbers[0].display_name == ""
-    assert response.active_numbers[0].region_code == "US"
-    assert response.active_numbers[0].type == "LOCAL"
-    assert response.active_numbers[0].capability == ["SMS", "VOICE"]
-    assert response.active_numbers[0].money.currency_code == "EUR"
-    # Floats have precision issues; using Decimal for exact comparison.
-    assert response.active_numbers[0].money.amount == Decimal("0.80")
-    assert response.active_numbers[0].payment_interval_months == 1
-    expected_next_charge_date = (
-        datetime(2025, 3, 4, 15, 28, 16, 449951, tzinfo=timezone.utc))
-    assert response.active_numbers[0].next_charge_date == expected_next_charge_date
-    assert response.active_numbers[0].expire_at is None
-    assert_sms_configuration(response.active_numbers[0].sms_configuration)
-    assert_voice_configuration(response.active_numbers[0].voice_configuration)
+    assert hasattr(response, "content")
+    assert response.content == response.active_numbers
+
+    number = response.active_numbers[0]
+    assert number.phone_number == "+12085088605"
+    assert number.project_id == "37b62a7b-0177-429a-bb0b-e10f848de0b8"
+    assert number.display_name == ""
+    assert number.region_code == "US"
+    assert number.type == "LOCAL"
+    assert number.capability == ["SMS", "VOICE"]
+    assert number.money.currency_code == "EUR"
+    assert number.money.amount == Decimal("0.80")
+    assert number.payment_interval_months == 1
+    expected_next_charge_date = datetime(
+        2025, 3, 4, 15, 28, 16, 449951, tzinfo=timezone.utc
+    )
+    assert number.next_charge_date == expected_next_charge_date
+    assert number.expire_at is None
+    assert_sms_configuration(number.sms_configuration)
+    assert_voice_configuration(number.voice_configuration)
     assert response.next_page_token == "CgtwaG9uZU51bWJlchJnCjl0eXBlLmdvb2dsZWFwaXMuY29tL3NpbmNoLn=="
     assert response.total_size == 10
-
-
-def test_list_active_numbers_response_expects_content_mapping(test_data):
-    response = ListActiveNumbersResponse(**test_data)
-    assert response.content == response.active_numbers

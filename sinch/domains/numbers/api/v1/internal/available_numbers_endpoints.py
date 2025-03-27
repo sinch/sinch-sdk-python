@@ -7,7 +7,7 @@ from sinch.domains.numbers.models.v1.internal import (
     NumberRequest, RentAnyNumberRequest
 )
 from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
+    ActiveNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 
@@ -52,10 +52,9 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
     def build_query_params(self) -> dict:
         return self.request_data.model_dump(exclude_none=True, by_alias=True)
 
-    def handle_response(self, response: HTTPResponse) -> list[AvailableNumber]:
+    def handle_response(self, response: HTTPResponse) -> ListAvailableNumbersResponse:
         super(AvailableNumbersEndpoint, self).handle_response(response)
-        response = self.process_response_model(response.body, ListAvailableNumbersResponse)
-        return response.available_numbers
+        return self.process_response_model(response.body, ListAvailableNumbersResponse)
 
 
 class RentAnyNumberEndpoint(NumbersEndpoint):

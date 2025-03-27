@@ -63,7 +63,7 @@ class ActiveNumbers(BaseNumbers):
         :type kwargs: dict
 
         :returns: A paginator for iterating through the results.
-        :rtype: TokenBasedPaginatorNumbers
+        :rtype: Paginator[ActiveNumber]
 
         For detailed documentation, visit https://developers.sinch.com
         """

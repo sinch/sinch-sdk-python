@@ -1,5 +1,7 @@
 from typing import Optional, overload
 from pydantic import StrictInt, StrictStr
+
+from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.numbers.models.v1.response import (
     ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
 )
@@ -27,7 +29,7 @@ class AvailableNumbers(BaseNumbers):
         capabilities: Optional[CapabilityTypeValuesList] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
-    ) -> list[AvailableNumber]:
+    ) -> Paginator[AvailableNumber]:
         """
         Search for available virtual numbers for you to activate using a variety of parameters to filter results.
 
@@ -52,22 +54,26 @@ class AvailableNumbers(BaseNumbers):
         :param kwargs: Additional filters for the request.
         :type kwargs: dict
 
-        :returns: A response array with available numbers and their details.
-        :rtype: list[AvailableNumber]
+        :returns: A paginator for iterating through the results.
+        :rtype: Paginator[AvailableNumber]
 
         For detailed documentation, visit: https://developers.sinch.com
         """
-        request_data = ListAvailableNumbersRequest(
-            region_code=region_code,
-            number_type=number_type,
-            page_size=page_size,
-            capabilities=capabilities,
-            number_search_pattern=number_search_pattern,
-            number_pattern=number_pattern,
-            **kwargs
+        return TokenBasedPaginator(
+            sinch=self._sinch,
+            endpoint=AvailableNumbersEndpoint(
+                project_id=self._sinch.configuration.project_id,
+                request_data=ListAvailableNumbersRequest(
+                    region_code=region_code,
+                    number_type=number_type,
+                    page_size=page_size,
+                    capabilities=capabilities,
+                    number_pattern=number_pattern,
+                    number_search_pattern=number_search_pattern,
+                    **kwargs
+                )
+            )
         )
-
-        return self._request(AvailableNumbersEndpoint, request_data)
 
     @overload
     def activate(
