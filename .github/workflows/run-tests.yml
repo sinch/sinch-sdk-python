@@ -70,6 +70,7 @@ jobs:
     - name: Copy feature files
       run: |
         cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
+        cp sinch-sdk-mockserver/features/numbers/available-regions.feature ./tests/e2e/numbers/features/
 
     - name: Wait for mock server
       run: .github/scripts/wait-for-mockserver.sh

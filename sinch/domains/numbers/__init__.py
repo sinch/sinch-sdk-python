@@ -1,11 +1,8 @@
-from sinch.domains.numbers.api.v1 import AvailableNumbers
-from sinch.domains.numbers.api.v1 import ActiveNumbers
+from sinch.domains.numbers.api.v1 import (
+    ActiveNumbers, AvailableNumbers, AvailableRegions
+)
 from sinch.domains.numbers.endpoints.callbacks.get_configuration import GetNumbersCallbackConfigurationEndpoint
 from sinch.domains.numbers.endpoints.callbacks.update_configuration import UpdateNumbersCallbackConfigurationEndpoint
-from sinch.domains.numbers.endpoints.regions.list_available_regions import ListAvailableRegionsEndpoint
-
-from sinch.domains.numbers.models.regions.requests import ListAvailableRegionsForProjectRequest
-from sinch.domains.numbers.models.regions.responses import ListAvailableRegionsResponse
 from sinch.domains.numbers.models.callbacks.responses import (
     GetNumbersCallbackConfigurationResponse,
     UpdateNumbersCallbackConfigurationResponse
@@ -13,32 +10,6 @@ from sinch.domains.numbers.models.callbacks.responses import (
 from sinch.domains.numbers.models.callbacks.requests import (
     UpdateNumbersCallbackConfigurationRequest
 )
-
-
-class AvailableRegions:
-    def __init__(self, sinch):
-        self._sinch = sinch
-
-    def list(
-        self,
-        number_type: str = None,
-        number_types: list = None
-    ) -> ListAvailableRegionsResponse:
-        """
-        Lists all regions for numbers provided using the project ID.
-        Some numbers can be configured for multiple regions.
-        See which regions apply to your virtual number.
-        For additional documentation, see https://www.sinch.com and visit our developer portal.
-        """
-        return self._sinch.configuration.transport.request(
-            ListAvailableRegionsEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListAvailableRegionsForProjectRequest(
-                    number_type=number_type,
-                    number_types=number_types
-                )
-            )
-        )
 
 
 class Callbacks:
