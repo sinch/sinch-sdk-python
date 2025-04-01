@@ -12,6 +12,9 @@ from sinch.domains.numbers.models.v1.internal.list_available_regions_response im
 from sinch.domains.numbers.models.v1.internal.number_request import NumberRequest
 from sinch.domains.numbers.models.v1.internal.rent_any_number_request import RentAnyNumberRequest
 from sinch.domains.numbers.models.v1.internal.sms_configuration_request import SmsConfigurationRequest
+from sinch.domains.numbers.models.v1.internal.update_callbacks_configuration_request import (
+    UpdateNumbersCallbacksConfigRequest
+)
 from sinch.domains.numbers.models.v1.internal.update_number_configuration_request import (
     UpdateNumberConfigurationRequest
 )
@@ -31,6 +34,7 @@ __all__ = [
     "NumberRequest",
     "RentAnyNumberRequest",
     "SmsConfigurationRequest",
+    "UpdateNumbersCallbacksConfigRequest",
     "UpdateNumberConfigurationRequest",
     "VoiceConfigurationCustom",
     "VoiceConfigurationEST",

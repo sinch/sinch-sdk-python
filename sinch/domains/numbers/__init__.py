@@ -1,37 +1,6 @@
 from sinch.domains.numbers.api.v1 import (
-    ActiveNumbers, AvailableNumbers, AvailableRegions
+    ActiveNumbers, AvailableNumbers, AvailableRegions, Callbacks
 )
-from sinch.domains.numbers.endpoints.callbacks.get_configuration import GetNumbersCallbackConfigurationEndpoint
-from sinch.domains.numbers.endpoints.callbacks.update_configuration import UpdateNumbersCallbackConfigurationEndpoint
-from sinch.domains.numbers.models.callbacks.responses import (
-    GetNumbersCallbackConfigurationResponse,
-    UpdateNumbersCallbackConfigurationResponse
-)
-from sinch.domains.numbers.models.callbacks.requests import (
-    UpdateNumbersCallbackConfigurationRequest
-)
-
-
-class Callbacks:
-    def __init__(self, sinch):
-        self._sinch = sinch
-
-    def get_configuration(self) -> GetNumbersCallbackConfigurationResponse:
-        return self._sinch.configuration.transport.request(
-            GetNumbersCallbackConfigurationEndpoint(
-                project_id=self._sinch.configuration.project_id
-            )
-        )
-
-    def update_configuration(self, hmac_secret) -> UpdateNumbersCallbackConfigurationResponse:
-        return self._sinch.configuration.transport.request(
-            UpdateNumbersCallbackConfigurationEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=UpdateNumbersCallbackConfigurationRequest(
-                    hmac_secret=hmac_secret
-                )
-            )
-        )
 
 
 class NumbersBase:
