@@ -1,8 +1,8 @@
 import pytest
 from sinch.core.models.http_response import HTTPResponse
-from sinch.domains.numbers.api.v1.internal.numbers_callbacks_endpoints import GetNumbersCallbacksConfigEndpoint
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
-from sinch.domains.numbers.models.v1.response import NumbersCallbackConfigResponse
+from sinch.domains.numbers.api.v1.internal import GetCallbackConfigurationEndpoint
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
+from sinch.domains.numbers.models.v1.response import CallbackConfigurationResponse
 
 
 @pytest.fixture
@@ -19,7 +19,7 @@ def mock_response():
 
 @pytest.fixture
 def endpoint_empty_request_data():
-    return GetNumbersCallbacksConfigEndpoint("test_project_id", request_data=None)
+    return GetCallbackConfigurationEndpoint("test_project_id", request_data=None)
 
 
 @pytest.fixture
@@ -28,8 +28,8 @@ def endpoint_extra_request_data():
         "key": "value",
         "extra_field": "extra value"
     }
-    request_model = BaseModelConfigRequest(**data)
-    return GetNumbersCallbacksConfigEndpoint("test_project_id", request_data=request_model)
+    request_model = BaseModelConfigurationRequest(**data)
+    return GetCallbackConfigurationEndpoint("test_project_id", request_data=request_model)
 
 
 endpoint_fixtures = pytest.mark.parametrize("endpoint_fixture", [
@@ -73,6 +73,6 @@ def test_handle_response_expects_correct_mapping(endpoint_fixture, mock_response
     """
     endpoint = request.getfixturevalue(endpoint_fixture)
     parsed_response = endpoint.handle_response(mock_response)
-    assert isinstance(parsed_response, NumbersCallbackConfigResponse)
+    assert isinstance(parsed_response, CallbackConfigurationResponse)
     assert parsed_response.project_id == "j55aa9aa-b888-777c-dd6d-ee55e1010101010"
     assert parsed_response.hmac_secret == "your_hmac_secret"

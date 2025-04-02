@@ -4,7 +4,9 @@ from sinch.domains.numbers.models.v1.internal import UpdateNumberConfigurationRe
 
 
 def test_update_number_configuration_request_valid_expects_parsed_response():
-    """ Test that the model correctly handles request. """
+    """
+    Test that the model correctly handles request.
+    """
     data = {
         "phoneNumber": "+1234567890",
         "displayName": "Test Number",
@@ -33,7 +35,9 @@ def test_update_number_configuration_request_valid_expects_parsed_response():
 
 
 def test_update_number_configuration_request_missing_phone_number_expects_error():
-    """Test that the model raises a validation error for missing required fields. """
+    """
+    Test that the model raises a validation error for missing required fields.
+    """
     data = {
         "displayName": "Test Number",
         "callbackUrl": "https://www.your-callback-server.com/callback"
@@ -43,7 +47,9 @@ def test_update_number_configuration_request_missing_phone_number_expects_error(
 
 
 def test_update_number_configuration_request_invalid_phone_number():
-    """Test that the model raises a validation error for invalid phone number type. """
+    """
+    Test that the model raises a validation error for invalid phone number type.
+    """
     data = {
         "phoneNumber": 1234567890,
         "displayName": "Test Number",
@@ -54,6 +60,9 @@ def test_update_number_configuration_request_invalid_phone_number():
 
 
 def test_update_number_configuration_request_optional_fields():
+    """
+    Test that optional fields are handled correctly.
+    """
     data = {
         "phoneNumber": "+1234567890"
     }

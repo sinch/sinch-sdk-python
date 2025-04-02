@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import StrictStr, Field, StrictInt
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
 from sinch.domains.numbers.models.v1.shared import (
     Money, SmsConfigurationResponse, VoiceConfigurationResponse
 )
 from sinch.domains.numbers.models.v1.types import CapabilityType, NumberType
 
 
-class ActiveNumber(BaseModelConfigResponse):
+class ActiveNumber(BaseModelConfigurationResponse):
     phone_number: Optional[StrictStr] = Field(default=None, alias="phoneNumber")
     project_id: Optional[StrictStr] = Field(default=None, alias="projectId")
     display_name: Optional[StrictStr] = Field(default=None, alias="displayName")

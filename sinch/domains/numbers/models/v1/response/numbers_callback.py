@@ -1,8 +1,8 @@
 from typing import Optional
 from pydantic import StrictStr, Field
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
 
 
-class NumbersCallbackConfigResponse(BaseModelConfigResponse):
+class CallbackConfigurationResponse(BaseModelConfigurationResponse):
     project_id: Optional[StrictStr] = Field(default=None, alias="projectId")
     hmac_secret: Optional[StrictStr] = Field(default=None, alias="hmacSecret")

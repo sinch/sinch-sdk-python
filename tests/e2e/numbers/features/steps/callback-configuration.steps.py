@@ -12,7 +12,7 @@ def step_callback_config_service_is_available(context):
 
 @when('I send a request to retrieve the callback configuration')
 def step_retrieve_callback_configuration(context):
-    context.response = context.sinch.numbers.callbacks.get_configuration()
+    context.response = context.sinch.numbers.callback_configuration.get()
 
 
 @then('the response contains the project\'s callback configuration')
@@ -24,7 +24,7 @@ def step_check_callback_configuration(context):
 @when('I send a request to update the callback configuration with the secret "{hmac_secret}"')
 def step_update_callback_configuration(context, hmac_secret):
     try:
-        context.response = context.sinch.numbers.callbacks.update_configuration(hmac_secret=hmac_secret)
+        context.response = context.sinch.numbers.callback_configuration.update(hmac_secret=hmac_secret)
         context.error = None
     except NumberNotFoundException as e:
         context.error = e

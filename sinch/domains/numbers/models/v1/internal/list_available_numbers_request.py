@@ -1,10 +1,10 @@
 from typing import Optional
 from pydantic import Field, StrictInt, StrictStr
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 from sinch.domains.numbers.models.v1.types import CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberType
 
 
-class ListAvailableNumbersRequest(BaseModelConfigRequest):
+class ListAvailableNumbersRequest(BaseModelConfigurationRequest):
     region_code: StrictStr = Field(alias="regionCode")
     number_type: NumberType = Field(alias="type")
     page_size: Optional[StrictInt] = Field(default=None, alias="size")

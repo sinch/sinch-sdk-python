@@ -1,10 +1,10 @@
 from typing import Optional, Dict
 from pydantic import Field, StrictStr
 from sinch.domains.numbers.models.v1.utils.validators import validate_sms_voice_configuration
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 
 
-class ActivateNumberRequest(BaseModelConfigRequest):
+class ActivateNumberRequest(BaseModelConfigurationRequest):
     phone_number: StrictStr = Field(alias="phoneNumber")
     # Accepts only dictionary input, not Pydantic models
     sms_configuration: Optional[Dict] = Field(default=None, alias="smsConfiguration")

@@ -1,5 +1,5 @@
 import pytest
-from sinch.domains.numbers.models.v1.response import NumbersCallbackConfigResponse
+from sinch.domains.numbers.models.v1.response import CallbackConfigurationResponse
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def test_numbers_callback_config_response_all_fields(test_data):
     Expects all fields to map correctly from camelCase input
     and handle extra fields appropriately
     """
-    response = NumbersCallbackConfigResponse(**test_data)
+    response = CallbackConfigurationResponse(**test_data)
 
     assert response.project_id == "project-test-id"
     assert response.hmac_secret == "secret-key-456"

@@ -1,41 +1,41 @@
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
-    GetNumbersCallbacksConfigEndpoint, UpdateNumbersCallbacksConfigEndpoint
+    GetCallbackConfigurationEndpoint, UpdateCallbackConfigurationEndpoint
 )
-from sinch.domains.numbers.models.v1.internal import UpdateNumbersCallbacksConfigRequest
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigRequest
-from sinch.domains.numbers.models.v1.response import NumbersCallbackConfigResponse
+from sinch.domains.numbers.models.v1.internal import UpdateCallbackConfigurationRequest
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
+from sinch.domains.numbers.models.v1.response import CallbackConfigurationResponse
 
 
-class Callbacks(BaseNumbers):
+class Callback(BaseNumbers):
 
-    def get_configuration(
+    def get(
         self,
         **kwargs
-    ) -> NumbersCallbackConfigResponse:
+    ) -> CallbackConfigurationResponse:
         """
-        Returns the callbacks configuration for the specified project
+        Returns the callback configuration for the specified project
 
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
 
-        :returns: The callbacks configuration for the project.
+        :returns: The callback configuration for the project.
         :rtype: NumbersCallbackConfigResponse
 
         For detailed documentation, visit: https://developers.sinch.com
         """
         request_data = None
         if kwargs:
-            request_data = BaseModelConfigRequest(**kwargs)
-        return self._request(GetNumbersCallbacksConfigEndpoint, request_data)
+            request_data = BaseModelConfigurationRequest(**kwargs)
+        return self._request(GetCallbackConfigurationEndpoint, request_data)
 
-    def update_configuration(
+    def update(
         self,
         hmac_secret,
         **kwargs
-    ) -> NumbersCallbackConfigResponse:
+    ) -> CallbackConfigurationResponse:
         """
-        Updates the callbacks configuration for the specified project
+        Updates the callback configuration for the specified project
 
         :param hmac_secret: The HMAC secret used to sign the callback requests.
         :type hmac_secret: str
@@ -43,13 +43,13 @@ class Callbacks(BaseNumbers):
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
 
-        :returns: The updated callbacks configuration for the project.
+        :returns: The updated callback configuration for the project.
         :rtype: NumbersCallbackConfigResponse
 
         For detailed documentation, visit https://developers.sinch.com
         """
-        request_data = UpdateNumbersCallbacksConfigRequest(
+        request_data = UpdateCallbackConfigurationRequest(
             hmac_secret=hmac_secret,
             **kwargs
         )
-        return self._request(UpdateNumbersCallbacksConfigEndpoint, request_data)
+        return self._request(UpdateCallbackConfigurationEndpoint, request_data)
