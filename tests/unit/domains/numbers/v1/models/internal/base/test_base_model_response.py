@@ -1,4 +1,4 @@
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
 
 
 def test_base_model_response_expects_unrecognized_fields_snake_case():
@@ -9,7 +9,7 @@ def test_base_model_response_expects_unrecognized_fields_snake_case():
         "unexpectedField": "unexpectedValue",
         "anotherExtraField": 42,
     }
-    response = BaseModelConfigResponse(**data)
+    response = BaseModelConfigurationResponse(**data)
 
     # Assert unrecognized fields are dynamically added
     assert response.unexpected_field == "unexpectedValue"

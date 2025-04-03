@@ -1,9 +1,8 @@
 import json
-
+from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.exceptions import NumbersException, NumberNotFoundException
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.numbers.models.v1.internal import (
     ListActiveNumbersRequest, ListActiveNumbersResponse, NumberRequest, UpdateNumberConfigurationRequest
 )

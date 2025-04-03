@@ -1,8 +1,8 @@
 from decimal import Decimal
 from pydantic import StrictStr, Field
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
 
 
-class Money(BaseModelConfigResponse):
+class Money(BaseModelConfigurationResponse):
     currency_code: StrictStr = Field(alias="currencyCode")
     amount: Decimal

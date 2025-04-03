@@ -3,7 +3,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict
 
 
-class BaseModelConfigRequest(BaseModel):
+class BaseModelConfigurationRequest(BaseModel):
     """
     A base model that allows extra fields and converts snake_case to camelCase.
     """
@@ -81,7 +81,7 @@ class BaseModelConfigRequest(BaseModel):
         return final_dict
 
 
-class BaseModelConfigResponse(BaseModel):
+class BaseModelConfigurationResponse(BaseModel):
     """
     A base model that allows extra fields and converts camelCase to snake_case
     """

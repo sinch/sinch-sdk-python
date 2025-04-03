@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictInt, StrictStr, StrictBool
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
 from sinch.domains.numbers.models.v1.shared import Money
 from sinch.domains.numbers.models.v1.types import CapabilityType, NumberType
 
 
-class CheckNumberAvailabilityResponse(BaseModelConfigResponse):
+class CheckNumberAvailabilityResponse(BaseModelConfigurationResponse):
     phone_number: Optional[StrictStr] = Field(default=None, alias="phoneNumber")
     region_code: Optional[StrictStr] = Field(default=None, alias="regionCode")
     type: Optional[NumberType] = None

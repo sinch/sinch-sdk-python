@@ -1,9 +1,8 @@
-from sinch.domains.numbers.models.v1.internal.base.base_model_config import (
-    BaseModelConfigRequest as BaseModelConfigRequest,
-    BaseModelConfigResponse as BaseModelConfigResponse
+from sinch.domains.numbers.models.v1.internal.base.base_model_configuration import (
+    BaseModelConfigurationRequest, BaseModelConfigurationResponse
 )
 
 __all__ = [
-    "BaseModelConfigRequest",
-    "BaseModelConfigResponse",
+    "BaseModelConfigurationRequest",
+    "BaseModelConfigurationResponse",
 ]
