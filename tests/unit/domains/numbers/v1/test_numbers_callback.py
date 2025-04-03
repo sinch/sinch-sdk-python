@@ -1,5 +1,5 @@
 import pytest
-from sinch.domains.numbers.api.v1 import Callback
+from sinch.domains.numbers.api.v1 import CallbackConfiguration
 from sinch.domains.numbers.api.v1.internal import (
     GetCallbackConfigurationEndpoint, UpdateCallbackConfigurationEndpoint
 )
@@ -31,7 +31,7 @@ def test_get_numbers_callback_config_expects_valid_request(
     mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
     spy_endpoint = mocker.spy(GetCallbackConfigurationEndpoint, "__init__")
 
-    callback_configuration = Callback(mock_sinch_client_numbers)
+    callback_configuration = CallbackConfiguration(mock_sinch_client_numbers)
     response = callback_configuration.get(**config_kwargs)
 
     spy_endpoint.assert_called_once()
@@ -55,7 +55,7 @@ def test_update_numbers_callback_config_expects_valid_request(mock_sinch_client_
 
     spy_endpoint = mocker.spy(UpdateCallbackConfigurationEndpoint, "__init__")
 
-    callback_configuration = Callback(mock_sinch_client_numbers)
+    callback_configuration = CallbackConfiguration(mock_sinch_client_numbers)
     response = callback_configuration.update(hmac_secret="new_secret")
 
     spy_endpoint.assert_called_once()

@@ -7,7 +7,7 @@ from sinch.domains.numbers.models.v1.internal.base import BaseModelConfiguration
 from sinch.domains.numbers.models.v1.response import CallbackConfigurationResponse
 
 
-class Callback(BaseNumbers):
+class CallbackConfiguration(BaseNumbers):
 
     def get(
         self,

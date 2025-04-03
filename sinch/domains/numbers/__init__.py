@@ -1,5 +1,5 @@
 from sinch.domains.numbers.api.v1 import (
-    ActiveNumbers, AvailableNumbers, AvailableRegions, Callback
+    ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
 )
 
 
@@ -22,4 +22,4 @@ class Numbers(NumbersBase):
         self.available = AvailableNumbers(self._sinch)
         self.regions = AvailableRegions(self._sinch)
         self.active = ActiveNumbers(self._sinch)
-        self.callback_configuration = Callback(self._sinch)
+        self.callback_configuration = CallbackConfiguration(self._sinch)
