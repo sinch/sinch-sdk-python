@@ -69,8 +69,9 @@ jobs:
 
     - name: Copy feature files
       run: |
-        cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
         cp sinch-sdk-mockserver/features/numbers/available-regions.feature ./tests/e2e/numbers/features/
+        cp sinch-sdk-mockserver/features/numbers/callback-configuration.feature ./tests/e2e/numbers/features/
+        cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
 
     - name: Wait for mock server
       run: .github/scripts/wait-for-mockserver.sh
@@ -78,5 +79,4 @@ jobs:
 
     - name: Run e2e tests sync
       run: |
-        export SINCH_CLIENT_MODE=sync
         behave tests/e2e/**/features

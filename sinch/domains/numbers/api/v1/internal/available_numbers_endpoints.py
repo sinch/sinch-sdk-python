@@ -12,16 +12,16 @@ from sinch.domains.numbers.models.v1.response import (
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 
 
-class ActivateNumberEndpoint(NumbersEndpoint):
+class RentNumberEndpoint(NumbersEndpoint):
     """
-    Endpoint to activate a virtual number for a project.
+    Endpoint to rent a virtual number for a project.
     """
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableNumbers/{phone_number}:rent"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: ActivateNumberRequest):
-        super(ActivateNumberEndpoint, self).__init__(project_id, request_data)
+        super(RentNumberEndpoint, self).__init__(project_id, request_data)
 
     def request_body(self) -> str:
         # Convert the request data to a dictionary and remove None values
@@ -30,7 +30,7 @@ class ActivateNumberEndpoint(NumbersEndpoint):
 
     def handle_response(self, response: HTTPResponse) -> ActiveNumber:
         try:
-            super(ActivateNumberEndpoint, self).handle_response(response)
+            super(RentNumberEndpoint, self).handle_response(response)
         except NumbersException as ex:
             raise NumberNotFoundException(message=ex.args[0], response=ex.http_response,
                                           is_from_server=ex.is_from_server)

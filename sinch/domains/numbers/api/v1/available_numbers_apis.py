@@ -1,4 +1,4 @@
-from typing import Optional, overload
+from typing import Optional
 from pydantic import StrictInt, StrictStr
 
 from sinch.core.pagination import Paginator, TokenBasedPaginator
@@ -7,18 +7,22 @@ from sinch.domains.numbers.models.v1.response import (
 )
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
-    ActivateNumberEndpoint, AvailableNumbersEndpoint, RentAnyNumberEndpoint, SearchForNumberEndpoint
+    AvailableNumbersEndpoint, RentAnyNumberEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1.internal import (
     ActivateNumberRequest, ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues, NumberTypeValues, SmsConfigurationDict,
-    VoiceConfigurationDictEST, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC, VoiceConfigurationDictType
+    CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues,
+    NumberTypeValues, SmsConfigurationDict, VoiceConfigurationDictType
 )
 
 
 class AvailableNumbers(BaseNumbers):
+
+    def check_availability(self, phone_number: StrictStr, **kwargs) -> CheckNumberAvailabilityResponse:
+        request_data = NumberRequest(phone_number=phone_number, **kwargs)
+        return self._request(SearchForNumberEndpoint, request_data)
 
     def list(
         self,
@@ -30,35 +34,6 @@ class AvailableNumbers(BaseNumbers):
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:
-        """
-        Search for available virtual numbers for you to activate using a variety of parameters to filter results.
-
-        :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
-        :type region_code: StrictStr
-
-        :param number_type: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``).
-        :type number_type: NumberType
-
-        :param number_pattern: Specific sequence of digits to search for.
-        :type number_pattern: Optional[StrictStr]
-
-        :param number_search_pattern: Pattern to apply (e.g., ``"START"``, ``"CONTAINS"``, ``"END"``).
-        :type number_search_pattern: Optional[NumberSearchPatternType]
-
-        :param capabilities: Capabilities required for the number (e.g., ``["SMS", "VOICE"]``).
-        :type capabilities: Optional[CapabilityType]
-
-        :param page_size: Maximum number of items to return.
-        :type page_size: StrictInt
-
-        :param kwargs: Additional filters for the request.
-        :type kwargs: dict
-
-        :returns: A paginator for iterating through the results.
-        :rtype: Paginator[AvailableNumber]
-
-        For detailed documentation, visit: https://developers.sinch.com
-        """
         return TokenBasedPaginator(
             sinch=self._sinch,
             endpoint=AvailableNumbersEndpoint(
@@ -75,37 +50,7 @@ class AvailableNumbers(BaseNumbers):
             )
         )
 
-    @overload
-    def activate(
-            self,
-            phone_number: StrictStr,
-            sms_configuration: SmsConfigurationDict,
-            voice_configuration: VoiceConfigurationDictEST,
-            callback_url: Optional[StrictStr] = None
-    ) -> ActiveNumber:
-        pass
-
-    @overload
-    def activate(
-            self,
-            phone_number: StrictStr,
-            sms_configuration: SmsConfigurationDict,
-            voice_configuration: VoiceConfigurationDictFAX,
-            callback_url: Optional[StrictStr] = None
-    ) -> ActiveNumber:
-        pass
-
-    @overload
-    def activate(
-            self,
-            phone_number: StrictStr,
-            sms_configuration: SmsConfigurationDict,
-            voice_configuration: VoiceConfigurationDictRTC,
-            callback_url: Optional[StrictStr] = None
-    ) -> ActiveNumber:
-        pass
-
-    def activate(
+    def rent(
         self,
         phone_number: StrictStr,
         sms_configuration: Optional[SmsConfigurationDict] = None,
@@ -113,28 +58,6 @@ class AvailableNumbers(BaseNumbers):
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:
-        """
-        Activate a virtual number to use with SMS, Voice, or both products.
-
-        Args:
-            phone_number (StrictStr): The phone number in E.164 format with leading +.
-            sms_configuration (Optional[SmsConfigurationDict]): A dictionary defining the SMS configuration.
-                Including fields such as:
-                    - service_plan_id (str): The service plan ID.
-                    - campaign_id (Optional[str]): The campaign ID.
-            voice_configuration (Optional[VoiceConfigurationDictType]): A dictionary defining the Voice configuration.
-                Supported types include:
-                    - `VoiceConfigurationDictRTC`: type 'RTC' with an `app_id` field.
-                    - `VoiceConfigurationDictEST`: type 'EST' with a `trunk_id` field.
-                    - `VoiceConfigurationDictFAX`: type 'FAX' with a `service_id` field.
-            callback_url (Optional[StrictStr]): The callback URL to be called.
-            **kwargs: Additional parameters for the request.
-
-        Returns:
-            ActiveNumber: A response object with the activated number and its details.
-
-        For detailed documentation, visit https://developers.sinch.com
-        """
         request_data = ActivateNumberRequest(
             phone_number=phone_number,
             sms_configuration=sms_configuration,
@@ -142,46 +65,7 @@ class AvailableNumbers(BaseNumbers):
             callback_url=callback_url,
             **kwargs
         )
-        return self._request(ActivateNumberEndpoint, request_data)
-
-    @overload
-    def rent_any(
-            self,
-            region_code: StrictStr,
-            type_: NumberTypeValues,
-            sms_configuration: SmsConfigurationDict,
-            voice_configuration: VoiceConfigurationDictRTC,
-            number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
-        pass
-
-    @overload
-    def rent_any(
-            self,
-            region_code: StrictStr,
-            type_: NumberTypeValues,
-            sms_configuration: SmsConfigurationDict,
-            voice_configuration: VoiceConfigurationDictFAX,
-            number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
-        pass
-
-    @overload
-    def rent_any(
-            self,
-            region_code: StrictStr,
-            type_: NumberTypeValues,
-            sms_configuration: SmsConfigurationDict,
-            voice_configuration: VoiceConfigurationDictEST,
-            number_pattern: Optional[NumberPatternDict] = None,
-            capabilities: Optional[CapabilityTypeValuesList] = None,
-            callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
-        pass
+        return self._request(RentNumberEndpoint, request_data)
 
     def rent_any(
         self,
@@ -194,44 +78,6 @@ class AvailableNumbers(BaseNumbers):
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> RentAnyNumberResponse:
-        """
-        Search for and activate an available Sinch virtual number all in one API call.
-        Currently, the ``rent_any`` operation works only for US 10DLC numbers.
-
-        :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
-        :type region_code: str
-
-        :param type_: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``).
-        :type type_: NumberType
-
-        :param number_pattern: Specific sequence of digits to search for.
-        :type number_pattern: Optional[NumberPatternDict]
-
-        :param capabilities: Capabilities required for the number (e.g., ``["SMS", "VOICE"]``).
-        :type capabilities: Optional[CapabilityType]
-
-        :param sms_configuration: A dictionary defining the SMS configuration. Includes fields such as:
-                                  - ``service_plan_id`` (str): The service plan ID.
-                                  - ``campaign_id`` (Optional[str]): The campaign ID.
-        :type sms_configuration: Optional[SmsConfigurationDict]
-
-        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include:
-                                    - ``VoiceConfigurationDictRTC``: type ``'RTC'`` with an ``app_id`` field.
-                                    - ``VoiceConfigurationDictEST``: type ``'EST'`` with a ``trunk_id`` field.
-                                    - ``VoiceConfigurationDictFAX``: type ``'FAX'`` with a ``service_id`` field.
-        :type voice_configuration: Optional[VoiceConfigurationDictType]
-
-        :param callback_url: The callback URL to receive notifications.
-        :type callback_url: StrictStr
-
-        :param kwargs: Additional parameters for the request.
-        :type kwargs: dict
-
-        :returns: A response object with the activated number and its details.
-        :rtype: RentAnyNumberRequest
-
-        For detailed documentation, visit: https://developers.sinch.com
-        """
         request_data = RentAnyNumberRequest(
             region_code=region_code,
             type_=type_,
@@ -243,21 +89,3 @@ class AvailableNumbers(BaseNumbers):
             **kwargs
         )
         return self._request(RentAnyNumberEndpoint, request_data)
-
-    def check_availability(self, phone_number: StrictStr, **kwargs) -> CheckNumberAvailabilityResponse:
-        """
-        Enter a specific phone number to check availability.
-
-        :param phone_number: The phone number in E.164 format with leading ``+``.
-        :type phone_number: str
-
-        :param kwargs: Additional parameters for the request.
-        :type kwargs: dict
-
-        :returns: A response object with the availability status of the number.
-        :rtype: CheckNumberAvailabilityResponse
-
-        For detailed documentation, visit: https://developers.sinch.com
-        """
-        request_data = NumberRequest(phone_number=phone_number, **kwargs)
-        return self._request(SearchForNumberEndpoint, request_data)
