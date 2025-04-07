@@ -1,13 +1,13 @@
 import pytest
 import json
 from sinch.domains.numbers.api.v1.internal import RentNumberEndpoint
-from sinch.domains.numbers.models.v1.internal import ActivateNumberRequest
+from sinch.domains.numbers.models.v1.internal import RentNumberRequest
 from sinch.core.models.http_response import HTTPResponse
 
 
 @pytest.fixture
 def mock_request_data():
-    return ActivateNumberRequest(
+    return RentNumberRequest(
         phone_number="+1234567890",
         sms_configuration={"servicePlanId": "YOUR_SMS_servicePlanId"},
         voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"}
@@ -16,7 +16,7 @@ def mock_request_data():
 
 @pytest.fixture
 def mock_request_data_snake_case():
-    return ActivateNumberRequest(
+    return RentNumberRequest(
         phone_number="+1234567890",
         sms_configuration={"service_plan_id": "YOUR_SMS_servicePlanId"},
         voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"}

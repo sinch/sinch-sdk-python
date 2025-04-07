@@ -10,7 +10,7 @@ from sinch.domains.numbers.api.v1.internal import (
     AvailableNumbersEndpoint, RentAnyNumberEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1.internal import (
-    ActivateNumberRequest, ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest
+    ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest, RentNumberRequest
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues,
@@ -58,7 +58,7 @@ class AvailableNumbers(BaseNumbers):
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:
-        request_data = ActivateNumberRequest(
+        request_data = RentNumberRequest(
             phone_number=phone_number,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,

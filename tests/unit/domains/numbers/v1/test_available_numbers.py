@@ -4,7 +4,7 @@ from sinch.domains.numbers.api.v1.internal import (
     AvailableNumbersEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1.internal import (
-    ActivateNumberRequest, ListAvailableNumbersRequest, ListAvailableNumbersResponse, NumberRequest
+    ListAvailableNumbersRequest, ListAvailableNumbersResponse, NumberRequest, RentNumberRequest
 )
 from sinch.domains.numbers.models.v1.response import ActiveNumber, CheckNumberAvailabilityResponse
 
@@ -66,7 +66,7 @@ def test_rent_number_expects_correct_request(mock_sinch_client_numbers, mocker):
     spy_endpoint.assert_called_once()
     _, kwargs = spy_endpoint.call_args
     assert kwargs["project_id"] == "test_project_id"
-    assert kwargs["request_data"] == ActivateNumberRequest(phone_number="+1234567890")
+    assert kwargs["request_data"] == RentNumberRequest(phone_number="+1234567890")
 
     assert response == mock_response
 

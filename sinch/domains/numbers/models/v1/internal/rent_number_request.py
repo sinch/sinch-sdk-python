@@ -4,7 +4,7 @@ from sinch.domains.numbers.models.v1.utils.validators import validate_sms_voice_
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 
 
-class ActivateNumberRequest(BaseModelConfigurationRequest):
+class RentNumberRequest(BaseModelConfigurationRequest):
     phone_number: StrictStr = Field(alias="phoneNumber")
     # Accepts only dictionary input, not Pydantic models
     sms_configuration: Optional[Dict] = Field(default=None, alias="smsConfiguration")

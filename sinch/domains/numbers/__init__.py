@@ -1,3 +1,3 @@
-from sinch.domains.numbers.numbers_facade import Numbers, NumbersBase
+from sinch.domains.numbers.numbers_facade import Numbers
 
-__all__ = ['Numbers', 'NumbersBase']
+__all__ = ['Numbers']

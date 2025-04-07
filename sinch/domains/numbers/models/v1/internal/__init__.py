@@ -1,4 +1,4 @@
-from sinch.domains.numbers.models.v1.internal.activate_number_request import ActivateNumberRequest
+from sinch.domains.numbers.models.v1.internal.rent_number_request import RentNumberRequest
 from sinch.domains.numbers.models.v1.internal.list_active_numbers_request import ListActiveNumbersRequest
 from sinch.domains.numbers.models.v1.internal.list_active_numbers_response import ListActiveNumbersResponse
 from sinch.domains.numbers.models.v1.internal.list_available_numbers_request import ListAvailableNumbersRequest
@@ -24,7 +24,6 @@ from sinch.domains.numbers.models.v1.internal.voice_configuration_request import
 )
 
 __all__ = [
-    "ActivateNumberRequest",
     "ListActiveNumbersRequest",
     "ListAvailableNumbersRequest",
     "ListActiveNumbersResponse",
@@ -33,6 +32,7 @@ __all__ = [
     "ListAvailableRegionsResponse",
     "NumberRequest",
     "RentAnyNumberRequest",
+    "RentNumberRequest",
     "SmsConfigurationRequest",
     "UpdateCallbackConfigurationRequest",
     "UpdateNumberConfigurationRequest",

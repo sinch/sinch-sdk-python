@@ -13,23 +13,16 @@ from sinch.domains.numbers.models.v1.types import (
 )
 
 
-class NumbersBase:
+class Numbers:
     """
+    Synchronous version of the Numbers domain.
+
     Documentation for Sinch virtual Numbers is found at
     https://developers.sinch.com/docs/numbers/.
     """
+
     def __init__(self, sinch):
         self._sinch = sinch
-
-
-class Numbers(NumbersBase):
-    """
-    Synchronous version of the Numbers domain.
-    """
-    __doc__ += NumbersBase.__doc__
-
-    def __init__(self, sinch):
-        super(Numbers, self).__init__(sinch)
         self.regions = AvailableRegions(self._sinch)
         self.callback_configuration = CallbackConfiguration(self._sinch)
 
