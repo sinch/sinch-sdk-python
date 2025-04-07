@@ -51,7 +51,7 @@ def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers,
 
 def test_rent_number_expects_correct_request(mock_sinch_client_numbers, mocker):
     """
-    Test that the AvailableNumbers.activate method sends the correct request
+    Test that the AvailableNumbers.rent method sends the correct request
     and handles the response properly.
     """
     # Use construct to create a mock response without Pydantic validation

@@ -284,7 +284,7 @@ class Numbers:
             **kwargs: Additional parameters for the request.
 
         Returns:
-            ActiveNumber: A response object with the activated number and its details.
+            ActiveNumber: A response object with the rented number and its details.
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -406,7 +406,7 @@ class Numbers:
         **kwargs
     ) -> Paginator[AvailableNumber]:
         """
-        Search for available virtual numbers for you to activate using a variety of parameters to filter results.
+        Search for available virtual numbers for you to rent using a variety of parameters to filter results.
 
         :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
         :type region_code: StrictStr
