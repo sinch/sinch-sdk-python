@@ -1,9 +1,9 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1.internal import ActivateNumberRequest
+from sinch.domains.numbers.models.v1.internal import RentNumberRequest
 
 
-def test_activate_number_request_expects_snake_case_input():
+def test_rent_number_request_expects_snake_case_input():
     """
     Test that the model correctly handles snake_case input.
     """
@@ -18,7 +18,7 @@ def test_activate_number_request_expects_snake_case_input():
     }
 
     # Instantiate the model
-    request = ActivateNumberRequest(**data)
+    request = RentNumberRequest(**data)
 
     # Assert the field values
     assert request.phone_number == "+1234567890"
@@ -30,7 +30,7 @@ def test_activate_number_request_expects_snake_case_input():
     assert request.callback_url == "https://example.com/callback"
 
 
-def test_activate_number_request_expects_mixed_case_input():
+def test_rent_number_request_expects_mixed_case_input():
     """
     Test that the model correctly handles mixed camelCase and snake_case input.
     """
@@ -43,7 +43,7 @@ def test_activate_number_request_expects_mixed_case_input():
         },
         "callback_url": "https://example.com/callback"
     }
-    request = ActivateNumberRequest(**data)
+    request = RentNumberRequest(**data)
 
     # Assert fields are populated correctly
     assert request.phone_number == "+1234567890"
@@ -55,7 +55,7 @@ def test_activate_number_request_expects_mixed_case_input():
     assert request.callback_url == "https://example.com/callback"
 
 
-def test_activate_number_request_expects_validation_error_for_missing_field():
+def test_rent_number_request_expects_validation_error_for_missing_field():
     """
     Test that the model raises a validation error for missing required fields.
     """
@@ -68,13 +68,13 @@ def test_activate_number_request_expects_validation_error_for_missing_field():
         "callback_url": "https://example.com/callback"
     }
     with pytest.raises(ValidationError) as exc_info:
-        ActivateNumberRequest(**data)
+        RentNumberRequest(**data)
 
     # Assert the error mentions the missing phone_number field
     assert "phone_number" in str(exc_info.value) or "phoneNumber" in str(exc_info.value)
 
 
-def test_activate_number_request_expects_optional_param_none():
+def test_rent_number_request_expects_optional_param_none():
     """
     Test that the model correctly handles snake_case input.
     """
@@ -85,7 +85,7 @@ def test_activate_number_request_expects_optional_param_none():
     }
 
     # Instantiate the model
-    request = ActivateNumberRequest(**data)
+    request = RentNumberRequest(**data)
 
     # Assert the field values
     assert request.phone_number == "+1234567890"

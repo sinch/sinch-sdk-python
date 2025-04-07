@@ -1,10 +1,10 @@
 from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.numbers.api.v1 import AvailableNumbers
 from sinch.domains.numbers.api.v1.internal import (
-    AvailableNumbersEndpoint, ActivateNumberEndpoint, SearchForNumberEndpoint
+    AvailableNumbersEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
 )
 from sinch.domains.numbers.models.v1.internal import (
-    ActivateNumberRequest, ListAvailableNumbersRequest, ListAvailableNumbersResponse, NumberRequest
+    ListAvailableNumbersRequest, ListAvailableNumbersResponse, NumberRequest, RentNumberRequest
 )
 from sinch.domains.numbers.models.v1.response import ActiveNumber, CheckNumberAvailabilityResponse
 
@@ -49,24 +49,24 @@ def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers,
     mock_sinch_client_numbers.configuration.transport.request.assert_called_once()
 
 
-def test_activate_number_expects_correct_request(mock_sinch_client_numbers, mocker):
+def test_rent_number_expects_correct_request(mock_sinch_client_numbers, mocker):
     """
-    Test that the AvailableNumbers.activate method sends the correct request
+    Test that the AvailableNumbers.rent method sends the correct request
     and handles the response properly.
     """
     # Use construct to create a mock response without Pydantic validation
     mock_response = ActiveNumber.model_construct()
     mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
 
-    spy_endpoint = mocker.spy(ActivateNumberEndpoint, "__init__")
+    spy_endpoint = mocker.spy(RentNumberEndpoint, "__init__")
 
     available_numbers = AvailableNumbers(mock_sinch_client_numbers)
-    response = available_numbers.activate(phone_number="+1234567890")
+    response = available_numbers.rent(phone_number="+1234567890")
 
     spy_endpoint.assert_called_once()
     _, kwargs = spy_endpoint.call_args
     assert kwargs["project_id"] == "test_project_id"
-    assert kwargs["request_data"] == ActivateNumberRequest(phone_number="+1234567890")
+    assert kwargs["request_data"] == RentNumberRequest(phone_number="+1234567890")
 
     assert response == mock_response
 

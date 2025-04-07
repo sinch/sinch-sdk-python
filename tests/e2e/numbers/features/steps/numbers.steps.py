@@ -14,7 +14,7 @@ def step_service_is_available(context):
 
 @when('I send a request to search for available phone numbers')
 def step_search_available_numbers(context):
-    response = context.sinch.numbers.available.list(
+    response = context.sinch.numbers.search_for_available_numbers(
         region_code='US',
         number_type='LOCAL'
     )
@@ -45,7 +45,7 @@ def step_check_number_properties(context):
 @when('I send a request to check the availability of the phone number "{phone_number}"')
 def step_check_number_availability(context, phone_number):
     try:
-        context.response = context.sinch.numbers.available.check_availability(phone_number)
+        context.response = context.sinch.numbers.check_availability(phone_number)
     except NumberNotFoundException as e:
         context.error = e
 
@@ -66,7 +66,7 @@ def step_check_unavailable_number(context, phone_number):
 
 @when('I send a request to rent a number with some criteria')
 def step_rent_any_number(context):
-    context.response = context.sinch.numbers.available.rent_any(
+    context.response = context.sinch.numbers.rent_any(
         region_code='US',
         type_='LOCAL',
         capabilities=['SMS', 'VOICE'],
@@ -126,7 +126,7 @@ def step_validate_rented_number(context):
 
 @when('I send a request to rent the phone number "{phone_number}"')
 def step_rent_specific_number(context, phone_number):
-    context.response = context.sinch.numbers.available.activate(
+    context.response = context.sinch.numbers.rent(
         phone_number=phone_number,
         sms_configuration={
             'service_plan_id': 'SpaceMonkeySquadron',
@@ -146,7 +146,7 @@ def step_validate_rented_specific_number(context, phone_number):
 @when('I send a request to rent the unavailable phone number "{phone_number}"')
 def step_rent_unavailable_number(context, phone_number):
     try:
-        context.response = context.sinch.numbers.available.activate(
+        context.response = context.sinch.numbers.rent(
             phone_number=phone_number,
             sms_configuration={
                 'service_plan_id': 'SpaceMonkeySquadron',
@@ -161,7 +161,7 @@ def step_rent_unavailable_number(context, phone_number):
 
 @when("I send a request to list the phone numbers")
 def step_when_list_phone_numbers(context):
-    response = context.sinch.numbers.active.list(
+    response = context.sinch.numbers.list(
         region_code='US',
         number_type='LOCAL'
     )
@@ -177,7 +177,7 @@ def step_then_response_contains_x_phone_numbers(context, count):
 
 @when("I send a request to list all the phone numbers")
 def step_when_list_all_phone_numbers(context):
-    response = context.sinch.numbers.active.list(
+    response = context.sinch.numbers.list(
         region_code='US',
         number_type='LOCAL'
     )
@@ -205,7 +205,7 @@ def step_then_phone_numbers_list_contains_x_phone_numbers(context, count):
 
 @when('I send a request to update the phone number "{phone_number}"')
 def step_when_update_phone_number(context, phone_number):
-    context.response = context.sinch.numbers.active.update(
+    context.response = context.sinch.numbers.update(
         phone_number=phone_number,
         display_name='Updated description during E2E tests',
         sms_configuration={
@@ -250,7 +250,7 @@ def step_then_response_contains_updated_number(context):
 @when('I send a request to retrieve the phone number "{phone_number}"')
 def step_when_retrieve_phone_number(context, phone_number):
     try:
-        context.response = context.sinch.numbers.active.get(
+        context.response = context.sinch.numbers.get(
             phone_number=phone_number,
         )
     except NumberNotFoundException as e:
@@ -290,7 +290,7 @@ def step_then_response_contains_error_not_rented(context, phone_number):
 
 @when('I send a request to release the phone number "{phone_number}"')
 def step_when_release_phone_number(context, phone_number):
-    context.response = context.sinch.numbers.active.release(
+    context.response = context.sinch.numbers.release(
         phone_number=phone_number
     )
 
