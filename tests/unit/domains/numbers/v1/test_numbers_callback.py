@@ -9,7 +9,7 @@ from sinch.domains.numbers.models.v1.response import CallbackConfigurationRespon
 
 
 @pytest.mark.parametrize(
-    "test_name,config_kwargs,expected_request_data",
+    "test_name, config_kwargs, expected_request_data",
     [
         (
             "without_extra_params", {}, None

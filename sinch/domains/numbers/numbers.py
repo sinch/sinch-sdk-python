@@ -4,13 +4,15 @@ from sinch.domains.numbers.api.v1 import (
     ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
 )
 from sinch.core.pagination import Paginator
-from sinch.domains.numbers.models.v1.response import ActiveNumber, CheckNumberAvailabilityResponse, \
-    RentAnyNumberResponse, AvailableNumber
+from sinch.domains.numbers.models.v1.response import (
+    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
+)
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
     SmsConfigurationDict, VoiceConfigurationDictType, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
     VoiceConfigurationDictEST, NumberPatternDict
 )
+from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
 
 
 class Numbers:
@@ -28,6 +30,17 @@ class Numbers:
 
         self._active = ActiveNumbers(self._sinch)
         self._available = AvailableNumbers(self._sinch)
+
+    def webhooks(self, callback_secret: StrictStr) -> NumbersWebhooks:
+        """
+        Create a Numbers webhooks handler with the specified callback secret.
+
+        :param callback_secret: Secret used for webhook validation.
+        :type callback_secret: StrictStr
+        :returns: A configured webhooks handler
+        :rtype: NumbersWebhooks
+        """
+        return NumbersWebhooks(callback_secret)
 
     # ====== High-Level Convenience Methods ======
 

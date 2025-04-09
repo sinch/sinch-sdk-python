@@ -11,5 +11,5 @@ __all__ = [
     "AvailableRegion",
     "CallbackConfigurationResponse",
     "CheckNumberAvailabilityResponse",
-    "RentAnyNumberResponse",
+    "RentAnyNumberResponse"
 ]
