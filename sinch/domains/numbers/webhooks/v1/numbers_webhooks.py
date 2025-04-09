@@ -3,8 +3,8 @@ from typing import Any, Dict, Union
 from datetime import datetime
 import re
 from pydantic import StrictBool, StrictStr
-from sinch.domains.authentication.authentication_validation import validate_signature_header
-from sinch.domains.numbers.models.v1.response.numbers_webhooks_response import NumbersWebhooksResponse
+from sinch.domains.authentication.webhooks.v1.authentication_validation import validate_signature_header
+from sinch.domains.numbers.webhooks.v1.events import NumbersWebhooksEvent
 
 
 class NumbersWebhooks:
@@ -32,9 +32,9 @@ class NumbersWebhooks:
             json_payload
         )
 
-    def parse_event(self, event_body: Union[StrictStr, Dict[StrictStr, Any]]) -> NumbersWebhooksResponse:
+    def parse_event(self, event_body: Union[StrictStr, Dict[StrictStr, Any]]) -> NumbersWebhooksEvent:
         """
-        Parses the event payload into a NumbersWebhooksResponse object.
+        Parses the event payload into a NumbersWebhooksEvent object.
 
         Handles a known issue where the server omits timezone information from
         the ``timestamp`` field. If the timezone is missing, the method assumes
@@ -43,7 +43,7 @@ class NumbersWebhooks:
         :param event_body: The event payload.
         :type event_body: Union[StrictStr, Dict[StrictStr, Any]]
         :returns: A parsed Pydantic object with a timezone-aware ``timestamp``.
-        :rtype: NumbersWebhooksResponse
+        :rtype: NumbersWebhooksEvent
         """
         if isinstance(event_body, str):
             event_body = self._parse_json(event_body)
@@ -51,7 +51,7 @@ class NumbersWebhooks:
         if timestamp:
             event_body["timestamp"] = self._normalize_iso_timestamp(timestamp)
         try:
-            return NumbersWebhooksResponse(**event_body)
+            return NumbersWebhooksEvent(**event_body)
         except Exception as e:
             raise ValueError(f"Failed to parse event body: {e}")
 
@@ -66,9 +66,10 @@ class NumbersWebhooks:
 
     def _normalize_iso_timestamp(self, timestamp: StrictStr) -> datetime:
         """
-        Normalize timestamp to be compatible with all Python versions:
-        - Appends UTC offset if missing for compatibility with `fromisoformat()`
-        - Trims microseconds to 6 digits
+        Normalize a timestamp string to ensure compatibility with Python's `datetime.fromisoformat()`
+        - Ensures that the timestamp includes a UTC offset (e.g., "+00:00") if missing.
+        - Replaces trailing "Z" with "+00:00" to indicate UTC.
+        - Trims microseconds to 6 digits.
         """
         if timestamp.endswith("Z"):
             timestamp = timestamp.replace("Z", "+00:00")

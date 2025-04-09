@@ -1,27 +1,26 @@
 import hashlib
 import hmac
 from typing import Dict, Union, Optional, List
-from pydantic import StrictStr, StrictBool
 
 
 def validate_signature_header(
-    callback_secret: StrictStr,
-    headers: Dict[StrictStr, StrictStr],
-    body: StrictStr
-) -> StrictBool:
+    callback_secret: str,
+    headers: Dict[str, str],
+    body: str
+) -> bool:
     """
     Validate signature headers for Numbers callback.
 
     Note: A ``callback_url`` must be associated with the number.
 
     :param callback_secret: Secret associated with the rented number.
-    :type callback_secret: StrictStr
+    :type callback_secret: str
     :param headers: Incoming request's headers.
-    :type headers: Dict[StrictStr, StrictStr]
+    :type headers: Dict[str, str]
     :param body: Incoming request's body.
-    :type body: StrictStr
+    :type body: str
     :returns: True if the signature header is valid.
-    :rtype: StrictBool
+    :rtype: bool
     """
 
     normalized_headers = normalize_headers(headers)
@@ -33,14 +32,14 @@ def validate_signature_header(
     return signature == expected_signature
 
 
-def normalize_headers(headers: Dict[StrictStr, StrictStr]) -> Dict[StrictStr, StrictStr]:
+def normalize_headers(headers: Dict[str, str]) -> Dict[str, str]:
     """
     Normalize headers by converting keys to lowercase and filtering out None values
     """
     return {k.lower(): v for k, v in headers.items() if v is not None}
 
 
-def compute_hmac_signature(body: StrictStr, secret: StrictStr) -> StrictStr:
+def compute_hmac_signature(body: str, secret: str) -> str:
     """
     Compute HMAC-SHA1 signature
     """
@@ -51,7 +50,7 @@ def compute_hmac_signature(body: StrictStr, secret: StrictStr) -> StrictStr:
     ).hexdigest()
 
 
-def get_header(header_value: Optional[Union[StrictStr, List[StrictStr]]]) -> Optional[StrictStr]:
+def get_header(header_value: Optional[Union[str, List[str]]]) -> Optional[str]:
     """
     Extract header value, handling both string and list cases
     """

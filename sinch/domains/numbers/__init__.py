@@ -1,3 +1,3 @@
-from sinch.domains.numbers.numbers_facade import Numbers
+from sinch.domains.numbers.numbers import Numbers
 
 __all__ = ['Numbers']

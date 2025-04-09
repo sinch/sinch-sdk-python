@@ -7,7 +7,7 @@ SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
 
 
 def parse_event(context, response):
-    context.formatted_headers = {k.lower(): v for k, v in response.headers.items()}
+    context.headers = response.headers
     # Strip all whitespace characters from the raw event text.
     raw_event = re.sub(r'\s+', '', response.text)
     context.raw_event = raw_event
@@ -29,7 +29,7 @@ def step_send_trigger_success_event(context):
 @then('the event header contains a valid signature')
 def step_check_valid_signature(context):
     assert context.numbers_webhook.validate_authentication_header(
-        context.formatted_headers, context.raw_event
+        context.headers, context.raw_event
     ), "Signature validation failed"
 
 

@@ -2,7 +2,7 @@ from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.authentication.exceptions import AuthenticationException
-from sinch.domains.authentication.models.authentication import OAuthToken
+from sinch.domains.authentication.models.v1.authentication import OAuthToken
 
 
 class OAuthEndpoint(HTTPEndpoint):

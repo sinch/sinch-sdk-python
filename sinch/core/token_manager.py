@@ -1,7 +1,7 @@
 from enum import Enum
 from abc import ABC, abstractmethod
-from sinch.domains.authentication.models.authentication import OAuthToken
-from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
+from sinch.domains.authentication.models.v1.authentication import OAuthToken
+from sinch.domains.authentication.endpoints.v1.oauth import OAuthEndpoint
 from sinch.core.exceptions import ValidationException
 
 

@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timezone
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1.response import NumbersWebhooksResponse
+from sinch.domains.numbers.webhooks.v1.events import NumbersWebhooksEvent
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def test_numbers_webhooks_response_expects_parsed_data(valid_data):
     Expects all fields to map correctly from camelCase input
     and handle valid data appropriately.
     """
-    response = NumbersWebhooksResponse(**valid_data)
+    response = NumbersWebhooksEvent(**valid_data)
 
     assert response.event_id == "event-123"
     assert response.timestamp == datetime(
@@ -59,7 +59,7 @@ def test_numbers_webhooks_response_missing_optional_fields_expects_parsed_data()
         "eventId": "event-123",
         "projectId": "project-456"
     }
-    response = NumbersWebhooksResponse(**data)
+    response = NumbersWebhooksEvent(**data)
 
     assert response.event_id == "event-123"
     assert response.project_id == "project-456"
@@ -76,4 +76,4 @@ def test_numbers_webhooks_response_invalid_data_expects_validation_error(invalid
     Expects the model to raise a validation error for invalid data.
     """
     with pytest.raises(ValidationError):
-        NumbersWebhooksResponse(**invalid_data)
+        NumbersWebhooksEvent(**invalid_data)

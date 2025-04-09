@@ -1,7 +1,7 @@
 from typing import Optional, overload
 from pydantic import StrictStr, StrictInt
 from sinch.domains.numbers.api.v1 import (
-    ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration, NumbersWebhooks
+    ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
 )
 from sinch.core.pagination import Paginator
 from sinch.domains.numbers.models.v1.response import (
@@ -12,6 +12,7 @@ from sinch.domains.numbers.models.v1.types import (
     SmsConfigurationDict, VoiceConfigurationDictType, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
     VoiceConfigurationDictEST, NumberPatternDict
 )
+from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
 
 
 class Numbers:

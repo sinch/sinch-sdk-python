@@ -8,7 +8,7 @@ import pytest
 from sinch import SinchClient
 from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
 from sinch.core.models.http_response import HTTPResponse
-from sinch.domains.authentication.models.authentication import OAuthToken
+from sinch.domains.authentication.models.v1.authentication import OAuthToken
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 

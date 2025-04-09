@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import Mock
 
 from sinch.core.token_manager import TokenManager
-from sinch.domains.authentication.models.authentication import OAuthToken
+from sinch.domains.authentication.models.v1.authentication import OAuthToken
 from sinch.core.exceptions import ValidationException
 
 

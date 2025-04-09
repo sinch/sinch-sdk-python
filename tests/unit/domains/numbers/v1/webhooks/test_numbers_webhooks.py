@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import pytest
-from sinch.domains.numbers.api.v1 import NumbersWebhooks
-from sinch.domains.numbers.models.v1.response.numbers_webhooks_response import NumbersWebhooksResponse
+from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
+from sinch.domains.numbers.webhooks.v1.events import NumbersWebhooksEvent
 
 
 @pytest.fixture
@@ -67,7 +67,7 @@ def test_parse_event_expects_timestamp_as_utc(numbers_webhooks, test_name, times
 
 def test_parse_event_expects_parsed_response(numbers_webhooks, base_payload_parse_event):
     response = numbers_webhooks.parse_event(base_payload_parse_event)
-    assert isinstance(response, NumbersWebhooksResponse)
+    assert isinstance(response, NumbersWebhooksEvent)
     assert response.event_id == "01jr7stexp0znky34pj07dwp41"
     assert response.project_id == "project-id"
     assert response.resource_id == "+1234567890"
