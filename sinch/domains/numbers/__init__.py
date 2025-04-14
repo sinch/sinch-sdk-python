@@ -1,3 +1,3 @@
-from sinch.domains.numbers.numbers import Numbers
+from sinch.domains.numbers.virtual_numbers import VirtualNumbers
 
-__all__ = ['Numbers']
+__all__ = ['VirtualNumbers']
