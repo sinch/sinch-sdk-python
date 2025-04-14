@@ -3,7 +3,7 @@ from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.domains.authentication import Authentication
-from sinch.domains.numbers import Numbers
+from sinch.domains.numbers import VirtualNumbers
 from sinch.domains.conversation import Conversation
 from sinch.domains.sms import SMS
 from sinch.domains.verification import Verification
@@ -43,7 +43,7 @@ class SinchClient:
         )
 
         self.authentication = Authentication(self)
-        self.numbers = Numbers(self)
+        self.numbers = VirtualNumbers(self)
         self.conversation = Conversation(self)
         self.sms = SMS(self)
         self.verification = Verification(self)

@@ -15,7 +15,7 @@ from sinch.domains.numbers.models.v1.types import (
 from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
 
 
-class Numbers:
+class VirtualNumbers:
     """
     Synchronous version of the Numbers domain.
 
