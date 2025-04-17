@@ -38,6 +38,7 @@ def test_invalid_signature_expects_no_validation(secret, string_to_sign):
     validated = validate_signature_header(secret, headers, string_to_sign)
     assert validated is False
 
+
 def test_None_secret_expects_no_validation(string_to_sign):
     headers = {
         "X-Sinch-Signature": "d2107528d5d52897a97dc6e24e09a208036ccd83"
