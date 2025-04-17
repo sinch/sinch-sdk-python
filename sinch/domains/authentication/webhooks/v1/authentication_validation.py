@@ -23,6 +23,8 @@ def validate_signature_header(
     :rtype: bool
     """
 
+    if callback_secret is None:
+        return False
     normalized_headers = normalize_headers(headers)
     signature = get_header(normalized_headers.get('x-sinch-signature'))
     if signature is None:
