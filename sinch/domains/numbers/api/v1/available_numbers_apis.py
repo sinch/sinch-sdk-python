@@ -3,7 +3,7 @@ from pydantic import StrictInt, StrictStr
 
 from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
+    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse
 )
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
@@ -77,7 +77,7 @@ class AvailableNumbers(BaseNumbers):
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
-    ) -> RentAnyNumberResponse:
+    ) -> ActiveNumber:
         request_data = RentAnyNumberRequest(
             region_code=region_code,
             type_=type_,
