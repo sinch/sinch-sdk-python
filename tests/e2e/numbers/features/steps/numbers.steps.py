@@ -3,7 +3,7 @@ from behave import given, when, then
 from decimal import Decimal
 from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.v1.errors import NotFoundError
-from sinch.domains.numbers.models.v1.response import ActiveNumber, RentAnyNumberResponse
+from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 
 @given('the Numbers service is available')
@@ -86,7 +86,7 @@ def step_rent_any_number(context):
 
 @then('the response contains a rented phone number')
 def step_validate_rented_number(context):
-    data: RentAnyNumberResponse = context.response
+    data: ActiveNumber = context.response
     assert data.phone_number == '+12017654321'
     assert data.project_id == '123c0ffee-dada-beef-cafe-baadc0de5678'
     assert data.display_name == ''

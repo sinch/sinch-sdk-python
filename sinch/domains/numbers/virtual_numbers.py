@@ -5,7 +5,7 @@ from sinch.domains.numbers.api.v1 import (
 )
 from sinch.core.pagination import Paginator
 from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse, RentAnyNumberResponse
+    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
@@ -319,7 +319,7 @@ class VirtualNumbers:
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[CapabilityTypeValuesList] = None,
         callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     @overload
@@ -332,7 +332,7 @@ class VirtualNumbers:
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[CapabilityTypeValuesList] = None,
         callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     @overload
@@ -345,7 +345,7 @@ class VirtualNumbers:
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[CapabilityTypeValuesList] = None,
         callback_url: Optional[StrictStr] = None
-    ) -> RentAnyNumberResponse:
+    ) -> ActiveNumber:
         pass
 
     def rent_any(
@@ -358,7 +358,7 @@ class VirtualNumbers:
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
-    ) -> RentAnyNumberResponse:
+    ) -> ActiveNumber:
         """
         Search for and activate an available Sinch virtual number all in one API call.
         Currently, the ``rent_any`` operation works only for US 10DLC numbers.

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.internal import RentAnyNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import RentAnyNumberRequest
-from sinch.domains.numbers.models.v1.response import RentAnyNumberResponse
+from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 
 @pytest.fixture
@@ -26,7 +26,7 @@ def valid_request_data():
 @pytest.fixture
 def valid_response_data():
     """
-    Provides valid mock response data for RentAnyNumberResponse.
+    Provides valid mock response data for ActiveNumer.
     """
     return {
         "phoneNumber": "+12025550134",
@@ -105,7 +105,7 @@ def test_handle_response_expects_valid_mapping(valid_response_data):
     response = endpoint.handle_response(mock_response)
 
     # Validate response fields
-    assert isinstance(response, RentAnyNumberResponse)
+    assert isinstance(response, ActiveNumber)
     assert response.phone_number == "+12025550134"
     assert response.project_id == "51bc3f40-f266-4ca8-8938-a1ed0ff32b9a"
     assert response.region_code == "US"
