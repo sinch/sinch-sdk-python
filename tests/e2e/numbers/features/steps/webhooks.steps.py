@@ -1,4 +1,3 @@
-import re
 import json
 import requests
 from behave import given, when, then
