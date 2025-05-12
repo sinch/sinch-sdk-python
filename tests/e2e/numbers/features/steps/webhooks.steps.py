@@ -1,4 +1,3 @@
-import re
 import json
 import requests
 from behave import given, when, then
@@ -8,10 +7,8 @@ SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
 
 def parse_event(context, response):
     context.headers = response.headers
-    # Strip all whitespace characters from the raw event text.
-    raw_event = re.sub(r'\s+', '', response.text)
-    context.raw_event = raw_event
-    return json.loads(raw_event)
+    context.raw_event = response.text
+    return json.loads(context.raw_event)
 
 
 @given('the Numbers Webhooks handler is available')
