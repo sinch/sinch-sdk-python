@@ -282,22 +282,26 @@ class VirtualNumbers:
         """
         Rent a virtual number to use with SMS, Voice, or both products.
 
-        Args:
-            phone_number (StrictStr): The phone number in E.164 format with leading +.
-            sms_configuration (Optional[SmsConfigurationDict]): A dictionary defining the SMS configuration.
-                Including fields such as:
-                    - service_plan_id (str): The service plan ID.
-                    - campaign_id (Optional[str]): The campaign ID.
-            voice_configuration (Optional[VoiceConfigurationDictType]): A dictionary defining the Voice configuration.
-                Supported types include:
-                    - `VoiceConfigurationDictRTC`: type 'RTC' with an `app_id` field.
-                    - `VoiceConfigurationDictEST`: type 'EST' with a `trunk_id` field.
-                    - `VoiceConfigurationDictFAX`: type 'FAX' with a `service_id` field.
-            callback_url (Optional[StrictStr]): The callback URL to be called.
-            **kwargs: Additional parameters for the request.
+        :param phone_number: The phone number in E.164 format with leading ``+``.
+        :type phone_number: StrictStr
+        :param sms_configuration: A dictionary defining the SMS configuration.
+            Include the following fields:
+                - ``service_plan_id`` (str): The service plan ID.
+                - ``campaign_id`` (Optional[str]): The campaign ID.
+        :type sms_configuration: Optional[SmsConfigurationDict]
+        :param voice_configuration: A dictionary defining the Voice configuration.
+            Supported types include:
+                - ``VoiceConfigurationDictRTC``: type ``'RTC'`` with an ``app_id`` field.
+                - ``VoiceConfigurationDictEST``: type ``'EST'`` with a ``trunk_id`` field.
+                - ``VoiceConfigurationDictFAX``: type ``'FAX'`` with a ``service_id`` field.
+        :type voice_configuration: Optional[VoiceConfigurationDictType]
+        :param callback_url: The callback URL to be called.
+        :type callback_url: Optional[StrictStr]
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
 
-        Returns:
-            ActiveNumber: A response object with the rented number and its details.
+        :returns: A response object with the rented number and its details.
+        :rtype: ActiveNumber
 
         For detailed documentation, visit https://developers.sinch.com
         """
