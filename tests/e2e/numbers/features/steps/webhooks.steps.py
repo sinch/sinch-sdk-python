@@ -16,43 +16,28 @@ def step_webhook_handler_is_available(context):
     context.numbers_webhook = context.sinch.numbers.webhooks(SINCH_NUMBERS_CALLBACK_SECRET)
 
 
-@when('I send a request to trigger the "success" for "PROVISIONING_TO_VOICE_PLATFORM" event')
-def step_send_trigger_success_event(context):
-    response = requests.get('http://localhost:3013/webhooks/numbers/provisioning_to_voice_platform/succeeded')
+@when('I send a request to trigger the {status} for {event_type} event')
+def step_send_trigger_event(context, status, event_type):
+    endpoint = 'succeeded' if status == 'success' else 'failed'
+    response = requests.get(f'http://localhost:3013/webhooks/numbers/provisioning_to_voice_platform/{endpoint}')
     event_json = parse_event(context, response)
     context.event = context.numbers_webhook.parse_event(event_json)
 
 
-@then('the header of the "success" for "PROVISIONING_TO_VOICE_PLATFORM" event contains a valid signature')
-def step_check_valid_signature(context):
+@then('the header of the {status} for {event_type} event contains a valid signature')
+def step_check_valid_signature(context, status, event_type):
     assert context.numbers_webhook.validate_authentication_header(
         context.headers, context.raw_event
     ), "Signature validation failed"
 
 
-@then('the event describes a "success" for "PROVISIONING_TO_VOICE_PLATFORM" event')
-def step_check_success_event_details(context):
-    assert context.event.event_type == 'PROVISIONING_TO_VOICE_PLATFORM'
-    assert context.event.status == 'SUCCEEDED'
-    assert context.event.failure_code is None
-
-
-@when('I send a request to trigger the "failure" for "PROVISIONING_TO_VOICE_PLATFORM" event')
-def step_send_trigger_failure_event(context):
-    response = requests.get('http://localhost:3013/webhooks/numbers/provisioning_to_voice_platform/failed')
-    event_json = parse_event(context, response)
-    context.event = context.numbers_webhook.parse_event(event_json)
-
-
-@then('the header of the "failure" for "PROVISIONING_TO_VOICE_PLATFORM" event contains a valid signature')
-def step_check_valid_signature_failure(context):
-    assert context.numbers_webhook.validate_authentication_header(
-        context.headers, context.raw_event
-    ), "Signature validation failed"
-
-
-@then('the event describes a "failure" for "PROVISIONING_TO_VOICE_PLATFORM" event')
-def step_check_failure_event_details(context):
-    assert context.event.event_type == 'PROVISIONING_TO_VOICE_PLATFORM'
-    assert context.event.status == 'FAILED'
-    assert context.event.failure_code == 'PROVISIONING_TO_VOICE_PLATFORM_FAILED'
+@then('the event describes a {status} for {event_type} event')
+def step_check_event_details(context, status, event_type):
+    event_type = event_type.strip('"')
+    assert context.event.event_type == event_type
+    if status == 'success':
+        assert context.event.status == 'SUCCEEDED'
+        assert context.event.failure_code is None
+    else:
+        assert context.event.status == 'FAILED'
+        assert context.event.failure_code == 'PROVISIONING_TO_VOICE_PLATFORM_FAILED'
