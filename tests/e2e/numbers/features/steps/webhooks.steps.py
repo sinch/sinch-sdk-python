@@ -16,7 +16,7 @@ def step_webhook_handler_is_available(context):
     context.numbers_webhook = context.sinch.numbers.webhooks(SINCH_NUMBERS_CALLBACK_SECRET)
 
 
-@when('I send a request to trigger the {status} for {event_type} event')
+@when('I send a request to trigger the "{status}" for "{event_type}" event')
 def step_send_trigger_event(context, status, event_type):
     endpoint = 'succeeded' if status == 'success' else 'failed'
     response = requests.get(f'http://localhost:3013/webhooks/numbers/provisioning_to_voice_platform/{endpoint}')
@@ -24,16 +24,15 @@ def step_send_trigger_event(context, status, event_type):
     context.event = context.numbers_webhook.parse_event(event_json)
 
 
-@then('the header of the {status} for {event_type} event contains a valid signature')
+@then('the header of the "{status}" for "{event_type}" event contains a valid signature')
 def step_check_valid_signature(context, status, event_type):
     assert context.numbers_webhook.validate_authentication_header(
         context.headers, context.raw_event
-    ), "Signature validation failed"
+    ), 'Signature validation failed'
 
 
-@then('the event describes a {status} for {event_type} event')
+@then('the event describes a "{status}" for "{event_type}" event')
 def step_check_event_details(context, status, event_type):
-    event_type = event_type.strip('"')
     assert context.event.event_type == event_type
     if status == 'success':
         assert context.event.status == 'SUCCEEDED'
