@@ -16,6 +16,8 @@ To use Sinch services, you'll need a Sinch account and access keys. You can sign
 
 For more information on the Sinch APIs on which this SDK is based, refer to the official [developer documentation portal](https://developers.sinch.com).
 
+Further documentation for this SDK, including Python snippets, is available at [sinch.github.io/sinch-sdk-python-docs](https://sinch.github.io/sinch-sdk-python-docs/).
+
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
