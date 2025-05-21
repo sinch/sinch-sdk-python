@@ -18,7 +18,10 @@ class NumbersWebhooksEvent(WebhookEvent):
         "PROVISIONING_TO_VOICE_PLATFORM",
         "DEPROVISIONING_TO_VOICE_PLATFORM"
     ], StrictStr]] = Field(default=None, alias="eventType")
-    status: Optional[StrictStr] = None
+    status: Optional[Union[Literal[
+        "SUCCEEDED",
+        "FAILED"
+    ], StrictStr]] = None
     failure_code: Optional[Union[Literal[
         "CAMPAIGN_EXPIRED",
         "CAMPAIGN_MNO_REJECTED",

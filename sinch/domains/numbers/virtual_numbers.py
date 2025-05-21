@@ -155,12 +155,14 @@ class VirtualNumbers:
         :param display_name: The display name for the virtual number.
         :type display_name: Optional[str]
 
-        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as:
+        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as::
+
                                   - ``service_plan_id`` (str): The service plan ID.
                                   - ``campaign_id`` (Optional[str]): The campaign ID.
         :type sms_configuration: Optional[SmsConfigurationDict]
 
-        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include:
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
+
                                     - ``VoiceConfigurationDictRTC``: type 'RTC' with an ``app_id`` field.
                                     - ``VoiceConfigurationDictEST``: type 'EST' with a ``trunk_id`` field.
                                     - ``VoiceConfigurationDictFAX``: type 'FAX' with a ``service_id`` field.
@@ -285,7 +287,8 @@ class VirtualNumbers:
         :param phone_number: The phone number in E.164 format with leading ``+``.
         :type phone_number: StrictStr
         :param sms_configuration: A dictionary defining the SMS configuration.
-            Include the following fields:
+            Include the following fields::
+
             - ``service_plan_id`` (str): The service plan ID.
             - ``campaign_id`` (Optional[str]): The campaign ID.
         :type sms_configuration: Optional[SmsConfigurationDict]
@@ -370,7 +373,7 @@ class VirtualNumbers:
         :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
         :type region_code: str
 
-        :param type_: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``).
+        :param type_: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``). Defaults to ``"MOBILE"``.
         :type type_: NumberType
 
         :param number_pattern: Specific sequence of digits to search for.
@@ -379,15 +382,17 @@ class VirtualNumbers:
         :param capabilities: Capabilities required for the number (e.g., ``["SMS", "VOICE"]``).
         :type capabilities: Optional[CapabilityType]
 
-        :param sms_configuration: A dictionary defining the SMS configuration. Includes fields such as:
+        :param sms_configuration: A dictionary defining the SMS configuration. Includes fields such as::
+
                                   - ``service_plan_id`` (str): The service plan ID.
                                   - ``campaign_id`` (Optional[str]): The campaign ID.
         :type sms_configuration: Optional[SmsConfigurationDict]
 
-        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include:
-                                    - ``VoiceConfigurationDictRTC``: type ``'RTC'`` with an ``app_id`` field.
-                                    - ``VoiceConfigurationDictEST``: type ``'EST'`` with a ``trunk_id`` field.
-                                    - ``VoiceConfigurationDictFAX``: type ``'FAX'`` with a ``service_id`` field.
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
+
+                                   - ``VoiceConfigurationDictRTC``: type ``'RTC'`` with an ``app_id`` field.
+                                   - ``VoiceConfigurationDictEST``: type ``'EST'`` with a ``trunk_id`` field.
+                                   - ``VoiceConfigurationDictFAX``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDictType]
 
         :param callback_url: The callback URL to receive notifications.
