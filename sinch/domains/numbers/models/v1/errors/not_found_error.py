@@ -8,6 +8,6 @@ class NotFoundError(BaseModelConfigurationResponse):
     code: Optional[StrictInt] = Field(default=None, alias="code")
     message: Optional[StrictStr] = Field(default=None, alias="message")
     status: Optional[StrictStr] = Field(default=None, alias="status")
-    details: Optional[conlist(NotFoundErrorDetails, min_length=1)] = Field(default=None, alias="details")
+    details: Optional[conlist(NotFoundErrorDetails)] = Field(default=None, alias="details")
 
     model_config = ConfigDict(populate_by_name=True, alias_generator=BaseModelConfigurationResponse._to_snake_case)
