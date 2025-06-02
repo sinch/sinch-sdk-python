@@ -5,7 +5,7 @@ from sinch.domains.numbers.api.v1 import (
 )
 from sinch.core.pagination import Paginator
 from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse
+    ActiveNumber, AvailableNumber
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
@@ -226,7 +226,7 @@ class VirtualNumbers:
         """
         return self._active.release(phone_number=phone_number, **kwargs)
 
-    def check_availability(self, phone_number: StrictStr, **kwargs) -> CheckNumberAvailabilityResponse:
+    def check_availability(self, phone_number: StrictStr, **kwargs) -> AvailableNumber:
         """
         Enter a specific phone number to check availability.
 
@@ -237,7 +237,7 @@ class VirtualNumbers:
         :type kwargs: dict
 
         :returns: A response object with the availability status of the number.
-        :rtype: CheckNumberAvailabilityResponse
+        :rtype: AvailableNumber
 
         For detailed documentation, visit: https://developers.sinch.com
         """

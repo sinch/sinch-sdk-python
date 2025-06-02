@@ -1,7 +1,7 @@
 import pytest
 from sinch.domains.numbers.api.v1.internal import SearchForNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import NumberRequest
-from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
+from sinch.domains.numbers.models.v1.response import AvailableNumber
 from sinch.core.models.http_response import HTTPResponse
 
 
@@ -59,7 +59,7 @@ def test_handle_response_expects_correct_mapping(mock_request_data, mock_respons
     endpoint = SearchForNumberEndpoint(project_id="test_project", request_data=mock_request_data)
     response = endpoint.handle_response(mock_response)
 
-    assert isinstance(response, CheckNumberAvailabilityResponse)
+    assert isinstance(response, AvailableNumber)
     assert response.phone_number == "+1234567890"
     assert response.region_code == "US"
     assert response.type == "MOBILE"

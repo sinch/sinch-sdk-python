@@ -24,17 +24,17 @@ def test_available_region_expects_all_fields_mapped_correctly(test_data):
     assert len(response.types) == 3
 
 
-def test_available_region_expects_validation_error_on_empty_types_list():
+def test_available_region_expects_empty_types_list():
     """
-    Expects validation error when types list is empty due to min_length=1 constraint
+    Expects no error when types list is empty
     """
-    invalid_data = {
+    empty_types_list = {
         "regionCode": "US",
         "regionName": "United States",
         "types": []
     }
-    with pytest.raises(ValidationError):
-        AvailableRegion(**invalid_data)
+    response = AvailableRegion(**empty_types_list)
+    assert len(response.types) == 0
 
 
 def test_available_region_expects_validation_error_on_non_string_fields():

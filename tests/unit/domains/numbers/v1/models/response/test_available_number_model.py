@@ -1,11 +1,11 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1.response import CheckNumberAvailabilityResponse
+from sinch.domains.numbers.models.v1.response import AvailableNumber
 
 
-def test_check_number_availability_response_expects_valid_data():
+def test_available_number_expects_valid_data():
     """
-    Expects CheckNumberAvailabilityResponse to be created with valid data.
+    Expects AvailableNumber to be created with valid data.
     """
     data = {
         "phoneNumber": "+1234567890",
@@ -18,7 +18,7 @@ def test_check_number_availability_response_expects_valid_data():
         "supportingDocumentationRequired": True
     }
 
-    response = CheckNumberAvailabilityResponse(**data)
+    response = AvailableNumber(**data)
 
     assert response.phone_number == "+1234567890"
     assert response.region_code == "US"
@@ -32,9 +32,9 @@ def test_check_number_availability_response_expects_valid_data():
     assert response.supporting_documentation_required is True
 
 
-def test_check_number_availability_response_missing_optional_fields_expects_valid_data():
+def test_available_number_missing_optional_fields_expects_valid_data():
     """
-    Verifies CheckNumberAvailabilityResponse can be created with missing optional fields,
+    Verifies AvailableNumber can be created with missing optional fields,
     and doesn't include them in the response.
     """
     data = {
@@ -46,15 +46,15 @@ def test_check_number_availability_response_missing_optional_fields_expects_vali
         "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"}
     }
 
-    response = CheckNumberAvailabilityResponse(**data)
+    response = AvailableNumber(**data)
 
     assert response.payment_interval_months is None
     assert response.supporting_documentation_required is None
 
 
-def test_check_number_availability_response_expects_parsed_new_type():
+def test_available_number_expects_parsed_new_type():
     """
-    Test CheckNumberAvailabilityResponse with invalid data.
+    Test AvailableNumber with invalid data.
     """
     data = {
         "phoneNumber": "+1234567890",
@@ -65,11 +65,11 @@ def test_check_number_availability_response_expects_parsed_new_type():
         "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"}
     }
 
-    response = CheckNumberAvailabilityResponse(**data)
+    response = AvailableNumber(**data)
     assert response.type == "NEW_TYPE"
 
 
-def test_check_number_availability_response_expects_validation_error_for_missing_required_fields():
+def test_available_number_expects_validation_error_for_missing_required_fields():
     """
     Check if validation fails when required fields are missing.
     """
@@ -82,4 +82,4 @@ def test_check_number_availability_response_expects_validation_error_for_missing
     }
 
     with pytest.raises(ValidationError):
-        CheckNumberAvailabilityResponse.model_validate(data, strict=True)
+        AvailableNumber.model_validate(data, strict=True)

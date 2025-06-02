@@ -3,7 +3,7 @@ from pydantic import StrictInt, StrictStr
 
 from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber, CheckNumberAvailabilityResponse
+    ActiveNumber, AvailableNumber
 )
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
@@ -20,7 +20,7 @@ from sinch.domains.numbers.models.v1.types import (
 
 class AvailableNumbers(BaseNumbers):
 
-    def check_availability(self, phone_number: StrictStr, **kwargs) -> CheckNumberAvailabilityResponse:
+    def check_availability(self, phone_number: StrictStr, **kwargs) -> AvailableNumber:
         request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(SearchForNumberEndpoint, request_data)
 
