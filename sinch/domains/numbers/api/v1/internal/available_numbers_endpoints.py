@@ -7,7 +7,7 @@ from sinch.domains.numbers.models.v1.internal import (
     NumberRequest, RentAnyNumberRequest, RentNumberRequest
 )
 from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, CheckNumberAvailabilityResponse
+    ActiveNumber, AvailableNumber
 )
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 
@@ -91,9 +91,9 @@ class SearchForNumberEndpoint(NumbersEndpoint):
     def __init__(self, project_id: str, request_data: NumberRequest):
         super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
 
-    def handle_response(self, response: HTTPResponse) -> CheckNumberAvailabilityResponse:
+    def handle_response(self, response: HTTPResponse) -> AvailableNumber:
         try:
             super(SearchForNumberEndpoint, self).handle_response(response)
         except NumbersException as e:
             raise NumberNotFoundException(message=e.args[0], response=e.http_response, is_from_server=e.is_from_server)
-        return self.process_response_model(response.body, CheckNumberAvailabilityResponse)
+        return self.process_response_model(response.body, AvailableNumber)

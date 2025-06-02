@@ -6,7 +6,7 @@ from sinch.domains.numbers.api.v1.internal import (
 from sinch.domains.numbers.models.v1.internal import (
     ListAvailableNumbersRequest, ListAvailableNumbersResponse, NumberRequest, RentNumberRequest
 )
-from sinch.domains.numbers.models.v1.response import ActiveNumber, CheckNumberAvailabilityResponse
+from sinch.domains.numbers.models.v1.response import ActiveNumber, AvailableNumber
 
 
 def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers, mocker):
@@ -76,7 +76,7 @@ def test_check_availability_expects_correct_request(mock_sinch_client_numbers, m
     Test that the AvailableNumbers.check_availability method sends the correct request
     and handles the response properly.
     """
-    mock_response = CheckNumberAvailabilityResponse.model_construct()
+    mock_response = AvailableNumber.model_construct()
     mock_sinch_client_numbers.configuration.transport.request.return_value = mock_response
 
     spy_endpoint = mocker.spy(SearchForNumberEndpoint, "__init__")

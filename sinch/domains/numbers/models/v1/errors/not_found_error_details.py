@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import Field, StrictStr
 
 
-class ErrorDetails(BaseModelConfigurationResponse):
+class NotFoundErrorDetails(BaseModelConfigurationResponse):
     type: Optional[StrictStr] = Field(default=None, alias="type")
     resource_type: Optional[StrictStr] = Field(default=None, alias="resourceType")
     resource_name: Optional[StrictStr] = Field(default=None, alias="resourceName")
