@@ -127,6 +127,21 @@ class HTTPTransport(ABC):
 
 class AsyncHTTPTransport(HTTPTransport):
     async def authenticate(self, endpoint, request_data):
+        if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
+            if (
+                not self.sinch.configuration.key_id
+                or not self.sinch.configuration.key_secret
+                or not self.sinch.configuration.project_id
+            ):
+                raise ValidationException(
+                    message=(
+                        "key_id, key_secret and project_id are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
+
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
             request_data.auth = httpx.BasicAuth(
                 self.sinch.configuration.key_id,
@@ -141,6 +156,37 @@ class AsyncHTTPTransport(HTTPTransport):
                 "Authorization": f"Bearer {token_response.access_token}",
                 "Content-Type": "application/json"
             }
+        elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
+            if not self.sinch.configuration.application_key or not self.sinch.configuration.application_secret:
+                raise ValidationException(
+                    message=(
+                        "application key and application secret are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
+            signature = Signature(
+                self.sinch,
+                endpoint.HTTP_METHOD,
+                request_data.request_body,
+                endpoint.get_url_without_origin(self.sinch)
+            )
+            request_data.headers = signature.get_http_headers_with_signature()
+        elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
+            if not self.sinch.configuration.sms_api_token or not self.sinch.configuration.service_plan_id:
+                raise ValidationException(
+                    message=(
+                        "sms_api_token and service_plan_id are required by this API. "
+                        "Those credentials can be obtained from Sinch portal."
+                    ),
+                    is_from_server=False,
+                    response=None
+                )
+            request_data.headers.update({
+                "Authorization": f"Bearer {self.sinch.configuration.sms_api_token}",
+                "Content-Type": "application/json"
+            })
 
         return request_data
 
