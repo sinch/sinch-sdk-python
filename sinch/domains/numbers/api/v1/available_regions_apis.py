@@ -1,9 +1,10 @@
 from typing import Optional
+from pydantic import conlist
 from sinch.core.pagination import TokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.internal import ListAvailableRegionsEndpoint
 from sinch.domains.numbers.models.v1.internal import ListAvailableRegionsRequest
 from sinch.domains.numbers.models.v1.response import AvailableRegion
-from sinch.domains.numbers.models.v1.types import NumberTypesRegionsValuesList
+from sinch.domains.numbers.models.v1.types import NumberType
 
 
 class AvailableRegions:
@@ -12,7 +13,7 @@ class AvailableRegions:
 
     def list(
         self,
-        types: Optional[NumberTypesRegionsValuesList] = None,
+        types: Optional[conlist(NumberType)] = None,
         **kwargs
     ) -> Paginator[AvailableRegion]:
         """
@@ -21,7 +22,7 @@ class AvailableRegions:
         See which regions apply to your virtual number.
 
         :param types: List of number types to filter the regions.
-        :type types: Optional[NumberTypesRegionsValuesList]
+        :type types: Optional[conlist(NumberType)]
 
         :param kwargs: Additional parameters for the request.
         :type kwargs: Optional[dict]
