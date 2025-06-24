@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sinch.domains.numbers.models.v1.shared import (
-    ScheduledSmsProvisioning, SmsConfigurationResponse, VoiceConfigurationResponse
+    ScheduledSmsProvisioning, SmsConfiguration, VoiceConfigurationResponse
 )
 
 
@@ -54,7 +54,7 @@ def test_sms_configuration_valid_expects_parsed_data():
             "status": "ACTIVE"
         }
     }
-    config = SmsConfigurationResponse.model_validate(data)
+    config = SmsConfiguration.model_validate(data)
 
     assert config.service_plan_id == "test_plan"
     assert config.campaign_id == "test_campaign"
