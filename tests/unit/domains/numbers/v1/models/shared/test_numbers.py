@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from pydantic import TypeAdapter, parse_obj_as
+from pydantic import TypeAdapter
 from sinch.domains.numbers.models.v1.shared import ScheduledSmsProvisioning, SmsConfiguration
 from sinch.domains.numbers.models.v1.types import VoiceConfiguration
 

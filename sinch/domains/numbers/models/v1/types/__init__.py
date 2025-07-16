@@ -9,7 +9,9 @@ from sinch.domains.numbers.models.v1.types.order_by_values import OrderByValues
 from sinch.domains.numbers.models.v1.types.sms_configuration_dict import SmsConfigurationDict
 from sinch.domains.numbers.models.v1.types.sms_error_code import SmsErrorCode, SmsErrorCodeValues
 from sinch.domains.numbers.models.v1.types.status_scheduled_provisioning import StatusScheduledProvisioning
-from sinch.domains.numbers.models.v1.types.voice_application_type import VoiceApplicationType, VoiceApplicationTypeValues
+from sinch.domains.numbers.models.v1.types.voice_application_type import (
+    VoiceApplicationType, VoiceApplicationTypeValues
+)
 from sinch.domains.numbers.models.v1.types.voice_configuration import VoiceConfiguration
 from sinch.domains.numbers.models.v1.types.voice_configuration_dict import (
     VoiceConfigurationDictCustom, VoiceConfigurationDictEST, VoiceConfigurationDictFAX,

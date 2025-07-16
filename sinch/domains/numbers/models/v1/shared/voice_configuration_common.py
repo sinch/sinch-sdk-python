@@ -7,6 +7,7 @@ from sinch.domains.numbers.models.v1.shared import (
     ScheduledVoiceProvisioningRTC
 )
 
+
 class VoiceConfigurationCommon(BaseModelConfigurationResponse):
     type: Optional[Union[Literal["RTC", "EST", "FAX"], StrictStr]]
     last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
