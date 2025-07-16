@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
-from sinch.domains.numbers.models.v1.shared import (
-    ScheduledSmsProvisioning, SmsConfiguration, VoiceConfigurationResponse
-)
+from pydantic import TypeAdapter, parse_obj_as
+from sinch.domains.numbers.models.v1.shared import ScheduledSmsProvisioning, SmsConfiguration
+from sinch.domains.numbers.models.v1.types import VoiceConfiguration
 
 
 def test_scheduled_provisioning_sms_configuration_valid_expects_parsed_data():
@@ -78,7 +78,9 @@ def test_voice_configuration_rtc_valid_expects_parsed_data():
             "appId": "test_app"
         }
     }
-    config = VoiceConfigurationResponse.model_validate(data)
+
+    voice_configuration_adapter = TypeAdapter(VoiceConfiguration)
+    config = voice_configuration_adapter.validate_python(data)
 
     assert config.type == "RTC"
     assert config.app_id == "test_app"
@@ -104,7 +106,9 @@ def test_voice_configuration_fax_valid_expects_parsed_data():
             "serviceId": "test_service"
         }
     }
-    config = VoiceConfigurationResponse.model_validate(data)
+
+    voice_configuration_adapter = TypeAdapter(VoiceConfiguration)
+    config = voice_configuration_adapter.validate_python(data)
 
     assert config.type == "FAX"
     assert config.scheduled_voice_provisioning is not None

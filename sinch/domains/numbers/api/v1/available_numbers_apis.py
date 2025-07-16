@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import StrictInt, StrictStr
+from pydantic import StrictInt, StrictStr, conlist
 
 from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.numbers.models.v1.response import (
@@ -13,7 +13,7 @@ from sinch.domains.numbers.models.v1.internal import (
     ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest, RentNumberRequest
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValuesList, NumberPatternDict, NumberSearchPatternTypeValues,
+    CapabilityTypeValues, NumberPatternDict, NumberSearchPatternTypeValues,
     NumberTypeValues, SmsConfigurationDict, VoiceConfigurationDictType
 )
 
@@ -30,7 +30,7 @@ class AvailableNumbers(BaseNumbers):
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:
@@ -72,7 +72,7 @@ class AvailableNumbers(BaseNumbers):
         region_code: StrictStr,
         type_: NumberTypeValues,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[StrictStr] = None,

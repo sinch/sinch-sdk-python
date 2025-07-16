@@ -1,9 +1,9 @@
-from pydantic import conlist, Field, StrictStr
+from pydantic import Field, StrictStr
 from typing import Annotated, Literal, Union
 
-CapabilityTypeValuesList = conlist(Union[Literal["SMS", "VOICE"], StrictStr], min_length=1)
+CapabilityTypeValues = Union[Literal["SMS", "VOICE"], StrictStr]
 
 CapabilityType = Annotated[
-    CapabilityTypeValuesList,
+    CapabilityTypeValues,
     Field(default=None)
 ]
