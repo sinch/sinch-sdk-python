@@ -104,7 +104,7 @@ def test_voice_configuration_est_valid_expects_parsed_data():
     data = {
         "type": "EST",
         "appId": "",
-        "trunkId": "test_app",
+        "trunkId": "test_trunk",
         "serviceId": "",
         "lastUpdatedTime": "2025-02-25T09:32:27.437Z",
         "scheduledVoiceProvisioning": {
@@ -112,7 +112,7 @@ def test_voice_configuration_est_valid_expects_parsed_data():
             "lastUpdatedTime": "2025-02-25T09:32:27.437Z",
             "status": "ACTIVE",
             "appId": "",
-            "trunkId": "test_app",
+            "trunkId": "test_trunk",
             "serviceId": ""
         }
     }
@@ -121,13 +121,13 @@ def test_voice_configuration_est_valid_expects_parsed_data():
     config = voice_configuration_adapter.validate_python(data)
 
     assert config.type == "EST"
-    assert config.trunk_id == "test_app"
+    assert config.trunk_id == "test_trunk"
     assert (config.last_updated_time ==
             datetime(2025, 2, 25, 9, 32, 27, 437000,
                      tzinfo=timezone.utc))
     assert config.scheduled_voice_provisioning is not None
     assert config.scheduled_voice_provisioning.type == "EST"
-    assert config.scheduled_voice_provisioning.trunk_id == "test_app"
+    assert config.scheduled_voice_provisioning.trunk_id == "test_trunk"
     assert config.scheduled_voice_provisioning.status == "ACTIVE"
 
 
