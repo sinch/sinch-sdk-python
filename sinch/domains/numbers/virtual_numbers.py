@@ -1,5 +1,5 @@
 from typing import Optional, overload
-from pydantic import StrictStr, StrictInt
+from pydantic import StrictStr, StrictInt, conlist
 from sinch.domains.numbers.api.v1 import (
     ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
 )
@@ -8,7 +8,7 @@ from sinch.domains.numbers.models.v1.response import (
     ActiveNumber, AvailableNumber
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
+    CapabilityTypeValues, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
     SmsConfigurationDict, VoiceConfigurationDictType, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
     VoiceConfigurationDictEST, NumberPatternDict
 )
@@ -50,7 +50,7 @@ class VirtualNumbers:
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,
@@ -72,7 +72,7 @@ class VirtualNumbers:
         :type number_search_pattern: Optional[NumberSearchPatternTypeValues]
 
         :param capabilities: Capabilities required for the number (e.g., ["SMS", "VOICE"]).
-        :type capabilities: Optional[CapabilityTypeValuesList]
+        :type capabilities: Optional[conlist(CapabilityTypeValues)]
 
         :param page_size: Maximum number of items to return.
         :type page_size: StrictInt
@@ -324,7 +324,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationDictRTC,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[CapabilityTypeValues] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -337,7 +337,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationDictFAX,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -350,7 +350,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationDictEST,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -360,7 +360,7 @@ class VirtualNumbers:
         region_code: StrictStr,
         type_: NumberTypeValues,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDictType] = None,
         callback_url: Optional[StrictStr] = None,
@@ -423,7 +423,7 @@ class VirtualNumbers:
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:

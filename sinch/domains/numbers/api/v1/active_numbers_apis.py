@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import StrictStr, StrictInt
+from pydantic import StrictStr, StrictInt, conlist
 from sinch.core.pagination import TokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
@@ -12,7 +12,7 @@ from sinch.domains.numbers.models.v1.internal import (
     ListActiveNumbersRequest, NumberRequest, UpdateNumberConfigurationRequest
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValuesList, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
+    CapabilityTypeValues, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
     SmsConfigurationDict, VoiceConfigurationDictType
 )
 
@@ -25,7 +25,7 @@ class ActiveNumbers(BaseNumbers):
         number_type: NumberTypeValues,
         number_pattern: Optional[StrictStr] = None,
         number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[CapabilityTypeValuesList] = None,
+        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
         order_by: Optional[OrderByValues] = None,

@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import Field, StrictInt, StrictStr, field_validator
+from pydantic import Field, StrictInt, StrictStr, field_validator, conlist
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 from sinch.domains.numbers.models.v1.types import (
     CapabilityType, OrderByValues, NumberSearchPatternTypeValues, NumberTypeValues,
@@ -11,7 +11,7 @@ class ListActiveNumbersRequest(BaseModelConfigurationRequest):
     region_code: StrictStr = Field(alias="regionCode")
     number_type: NumberTypeValues = Field(alias="type")
     page_size: Optional[StrictInt] = Field(default=None, alias="pageSize")
-    capabilities: Optional[CapabilityType] = Field(default=None)
+    capabilities: Optional[conlist(CapabilityType)] = Field(default=None)
     number_search_pattern: Optional[NumberSearchPatternTypeValues] = (
         Field(default=None, alias="numberPattern.searchPattern")
     )

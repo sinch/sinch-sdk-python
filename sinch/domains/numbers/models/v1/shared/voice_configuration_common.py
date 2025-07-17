@@ -8,8 +8,8 @@ from sinch.domains.numbers.models.v1.shared import (
 )
 
 
-class VoiceConfigurationResponse(BaseModelConfigurationResponse):
-    type: Union[Literal["RTC", "EST", "FAX"], StrictStr]
+class VoiceConfigurationCommon(BaseModelConfigurationResponse):
+    type: Optional[Union[Literal["RTC", "EST", "FAX"], StrictStr]]
     last_updated_time: Optional[datetime] = Field(default=None, alias="lastUpdatedTime")
     scheduled_voice_provisioning: Union[ScheduledVoiceProvisioningRTC,
                                         ScheduledVoiceProvisioningEST,
@@ -18,4 +18,3 @@ class VoiceConfigurationResponse(BaseModelConfigurationResponse):
                                         None] = Field(
         default=None, alias="scheduledVoiceProvisioning"
     )
-    app_id: Optional[StrictStr] = Field(default=None, alias="appId")

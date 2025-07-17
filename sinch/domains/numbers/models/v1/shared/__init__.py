@@ -9,7 +9,9 @@ from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_est imp
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_fax import ScheduledVoiceProvisioningFAX
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_rtc import ScheduledVoiceProvisioningRTC
 from sinch.domains.numbers.models.v1.shared.sms_configuration import SmsConfiguration
-from sinch.domains.numbers.models.v1.shared.voice_configuration_response import VoiceConfigurationResponse
+from sinch.domains.numbers.models.v1.shared.voice_configuration_est import VoiceConfigurationEST
+from sinch.domains.numbers.models.v1.shared.voice_configuration_rtc import VoiceConfigurationRTC
+from sinch.domains.numbers.models.v1.shared.voice_configuration_fax import VoiceConfigurationFAX
 
 __all__ = [
     "Money",
@@ -21,5 +23,7 @@ __all__ = [
     "ScheduledVoiceProvisioningFAX",
     "ScheduledVoiceProvisioningRTC",
     "SmsConfiguration",
-    "VoiceConfigurationResponse",
+    "VoiceConfigurationEST",
+    "VoiceConfigurationRTC",
+    "VoiceConfigurationFAX"
 ]
