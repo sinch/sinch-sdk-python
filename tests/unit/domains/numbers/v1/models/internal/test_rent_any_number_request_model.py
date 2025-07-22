@@ -26,8 +26,10 @@ def test_rent_any_number_request_expects_valid_data():
 
     request = RentAnyNumberRequest(**data)
 
-    assert request.number_pattern.pattern == "string"
-    assert request.number_pattern.search_pattern == "START"
+    assert request.number_pattern == {
+        "pattern": "string",
+        "searchPattern": "START"
+        }
     assert request.region_code == "string"
     assert request.type_ == "MOBILE"
     assert request.capabilities == ["SMS"]

@@ -1,4 +1,4 @@
-from typing import Optional, Union, Annotated, Literal
+from typing import Optional, Literal
 from pydantic import Field, StrictStr
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 
@@ -20,9 +20,3 @@ class VoiceConfigurationRTC(BaseModelConfigurationRequest):
 
 class VoiceConfigurationCustom(BaseModelConfigurationRequest):
     type: StrictStr
-
-
-VoiceConfigurationType = Annotated[
-    Union[VoiceConfigurationFAX, VoiceConfigurationEST, VoiceConfigurationRTC],
-    Field(discriminator="type")
-]

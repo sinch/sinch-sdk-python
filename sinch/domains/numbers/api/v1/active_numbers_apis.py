@@ -13,7 +13,7 @@ from sinch.domains.numbers.models.v1.internal import (
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValues, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
-    SmsConfigurationDict, VoiceConfigurationDictType
+    SmsConfigurationDict, VoiceConfigurationDict
 )
 
 
@@ -54,7 +54,7 @@ class ActiveNumbers(BaseNumbers):
         phone_number: StrictStr,
         display_name: Optional[StrictStr] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
-        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:

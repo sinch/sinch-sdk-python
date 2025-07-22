@@ -1,29 +1,13 @@
-from typing import TypedDict, Literal, Union, Annotated
-from typing_extensions import NotRequired
+from typing import Union, Annotated
 from pydantic import Field
+from sinch.domains.numbers.models.v1.types.voice_configuration_est_dict import VoiceConfigurationESTDict
+from sinch.domains.numbers.models.v1.types.voice_configuration_rtc_dict import VoiceConfigurationRTCDict
+from sinch.domains.numbers.models.v1.types.voice_configuration_fax_dict import VoiceConfigurationFAXDict
+from sinch.domains.numbers.models.v1.types.voice_configuration_custom_dict import VoiceConfigurationCustomDict
 
 
-class VoiceConfigurationDictRTC(TypedDict):
-    type: Literal["RTC"]
-    app_id: NotRequired[str]
-
-
-class VoiceConfigurationDictEST(TypedDict):
-    type: Literal["EST"]
-    trunk_id: NotRequired[str]
-
-
-class VoiceConfigurationDictFAX(TypedDict):
-    type: Literal["FAX"]
-    service_id: NotRequired[str]
-
-
-class VoiceConfigurationDictCustom(TypedDict):
-    type: str
-
-
-VoiceConfigurationDictType = Annotated[
-    Union[VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
-          VoiceConfigurationDictEST, VoiceConfigurationDictCustom],
+VoiceConfigurationDict = Annotated[
+    Union[VoiceConfigurationFAXDict, VoiceConfigurationRTCDict,
+          VoiceConfigurationESTDict, VoiceConfigurationCustomDict],
     Field(discriminator="type")
 ]

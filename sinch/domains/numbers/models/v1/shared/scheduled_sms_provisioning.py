@@ -2,7 +2,8 @@ from datetime import datetime
 from typing import Optional
 from pydantic import StrictStr, Field, conlist
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
-from sinch.domains.numbers.models.v1.types import StatusScheduledProvisioning, SmsErrorCode
+from sinch.domains.numbers.models.v1.types.status_scheduled_provisioning import StatusScheduledProvisioning
+from sinch.domains.numbers.models.v1.types.sms_error_code import SmsErrorCode
 
 
 class ScheduledSmsProvisioning(BaseModelConfigurationResponse):
