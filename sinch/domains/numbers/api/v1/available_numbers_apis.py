@@ -24,7 +24,7 @@ class AvailableNumbers(BaseNumbers):
         request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(SearchForNumberEndpoint, request_data)
 
-    def list(
+    def search_for_available_numbers(
         self,
         region_code: StrictStr,
         number_type: NumberTypeValues,

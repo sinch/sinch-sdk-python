@@ -456,7 +456,7 @@ class VirtualNumbers:
 
         For detailed documentation, visit: https://developers.sinch.com
         """
-        return self._available.list(
+        return self._available.search_for_available_numbers(
             region_code=region_code,
             number_type=number_type,
             page_size=page_size,

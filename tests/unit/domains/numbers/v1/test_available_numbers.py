@@ -11,7 +11,7 @@ from sinch.domains.numbers.models.v1.response import ActiveNumber, AvailableNumb
 
 def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers, mocker):
     """
-    Test that the AvailableNumbers.list method sends the correct request
+    Test that the AvailableNumbers.search_for_available_numbers method sends the correct request
     and handles the response properly.
     """
     mock_response = ListAvailableNumbersResponse(availableNumbers=[])
@@ -21,7 +21,7 @@ def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers,
     spy_endpoint = mocker.spy(AvailableNumbersEndpoint, "__init__")
 
     available_numbers = AvailableNumbers(mock_sinch_client_numbers)
-    response = available_numbers.list(
+    response = available_numbers.search_for_available_numbers(
         region_code="US",
         number_type="LOCAL",
         capabilities=["SMS", "VOICE"],
