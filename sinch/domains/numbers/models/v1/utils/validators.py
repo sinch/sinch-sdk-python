@@ -6,6 +6,22 @@ from sinch.domains.numbers.models.v1.internal.voice_configuration_request import
     VoiceConfigurationFAX,
     VoiceConfigurationCustom,
 )
+from sinch.domains.numbers.models.v1.shared.number_pattern import NumberPattern
+
+
+def validate_number_pattern(data: Dict[str, Any]) -> None:
+    """
+    Validates `number_pattern` field in request data.
+
+    Args:
+        data (dict): The request payload.
+
+    Raises:
+        ValidationError: If validation fails for the number pattern.
+    """
+    for key in ("numberPattern", "number_pattern"):
+        if key in data and data[key] is not None:
+            NumberPattern(**data[key])
 
 
 def validate_sms_voice_configuration(data: Dict[str, Any]) -> None:

@@ -20,7 +20,7 @@ from sinch.domains.numbers.models.v1.internal.update_number_configuration_reques
 )
 from sinch.domains.numbers.models.v1.internal.voice_configuration_request import (
     VoiceConfigurationCustom, VoiceConfigurationEST, VoiceConfigurationFAX,
-    VoiceConfigurationRTC, VoiceConfigurationType
+    VoiceConfigurationRTC
 )
 
 __all__ = [
@@ -39,6 +39,5 @@ __all__ = [
     "VoiceConfigurationCustom",
     "VoiceConfigurationEST",
     "VoiceConfigurationFAX",
-    "VoiceConfigurationRTC",
-    "VoiceConfigurationType",
+    "VoiceConfigurationRTC"
 ]

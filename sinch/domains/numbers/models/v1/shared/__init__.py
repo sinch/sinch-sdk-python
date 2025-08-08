@@ -1,7 +1,7 @@
 from sinch.domains.numbers.models.v1.shared.money import Money
 from sinch.domains.numbers.models.v1.shared.number_pattern import NumberPattern
 from sinch.domains.numbers.models.v1.shared.scheduled_sms_provisioning import ScheduledSmsProvisioning
-from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning import ScheduledVoiceProvisioning
+from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_common import ScheduledVoiceProvisioningCommon
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_custom import (
     ScheduledVoiceProvisioningCustom
 )
@@ -17,7 +17,7 @@ __all__ = [
     "Money",
     "NumberPattern",
     "ScheduledSmsProvisioning",
-    "ScheduledVoiceProvisioning",
+    "ScheduledVoiceProvisioningCommon",
     "ScheduledVoiceProvisioningCustom",
     "ScheduledVoiceProvisioningEST",
     "ScheduledVoiceProvisioningFAX",

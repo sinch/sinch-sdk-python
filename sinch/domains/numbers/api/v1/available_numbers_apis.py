@@ -14,7 +14,7 @@ from sinch.domains.numbers.models.v1.internal import (
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValues, NumberPatternDict, NumberSearchPatternTypeValues,
-    NumberTypeValues, SmsConfigurationDict, VoiceConfigurationDictType
+    NumberTypeValues, SmsConfigurationDict, VoiceConfigurationDict
 )
 
 
@@ -24,7 +24,7 @@ class AvailableNumbers(BaseNumbers):
         request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(SearchForNumberEndpoint, request_data)
 
-    def list(
+    def search_for_available_numbers(
         self,
         region_code: StrictStr,
         number_type: NumberTypeValues,
@@ -54,7 +54,7 @@ class AvailableNumbers(BaseNumbers):
         self,
         phone_number: StrictStr,
         sms_configuration: Optional[SmsConfigurationDict] = None,
-        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:
@@ -74,7 +74,7 @@ class AvailableNumbers(BaseNumbers):
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
-        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:

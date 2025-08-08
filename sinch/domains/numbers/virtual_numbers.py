@@ -9,8 +9,8 @@ from sinch.domains.numbers.models.v1.response import (
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityTypeValues, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
-    SmsConfigurationDict, VoiceConfigurationDictType, VoiceConfigurationDictFAX, VoiceConfigurationDictRTC,
-    VoiceConfigurationDictEST, NumberPatternDict
+    SmsConfigurationDict, VoiceConfigurationDict, VoiceConfigurationFAXDict, VoiceConfigurationRTCDict,
+    VoiceConfigurationESTDict, NumberPatternDict
 )
 from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
 
@@ -108,7 +108,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictEST,
+        voice_configuration: VoiceConfigurationESTDict,
         display_name: Optional[StrictStr] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
@@ -119,7 +119,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictFAX,
+        voice_configuration: VoiceConfigurationFAXDict,
         display_name: Optional[StrictStr] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
@@ -130,7 +130,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictRTC,
+        voice_configuration: VoiceConfigurationRTCDict,
         display_name: Optional[StrictStr] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
@@ -141,7 +141,7 @@ class VirtualNumbers:
         phone_number: StrictStr,
         display_name: Optional[StrictStr] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
-        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:
@@ -163,10 +163,10 @@ class VirtualNumbers:
 
         :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
 
-                                    - ``VoiceConfigurationDictRTC``: type 'RTC' with an ``app_id`` field.
-                                    - ``VoiceConfigurationDictEST``: type 'EST' with a ``trunk_id`` field.
-                                    - ``VoiceConfigurationDictFAX``: type 'FAX' with a ``service_id`` field.
-        :type voice_configuration: Optional[VoiceConfigurationDictType]
+                                    - ``VoiceConfigurationRTCDict``: type 'RTC' with an ``app_id`` field.
+                                    - ``VoiceConfigurationESTDict``: type 'EST' with a ``trunk_id`` field.
+                                    - ``VoiceConfigurationFAXDict``: type 'FAX' with a ``service_id`` field.
+        :type voice_configuration: Optional[VoiceConfigurationDict]
 
         :param callback_url: The callback URL for the virtual number.
         :type callback_url: Optional[str]
@@ -248,7 +248,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictEST,
+        voice_configuration: VoiceConfigurationESTDict,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -258,7 +258,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictFAX,
+        voice_configuration: VoiceConfigurationFAXDict,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -268,7 +268,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictRTC,
+        voice_configuration: VoiceConfigurationRTCDict,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -277,7 +277,7 @@ class VirtualNumbers:
         self,
         phone_number: StrictStr,
         sms_configuration: Optional[SmsConfigurationDict] = None,
-        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:
@@ -294,10 +294,10 @@ class VirtualNumbers:
         :type sms_configuration: Optional[SmsConfigurationDict]
         :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
 
-            - ``VoiceConfigurationDictRTC``: type ``'RTC'`` with an ``app_id`` field.
-            - ``VoiceConfigurationDictEST``: type ``'EST'`` with a ``trunk_id`` field.
-            - ``VoiceConfigurationDictFAX``: type ``'FAX'`` with a ``service_id`` field.
-        :type voice_configuration: Optional[VoiceConfigurationDictType]
+            - ``VoiceConfigurationRTCDict``: type ``'RTC'`` with an ``app_id`` field.
+            - ``VoiceConfigurationESTDict``: type ``'EST'`` with a ``trunk_id`` field.
+            - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
+        :type voice_configuration: Optional[VoiceConfigurationDict]
         :param callback_url: The callback URL to be called.
         :type callback_url: Optional[StrictStr]
         :param kwargs: Additional parameters for the request.
@@ -322,7 +322,7 @@ class VirtualNumbers:
         region_code: StrictStr,
         type_: NumberTypeValues,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictRTC,
+        voice_configuration: VoiceConfigurationRTCDict,
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[CapabilityTypeValues] = None,
         callback_url: Optional[StrictStr] = None
@@ -335,7 +335,7 @@ class VirtualNumbers:
         region_code: StrictStr,
         type_: NumberTypeValues,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictFAX,
+        voice_configuration: VoiceConfigurationFAXDict,
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         callback_url: Optional[StrictStr] = None
@@ -348,7 +348,7 @@ class VirtualNumbers:
         region_code: StrictStr,
         type_: NumberTypeValues,
         sms_configuration: SmsConfigurationDict,
-        voice_configuration: VoiceConfigurationDictEST,
+        voice_configuration: VoiceConfigurationESTDict,
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         callback_url: Optional[StrictStr] = None
@@ -362,7 +362,7 @@ class VirtualNumbers:
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
-        voice_configuration: Optional[VoiceConfigurationDictType] = None,
+        voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
         **kwargs
     ) -> ActiveNumber:
@@ -390,10 +390,10 @@ class VirtualNumbers:
 
         :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
 
-                                   - ``VoiceConfigurationDictRTC``: type ``'RTC'`` with an ``app_id`` field.
-                                   - ``VoiceConfigurationDictEST``: type ``'EST'`` with a ``trunk_id`` field.
-                                   - ``VoiceConfigurationDictFAX``: type ``'FAX'`` with a ``service_id`` field.
-        :type voice_configuration: Optional[VoiceConfigurationDictType]
+                                   - ``VoiceConfigurationRTCDict``: type ``'RTC'`` with an ``app_id`` field.
+                                   - ``VoiceConfigurationESTDict``: type ``'EST'`` with a ``trunk_id`` field.
+                                   - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
+        :type voice_configuration: Optional[VoiceConfigurationDict]
 
         :param callback_url: The callback URL to receive notifications.
         :type callback_url: StrictStr
@@ -456,7 +456,7 @@ class VirtualNumbers:
 
         For detailed documentation, visit: https://developers.sinch.com
         """
-        return self._available.list(
+        return self._available.search_for_available_numbers(
             region_code=region_code,
             number_type=number_type,
             page_size=page_size,
