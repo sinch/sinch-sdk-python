@@ -95,7 +95,7 @@ def test_list_available_numbers_request_expects_validation_error_for_missing_req
     assert "region_code" in str(exc_info.value) or "regionCode" in str(exc_info.value)
 
 
-def test_list_available_numbers_expects_parsed_extra_field_snake_case():
+def test_list_available_numbers_expects_parsed_extra_field_camelCase():
     """
     Expects unrecognized fields to be dynamically added as snake_case attributes.
     """
@@ -108,7 +108,7 @@ def test_list_available_numbers_expects_parsed_extra_field_snake_case():
     }
     response = ListAvailableNumbersRequest(**data)
 
-    # Assert known fields
+    # Assert unknown fields
     assert response.extraField == "Extra Value"
 
 
@@ -125,13 +125,13 @@ def test_list_available_numbers_expects_snake_case_to_parsed_extra_field_snake_c
     }
     response = ListAvailableNumbersRequest(**data)
 
-    # Assert known fields
+    # Assert unknown fields
     assert response.extra_field == "Extra Value"
 
 
 def test_list_available_numbers_expects_extra_capability():
     """
-    Expects unrecognized fields to be dynamically added as snake_case attributes.
+    Expects unrecognized value to be added.
     """
     data = {
         "number_type": "MOBILE",
@@ -142,5 +142,5 @@ def test_list_available_numbers_expects_extra_capability():
     }
     response = ListAvailableNumbersRequest(**data)
 
-    # Assert known fields
+    # Assert Extra value
     assert response.capabilities == ["SMS", "VOICE", "EXTRA"]

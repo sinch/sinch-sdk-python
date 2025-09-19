@@ -181,7 +181,8 @@ class VirtualNumbers:
             display_name=display_name,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url, **kwargs
+            callback_url=callback_url,
+            **kwargs
         )
 
     def get(

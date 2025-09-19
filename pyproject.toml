@@ -28,6 +28,7 @@ keywords = ["sinch", "sdk"]
 python = ">=3.9"
 requests = "*"
 pydantic = ">=2.0.0"
+pytest = "^8.4.2"
 
 [build-system]
 requires = ["poetry-core"]
