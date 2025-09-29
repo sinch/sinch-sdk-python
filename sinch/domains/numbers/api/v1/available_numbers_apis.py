@@ -70,7 +70,7 @@ class AvailableNumbers(BaseNumbers):
     def rent_any(
         self,
         region_code: StrictStr,
-        type_: NumberTypeValues,
+        number_type: NumberTypeValues,
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
@@ -80,7 +80,7 @@ class AvailableNumbers(BaseNumbers):
     ) -> ActiveNumber:
         request_data = RentAnyNumberRequest(
             region_code=region_code,
-            type_=type_,
+            number_type=number_type,
             number_pattern=number_pattern,
             capabilities=capabilities,
             sms_configuration=sms_configuration,

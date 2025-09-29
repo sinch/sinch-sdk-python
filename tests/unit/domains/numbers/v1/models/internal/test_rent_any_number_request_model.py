@@ -31,7 +31,7 @@ def test_rent_any_number_request_expects_valid_data():
         "searchPattern": "START"
         }
     assert request.region_code == "string"
-    assert request.type_ == "MOBILE"
+    assert request.number_type == "MOBILE"
     assert request.capabilities == ["SMS"]
     assert request.sms_configuration == {
             "servicePlanId": "string",
@@ -56,7 +56,7 @@ def test_rent_any_number_request_expects_missing_optional_fields():
     request = RentAnyNumberRequest(**data)
 
     assert request.region_code == "string"
-    assert request.type_ == "MOBILE"
+    assert request.number_type == "MOBILE"
 
     assert request.number_pattern is None
     assert request.capabilities is None

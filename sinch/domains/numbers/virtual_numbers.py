@@ -181,7 +181,8 @@ class VirtualNumbers:
             display_name=display_name,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url, **kwargs
+            callback_url=callback_url,
+            **kwargs
         )
 
     def get(
@@ -320,10 +321,10 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        type_: NumberTypeValues,
+        number_type: NumberTypeValues,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
-        number_pattern: Optional[NumberPatternDict] = None,
+        number_pattern: NumberPatternDict,
         capabilities: Optional[CapabilityTypeValues] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
@@ -333,10 +334,10 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        type_: NumberTypeValues,
+        number_type: NumberTypeValues,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
-        number_pattern: Optional[NumberPatternDict] = None,
+        number_pattern: NumberPatternDict,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
@@ -346,10 +347,10 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        type_: NumberTypeValues,
+        number_type: NumberTypeValues,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
-        number_pattern: Optional[NumberPatternDict] = None,
+        number_pattern: NumberPatternDict,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
@@ -358,7 +359,7 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        type_: NumberTypeValues,
+        number_type: NumberTypeValues,
         number_pattern: Optional[NumberPatternDict] = None,
         capabilities: Optional[conlist(CapabilityTypeValues)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
@@ -373,10 +374,14 @@ class VirtualNumbers:
         :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
         :type region_code: str
 
-        :param type_: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``). Defaults to ``"MOBILE"``.
-        :type type_: NumberType
+        :param number_type: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``). Defaults to ``"MOBILE"``.
+        :type number_type: NumberTypeValues
 
-        :param number_pattern: Specific sequence of digits to search for.
+        :param number_pattern: A dictionary defining the specific sequence of digits to search for.
+        Include fields such as::
+                                    - ``pattern`` (str): The specific sequence of digits.
+                                    - ``search_pattern`` (str):
+                                            The pattern to apply (e.g., ``"START"``, ``"CONTAINS"``, ``"END"``).
         :type number_pattern: Optional[NumberPatternDict]
 
         :param capabilities: Capabilities required for the number (e.g., ``["SMS", "VOICE"]``).
@@ -408,7 +413,7 @@ class VirtualNumbers:
         """
         return self._available.rent_any(
             region_code=region_code,
-            type_=type_,
+            number_type=number_type,
             number_pattern=number_pattern,
             capabilities=capabilities,
             sms_configuration=sms_configuration,
