@@ -1,8 +1,8 @@
-from typing import Annotated, Literal, Union
-from pydantic import Field, StrictStr
+from typing import Literal, Union
+from pydantic import StrictStr
 
 
-SmsErrorCodeValues = Union[Literal[
+SmsErrorCode = Union[Literal[
     "ERROR_CODE_UNSPECIFIED",
     "INTERNAL_ERROR",
     "SMS_PROVISIONING_FAILED",
@@ -22,8 +22,3 @@ SmsErrorCodeValues = Union[Literal[
     "TFN_NOT_ALLOWED",
     "INVALID_NNID"
 ], StrictStr]
-
-SmsErrorCode = Annotated[
-    SmsErrorCodeValues,
-    Field(default=None)
-]

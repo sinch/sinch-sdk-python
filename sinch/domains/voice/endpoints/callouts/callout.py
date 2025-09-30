@@ -36,13 +36,13 @@ class CalloutEndpoint(VoiceEndpoint):
                 dtmf_options = {}
 
                 if self.request_data.conferenceDtmfOptions["mode"]:
-                    dtmf_options["mode"] = self.request_data.get["conferenceDtmfOptions"]["mode"]
+                    dtmf_options["mode"] = self.request_data.conferenceDtmfOptions["mode"]
 
                 if self.request_data.conferenceDtmfOptions["timeout_mills"]:
-                    dtmf_options["timeoutMills"] = self.request_data.get["conferenceDtmfOptions"]["timeout_mills"]
+                    dtmf_options["timeoutMills"] = self.request_data.conferenceDtmfOptions["timeout_mills"]
 
                 if self.request_data.conferenceDtmfOptions["max_digits"]:
-                    dtmf_options["maxDigits"] = self.request_data.get["conferenceDtmfOptions"]["max_digits"]
+                    dtmf_options["maxDigits"] = self.request_data.conferenceDtmfOptions["max_digits"]
 
                 self.request_data.conferenceDtmfOptions = dtmf_options
 

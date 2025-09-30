@@ -7,7 +7,7 @@ from sinch.domains.numbers.models.v1.internal.base import BaseModelConfiguration
 
 class RentAnyNumberRequest(BaseModelConfigurationRequest):
     region_code: StrictStr = Field(alias="regionCode")
-    type_: NumberType = Field(alias="type")
+    number_type: NumberType = Field(alias="type")
     number_pattern: Optional[Dict[str, Any]] = Field(default=None, alias="numberPattern")
     capabilities: Optional[conlist(CapabilityType)] = Field(default=None)
     sms_configuration: Optional[Dict[str, Any]] = Field(default=None, alias="smsConfiguration")

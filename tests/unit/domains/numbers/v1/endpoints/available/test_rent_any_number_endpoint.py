@@ -14,7 +14,7 @@ def valid_request_data():
     """
     return RentAnyNumberRequest(
         region_code="US",
-        type_="MOBILE",
+        number_type="MOBILE",
         number_pattern={"pattern": "string", "searchPattern": "START"},
         capabilities=["SMS"],
         sms_configuration={"servicePlanId": "string", "campaignId": "string"},

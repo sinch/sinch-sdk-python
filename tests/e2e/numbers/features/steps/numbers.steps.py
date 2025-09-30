@@ -68,7 +68,7 @@ def step_check_unavailable_number(context, phone_number):
 def step_rent_any_number(context):
     context.response = context.sinch.numbers.rent_any(
         region_code='US',
-        type_='LOCAL',
+        number_type='LOCAL',
         capabilities=['SMS', 'VOICE'],
         sms_configuration={
             'service_plan_id': 'SpaceMonkeySquadron',

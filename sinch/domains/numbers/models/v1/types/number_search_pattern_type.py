@@ -1,10 +1,5 @@
-from typing import Union, Literal, Annotated
-from pydantic import StrictStr, Field
+from typing import Union, Literal
+from pydantic import StrictStr
 
 
-NumberSearchPatternTypeValues = Union[Literal["START", "CONTAINS", "END"], StrictStr]
-
-NumberSearchPatternType = Annotated[
-    NumberSearchPatternTypeValues,
-    Field(default=None)
-]
+NumberSearchPatternType = Union[Literal["START", "CONTAINS", "END"], StrictStr]
