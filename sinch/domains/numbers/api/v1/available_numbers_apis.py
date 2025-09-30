@@ -1,5 +1,4 @@
-from typing import Optional
-from pydantic import StrictInt, StrictStr, conlist
+from typing import Optional, List
 
 from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.numbers.models.v1.response import (
@@ -20,18 +19,18 @@ from sinch.domains.numbers.models.v1.types import (
 
 class AvailableNumbers(BaseNumbers):
 
-    def check_availability(self, phone_number: StrictStr, **kwargs) -> AvailableNumber:
+    def check_availability(self, phone_number: str, **kwargs) -> AvailableNumber:
         request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(SearchForNumberEndpoint, request_data)
 
     def search_for_available_numbers(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
-        number_pattern: Optional[StrictStr] = None,
+        number_pattern: Optional[str] = None,
         number_search_pattern: Optional[NumberSearchPatternType] = None,
-        capabilities: Optional[conlist(CapabilityType)] = None,
-        page_size: Optional[StrictInt] = None,
+        capabilities: Optional[List[CapabilityType]] = None,
+        page_size: Optional[int] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:
         return TokenBasedPaginator(
@@ -52,10 +51,10 @@ class AvailableNumbers(BaseNumbers):
 
     def rent(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[StrictStr] = None,
+        callback_url: Optional[str] = None,
         **kwargs
     ) -> ActiveNumber:
         request_data = RentNumberRequest(
@@ -69,13 +68,13 @@ class AvailableNumbers(BaseNumbers):
 
     def rent_any(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[conlist(CapabilityType)] = None,
+        capabilities: Optional[List[CapabilityType]] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[StrictStr] = None,
+        callback_url: Optional[str] = None,
         **kwargs
     ) -> ActiveNumber:
         request_data = RentAnyNumberRequest(

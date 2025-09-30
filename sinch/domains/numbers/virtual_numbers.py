@@ -1,5 +1,4 @@
-from typing import Optional, overload
-from pydantic import StrictStr, StrictInt, conlist
+from typing import Optional, overload, List
 from sinch.domains.numbers.api.v1 import (
     ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
 )
@@ -31,12 +30,12 @@ class VirtualNumbers:
         self._active = ActiveNumbers(self._sinch)
         self._available = AvailableNumbers(self._sinch)
 
-    def webhooks(self, callback_secret: StrictStr) -> NumbersWebhooks:
+    def webhooks(self, callback_secret: str) -> NumbersWebhooks:
         """
         Create a Numbers webhooks handler with the specified callback secret.
 
         :param callback_secret: Secret used for webhook validation.
-        :type callback_secret: StrictStr
+        :type callback_secret: str
         :returns: A configured webhooks handler
         :rtype: NumbersWebhooks
         """
@@ -46,13 +45,13 @@ class VirtualNumbers:
 
     def list(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
-        number_pattern: Optional[StrictStr] = None,
+        number_pattern: Optional[str] = None,
         number_search_pattern: Optional[NumberSearchPatternType] = None,
-        capabilities: Optional[conlist(CapabilityType)] = None,
-        page_size: Optional[StrictInt] = None,
-        page_token: Optional[StrictStr] = None,
+        capabilities: Optional[List[CapabilityType]] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
         order_by: Optional[OrderBy] = None,
         **kwargs
     ) -> Paginator[ActiveNumber]:
@@ -60,25 +59,25 @@ class VirtualNumbers:
         Search for all active virtual numbers associated with a certain project.
 
         :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
-        :type region_code: StrictStr
+        :type region_code: str
 
         :param number_type: Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
         :type number_type: NumberType
 
         :param number_pattern: Specific sequence of digits to search for.
-        :type number_pattern: Optional[StrictStr]
+        :type number_pattern: Optional[str]
 
         :param number_search_pattern: Pattern to apply (e.g., "START", "CONTAINS", "END").
         :type number_search_pattern: Optional[NumberSearchPatternType]
 
         :param capabilities: Capabilities required for the number (e.g., ["SMS", "VOICE"]).
-        :type capabilities: Optional[conlist(CapabilityType)]
+        :type capabilities: Optional[List[CapabilityType]]
 
         :param page_size: Maximum number of items to return.
-        :type page_size: StrictInt
+        :type page_size: int
 
         :param page_token: Token for the next page of results.
-        :type page_token: Optional[StrictStr]
+        :type page_token: Optional[str]
 
         :param order_by: Field to order the results by (e.g., "phoneNumber", "displayName").
         :type order_by: Optional[OrderBy]
@@ -106,43 +105,43 @@ class VirtualNumbers:
     @overload
     def update(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
-        display_name: Optional[StrictStr] = None,
-        callback_url: Optional[StrictStr] = None
+        display_name: Optional[str] = None,
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     @overload
     def update(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
-        display_name: Optional[StrictStr] = None,
-        callback_url: Optional[StrictStr] = None
+        display_name: Optional[str] = None,
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     @overload
     def update(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
-        display_name: Optional[StrictStr] = None,
-        callback_url: Optional[StrictStr] = None
+        display_name: Optional[str] = None,
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     def update(
         self,
-        phone_number: StrictStr,
-        display_name: Optional[StrictStr] = None,
+        phone_number: str,
+        display_name: Optional[str] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[StrictStr] = None,
+        callback_url: Optional[str] = None,
         **kwargs
     ) -> ActiveNumber:
         """
@@ -187,7 +186,7 @@ class VirtualNumbers:
 
     def get(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         **kwargs
     ) -> ActiveNumber:
         """
@@ -208,7 +207,7 @@ class VirtualNumbers:
 
     def release(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         **kwargs
     ) -> ActiveNumber:
         """
@@ -227,7 +226,7 @@ class VirtualNumbers:
         """
         return self._active.release(phone_number=phone_number, **kwargs)
 
-    def check_availability(self, phone_number: StrictStr, **kwargs) -> AvailableNumber:
+    def check_availability(self, phone_number: str, **kwargs) -> AvailableNumber:
         """
         Enter a specific phone number to check availability.
 
@@ -247,46 +246,46 @@ class VirtualNumbers:
     @overload
     def rent(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
-        callback_url: Optional[StrictStr] = None
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     @overload
     def rent(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
-        callback_url: Optional[StrictStr] = None
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     @overload
     def rent(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
-        callback_url: Optional[StrictStr] = None
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     def rent(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[StrictStr] = None,
+        callback_url: Optional[str] = None,
         **kwargs
     ) -> ActiveNumber:
         """
         Rent a virtual number to use with SMS, Voice, or both products.
 
         :param phone_number: The phone number in E.164 format with leading ``+``.
-        :type phone_number: StrictStr
+        :type phone_number: str
         :param sms_configuration: A dictionary defining the SMS configuration.
             Include the following fields::
 
@@ -300,7 +299,7 @@ class VirtualNumbers:
             - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
         :param callback_url: The callback URL to be called.
-        :type callback_url: Optional[StrictStr]
+        :type callback_url: Optional[str]
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
 
@@ -320,51 +319,51 @@ class VirtualNumbers:
     @overload
     def rent_any(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[CapabilityType] = None,
-        callback_url: Optional[StrictStr] = None
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     @overload
     def rent_any(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
         number_pattern: NumberPatternDict,
-        capabilities: Optional[conlist(CapabilityType)] = None,
-        callback_url: Optional[StrictStr] = None
+        capabilities: Optional[List[CapabilityType]] = None,
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     @overload
     def rent_any(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
         number_pattern: NumberPatternDict,
-        capabilities: Optional[conlist(CapabilityType)] = None,
-        callback_url: Optional[StrictStr] = None
+        capabilities: Optional[List[CapabilityType]] = None,
+        callback_url: Optional[str] = None
     ) -> ActiveNumber:
         pass
 
     def rent_any(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[conlist(CapabilityType)] = None,
+        capabilities: Optional[List[CapabilityType]] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[StrictStr] = None,
+        callback_url: Optional[str] = None,
         **kwargs
     ) -> ActiveNumber:
         """
@@ -401,7 +400,7 @@ class VirtualNumbers:
         :type voice_configuration: Optional[VoiceConfigurationDict]
 
         :param callback_url: The callback URL to receive notifications.
-        :type callback_url: StrictStr
+        :type callback_url: str
 
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
@@ -424,34 +423,34 @@ class VirtualNumbers:
 
     def search_for_available_numbers(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
-        number_pattern: Optional[StrictStr] = None,
+        number_pattern: Optional[str] = None,
         number_search_pattern: Optional[NumberSearchPatternType] = None,
-        capabilities: Optional[conlist(CapabilityType)] = None,
-        page_size: Optional[StrictInt] = None,
+        capabilities: Optional[List[CapabilityType]] = None,
+        page_size: Optional[int] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:
         """
         Search for available virtual numbers for you to rent using a variety of parameters to filter results.
 
         :param region_code: ISO 3166-1 alpha-2 country code of the phone number.
-        :type region_code: StrictStr
+        :type region_code: str
 
         :param number_type: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``).
         :type number_type: NumberType
 
         :param number_pattern: Specific sequence of digits to search for.
-        :type number_pattern: Optional[StrictStr]
+        :type number_pattern: Optional[str]
 
         :param number_search_pattern: Pattern to apply (e.g., ``"START"``, ``"CONTAINS"``, ``"END"``).
         :type number_search_pattern: Optional[NumberSearchPatternType]
 
         :param capabilities: Capabilities required for the number (e.g., ``["SMS", "VOICE"]``).
-        :type capabilities: Optional[CapabilityType]
+        :type capabilities: Optional[List[CapabilityType]]
 
         :param page_size: Maximum number of items to return.
-        :type page_size: StrictInt
+        :type page_size: int
 
         :param kwargs: Additional filters for the request.
         :type kwargs: dict

@@ -1,5 +1,4 @@
-from typing import Optional
-from pydantic import StrictStr, StrictInt, conlist
+from typing import Optional, List
 from sinch.core.pagination import TokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
@@ -21,13 +20,13 @@ class ActiveNumbers(BaseNumbers):
 
     def list(
         self,
-        region_code: StrictStr,
+        region_code: str,
         number_type: NumberType,
-        number_pattern: Optional[StrictStr] = None,
+        number_pattern: Optional[str] = None,
         number_search_pattern: Optional[NumberSearchPatternType] = None,
-        capabilities: Optional[conlist(CapabilityType)] = None,
-        page_size: Optional[StrictInt] = None,
-        page_token: Optional[StrictStr] = None,
+        capabilities: Optional[List[CapabilityType]] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
         order_by: Optional[OrderBy] = None,
         **kwargs
     ) -> Paginator[ActiveNumber]:
@@ -51,11 +50,11 @@ class ActiveNumbers(BaseNumbers):
 
     def update(
         self,
-        phone_number: StrictStr,
-        display_name: Optional[StrictStr] = None,
+        phone_number: str,
+        display_name: Optional[str] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[StrictStr] = None,
+        callback_url: Optional[str] = None,
         **kwargs
     ) -> ActiveNumber:
         request_data = UpdateNumberConfigurationRequest(
@@ -70,7 +69,7 @@ class ActiveNumbers(BaseNumbers):
 
     def get(
         self,
-        phone_number: StrictStr,
+        phone_number: str,
         **kwargs
     ) -> ActiveNumber:
         request_data = NumberRequest(
@@ -81,7 +80,7 @@ class ActiveNumbers(BaseNumbers):
 
     def release(
             self,
-            phone_number: StrictStr,
+            phone_number: str,
             **kwargs
     ) -> ActiveNumber:
         request_data = NumberRequest(

@@ -31,7 +31,7 @@ class CallbackConfiguration(BaseNumbers):
 
     def update(
         self,
-        hmac_secret,
+        hmac_secret: str,
         **kwargs
     ) -> CallbackConfigurationResponse:
         """
