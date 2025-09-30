@@ -12,7 +12,7 @@ from sinch.domains.numbers.models.v1.internal import (
     ListActiveNumbersRequest, NumberRequest, UpdateNumberConfigurationRequest
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValues, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
+    CapabilityType, NumberSearchPatternType, NumberType, OrderBy,
     SmsConfigurationDict, VoiceConfigurationDict
 )
 
@@ -22,13 +22,13 @@ class ActiveNumbers(BaseNumbers):
     def list(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         number_pattern: Optional[StrictStr] = None,
-        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        number_search_pattern: Optional[NumberSearchPatternType] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
-        order_by: Optional[OrderByValues] = None,
+        order_by: Optional[OrderBy] = None,
         **kwargs
     ) -> Paginator[ActiveNumber]:
         return TokenBasedPaginator(

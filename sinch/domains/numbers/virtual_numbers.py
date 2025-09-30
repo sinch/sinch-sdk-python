@@ -8,7 +8,7 @@ from sinch.domains.numbers.models.v1.response import (
     ActiveNumber, AvailableNumber
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValues, NumberSearchPatternTypeValues, NumberTypeValues, OrderByValues,
+    CapabilityType, NumberSearchPatternType, NumberType, OrderBy,
     SmsConfigurationDict, VoiceConfigurationDict, VoiceConfigurationFAXDict, VoiceConfigurationRTCDict,
     VoiceConfigurationESTDict, NumberPatternDict
 )
@@ -47,13 +47,13 @@ class VirtualNumbers:
     def list(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         number_pattern: Optional[StrictStr] = None,
-        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        number_search_pattern: Optional[NumberSearchPatternType] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         page_size: Optional[StrictInt] = None,
         page_token: Optional[StrictStr] = None,
-        order_by: Optional[OrderByValues] = None,
+        order_by: Optional[OrderBy] = None,
         **kwargs
     ) -> Paginator[ActiveNumber]:
         """
@@ -63,16 +63,16 @@ class VirtualNumbers:
         :type region_code: StrictStr
 
         :param number_type: Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
-        :type number_type: NumberTypeValues
+        :type number_type: NumberType
 
         :param number_pattern: Specific sequence of digits to search for.
         :type number_pattern: Optional[StrictStr]
 
         :param number_search_pattern: Pattern to apply (e.g., "START", "CONTAINS", "END").
-        :type number_search_pattern: Optional[NumberSearchPatternTypeValues]
+        :type number_search_pattern: Optional[NumberSearchPatternType]
 
         :param capabilities: Capabilities required for the number (e.g., ["SMS", "VOICE"]).
-        :type capabilities: Optional[conlist(CapabilityTypeValues)]
+        :type capabilities: Optional[conlist(CapabilityType)]
 
         :param page_size: Maximum number of items to return.
         :type page_size: StrictInt
@@ -81,7 +81,7 @@ class VirtualNumbers:
         :type page_token: Optional[StrictStr]
 
         :param order_by: Field to order the results by (e.g., "phoneNumber", "displayName").
-        :type order_by: Optional[OrderByValues]
+        :type order_by: Optional[OrderBy]
 
         :param kwargs: Additional filters for the request.
         :type kwargs: dict
@@ -321,11 +321,11 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
         number_pattern: NumberPatternDict,
-        capabilities: Optional[CapabilityTypeValues] = None,
+        capabilities: Optional[CapabilityType] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -334,11 +334,11 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
         number_pattern: NumberPatternDict,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -347,11 +347,11 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
         number_pattern: NumberPatternDict,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         callback_url: Optional[StrictStr] = None
     ) -> ActiveNumber:
         pass
@@ -359,9 +359,9 @@ class VirtualNumbers:
     def rent_any(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,
@@ -375,7 +375,7 @@ class VirtualNumbers:
         :type region_code: str
 
         :param number_type: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``). Defaults to ``"MOBILE"``.
-        :type number_type: NumberTypeValues
+        :type number_type: NumberType
 
         :param number_pattern: A dictionary defining the specific sequence of digits to search for.
         Include fields such as::
@@ -425,10 +425,10 @@ class VirtualNumbers:
     def search_for_available_numbers(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         number_pattern: Optional[StrictStr] = None,
-        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        number_search_pattern: Optional[NumberSearchPatternType] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:

@@ -13,8 +13,8 @@ from sinch.domains.numbers.models.v1.internal import (
     ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest, RentNumberRequest
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityTypeValues, NumberPatternDict, NumberSearchPatternTypeValues,
-    NumberTypeValues, SmsConfigurationDict, VoiceConfigurationDict
+    CapabilityType, NumberPatternDict, NumberSearchPatternType,
+    NumberType, SmsConfigurationDict, VoiceConfigurationDict
 )
 
 
@@ -27,10 +27,10 @@ class AvailableNumbers(BaseNumbers):
     def search_for_available_numbers(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         number_pattern: Optional[StrictStr] = None,
-        number_search_pattern: Optional[NumberSearchPatternTypeValues] = None,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        number_search_pattern: Optional[NumberSearchPatternType] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         page_size: Optional[StrictInt] = None,
         **kwargs
     ) -> Paginator[AvailableNumber]:
@@ -70,9 +70,9 @@ class AvailableNumbers(BaseNumbers):
     def rent_any(
         self,
         region_code: StrictStr,
-        number_type: NumberTypeValues,
+        number_type: NumberType,
         number_pattern: Optional[NumberPatternDict] = None,
-        capabilities: Optional[conlist(CapabilityTypeValues)] = None,
+        capabilities: Optional[conlist(CapabilityType)] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[StrictStr] = None,

@@ -1,14 +1,9 @@
-from typing import Annotated, Literal, Union
-from pydantic import Field, StrictStr
+from typing import Literal, Union
+from pydantic import StrictStr
 
 
-VoiceApplicationTypeValues = Union[Literal[
+VoiceApplicationType = Union[Literal[
     "RTC",
     "EST",
     "FAX"
 ], StrictStr]
-
-VoiceApplicationType = Annotated[
-    VoiceApplicationTypeValues,
-    Field(default=None)
-]

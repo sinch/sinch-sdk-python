@@ -1,10 +1,5 @@
-from typing import Union, Literal, Annotated
-from pydantic import StrictStr, Field
-
-NumberTypeValues = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]
+from typing import Union, Literal
+from pydantic import StrictStr
 
 
-NumberType = Annotated[
-    NumberTypeValues,
-    Field(default=None)
-]
+NumberType = Union[Literal["MOBILE", "LOCAL", "TOLL_FREE"], StrictStr]

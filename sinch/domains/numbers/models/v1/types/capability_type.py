@@ -1,9 +1,5 @@
-from pydantic import Field, StrictStr
-from typing import Annotated, Literal, Union
+from pydantic import StrictStr
+from typing import Literal, Union
 
-CapabilityTypeValues = Union[Literal["SMS", "VOICE"], StrictStr]
 
-CapabilityType = Annotated[
-    CapabilityTypeValues,
-    Field(default=None)
-]
+CapabilityType = Union[Literal["SMS", "VOICE"], StrictStr]
