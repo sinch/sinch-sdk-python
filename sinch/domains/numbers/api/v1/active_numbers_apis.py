@@ -11,7 +11,7 @@ from sinch.domains.numbers.models.v1.internal import (
     ListActiveNumbersRequest, NumberRequest, UpdateNumberConfigurationRequest
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityType, NumberSearchPatternType, NumberType, OrderBy,
+    CapabilityType, NumberSearchPatternType, NumberType, OrderByType,
     SmsConfigurationDict, VoiceConfigurationDict
 )
 
@@ -27,7 +27,7 @@ class ActiveNumbers(BaseNumbers):
         capabilities: Optional[List[CapabilityType]] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
-        order_by: Optional[OrderBy] = None,
+        order_by: Optional[OrderByType] = None,
         **kwargs
     ) -> Paginator[ActiveNumber]:
         return TokenBasedPaginator(
