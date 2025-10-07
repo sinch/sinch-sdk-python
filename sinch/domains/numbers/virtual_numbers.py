@@ -7,7 +7,7 @@ from sinch.domains.numbers.models.v1.response import (
     ActiveNumber, AvailableNumber
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityType, NumberSearchPatternType, NumberType, OrderBy,
+    CapabilityType, NumberSearchPatternType, NumberType, OrderByType,
     SmsConfigurationDict, VoiceConfigurationDict, VoiceConfigurationFAXDict, VoiceConfigurationRTCDict,
     VoiceConfigurationESTDict, NumberPatternDict
 )
@@ -52,7 +52,7 @@ class VirtualNumbers:
         capabilities: Optional[List[CapabilityType]] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
-        order_by: Optional[OrderBy] = None,
+        order_by: Optional[OrderByType] = None,
         **kwargs
     ) -> Paginator[ActiveNumber]:
         """
@@ -80,7 +80,7 @@ class VirtualNumbers:
         :type page_token: Optional[str]
 
         :param order_by: Field to order the results by (e.g., "phoneNumber", "displayName").
-        :type order_by: Optional[OrderBy]
+        :type order_by: Optional[OrderByType]
 
         :param kwargs: Additional filters for the request.
         :type kwargs: dict

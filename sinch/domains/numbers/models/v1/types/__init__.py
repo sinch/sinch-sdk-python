@@ -2,7 +2,7 @@ from sinch.domains.numbers.models.v1.types.capability_type import CapabilityType
 from sinch.domains.numbers.models.v1.types.number_search_pattern_type import NumberSearchPatternType
 from sinch.domains.numbers.models.v1.types.number_pattern_dict import NumberPatternDict
 from sinch.domains.numbers.models.v1.types.number_type import NumberType
-from sinch.domains.numbers.models.v1.types.order_by import OrderBy
+from sinch.domains.numbers.models.v1.types.order_by_type import OrderByType
 from sinch.domains.numbers.models.v1.types.scheduled_voice_provisioning import ScheduledVoiceProvisioning
 from sinch.domains.numbers.models.v1.types.sms_configuration_dict import SmsConfigurationDict
 from sinch.domains.numbers.models.v1.types.sms_error_code import SmsErrorCode
@@ -20,7 +20,7 @@ __all__ = [
     "NumberPatternDict",
     "NumberSearchPatternType",
     "NumberType",
-    "OrderBy",
+    "OrderByType",
     "ScheduledVoiceProvisioning",
     "SmsConfigurationDict",
     "SmsErrorCode",
