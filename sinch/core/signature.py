@@ -5,18 +5,10 @@ from datetime import datetime, timezone
 
 
 class Signature:
-    def __init__(
-        self,
-        sinch,
-        http_method,
-        request_data,
-        request_uri,
-        content_type=None,
-        signature_timestamp=None
-    ):
+    def __init__(self, sinch, http_method, request_data, request_uri, content_type=None, signature_timestamp=None):
         self.sinch = sinch
         self.http_method = http_method
-        self.content_type = content_type or 'application/json; charset=UTF-8'
+        self.content_type = content_type or "application/json; charset=UTF-8"
         self.request_data = request_data
         self.signature_timestamp = signature_timestamp or datetime.now(timezone.utc).isoformat()
         self.request_uri = request_uri
@@ -28,10 +20,8 @@ class Signature:
 
         return {
             "Content-Type": self.content_type,
-            "Authorization": (
-                f"Application {self.sinch.configuration.application_key}:{self.authorization_signature}"
-            ),
-            "x-timestamp": self.signature_timestamp
+            "Authorization": (f"Application {self.sinch.configuration.application_key}:{self.authorization_signature}"),
+            "x-timestamp": self.signature_timestamp,
         }
 
     def calculate(self):
@@ -41,15 +31,19 @@ class Signature:
             encoded_verification_request = base64.b64encode(encoded_verification_request.digest())
 
         else:
-            encoded_verification_request = ''.encode()
+            encoded_verification_request = "".encode()
 
         request_timestamp = "x-timestamp:" + self.signature_timestamp
 
         string_to_sign = (
-            self.http_method + '\n'
-            + encoded_verification_request.decode() + '\n'
-            + self.content_type + '\n'
-            + request_timestamp + '\n'
+            self.http_method
+            + "\n"
+            + encoded_verification_request.decode()
+            + "\n"
+            + self.content_type
+            + "\n"
+            + request_timestamp
+            + "\n"
             + self.request_uri
         )
 

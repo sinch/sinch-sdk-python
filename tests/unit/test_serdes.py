@@ -22,20 +22,11 @@ class SampleRequestDataModel(SinchRequestBaseModel):
 
 
 def construct_test_data_model():
-    return SampleDataModel(
-        writing="meh",
-        unit="necessary",
-        tests="...really!",
-        is_="Today?Monday!",
-        boring="no_way..."
-    )
+    return SampleDataModel(writing="meh", unit="necessary", tests="...really!", is_="Today?Monday!", boring="no_way...")
 
 
 def construct_request_test_data_model():
-    return SampleRequestDataModel(
-        request_time_off=True,
-        quantity=20
-    )
+    return SampleRequestDataModel(request_time_off=True, quantity=20)
 
 
 def test_sinch_base_model_serialization_to_json():

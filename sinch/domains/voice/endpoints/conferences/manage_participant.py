@@ -18,7 +18,7 @@ class ManageParticipantConferenceEndpoint(VoiceEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.voice_origin,
             conference_id=self.request_data.conference_id,
-            call_id=self.request_data.call_id
+            call_id=self.request_data.call_id,
         )
 
     def request_body(self):

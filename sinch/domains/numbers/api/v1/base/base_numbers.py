@@ -16,8 +16,5 @@ class BaseNumbers:
             The response from the Sinch transport request.
         """
         return self._sinch.configuration.transport.request(
-            endpoint_class(
-                project_id=self._sinch.configuration.project_id,
-                request_data=request_data
-            )
+            endpoint_class(project_id=self._sinch.configuration.project_id, request_data=request_data)
         )

@@ -17,11 +17,9 @@ class GetSMSGroupPhoneNumbersEndpoint(SMSEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
             project_or_service_id=self.project_or_service_id,
-            group_id=self.request_data.group_id
+            group_id=self.request_data.group_id,
         )
 
     def handle_response(self, response: HTTPResponse):
         super(GetSMSGroupPhoneNumbersEndpoint, self).handle_response(response)
-        return SinchGetSMSGroupPhoneNumbersResponse(
-            phone_numbers=response.body
-        )
+        return SinchGetSMSGroupPhoneNumbersResponse(phone_numbers=response.body)

@@ -1,13 +1,8 @@
 from dataclasses import dataclass
 from typing import Optional
 from sinch.core.models.base_model import SinchRequestBaseModel
-from sinch.domains.conversation.models import (
-    SinchConversationRetentionPolicy
-)
-from sinch.domains.conversation.enums import (
-    ConversationMetadataReportView,
-    ConversationProcessingMode
-)
+from sinch.domains.conversation.models import SinchConversationRetentionPolicy
+from sinch.domains.conversation.enums import ConversationMetadataReportView, ConversationProcessingMode
 
 
 @dataclass

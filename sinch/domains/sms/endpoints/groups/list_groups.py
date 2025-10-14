@@ -16,8 +16,7 @@ class ListSMSGroupEndpoint(SMSEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.sms_origin,
-            project_or_service_id=self.project_or_service_id
+            origin=sinch.configuration.sms_origin, project_or_service_id=self.project_or_service_id
         )
 
     def build_query_params(self):
@@ -34,10 +33,11 @@ class ListSMSGroupEndpoint(SMSEndpoint):
                     modified_at=group.get("modified_at"),
                     name=group.get("name"),
                     child_groups=group.get("child_groups"),
-                    auto_update=response.body.get("auto_update")
-                ) for group in response.body["groups"]
+                    auto_update=response.body.get("auto_update"),
+                )
+                for group in response.body["groups"]
             ],
             page=response.body.get("page"),
             page_size=response.body.get("page_size"),
-            count=response.body.get("count")
+            count=response.body.get("count"),
         )

@@ -17,7 +17,7 @@ class SendDeliveryReportEndpoint(SMSEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
             project_or_service_id=self.project_or_service_id,
-            batch_id=self.request_data.batch_id
+            batch_id=self.request_data.batch_id,
         )
 
     def request_body(self):

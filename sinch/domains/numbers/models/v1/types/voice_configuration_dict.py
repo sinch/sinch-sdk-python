@@ -7,7 +7,8 @@ from sinch.domains.numbers.models.v1.types.voice_configuration_custom_dict impor
 
 
 VoiceConfigurationDict = Annotated[
-    Union[VoiceConfigurationFAXDict, VoiceConfigurationRTCDict,
-          VoiceConfigurationESTDict, VoiceConfigurationCustomDict],
-    Field(discriminator="type")
+    Union[
+        VoiceConfigurationFAXDict, VoiceConfigurationRTCDict, VoiceConfigurationESTDict, VoiceConfigurationCustomDict
+    ],
+    Field(discriminator="type"),
 ]

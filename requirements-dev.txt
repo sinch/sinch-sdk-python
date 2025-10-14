@@ -6,6 +6,7 @@ behave
 
 # Code Quality
 flake8
+black
 
 # HTTP Libraries
 requests

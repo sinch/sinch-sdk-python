@@ -8,28 +8,21 @@ from sinch.domains.numbers.models.v1.response import CallbackConfigurationRespon
 
 @pytest.fixture
 def mock_request_data():
-    return UpdateCallbackConfigurationRequest(
-        hmac_secret="your_hmac_secret"
-    )
+    return UpdateCallbackConfigurationRequest(hmac_secret="your_hmac_secret")
 
 
 @pytest.fixture
 def mock_response():
     return HTTPResponse(
         status_code=200,
-        body={
-          "projectId": "a99aa9aa-b888-777c-dd6d-ee55e5555555",
-          "hmacSecret": "your_hmac_secret"
-        },
-        headers={"Content-Type": "application/json"}
+        body={"projectId": "a99aa9aa-b888-777c-dd6d-ee55e5555555", "hmacSecret": "your_hmac_secret"},
+        headers={"Content-Type": "application/json"},
     )
 
 
 @pytest.fixture
 def mock_response_body():
-    expected_body = {
-        "hmacSecret": "your_hmac_secret"
-    }
+    expected_body = {"hmacSecret": "your_hmac_secret"}
     return json.dumps(expected_body)
 
 

@@ -98,8 +98,7 @@ def test_handle_response_expects_valid_mapping(valid_response_data):
     """
     Test that the handle_response method correctly maps the response data.
     """
-    mock_response = HTTPResponse(status_code=200, body=valid_response_data,
-                                 headers="Content-Type:application/json")
+    mock_response = HTTPResponse(status_code=200, body=valid_response_data, headers="Content-Type:application/json")
 
     endpoint = RentAnyNumberEndpoint(project_id="test_project", request_data=None)
     response = endpoint.handle_response(mock_response)
@@ -114,11 +113,9 @@ def test_handle_response_expects_valid_mapping(valid_response_data):
     assert response.money.currency_code == "USD"
     assert response.money.amount == 2.00
     assert response.payment_interval_months == 0
-    expected_next_charge_date = (
-        datetime(2025, 1, 24, 9, 32, 27, 437000, tzinfo=timezone.utc))
+    expected_next_charge_date = datetime(2025, 1, 24, 9, 32, 27, 437000, tzinfo=timezone.utc)
     assert response.next_charge_date == expected_next_charge_date
-    expected_expire_at = (
-        datetime(2025, 1, 25, 9, 32, 27, 437000, tzinfo=timezone.utc))
+    expected_expire_at = datetime(2025, 1, 25, 9, 32, 27, 437000, tzinfo=timezone.utc)
     assert response.expire_at == expected_expire_at
 
     sms_config = response.sms_configuration
@@ -127,8 +124,7 @@ def test_handle_response_expects_valid_mapping(valid_response_data):
     assert sms_config.scheduled_provisioning.service_plan_id == "string"
     assert sms_config.scheduled_provisioning.campaign_id == "string"
     assert sms_config.scheduled_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
-    expected_last_updated_time = (
-        datetime(2025, 1, 24, 9, 32, 27, 437000, tzinfo=timezone.utc))
+    expected_last_updated_time = datetime(2025, 1, 24, 9, 32, 27, 437000, tzinfo=timezone.utc)
     assert sms_config.scheduled_provisioning.last_updated_time == expected_last_updated_time
     assert sms_config.scheduled_provisioning.error_codes == ["ERROR_CODE_UNSPECIFIED"]
 

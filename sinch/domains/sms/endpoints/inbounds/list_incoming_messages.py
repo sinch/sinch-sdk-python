@@ -16,8 +16,7 @@ class ListInboundMessagesEndpoint(SMSEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.sms_origin,
-            project_or_service_id=self.project_or_service_id
+            origin=sinch.configuration.sms_origin, project_or_service_id=self.project_or_service_id
         )
 
     def build_query_params(self):
@@ -36,10 +35,11 @@ class ListInboundMessagesEndpoint(SMSEndpoint):
                     operator_id=inbound.get("operator_id"),
                     send_at=inbound.get("send_at"),
                     received_at=inbound.get("received_at"),
-                    client_reference=inbound.get("client_reference")
-                ) for inbound in response.body["inbounds"]
+                    client_reference=inbound.get("client_reference"),
+                )
+                for inbound in response.body["inbounds"]
             ],
             page=response.body.get("page"),
             page_size=response.body.get("page_size"),
-            count=response.body.get("count")
+            count=response.body.get("count"),
         )

@@ -10,20 +10,11 @@ def test_data():
                 "phoneNumber": "+12025550134",
                 "regionCode": "US",
                 "type": "MOBILE",
-                "capability": [
-                    "SMS",
-                    "VOICE"
-                ],
-                "setupPrice": {
-                    "currencyCode": "USD",
-                    "amount": "2.00"
-                },
-                "monthlyPrice": {
-                    "currencyCode": "USD",
-                    "amount": "2.00"
-                },
+                "capability": ["SMS", "VOICE"],
+                "setupPrice": {"currencyCode": "USD", "amount": "2.00"},
+                "monthlyPrice": {"currencyCode": "USD", "amount": "2.00"},
                 "paymentIntervalMonths": 0,
-                "supportingDocumentationRequired": True
+                "supportingDocumentationRequired": True,
             }
         ]
     }

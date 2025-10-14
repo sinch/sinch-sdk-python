@@ -16,10 +16,7 @@ class CreateConversationContactEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
@@ -34,5 +31,5 @@ class CreateConversationContactEndpoint(ConversationEndpoint):
             email=response.body["email"],
             external_id=response.body["external_id"],
             metadata=response.body["metadata"],
-            language=response.body["language"]
+            language=response.body["language"],
         )

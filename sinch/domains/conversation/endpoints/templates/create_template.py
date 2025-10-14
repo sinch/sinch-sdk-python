@@ -16,10 +16,7 @@ class CreateTemplateEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.templates_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.templates_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
@@ -33,5 +30,5 @@ class CreateTemplateEndpoint(ConversationEndpoint):
             create_time=response.body["create_time"],
             translations=response.body["translations"],
             update_time=response.body["update_time"],
-            channel=response.body["channel"]
+            channel=response.body["channel"],
         )

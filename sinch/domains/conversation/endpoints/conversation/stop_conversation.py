@@ -19,7 +19,7 @@ class StopConversationEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            conversation_id=self.request_data.conversation_id
+            conversation_id=self.request_data.conversation_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> SinchStopConversationResponse:

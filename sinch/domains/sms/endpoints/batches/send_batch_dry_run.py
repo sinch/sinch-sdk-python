@@ -15,14 +15,13 @@ class SendBatchSMSDryRunEndpoint(SMSEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.sms_origin,
-            project_or_service_id=self.project_or_service_id
+            origin=sinch.configuration.sms_origin, project_or_service_id=self.project_or_service_id
         )
 
     def build_query_params(self):
         return {
             "per_recipient": str(self.request_data.per_recipient).lower(),
-            "number_of_recipients": self.request_data.number_of_recipients
+            "number_of_recipients": self.request_data.number_of_recipients,
         }
 
     def request_body(self):
@@ -35,5 +34,5 @@ class SendBatchSMSDryRunEndpoint(SMSEndpoint):
         return SendSMSBatchDryRunResponse(
             number_of_messages=response.body.get("number_of_messages"),
             number_of_recipients=response.body.get("number_of_recipients"),
-            per_recipient=response.body.get("per_recipient")
+            per_recipient=response.body.get("per_recipient"),
         )

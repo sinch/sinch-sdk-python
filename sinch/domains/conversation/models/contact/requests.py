@@ -1,14 +1,9 @@
 from dataclasses import dataclass
 from typing import List, Optional
 from sinch.core.models.base_model import SinchRequestBaseModel
-from sinch.domains.conversation.models import (
-    SinchConversationChannelIdentities,
-    SinchConversationRecipient
-)
+from sinch.domains.conversation.models import SinchConversationChannelIdentities, SinchConversationRecipient
 
-from sinch.domains.conversation.enums import (
-    ConversationChannel
-)
+from sinch.domains.conversation.enums import ConversationChannel
 
 
 @dataclass

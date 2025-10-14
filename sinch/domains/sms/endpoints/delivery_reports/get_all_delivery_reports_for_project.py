@@ -16,8 +16,7 @@ class ListDeliveryReportsEndpoint(SMSEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.sms_origin,
-            project_or_service_id=self.project_or_service_id
+            origin=sinch.configuration.sms_origin, project_or_service_id=self.project_or_service_id
         )
 
     def build_query_params(self):
@@ -39,10 +38,11 @@ class ListDeliveryReportsEndpoint(SMSEndpoint):
                     number_of_message_parts=delivery_report.get("number_of_message_parts"),
                     operator=delivery_report.get("operator"),
                     operator_status_at=delivery_report.get("operator_status_at"),
-                    type=delivery_report.get("type")
-                ) for delivery_report in response.body["delivery_reports"]
+                    type=delivery_report.get("type"),
+                )
+                for delivery_report in response.body["delivery_reports"]
             ],
             page=response.body.get("page"),
             page_size=response.body.get("page_size"),
-            count=response.body.get("count")
+            count=response.body.get("count"),
         )

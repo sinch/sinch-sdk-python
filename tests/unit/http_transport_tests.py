@@ -53,7 +53,7 @@ def base_request():
         http_method="GET",
         request_body={},
         query_params={},
-        auth=()
+        auth=(),
     )
 
 
@@ -65,12 +65,15 @@ class MockHTTPTransport(HTTPTransport):
 
 # Synchronous Transport Tests
 class TestHTTPTransport:
-    @pytest.mark.parametrize("auth_type", [
-        HTTPAuthentication.BASIC.value,
-        HTTPAuthentication.OAUTH.value,
-        HTTPAuthentication.SIGNED.value,
-        HTTPAuthentication.SMS_TOKEN.value
-    ])
+    @pytest.mark.parametrize(
+        "auth_type",
+        [
+            HTTPAuthentication.BASIC.value,
+            HTTPAuthentication.OAUTH.value,
+            HTTPAuthentication.SIGNED.value,
+            HTTPAuthentication.SMS_TOKEN.value,
+        ],
+    )
     def test_authenticate(self, mock_sinch, base_request, auth_type):
         transport = MockHTTPTransport(mock_sinch)
         endpoint = MockEndpoint(auth_type)
@@ -95,12 +98,15 @@ class TestHTTPTransport:
             assert result.headers["Authorization"] == "Bearer test_sms_token"
             assert result.headers["Content-Type"] == "application/json"
 
-    @pytest.mark.parametrize("auth_type,missing_creds", [
-        (HTTPAuthentication.BASIC.value, {"key_id": None}),
-        (HTTPAuthentication.OAUTH.value, {"key_secret": None}),
-        (HTTPAuthentication.SIGNED.value, {"application_key": None}),
-        (HTTPAuthentication.SMS_TOKEN.value, {"sms_api_token": None})
-    ])
+    @pytest.mark.parametrize(
+        "auth_type,missing_creds",
+        [
+            (HTTPAuthentication.BASIC.value, {"key_id": None}),
+            (HTTPAuthentication.OAUTH.value, {"key_secret": None}),
+            (HTTPAuthentication.SIGNED.value, {"application_key": None}),
+            (HTTPAuthentication.SMS_TOKEN.value, {"sms_api_token": None}),
+        ],
+    )
     def test_authenticate_missing_credentials(self, mock_sinch, base_request, auth_type, missing_creds):
         transport = MockHTTPTransport(mock_sinch)
         endpoint = MockEndpoint(auth_type)

@@ -14,22 +14,12 @@ def test_data():
                 "displayName": "",
                 "regionCode": "US",
                 "type": "LOCAL",
-                "capability": [
-                    "SMS",
-                    "VOICE"
-                ],
-                "money": {
-                    "currencyCode": "EUR",
-                    "amount": "0.80"
-                },
+                "capability": ["SMS", "VOICE"],
+                "money": {"currencyCode": "EUR", "amount": "0.80"},
                 "paymentIntervalMonths": 1,
                 "nextChargeDate": "2025-03-04T15:28:16.449951Z",
                 "expireAt": None,
-                "smsConfiguration": {
-                    "servicePlanId": "al_2308",
-                    "scheduledProvisioning": None,
-                    "campaignId": ""
-                },
+                "smsConfiguration": {"servicePlanId": "al_2308", "scheduledProvisioning": None, "campaignId": ""},
                 "voiceConfiguration": {
                     "appId": "",
                     "scheduledVoiceProvisioning": {
@@ -38,18 +28,18 @@ def test_data():
                         "lastUpdatedTime": "2025-02-04T15:32:06.693027Z",
                         "type": "RTC",
                         "trunkId": "",
-                        "serviceId": ""
+                        "serviceId": "",
                     },
                     "lastUpdatedTime": None,
                     "type": "RTC",
                     "trunkId": "",
-                    "serviceId": ""
+                    "serviceId": "",
                 },
-                "callbackUrl": ""
+                "callbackUrl": "",
             }
         ],
         "nextPageToken": "CgtwaG9uZU51bWJlchJnCjl0eXBlLmdvb2dsZWFwaXMuY29tL3NpbmNoLn==",
-        "totalSize": 10
+        "totalSize": 10,
     }
 
 
@@ -57,8 +47,7 @@ def assert_voice_configuration(voice_config):
     assert voice_config.app_id == ""
     assert voice_config.scheduled_voice_provisioning.app_id == "123456"
     assert voice_config.scheduled_voice_provisioning.status == "FAILED"
-    expected_last_updated_time = (
-        datetime(2025, 2, 4, 15, 32, 6, 693027, tzinfo=timezone.utc))
+    expected_last_updated_time = datetime(2025, 2, 4, 15, 32, 6, 693027, tzinfo=timezone.utc)
     assert voice_config.scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert voice_config.scheduled_voice_provisioning.type == "RTC"
     assert voice_config.scheduled_voice_provisioning.trunk_id == ""
@@ -89,9 +78,7 @@ def test_list_active_numbers_response_expects_correct_mapping(test_data):
     assert number.money.currency_code == "EUR"
     assert number.money.amount == Decimal("0.80")
     assert number.payment_interval_months == 1
-    expected_next_charge_date = datetime(
-        2025, 3, 4, 15, 28, 16, 449951, tzinfo=timezone.utc
-    )
+    expected_next_charge_date = datetime(2025, 3, 4, 15, 28, 16, 449951, tzinfo=timezone.utc)
     assert number.next_charge_date == expected_next_charge_date
     assert number.expire_at is None
     assert_sms_configuration(number.sms_configuration)

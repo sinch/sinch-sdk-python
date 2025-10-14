@@ -18,7 +18,7 @@ class DeleteContactEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            contact_id=self.request_data.contact_id
+            contact_id=self.request_data.contact_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> DeleteConversationContactResponse:

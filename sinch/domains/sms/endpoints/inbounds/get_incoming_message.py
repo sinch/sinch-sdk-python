@@ -17,7 +17,7 @@ class GetInboundMessagesEndpoint(SMSEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
             project_or_service_id=self.project_or_service_id,
-            inbound_id=self.request_data.inbound_id
+            inbound_id=self.request_data.inbound_id,
         )
 
     def handle_response(self, response: HTTPResponse):
@@ -30,5 +30,5 @@ class GetInboundMessagesEndpoint(SMSEndpoint):
             body=response.body.get("body"),
             operator_id=response.body.get("operator_id"),
             send_at=response.body.get("send_at"),
-            received_at=response.body.get("received_at")
+            received_at=response.body.get("received_at"),
         )

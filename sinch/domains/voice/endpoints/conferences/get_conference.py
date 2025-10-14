@@ -16,14 +16,11 @@ class GetConferenceEndpoint(VoiceEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_origin,
-            conference_id=self.request_data.conference_id
+            origin=sinch.configuration.voice_origin, conference_id=self.request_data.conference_id
         )
 
     def handle_response(self, response: HTTPResponse) -> GetVoiceConferenceResponse:
         super().handle_response(response)
         return GetVoiceConferenceResponse(
-           participants=[
-               ConferenceParticipant(**participant) for participant in response.body["participants"]
-           ]
+            participants=[ConferenceParticipant(**participant) for participant in response.body["participants"]]
         )

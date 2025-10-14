@@ -6,9 +6,7 @@ from sinch.domains.numbers.models.v1.response import AvailableNumber
 class ListAvailableNumbersResponse(BaseModel):
     available_numbers: Optional[conlist(AvailableNumber)] = Field(default=None, alias="availableNumbers")
 
-    model_config = ConfigDict(
-        populate_by_name=True
-    )
+    model_config = ConfigDict(populate_by_name=True)
 
     @property
     def content(self):

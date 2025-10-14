@@ -10,7 +10,7 @@ def mock_request_data():
     return RentNumberRequest(
         phone_number="+1234567890",
         sms_configuration={"servicePlanId": "YOUR_SMS_servicePlanId"},
-        voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"}
+        voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"},
     )
 
 
@@ -19,7 +19,7 @@ def mock_request_data_snake_case():
     return RentNumberRequest(
         phone_number="+1234567890",
         sms_configuration={"service_plan_id": "YOUR_SMS_servicePlanId"},
-        voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"}
+        voice_configuration={"type": "RTC", "appId": "YOUR_Voice_appId"},
     )
 
 
@@ -27,13 +27,8 @@ def mock_request_data_snake_case():
 def mock_response():
     return HTTPResponse(
         status_code=200,
-        body={
-            "phoneNumber": "+1234567890",
-            "regionCode": "US",
-            "type": "mobile",
-            "capability": ["SMS", "Voice"]
-        },
-        headers={"Content-Type": "application/json"}
+        body={"phoneNumber": "+1234567890", "regionCode": "US", "type": "mobile", "capability": ["SMS", "Voice"]},
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -41,13 +36,8 @@ def mock_response():
 def mock_response_body():
     expected_body = {
         "phoneNumber": "+1234567890",
-        "smsConfiguration": {
-            "servicePlanId": "YOUR_SMS_servicePlanId"
-        },
-        "voiceConfiguration": {
-            "type": "RTC",
-            "appId": "YOUR_Voice_appId"
-        }
+        "smsConfiguration": {"servicePlanId": "YOUR_SMS_servicePlanId"},
+        "voiceConfiguration": {"type": "RTC", "appId": "YOUR_Voice_appId"},
     }
     return json.dumps(expected_body)
 

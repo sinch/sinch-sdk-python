@@ -18,7 +18,7 @@ class ManageCallEndpoint(VoiceEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.voice_origin,
             call_id=self.request_data.call_id,
-            call_leg=self.request_data.call_leg
+            call_leg=self.request_data.call_leg,
         )
 
     def request_body(self):

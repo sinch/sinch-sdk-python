@@ -16,18 +16,13 @@ def valid_data():
         "status": "SUCCEEDED",
         "failureCode": None,
         "internalFailureCode": None,
-        "extraField": "extra_value"
+        "extraField": "extra_value",
     }
 
 
 @pytest.fixture
 def invalid_data():
-    return {
-        "eventId": 123,
-        "timestamp": "invalid-timestamp",
-        "projectId": "project-456",
-        "resourceId": "+1234567890"
-    }
+    return {"eventId": 123, "timestamp": "invalid-timestamp", "projectId": "project-456", "resourceId": "+1234567890"}
 
 
 def test_numbers_webhooks_response_expects_parsed_data(valid_data):
@@ -38,9 +33,7 @@ def test_numbers_webhooks_response_expects_parsed_data(valid_data):
     response = NumbersWebhooksEvent(**valid_data)
 
     assert response.event_id == "event-123"
-    assert response.timestamp == datetime(
-        2025, 4, 8, 9, 38, 4, 854087, tzinfo=timezone.utc
-    )
+    assert response.timestamp == datetime(2025, 4, 8, 9, 38, 4, 854087, tzinfo=timezone.utc)
     assert response.project_id == "project-456"
     assert response.resource_id == "+1234567890"
     assert response.resource_type == "ACTIVE_NUMBER"
@@ -55,10 +48,7 @@ def test_numbers_webhooks_response_missing_optional_fields_expects_parsed_data()
     """
     Expects the model to handle missing optional fields.
     """
-    data = {
-        "eventId": "event-123",
-        "projectId": "project-456"
-    }
+    data = {"eventId": "event-123", "projectId": "project-456"}
     response = NumbersWebhooksEvent(**data)
 
     assert response.event_id == "event-123"

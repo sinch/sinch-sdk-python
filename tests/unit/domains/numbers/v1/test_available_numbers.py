@@ -1,10 +1,11 @@
 from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.numbers.api.v1 import AvailableNumbers
-from sinch.domains.numbers.api.v1.internal import (
-    AvailableNumbersEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
-)
+from sinch.domains.numbers.api.v1.internal import AvailableNumbersEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import (
-    ListAvailableNumbersRequest, ListAvailableNumbersResponse, NumberRequest, RentNumberRequest
+    ListAvailableNumbersRequest,
+    ListAvailableNumbersResponse,
+    NumberRequest,
+    RentNumberRequest,
 )
 from sinch.domains.numbers.models.v1.response import ActiveNumber, AvailableNumber
 
@@ -26,7 +27,7 @@ def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers,
         number_type="LOCAL",
         capabilities=["SMS", "VOICE"],
         page_size=10,
-        number_search_pattern="START"
+        number_search_pattern="START",
     )
 
     # Verify the endpoint's constructor was called with the correct arguments
@@ -44,7 +45,7 @@ def test_list_available_numbers_expects_valid_request(mock_sinch_client_numbers,
     )
 
     assert isinstance(response, TokenBasedPaginator)
-    assert hasattr(response, 'has_next_page')
+    assert hasattr(response, "has_next_page")
     assert response.result == mock_response
     mock_sinch_client_numbers.configuration.transport.request.assert_called_once()
 

@@ -5,9 +5,7 @@ def test_list_available_regions_request_expects_parsed_input():
     """
     Test that the model correctly parses input with valid number types.
     """
-    data = {
-        "types": ["MOBILE", "LOCAL", "TOLL_FREE"]
-    }
+    data = {"types": ["MOBILE", "LOCAL", "TOLL_FREE"]}
 
     request = ListAvailableRegionsRequest(**data)
     assert request.types == ["MOBILE", "LOCAL", "TOLL_FREE"]
@@ -26,8 +24,6 @@ def test_list_available_regions_request_expects_validation_for_extra_type():
     """
     Test that validation errors are raised for invalid number types.
     """
-    data = {
-        "types": ["EXTRA_TYPE"]
-    }
+    data = {"types": ["EXTRA_TYPE"]}
     request = ListAvailableRegionsRequest(**data)
     assert request.types == ["EXTRA_TYPE"]

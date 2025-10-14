@@ -15,13 +15,9 @@ def request_data():
             "endpoint": "+33612345678",
         },
         cli="",
-        greeting='Welcome',
+        greeting="Welcome",
         conferenceId="123456",
-        conferenceDtmfOptions={
-            "mode": "forward",
-            "max_digits": 2,
-            "timeout_mills": 2500
-        },
+        conferenceDtmfOptions={"mode": "forward", "max_digits": 2, "timeout_mills": 2500},
         dtmf="dtmf",
         conference="conference",
         maxDuration=10,
@@ -31,7 +27,7 @@ def request_data():
         locale="locale",
         mohClass="moh_class",
         custom="custom",
-        domain="pstn"
+        domain="pstn",
     )
 
 
@@ -43,31 +39,24 @@ def endpoint(request_data):
 @pytest.fixture
 def mock_response_body():
     expected_body = {
-      "method": "conferenceCallout",
-      "conferenceCallout": {
-        "destination": {
-          "type": "number",
-          "endpoint": "+33612345678"
+        "method": "conferenceCallout",
+        "conferenceCallout": {
+            "destination": {"type": "number", "endpoint": "+33612345678"},
+            "conferenceId": "123456",
+            "cli": "",
+            "conferenceDtmfOptions": {"mode": "forward", "timeoutMills": 2500, "maxDigits": 2},
+            "dtmf": "dtmf",
+            "conference": "conference",
+            "maxDuration": 10,
+            "enableAce": True,
+            "enableDice": True,
+            "enablePie": True,
+            "locale": "locale",
+            "greeting": "Welcome",
+            "mohClass": "moh_class",
+            "custom": "custom",
+            "domain": "pstn",
         },
-        "conferenceId": "123456",
-        "cli": "",
-        "conferenceDtmfOptions": {
-          "mode": "forward",
-          "timeoutMills": 2500,
-          "maxDigits": 2
-        },
-        "dtmf": "dtmf",
-        "conference": "conference",
-        "maxDuration": 10,
-        "enableAce": True,
-        "enableDice": True,
-        "enablePie": True,
-        "locale": "locale",
-        "greeting": "Welcome",
-        "mohClass": "moh_class",
-        "custom": "custom",
-        "domain": "pstn"
-      }
     }
     return json.dumps(expected_body)
 

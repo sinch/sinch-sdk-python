@@ -34,11 +34,7 @@ class TokenManagerBase(ABC):
             self.token = OAuthToken(**token)
             self.token_state = TokenState.VALID
         except TypeError:
-            raise ValidationException(
-                "Invalid authentication token structure",
-                is_from_server=False,
-                response=None
-            )
+            raise ValidationException("Invalid authentication token structure", is_from_server=False, response=None)
 
 
 class TokenManager(TokenManagerBase):

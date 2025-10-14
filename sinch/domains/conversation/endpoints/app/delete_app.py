@@ -17,9 +17,7 @@ class DeleteConversationAppEndpoint(ConversationEndpoint):
 
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id,
-            app_id=self.request_data.app_id
+            origin=sinch.configuration.conversation_origin, project_id=self.project_id, app_id=self.request_data.app_id
         )
 
     def handle_response(self, response: HTTPResponse) -> DeleteConversationAppResponse:

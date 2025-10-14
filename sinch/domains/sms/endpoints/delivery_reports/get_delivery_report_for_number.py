@@ -18,7 +18,7 @@ class GetDeliveryReportForNumberEndpoint(SMSEndpoint):
             origin=sinch.configuration.sms_origin,
             project_or_service_id=self.project_or_service_id,
             batch_id=self.request_data.batch_id,
-            recipient_msisdn=self.request_data.recipient_number
+            recipient_msisdn=self.request_data.recipient_number,
         )
 
     def handle_response(self, response: HTTPResponse):
@@ -34,5 +34,5 @@ class GetDeliveryReportForNumberEndpoint(SMSEndpoint):
             number_of_message_parts=response.body.get("number_of_message_parts"),
             operator=response.body.get("operator"),
             operator_status_at=response.body.get("operator_status_at"),
-            type=response.body.get("type")
+            type=response.body.get("type"),
         )

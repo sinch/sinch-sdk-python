@@ -8,7 +8,7 @@ def test_data():
         "projectId": "project-test-id",
         "hmacSecret": "secret-key-456",
         "extraField": "Extra content",
-        "extraDict": {"key": "value"}
+        "extraDict": {"key": "value"},
     }
 
 

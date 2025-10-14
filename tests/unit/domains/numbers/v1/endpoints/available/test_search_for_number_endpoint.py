@@ -21,25 +21,16 @@ def mock_response():
     return HTTPResponse(
         status_code=200,
         body={
-              "phoneNumber": "+1234567890",
-              "regionCode": "US",
-              "type": "MOBILE",
-              "capability": [
-                "SMS",
-                "VOICE"
-              ],
-              "setupPrice": {
-                "currencyCode": "USD",
-                "amount": "2.00"
-              },
-              "monthlyPrice": {
-                "currencyCode": "USD",
-                "amount": "2.00"
-              },
-              "paymentIntervalMonths": 0,
-              "supportingDocumentationRequired": True
-            },
-        headers={"Content-Type": "application/json"}
+            "phoneNumber": "+1234567890",
+            "regionCode": "US",
+            "type": "MOBILE",
+            "capability": ["SMS", "VOICE"],
+            "setupPrice": {"currencyCode": "USD", "amount": "2.00"},
+            "monthlyPrice": {"currencyCode": "USD", "amount": "2.00"},
+            "paymentIntervalMonths": 0,
+            "supportingDocumentationRequired": True,
+        },
+        headers={"Content-Type": "application/json"},
     )
 
 

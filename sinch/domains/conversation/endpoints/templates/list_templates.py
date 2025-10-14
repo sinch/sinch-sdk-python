@@ -16,10 +16,7 @@ class ListTemplatesEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.templates_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.templates_origin, project_id=self.project_id)
 
     def handle_response(self, response: HTTPResponse) -> ListConversationTemplatesResponse:
         super(ListTemplatesEndpoint, self).handle_response(response)
@@ -32,7 +29,8 @@ class ListTemplatesEndpoint(ConversationEndpoint):
                     create_time=template["create_time"],
                     translations=template["translations"],
                     update_time=template["update_time"],
-                    channel=template["channel"]
-                ) for template in response.body["templates"]
+                    channel=template["channel"],
+                )
+                for template in response.body["templates"]
             ]
         )

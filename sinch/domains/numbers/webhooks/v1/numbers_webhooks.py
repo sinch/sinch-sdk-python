@@ -12,9 +12,7 @@ class NumbersWebhooks:
         self.callback_secret = callback_secret
 
     def validate_authentication_header(
-        self,
-        headers: Dict[StrictStr, StrictStr],
-        json_payload: StrictStr
+        self, headers: Dict[StrictStr, StrictStr], json_payload: StrictStr
     ) -> StrictBool:
         """
         Validate the authorization header for a callback request
@@ -26,11 +24,7 @@ class NumbersWebhooks:
         :returns: True if the X-Sinch-Signature header is valid
         :rtype: bool
         """
-        return validate_signature_header(
-            self.callback_secret,
-            headers,
-            json_payload
-        )
+        return validate_signature_header(self.callback_secret, headers, json_payload)
 
     def parse_event(self, event_body: Union[StrictStr, Dict[StrictStr, Any]]) -> NumbersWebhooksEvent:
         """
@@ -47,7 +41,7 @@ class NumbersWebhooks:
         """
         if isinstance(event_body, str):
             event_body = self._parse_json(event_body)
-        timestamp = event_body.get('timestamp')
+        timestamp = event_body.get("timestamp")
         if timestamp:
             event_body["timestamp"] = self._normalize_iso_timestamp(timestamp)
         try:

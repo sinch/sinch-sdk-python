@@ -14,7 +14,7 @@ def request_data():
         capabilities=["SMS"],
         number_pattern="123",
         number_search_pattern="STARTS_WITH",
-        extra_field="extra value"
+        extra_field="extra value",
     )
 
 
@@ -28,43 +28,25 @@ def mock_response():
                     "phoneNumber": "+1234567890",
                     "regionCode": "US",
                     "type": "LOCAL",
-                    "capability": [
-                        "SMS",
-                        "VOICE"
-                    ],
-                    "setupPrice": {
-                        "currencyCode": "EUR",
-                        "amount": "0.80"
-                    },
-                    "monthlyPrice": {
-                        "currencyCode": "EUR",
-                        "amount": "0.85"
-                    },
+                    "capability": ["SMS", "VOICE"],
+                    "setupPrice": {"currencyCode": "EUR", "amount": "0.80"},
+                    "monthlyPrice": {"currencyCode": "EUR", "amount": "0.85"},
                     "paymentIntervalMonths": 1,
-                    "supportingDocumentationRequired": True
+                    "supportingDocumentationRequired": True,
                 },
                 {
                     "phoneNumber": "+13456789012",
                     "regionCode": "US",
                     "type": "LOCAL",
-                    "capability": [
-                        "SMS",
-                        "VOICE"
-                    ],
-                    "setupPrice": {
-                        "currencyCode": "EUR",
-                        "amount": "0.80"
-                    },
-                    "monthlyPrice": {
-                        "currencyCode": "EUR",
-                        "amount": "1.00"
-                    },
+                    "capability": ["SMS", "VOICE"],
+                    "setupPrice": {"currencyCode": "EUR", "amount": "0.80"},
+                    "monthlyPrice": {"currencyCode": "EUR", "amount": "1.00"},
                     "paymentIntervalMonths": 2,
-                    "supportingDocumentationRequired": True
-                }
+                    "supportingDocumentationRequired": True,
+                },
             ],
         },
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -92,7 +74,7 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "capabilities": ["SMS"],
         "numberPattern.pattern": "123",
         "numberPattern.searchPattern": "STARTS_WITH",
-        "extraField": "extra value"
+        "extraField": "extra value",
     }
     assert endpoint.build_query_params() == expected_params
 

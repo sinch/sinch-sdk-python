@@ -14,9 +14,7 @@ class GetVoiceNumbersEndpoint(VoiceEndpoint):
         pass
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_applications_origin
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.voice_applications_origin)
 
     def handle_response(self, response: HTTPResponse) -> GetNumbersVoiceApplicationResponse:
         super().handle_response(response)
@@ -25,7 +23,8 @@ class GetVoiceNumbersEndpoint(VoiceEndpoint):
                 ApplicationNumber(
                     number=number.get("number"),
                     capability=number.get("capability"),
-                    applicationkey=number.get("applicationkey")
-                ) for number in response.body["numbers"]
+                    applicationkey=number.get("applicationkey"),
+                )
+                for number in response.body["numbers"]
             ]
         )

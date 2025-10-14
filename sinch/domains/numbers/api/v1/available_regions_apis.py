@@ -10,11 +10,7 @@ class AvailableRegions:
     def __init__(self, sinch):
         self._sinch = sinch
 
-    def list(
-        self,
-        types: Optional[List[NumberType]] = None,
-        **kwargs
-    ) -> Paginator[AvailableRegion]:
+    def list(self, types: Optional[List[NumberType]] = None, **kwargs) -> Paginator[AvailableRegion]:
         """
         Lists all regions for numbers provided using the project ID.
         Some numbers can be configured for multiple regions.
@@ -35,9 +31,6 @@ class AvailableRegions:
             sinch=self._sinch,
             endpoint=ListAvailableRegionsEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=ListAvailableRegionsRequest(
-                    types=types,
-                    **kwargs
-                )
-            )
+                request_data=ListAvailableRegionsRequest(types=types, **kwargs),
+            ),
         )

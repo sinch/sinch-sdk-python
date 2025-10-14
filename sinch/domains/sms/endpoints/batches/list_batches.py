@@ -15,10 +15,7 @@ class ListSMSBatchesEndpoint(SMSEndpoint):
         super().__init__(request_data, sinch)
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=self.sms_origin,
-            project_or_service_id=self.project_or_service_id
-        )
+        return self.ENDPOINT_URL.format(origin=self.sms_origin, project_or_service_id=self.project_or_service_id)
 
     def build_query_params(self):
         return self.request_data.as_dict()
@@ -39,10 +36,11 @@ class ListSMSBatchesEndpoint(SMSEndpoint):
                     created_at=batch.get("created_at"),
                     modified_at=batch.get("modified_at"),
                     send_at=batch.get("send_at"),
-                    expire_at=batch.get("expire_at")
-                ) for batch in response.body["batches"]
+                    expire_at=batch.get("expire_at"),
+                )
+                for batch in response.body["batches"]
             ],
             page=response.body.get("page"),
             page_size=response.body.get("page_size"),
-            count=response.body.get("count")
+            count=response.body.get("count"),
         )

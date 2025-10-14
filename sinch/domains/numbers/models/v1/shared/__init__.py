@@ -2,9 +2,7 @@ from sinch.domains.numbers.models.v1.shared.money import Money
 from sinch.domains.numbers.models.v1.shared.number_pattern import NumberPattern
 from sinch.domains.numbers.models.v1.shared.scheduled_sms_provisioning import ScheduledSmsProvisioning
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_common import ScheduledVoiceProvisioningCommon
-from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_custom import (
-    ScheduledVoiceProvisioningCustom
-)
+from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_custom import ScheduledVoiceProvisioningCustom
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_est import ScheduledVoiceProvisioningEST
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_fax import ScheduledVoiceProvisioningFAX
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_rtc import ScheduledVoiceProvisioningRTC
@@ -25,5 +23,5 @@ __all__ = [
     "SmsConfiguration",
     "VoiceConfigurationEST",
     "VoiceConfigurationRTC",
-    "VoiceConfigurationFAX"
+    "VoiceConfigurationFAX",
 ]

@@ -46,7 +46,7 @@ def configure_origin(
     auth_origin,
     sms_origin,
     verification_origin,
-    voice_origin
+    voice_origin,
 ):
     if auth_origin:
         sinch_client.configuration.auth_origin = auth_origin
@@ -148,80 +148,44 @@ def service_plan_id():
 def http_response():
     return HTTPResponse(
         status_code=404,
-        body={
-            "error": {
-                "message": "Nobody expects the Spanish Inquisition!"
-            }
-        },
-        headers={
-            "SAMPLE_HEADER": "test"
-        }
+        body={"error": {"message": "Nobody expects the Spanish Inquisition!"}},
+        headers={"SAMPLE_HEADER": "test"},
     )
 
 
 @pytest.fixture
 def auth_token():
-    return OAuthToken(
-        access_token="test",
-        expires_in=3599,
-        scope="",
-        token_type="bearer"
-    )
+    return OAuthToken(access_token="test", expires_in=3599, scope="", token_type="bearer")
 
 
 @pytest.fixture
 def auth_token_as_dict():
-    return {
-        'access_token': "test_token",
-        'expires_in': 3599,
-        'scope': '',
-        'token_type': 'bearer'
-    }
+    return {"access_token": "test_token", "expires_in": 3599, "scope": "", "token_type": "bearer"}
 
 
 @pytest.fixture
 def token_based_pagination_request_data():
-    return TokenBasedPaginationRequest(
-        page_size=1
-    )
+    return TokenBasedPaginationRequest(page_size=1)
 
 
 @pytest.fixture
 def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
-        page=0,
-        page_size=2
-    )
+    return IntBasedPaginationRequest(page=0, page_size=2)
 
 
 @pytest.fixture
 def first_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=0,
-        page_size=2,
-        pig_dogs=["Bartosz", "Piotr"]
-    )
+    return IntBasedPaginationResponse(count=4, page=0, page_size=2, pig_dogs=["Bartosz", "Piotr"])
 
 
 @pytest.fixture
 def second_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=1,
-        page_size=2,
-        pig_dogs=["Walaszek", "Połać"]
-    )
+    return IntBasedPaginationResponse(count=4, page=1, page_size=2, pig_dogs=["Walaszek", "Połać"])
 
 
 @pytest.fixture
 def third_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=2,
-        page_size=0,
-        pig_dogs=[]
-    )
+    return IntBasedPaginationResponse(count=4, page=2, page_size=0, pig_dogs=[])
 
 
 @pytest.fixture
@@ -237,7 +201,7 @@ def sinch_client_sync(
     sms_origin,
     verification_origin,
     voice_origin,
-    project_id
+    project_id,
 ):
     return configure_origin(
         SinchClient(
@@ -245,7 +209,7 @@ def sinch_client_sync(
             key_secret=key_secret,
             project_id=project_id,
             application_key=application_key,
-            application_secret=application_secret
+            application_secret=application_secret,
         ),
         numbers_origin,
         conversation_origin,
@@ -253,7 +217,7 @@ def sinch_client_sync(
         auth_origin,
         sms_origin,
         verification_origin,
-        voice_origin
+        voice_origin,
     )
 
 
@@ -274,19 +238,18 @@ def mock_sinch_client_numbers():
 @pytest.fixture
 def mock_pagination_active_number_responses():
     return [
-        Mock(content=[ActiveNumber(phone_number="+12345678901"),
-                      ActiveNumber(phone_number="+12345678902")],
-             next_page_token="token_1"),
-        Mock(content=[ActiveNumber(phone_number="+12345678903"),
-                      ActiveNumber(phone_number="+12345678904")],
-             next_page_token="token_2"),
-        Mock(content=[ActiveNumber(phone_number="+12345678905")],
-             next_page_token=None)
+        Mock(
+            content=[ActiveNumber(phone_number="+12345678901"), ActiveNumber(phone_number="+12345678902")],
+            next_page_token="token_1",
+        ),
+        Mock(
+            content=[ActiveNumber(phone_number="+12345678903"), ActiveNumber(phone_number="+12345678904")],
+            next_page_token="token_2",
+        ),
+        Mock(content=[ActiveNumber(phone_number="+12345678905")], next_page_token=None),
     ]
 
 
 @pytest.fixture
 def mock_pagination_expected_phone_numbers_response():
-    return [
-        "+12345678901", "+12345678902", "+12345678903", "+12345678904", "+12345678905"
-    ]
+    return ["+12345678901", "+12345678902", "+12345678903", "+12345678904", "+12345678905"]

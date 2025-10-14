@@ -16,16 +16,11 @@ class GetChannelProfileEndpoint(ConversationEndpoint):
         self.request_data = request_data
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
 
     def handle_response(self, response: HTTPResponse) -> GetConversationChannelProfileResponse:
         super(GetChannelProfileEndpoint, self).handle_response(response)
-        return GetConversationChannelProfileResponse(
-            profile_name=response.body.get("profile_name")
-        )
+        return GetConversationChannelProfileResponse(profile_name=response.body.get("profile_name"))

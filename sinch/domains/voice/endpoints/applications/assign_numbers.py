@@ -14,9 +14,7 @@ class AssignVoiceNumbersEndpoint(VoiceEndpoint):
         self.request_data = request_data
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_applications_origin
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.voice_applications_origin)
 
     def request_body(self):
         return self.request_data.as_json()

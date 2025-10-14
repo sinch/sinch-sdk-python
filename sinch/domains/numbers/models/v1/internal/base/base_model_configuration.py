@@ -13,10 +13,8 @@ class BaseModelConfigurationRequest(BaseModel):
         """Converts snake_case to camelCase while preserving multiple underscores."""
         if not snake_str or "_" not in snake_str:
             return snake_str
-        components = snake_str.split('_')
-        return components[0].lower() + ''.join(
-            (x.capitalize() if x else '_') for x in components[1:]
-        )
+        components = snake_str.split("_")
+        return components[0].lower() + "".join((x.capitalize() if x else "_") for x in components[1:])
 
     @classmethod
     def _convert_dict_keys(cls, obj):
@@ -39,7 +37,7 @@ class BaseModelConfigurationRequest(BaseModel):
         # Allows using both alias (camelCase) and field name (snake_case)
         populate_by_name=True,
         # Allows extra values in input
-        extra="allow"
+        extra="allow",
     )
 
     def _convert_dict_to_camel_case(self, data):
@@ -53,7 +51,7 @@ class BaseModelConfigurationRequest(BaseModel):
         """Converts extra fields from snake_case to camelCase when dumping the model in endpoint."""
         # Get the standard model dump.
         data = super().model_dump(**kwargs)
-        if not kwargs or kwargs['by_alias']:
+        if not kwargs or kwargs["by_alias"]:
             data = self._convert_dict_to_camel_case(data)
 
         # Get extra fields
@@ -89,7 +87,7 @@ class BaseModelConfigurationResponse(BaseModel):
     @staticmethod
     def _to_snake_case(camel_str: str) -> str:
         """Helper to convert camelCase string to snake_case."""
-        return re.sub(r'(?<!^)(?=[A-Z])', '_', camel_str).lower()
+        return re.sub(r"(?<!^)(?=[A-Z])", "_", camel_str).lower()
 
     model_config = ConfigDict(
         # Allows using both alias (camelCase) and field name (snake_case)
@@ -99,10 +97,8 @@ class BaseModelConfigurationResponse(BaseModel):
     )
 
     def model_post_init(self, __context: Any) -> None:
-        """ Converts unknown fields from camelCase to snake_case."""
+        """Converts unknown fields from camelCase to snake_case."""
         if self.__pydantic_extra__:
-            converted_extra = {
-                self._to_snake_case(key): value for key, value in self.__pydantic_extra__.items()
-            }
+            converted_extra = {self._to_snake_case(key): value for key, value in self.__pydantic_extra__.items()}
             self.__pydantic_extra__.clear()
             self.__pydantic_extra__.update(converted_extra)

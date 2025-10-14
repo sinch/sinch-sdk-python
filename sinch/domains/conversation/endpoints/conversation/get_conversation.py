@@ -19,7 +19,7 @@ class GetConversationEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            conversation_id=self.request_data.conversation_id
+            conversation_id=self.request_data.conversation_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> SinchGetConversationResponse:
@@ -32,5 +32,5 @@ class GetConversationEndpoint(ConversationEndpoint):
             active_channel=response.body["active_channel"],
             active=response.body["active"],
             metadata=response.body["metadata"],
-            metadata_json=response.body["metadata_json"]
+            metadata_json=response.body["metadata_json"],
         )

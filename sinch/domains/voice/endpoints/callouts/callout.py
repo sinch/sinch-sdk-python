@@ -16,9 +16,7 @@ class CalloutEndpoint(VoiceEndpoint):
         self.callout_method = callout_method
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_origin
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.voice_origin)
 
     def request_body(self):
         request_data = {}

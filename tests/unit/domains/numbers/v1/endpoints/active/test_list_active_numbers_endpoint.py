@@ -15,7 +15,7 @@ def request_data():
         page_size=15,
         capabilities=["SMS", "VOICE"],
         number_pattern="123",
-        number_search_pattern="STARTS_WITH"
+        number_search_pattern="STARTS_WITH",
     )
 
 
@@ -25,27 +25,24 @@ def mock_response():
         status_code=200,
         body={
             "activeNumbers": [
-               {
-                   "phoneNumber": "+1234567890",
-                   "projectId": "37b62a7b-0177-429a-bb0b-e10f848de0b8",
-                   "displayName": "",
-                   "regionCode": "US",
-                   "type": "LOCAL",
-                   "capability": ["SMS", "VOICE"],
-                   "money": {
-                       "currencyCode": "EUR",
-                       "amount": "0.80"
-                   },
-                   "paymentIntervalMonths": 1,
-                   "nextChargeDate": "2025-02-28T14:04:26.190127Z",
-                   "expireAt": "2025-02-28T14:04:26.190127Z",
-                   "callbackUrl": "https://yourcallback/numbers"
-               }
+                {
+                    "phoneNumber": "+1234567890",
+                    "projectId": "37b62a7b-0177-429a-bb0b-e10f848de0b8",
+                    "displayName": "",
+                    "regionCode": "US",
+                    "type": "LOCAL",
+                    "capability": ["SMS", "VOICE"],
+                    "money": {"currencyCode": "EUR", "amount": "0.80"},
+                    "paymentIntervalMonths": 1,
+                    "nextChargeDate": "2025-02-28T14:04:26.190127Z",
+                    "expireAt": "2025-02-28T14:04:26.190127Z",
+                    "callbackUrl": "https://yourcallback/numbers",
+                }
             ],
             "nextPageToken": "CgtwaG9uoLnNDQzajQSDCsxMzE1OTA0MzM1OQ==",
-            "totalSize": 10
+            "totalSize": 10,
         },
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -55,8 +52,10 @@ def endpoint(request_data):
 
 
 def test_build_url(endpoint, mock_sinch_client_numbers):
-    assert (endpoint.build_url(mock_sinch_client_numbers) ==
-            "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers")
+    assert (
+        endpoint.build_url(mock_sinch_client_numbers)
+        == "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers"
+    )
 
 
 def test_build_query_params_expects_correct_mapping(endpoint):
@@ -69,7 +68,7 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "pageSize": 15,
         "capabilities": ["SMS", "VOICE"],
         "numberPattern.pattern": "123",
-        "numberPattern.searchPattern": "STARTS_WITH"
+        "numberPattern.searchPattern": "STARTS_WITH",
     }
     assert endpoint.build_query_params() == expected_params
 
@@ -94,13 +93,9 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     assert number.money.currency_code == "EUR"
     assert number.money.amount == Decimal("0.80")
     assert number.payment_interval_months == 1
-    expected_next_charge_date = datetime(
-        2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc
-    )
+    expected_next_charge_date = datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc)
     assert number.next_charge_date == expected_next_charge_date
-    expected_expire_at = datetime(
-        2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc
-    )
+    expected_expire_at = datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc)
     assert number.expire_at == expected_expire_at
     assert number.callback_url == "https://yourcallback/numbers"
     assert parsed_response.next_page_token == "CgtwaG9uoLnNDQzajQSDCsxMzE1OTA0MzM1OQ=="

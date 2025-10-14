@@ -16,10 +16,7 @@ class SendEventEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
@@ -27,6 +24,5 @@ class SendEventEndpoint(ConversationEndpoint):
     def handle_response(self, response: HTTPResponse) -> SendConversationEventResponse:
         super(SendEventEndpoint, self).handle_response(response)
         return SendConversationEventResponse(
-            accepted_time=response.body["accepted_time"],
-            event_id=response.body["event_id"]
+            accepted_time=response.body["accepted_time"], event_id=response.body["event_id"]
         )

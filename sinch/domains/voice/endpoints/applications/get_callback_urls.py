@@ -15,13 +15,11 @@ class GetVoiceCallbacksEndpoint(VoiceEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_applications_origin,
-            application_key=self.request_data.application_key
+            origin=sinch.configuration.voice_applications_origin, application_key=self.request_data.application_key
         )
 
     def handle_response(self, response: HTTPResponse) -> GetCallbackUrlsVoiceApplicationResponse:
         super().handle_response(response)
         return GetCallbackUrlsVoiceApplicationResponse(
-            primary=response.body["url"].get("primary"),
-            fallback=response.body["url"].get("fallback")
+            primary=response.body["url"].get("primary"), fallback=response.body["url"].get("fallback")
         )

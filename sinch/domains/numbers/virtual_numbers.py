@@ -1,15 +1,18 @@
 from typing import Optional, overload, List
-from sinch.domains.numbers.api.v1 import (
-    ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
-)
+from sinch.domains.numbers.api.v1 import ActiveNumbers, AvailableNumbers, AvailableRegions, CallbackConfiguration
 from sinch.core.pagination import Paginator
-from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber
-)
+from sinch.domains.numbers.models.v1.response import ActiveNumber, AvailableNumber
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityType, NumberSearchPatternType, NumberType, OrderByType,
-    SmsConfigurationDict, VoiceConfigurationDict, VoiceConfigurationFAXDict, VoiceConfigurationRTCDict,
-    VoiceConfigurationESTDict, NumberPatternDict
+    CapabilityType,
+    NumberSearchPatternType,
+    NumberType,
+    OrderByType,
+    SmsConfigurationDict,
+    VoiceConfigurationDict,
+    VoiceConfigurationFAXDict,
+    VoiceConfigurationRTCDict,
+    VoiceConfigurationESTDict,
+    NumberPatternDict,
 )
 from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
 
@@ -53,7 +56,7 @@ class VirtualNumbers:
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         order_by: Optional[OrderByType] = None,
-        **kwargs
+        **kwargs,
     ) -> Paginator[ActiveNumber]:
         """
         Search for all active virtual numbers associated with a certain project.
@@ -99,7 +102,7 @@ class VirtualNumbers:
             number_search_pattern=number_search_pattern,
             page_token=page_token,
             order_by=order_by,
-            **kwargs
+            **kwargs,
         )
 
     @overload
@@ -109,7 +112,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
         display_name: Optional[str] = None,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -120,7 +123,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
         display_name: Optional[str] = None,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -131,7 +134,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
         display_name: Optional[str] = None,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -142,7 +145,7 @@ class VirtualNumbers:
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> ActiveNumber:
         """
         Make updates to the configuration of your virtual number.
@@ -181,14 +184,10 @@ class VirtualNumbers:
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
             callback_url=callback_url,
-            **kwargs
+            **kwargs,
         )
 
-    def get(
-        self,
-        phone_number: str,
-        **kwargs
-    ) -> ActiveNumber:
+    def get(self, phone_number: str, **kwargs) -> ActiveNumber:
         """
         List of configuration settings for your virtual number.
 
@@ -205,11 +204,7 @@ class VirtualNumbers:
         """
         return self._active.get(phone_number=phone_number, **kwargs)
 
-    def release(
-        self,
-        phone_number: str,
-        **kwargs
-    ) -> ActiveNumber:
+    def release(self, phone_number: str, **kwargs) -> ActiveNumber:
         """
         Release virtual numbers you no longer need from your project.
 
@@ -249,7 +244,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -259,7 +254,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -269,7 +264,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -279,7 +274,7 @@ class VirtualNumbers:
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> ActiveNumber:
         """
         Rent a virtual number to use with SMS, Voice, or both products.
@@ -313,7 +308,7 @@ class VirtualNumbers:
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
             callback_url=callback_url,
-            **kwargs
+            **kwargs,
         )
 
     @overload
@@ -325,7 +320,7 @@ class VirtualNumbers:
         voice_configuration: VoiceConfigurationRTCDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[CapabilityType] = None,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -338,7 +333,7 @@ class VirtualNumbers:
         voice_configuration: VoiceConfigurationFAXDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[List[CapabilityType]] = None,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -351,7 +346,7 @@ class VirtualNumbers:
         voice_configuration: VoiceConfigurationESTDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[List[CapabilityType]] = None,
-        callback_url: Optional[str] = None
+        callback_url: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -364,7 +359,7 @@ class VirtualNumbers:
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> ActiveNumber:
         """
         Search for and activate an available Sinch virtual number all in one API call.
@@ -418,7 +413,7 @@ class VirtualNumbers:
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
             callback_url=callback_url,
-            **kwargs
+            **kwargs,
         )
 
     def search_for_available_numbers(
@@ -429,7 +424,7 @@ class VirtualNumbers:
         number_search_pattern: Optional[NumberSearchPatternType] = None,
         capabilities: Optional[List[CapabilityType]] = None,
         page_size: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Paginator[AvailableNumber]:
         """
         Search for available virtual numbers for you to rent using a variety of parameters to filter results.
@@ -467,5 +462,5 @@ class VirtualNumbers:
             capabilities=capabilities,
             number_pattern=number_pattern,
             number_search_pattern=number_search_pattern,
-            **kwargs
+            **kwargs,
         )

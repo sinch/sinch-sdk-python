@@ -17,7 +17,7 @@ class GetVerificationStatusByIdentityEndpoint(VerificationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.verification_origin,
             method=self.request_data.method,
-            endpoint=self.request_data.endpoint
+            endpoint=self.request_data.endpoint,
         )
 
     def handle_response(self, response: HTTPResponse) -> GetVerificationStatusByIdentityResponse:
@@ -32,5 +32,5 @@ class GetVerificationStatusByIdentityEndpoint(VerificationEndpoint):
             verification_timestamp=response.body.get("verification_timestamp"),
             reference=response.body.get("reference"),
             reason=response.body.get("reason"),
-            call_complete=response.body.get("call_complete")
+            call_complete=response.body.get("call_complete"),
         )

@@ -16,16 +16,11 @@ class RegisterOptInEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def build_query_params(self):
         if self.request_data.request_id:
-            return {
-                "request_id": self.request_data.request_id
-            }
+            return {"request_id": self.request_data.request_id}
 
     def request_body(self):
         self.request_data.request_id = None
@@ -33,7 +28,4 @@ class RegisterOptInEndpoint(ConversationEndpoint):
 
     def handle_response(self, response: HTTPResponse) -> RegisterConversationOptInResponse:
         super(RegisterOptInEndpoint, self).handle_response(response)
-        return RegisterConversationOptInResponse(
-            response.body["request_id"],
-            response.body["opt_in"]
-        )
+        return RegisterConversationOptInResponse(response.body["request_id"], response.body["opt_in"])

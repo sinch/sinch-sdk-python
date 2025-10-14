@@ -16,14 +16,11 @@ class UpdateVoiceCallbacksEndpoint(VoiceEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_applications_origin,
-            application_key=self.request_data.application_key
+            origin=sinch.configuration.voice_applications_origin, application_key=self.request_data.application_key
         )
 
     def request_body(self):
-        request_data = {
-            "url": {}
-        }
+        request_data = {"url": {}}
 
         if self.request_data.primary:
             request_data["url"]["primary"] = self.request_data.primary

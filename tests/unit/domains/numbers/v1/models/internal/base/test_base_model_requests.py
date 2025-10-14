@@ -42,15 +42,12 @@ def test_dict_expects_camel_case_input():
     """
     data = {
         "sms_configuration": {"service_plan_id": "YOUR_SMS_servicePlanId"},
-        "voice_configuration": {
-            "appId": "YOUR_voice_appID",
-            "type": "RTC"
-        }
+        "voice_configuration": {"appId": "YOUR_voice_appID", "type": "RTC"},
     }
     request = BaseModelConfigurationRequest(**data)
     response = request.model_dump()
 
     assert response == {
-        'smsConfiguration': {'servicePlanId': 'YOUR_SMS_servicePlanId'},
-        'voiceConfiguration': {'appId': 'YOUR_voice_appID', 'type': 'RTC'}
+        "smsConfiguration": {"servicePlanId": "YOUR_SMS_servicePlanId"},
+        "voiceConfiguration": {"appId": "YOUR_voice_appID", "type": "RTC"},
     }

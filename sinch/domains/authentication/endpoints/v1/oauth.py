@@ -14,26 +14,20 @@ class OAuthEndpoint(HTTPEndpoint):
         pass
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.auth_origin
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.auth_origin)
 
     def request_body(self) -> dict:
-        return {
-            "grant_type": "client_credentials"
-        }
+        return {"grant_type": "client_credentials"}
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:
             raise AuthenticationException(
-                message=response.body.get("error_description"),
-                response=response,
-                is_from_server=True
+                message=response.body.get("error_description"), response=response, is_from_server=True
             )
         else:
             return OAuthToken(
                 access_token=response.body["access_token"],
                 expires_in=response.body["expires_in"],
                 scope=response.body["scope"],
-                token_type=response.body["token_type"]
+                token_type=response.body["token_type"],
             )

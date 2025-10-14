@@ -17,10 +17,7 @@ class ListConversationMessagesEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def build_query_params(self):
         query_params = {}
@@ -64,8 +61,9 @@ class ListConversationMessagesEndpoint(ConversationEndpoint):
                     metadata=message["metadata"],
                     accept_time=message["accept_time"],
                     sender_id=message["sender_id"],
-                    processing_mode=message["processing_mode"]
-                ) for message in response.body["messages"]
+                    processing_mode=message["processing_mode"],
+                )
+                for message in response.body["messages"]
             ],
-            next_page_token=response.body.get("next_page_token")
+            next_page_token=response.body.get("next_page_token"),
         )

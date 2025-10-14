@@ -19,7 +19,7 @@ class InjectMessageToConversationEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            conversation_id=self.request_data.conversation_id
+            conversation_id=self.request_data.conversation_id,
         )
 
     def request_body(self):

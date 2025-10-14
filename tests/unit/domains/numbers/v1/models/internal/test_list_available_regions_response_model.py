@@ -6,16 +6,8 @@ from sinch.domains.numbers.models.v1.internal import ListAvailableRegionsRespons
 def test_data():
     return {
         "availableRegions": [
-            {
-                "regionCode": "CA",
-                "regionName": "Canada",
-                "types": ["MOBILE", "LOCAL", "TOLL_FREE"]
-            },
-            {
-                "regionCode": "SE",
-                "regionName": "Sweden",
-                "types": ["MOBILE", "LOCAL"]
-            }
+            {"regionCode": "CA", "regionName": "Canada", "types": ["MOBILE", "LOCAL", "TOLL_FREE"]},
+            {"regionCode": "SE", "regionName": "Sweden", "types": ["MOBILE", "LOCAL"]},
         ]
     }
 

@@ -15,8 +15,7 @@ class KickAllConferenceEndpoint(VoiceEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_origin,
-            conference_id=self.request_data.conference_id
+            origin=sinch.configuration.voice_origin, conference_id=self.request_data.conference_id
         )
 
     def handle_response(self, response: HTTPResponse) -> KickAllVoiceConferenceResponse:

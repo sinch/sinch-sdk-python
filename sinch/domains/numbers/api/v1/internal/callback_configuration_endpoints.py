@@ -11,6 +11,7 @@ class GetCallbackConfigurationEndpoint(NumbersEndpoint):
     """
     Endpoint to get the callbacks configuration for a project.
     """
+
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/callbackConfiguration"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -23,10 +24,7 @@ class GetCallbackConfigurationEndpoint(NumbersEndpoint):
     def build_url(self, sinch) -> str:
         if self.request_data:
             super(GetCallbackConfigurationEndpoint, self).build_url(sinch)
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.numbers_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.numbers_origin, project_id=self.project_id)
 
     def build_query_params(self) -> dict:
         if self.request_data:
@@ -45,6 +43,7 @@ class UpdateCallbackConfigurationEndpoint(NumbersEndpoint):
     """
     Endpoint to update the callbacks configuration for a project.
     """
+
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/callbackConfiguration"
     HTTP_METHOD = HTTPMethods.PATCH.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value

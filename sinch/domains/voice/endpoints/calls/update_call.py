@@ -15,10 +15,7 @@ class UpdateCallEndpoint(VoiceEndpoint):
         self.request_data = request_data
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_origin,
-            call_id=self.request_data.call_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.voice_origin, call_id=self.request_data.call_id)
 
     def request_body(self):
         request_data = deepcopy(self.request_data)

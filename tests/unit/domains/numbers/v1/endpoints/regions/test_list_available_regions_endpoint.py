@@ -6,9 +6,7 @@ from sinch.core.models.http_response import HTTPResponse
 
 @pytest.fixture
 def request_data():
-    return ListAvailableRegionsRequest(
-        types=["LOCAL", "MOBILE"]
-    )
+    return ListAvailableRegionsRequest(types=["LOCAL", "MOBILE"])
 
 
 @pytest.fixture
@@ -17,19 +15,11 @@ def mock_response():
         status_code=200,
         body={
             "availableRegions": [
-                {
-                    "regionCode": "US",
-                    "regionName": "United States",
-                    "types": ["LOCAL", "MOBILE", "TOLL_FREE"]
-                },
-                {
-                    "regionCode": "SE",
-                    "regionName": "Sweden",
-                    "types": ["LOCAL", "MOBILE"]
-                }
+                {"regionCode": "US", "regionName": "United States", "types": ["LOCAL", "MOBILE", "TOLL_FREE"]},
+                {"regionCode": "SE", "regionName": "Sweden", "types": ["LOCAL", "MOBILE"]},
             ]
         },
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -39,17 +29,17 @@ def endpoint(request_data):
 
 
 def test_build_url(endpoint, mock_sinch_client_numbers):
-    assert (endpoint.build_url(mock_sinch_client_numbers) ==
-            "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/availableRegions")
+    assert (
+        endpoint.build_url(mock_sinch_client_numbers)
+        == "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/availableRegions"
+    )
 
 
 def test_build_query_params_expects_correct_mapping(endpoint):
     """
     Check if Query params is handled and mapped to the appropriate fields correctly.
     """
-    expected_params = {
-        "types": ["LOCAL", "MOBILE"]
-    }
+    expected_params = {"types": ["LOCAL", "MOBILE"]}
     assert endpoint.build_query_params() == expected_params
 
 

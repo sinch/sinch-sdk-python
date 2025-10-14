@@ -31,7 +31,7 @@ class HTTPTransport(ABC):
                         "Those credentials can be obtained from Sinch portal."
                     ),
                     is_from_server=False,
-                    response=None
+                    response=None,
                 )
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
@@ -41,10 +41,7 @@ class HTTPTransport(ABC):
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             token = self.sinch.authentication.get_auth_token().access_token
-            request_data.headers.update({
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
-            })
+            request_data.headers.update({"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
             if not self.sinch.configuration.application_key or not self.sinch.configuration.application_secret:
                 raise ValidationException(
@@ -53,13 +50,10 @@ class HTTPTransport(ABC):
                         "Those credentials can be obtained from Sinch portal."
                     ),
                     is_from_server=False,
-                    response=None
+                    response=None,
                 )
             signature = Signature(
-                self.sinch,
-                endpoint.HTTP_METHOD,
-                request_data.request_body,
-                endpoint.get_url_without_origin(self.sinch)
+                self.sinch, endpoint.HTTP_METHOD, request_data.request_body, endpoint.get_url_without_origin(self.sinch)
             )
             request_data.headers = signature.get_http_headers_with_signature()
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
@@ -70,12 +64,14 @@ class HTTPTransport(ABC):
                         "Those credentials can be obtained from Sinch portal."
                     ),
                     is_from_server=False,
-                    response=None
+                    response=None,
                 )
-            request_data.headers.update({
-                "Authorization": f"Bearer {self.sinch.configuration.sms_api_token}",
-                "Content-Type": "application/json"
-            })
+            request_data.headers.update(
+                {
+                    "Authorization": f"Bearer {self.sinch.configuration.sms_api_token}",
+                    "Content-Type": "application/json",
+                }
+            )
 
         return request_data
 
@@ -84,14 +80,13 @@ class HTTPTransport(ABC):
 
         return HttpRequest(
             headers={
-                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
-                              f" {self.__class__.__name__};)"
+                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};" f" {self.__class__.__name__};)"
             },
             url=endpoint.build_url(self.sinch),
             http_method=endpoint.HTTP_METHOD,
             request_body=endpoint.request_body(),
             query_params=url_query_params,
-            auth=()
+            auth=(),
         )
 
     @staticmethod
@@ -101,12 +96,7 @@ class HTTPTransport(ABC):
                 response_body = response.json()
             except ValueError as err:
                 raise SinchException(
-                    message=(
-                        "Error while parsing json response.",
-                        err.msg
-                    ),
-                    is_from_server=True,
-                    response=response
+                    message=("Error while parsing json response.", err.msg), is_from_server=True, response=response
                 )
         else:
             response_body = {}

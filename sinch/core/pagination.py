@@ -28,6 +28,7 @@ class Paginator(ABC, Generic[BM]):
     """
     Pagination response object.
     """
+
     def __init__(self, sinch, endpoint, result: BM):
         self._sinch = sinch
         self.result = result

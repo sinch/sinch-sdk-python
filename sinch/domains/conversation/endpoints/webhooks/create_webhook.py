@@ -16,10 +16,7 @@ class CreateWebhookEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
@@ -33,5 +30,5 @@ class CreateWebhookEndpoint(ConversationEndpoint):
             target_type=response.body["target_type"],
             secret=response.body["secret"],
             triggers=response.body["triggers"],
-            client_credentials=response.body["client_credentials"]
+            client_credentials=response.body["client_credentials"],
         )

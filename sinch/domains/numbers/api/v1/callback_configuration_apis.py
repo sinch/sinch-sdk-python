@@ -1,7 +1,5 @@
 from sinch.domains.numbers.api.v1.base import BaseNumbers
-from sinch.domains.numbers.api.v1.internal import (
-    GetCallbackConfigurationEndpoint, UpdateCallbackConfigurationEndpoint
-)
+from sinch.domains.numbers.api.v1.internal import GetCallbackConfigurationEndpoint, UpdateCallbackConfigurationEndpoint
 from sinch.domains.numbers.models.v1.internal import UpdateCallbackConfigurationRequest
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 from sinch.domains.numbers.models.v1.response import CallbackConfigurationResponse
@@ -9,10 +7,7 @@ from sinch.domains.numbers.models.v1.response import CallbackConfigurationRespon
 
 class CallbackConfiguration(BaseNumbers):
 
-    def get(
-        self,
-        **kwargs
-    ) -> CallbackConfigurationResponse:
+    def get(self, **kwargs) -> CallbackConfigurationResponse:
         """
         Returns the callback configuration for the specified project
 
@@ -29,11 +24,7 @@ class CallbackConfiguration(BaseNumbers):
             request_data = BaseModelConfigurationRequest(**kwargs)
         return self._request(GetCallbackConfigurationEndpoint, request_data)
 
-    def update(
-        self,
-        hmac_secret: str,
-        **kwargs
-    ) -> CallbackConfigurationResponse:
+    def update(self, hmac_secret: str, **kwargs) -> CallbackConfigurationResponse:
         """
         Updates the callback configuration for the specified project
 
@@ -48,8 +39,5 @@ class CallbackConfiguration(BaseNumbers):
 
         For detailed documentation, visit https://developers.sinch.com
         """
-        request_data = UpdateCallbackConfigurationRequest(
-            hmac_secret=hmac_secret,
-            **kwargs
-        )
+        request_data = UpdateCallbackConfigurationRequest(hmac_secret=hmac_secret, **kwargs)
         return self._request(UpdateCallbackConfigurationEndpoint, request_data)

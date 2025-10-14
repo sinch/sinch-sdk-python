@@ -3,11 +3,7 @@ import hmac
 from typing import Dict, Union, Optional, List
 
 
-def validate_signature_header(
-    callback_secret: str,
-    headers: Dict[str, str],
-    body: str
-) -> bool:
+def validate_signature_header(callback_secret: str, headers: Dict[str, str], body: str) -> bool:
     """
     Validate signature headers for Numbers callback.
 
@@ -26,7 +22,7 @@ def validate_signature_header(
     if callback_secret is None:
         return False
     normalized_headers = normalize_headers(headers)
-    signature = get_header(normalized_headers.get('x-sinch-signature'))
+    signature = get_header(normalized_headers.get("x-sinch-signature"))
     if signature is None:
         return False
 
@@ -46,9 +42,7 @@ def compute_hmac_signature(body: str, secret: str) -> str:
     Compute HMAC-SHA1 signature
     """
     return hmac.new(
-        key=secret.encode('utf-8'),
-        msg=body.encode('utf-8') if isinstance(body, str) else body,
-        digestmod=hashlib.sha1
+        key=secret.encode("utf-8"), msg=body.encode("utf-8") if isinstance(body, str) else body, digestmod=hashlib.sha1
     ).hexdigest()
 
 

@@ -9,9 +9,7 @@ from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 @pytest.fixture
 def request_data():
-    return NumberRequest(
-        phone_number="+1234567890"
-    )
+    return NumberRequest(phone_number="+1234567890")
 
 
 @pytest.fixture
@@ -25,16 +23,13 @@ def mock_response():
             "regionCode": "US",
             "type": "LOCAL",
             "capability": ["SMS", "VOICE"],
-            "money": {
-                "currencyCode": "EUR",
-                "amount": "0.80"
-            },
+            "money": {"currencyCode": "EUR", "amount": "0.80"},
             "paymentIntervalMonths": 1,
             "nextChargeDate": "2025-02-28T14:04:26.190127Z",
             "expireAt": "2025-02-28T14:04:26.190127Z",
-            "callbackUrl": "https://yourcallback/numbers"
+            "callbackUrl": "https://yourcallback/numbers",
         },
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -44,8 +39,10 @@ def endpoint(request_data):
 
 
 def test_build_url(endpoint, mock_sinch_client_numbers):
-    assert (endpoint.build_url(mock_sinch_client_numbers) ==
-            "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers/+1234567890")
+    assert (
+        endpoint.build_url(mock_sinch_client_numbers)
+        == "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers/+1234567890"
+    )
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
@@ -63,10 +60,8 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     assert parsed_response.money.currency_code == "EUR"
     assert parsed_response.money.amount == Decimal("0.80")
     assert parsed_response.payment_interval_months == 1
-    expected_next_charge_date = (
-        datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
+    expected_next_charge_date = datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc)
     assert parsed_response.next_charge_date == expected_next_charge_date
-    expected_expire_at = (
-        datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
+    expected_expire_at = datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc)
     assert parsed_response.expire_at == expected_expire_at
     assert parsed_response.callback_url == "https://yourcallback/numbers"

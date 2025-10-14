@@ -15,11 +15,7 @@ def test_token_manager_set_valid_auth_token(sinch_client_sync, auth_token_as_dic
 def test_token_manager_set_invalid_auth_token(sinch_client_sync):
     token_manager = TokenManager(sinch_client_sync)
     with pytest.raises(ValidationException):
-        token_manager.set_auth_token(
-            {
-                "Access?": "You shall not pass!"
-            }
-        )
+        token_manager.set_auth_token({"Access?": "You shall not pass!"})
 
 
 def test_get_auth_token_and_check_if_cached(sinch_client_sync, auth_token):

@@ -19,7 +19,7 @@ class GetWebhookEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            webhook_id=self.request_data.webhook_id
+            webhook_id=self.request_data.webhook_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> GetWebhookResponse:
@@ -31,5 +31,5 @@ class GetWebhookEndpoint(ConversationEndpoint):
             target_type=response.body["target_type"],
             secret=response.body["secret"],
             triggers=response.body["triggers"],
-            client_credentials=response.body["client_credentials"]
+            client_credentials=response.body["client_credentials"],
         )

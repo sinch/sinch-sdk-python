@@ -16,6 +16,7 @@ class SinchClient:
     By default this implementation uses HTTPTransportRequests based on Requests library
     Custom Sync HTTPTransport implementation can be provided via `transport` argument
     """
+
     def __init__(
         self,
         key_id: str = None,
@@ -26,7 +27,7 @@ class SinchClient:
         application_key: str = None,
         application_secret: str = None,
         service_plan_id: str = None,
-        sms_api_token: str = None
+        sms_api_token: str = None,
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -39,7 +40,7 @@ class SinchClient:
             application_key=application_key,
             application_secret=application_secret,
             service_plan_id=service_plan_id,
-            sms_api_token=sms_api_token
+            sms_api_token=sms_api_token,
         )
 
         self.authentication = Authentication(self)

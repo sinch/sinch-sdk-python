@@ -18,21 +18,22 @@ class ListWebhooksEndpoint(ConversationEndpoint):
 
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id,
-            app_id=self.request_data.app_id
+            origin=sinch.configuration.conversation_origin, project_id=self.project_id, app_id=self.request_data.app_id
         )
 
     def handle_response(self, response: HTTPResponse) -> SinchListWebhooksResponse:
         super(ListWebhooksEndpoint, self).handle_response(response)
         return SinchListWebhooksResponse(
-            webhooks=[ConversationWebhook(
-                id=webhook["id"],
-                app_id=webhook["app_id"],
-                target=webhook["target"],
-                target_type=webhook["target_type"],
-                secret=webhook["secret"],
-                triggers=webhook["triggers"],
-                client_credentials=webhook["client_credentials"]
-            ) for webhook in response.body["webhooks"]]
+            webhooks=[
+                ConversationWebhook(
+                    id=webhook["id"],
+                    app_id=webhook["app_id"],
+                    target=webhook["target"],
+                    target_type=webhook["target_type"],
+                    secret=webhook["secret"],
+                    triggers=webhook["triggers"],
+                    client_credentials=webhook["client_credentials"],
+                )
+                for webhook in response.body["webhooks"]
+            ]
         )

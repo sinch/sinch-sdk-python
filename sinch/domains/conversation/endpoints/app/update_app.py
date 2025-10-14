@@ -17,9 +17,7 @@ class UpdateConversationAppEndpoint(ConversationEndpoint):
 
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id,
-            app_id=self.request_data.app_id
+            origin=sinch.configuration.conversation_origin, project_id=self.project_id, app_id=self.request_data.app_id
         )
 
     def build_query_params(self):
@@ -42,5 +40,5 @@ class UpdateConversationAppEndpoint(ConversationEndpoint):
             rate_limits=response.body["rate_limits"],
             retention_policy=response.body["retention_policy"],
             dispatch_retention_policy=response.body["dispatch_retention_policy"],
-            smart_conversation=response.body["smart_conversation"]
+            smart_conversation=response.body["smart_conversation"],
         )

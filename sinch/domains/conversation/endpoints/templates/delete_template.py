@@ -19,7 +19,7 @@ class DeleteTemplateEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.templates_origin,
             project_id=self.project_id,
-            template_id=self.request_data.template_id
+            template_id=self.request_data.template_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> DeleteConversationTemplateResponse:

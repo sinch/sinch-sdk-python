@@ -4,7 +4,10 @@ from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.exceptions import NumbersException, NumberNotFoundException
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import (
-    ListActiveNumbersRequest, ListActiveNumbersResponse, NumberRequest, UpdateNumberConfigurationRequest
+    ListActiveNumbersRequest,
+    ListActiveNumbersResponse,
+    NumberRequest,
+    UpdateNumberConfigurationRequest,
 )
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
@@ -13,6 +16,7 @@ class GetNumberConfigurationEndpoint(NumbersEndpoint):
     """
     Endpoint to get the configuration of a specific number
     """
+
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers/{phone_number}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -34,6 +38,7 @@ class ListActiveNumbersEndpoint(NumbersEndpoint):
     """
     Endpoint to list all active numbers for a project.
     """
+
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -73,6 +78,7 @@ class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
     """
     Endpoint to update the configuration of a specific number
     """
+
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/activeNumbers/{phone_number}"
     HTTP_METHOD = HTTPMethods.PATCH.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value

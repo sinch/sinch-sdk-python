@@ -12,18 +12,14 @@ from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
         ("DISPLAY_NAME", "displayName"),
         ("new_field", "newField"),
         ("newField", "newField"),
-        (None, None)
-    ]
+        (None, None),
+    ],
 )
 def test_list_active_numbers_orderby_field_request_expects_camel_case_input(order_by_input, expected_order_by):
     """
     Test that the model correctly parses order_by field.
     """
-    data = {
-        "region_code": "US",
-        "number_type": "MOBILE",
-        "order_by": order_by_input
-    }
+    data = {"region_code": "US", "number_type": "MOBILE", "order_by": order_by_input}
 
     request = ListActiveNumbersRequest(**data)
 
@@ -44,7 +40,7 @@ def test_list_active_numbers_request_expects_parsed_input():
         "number_search_pattern": "START",
         "number_pattern": "5678",
         "page_token": "abc123",
-        "order_by": "PHONE_NUMBER"
+        "order_by": "PHONE_NUMBER",
     }
 
     request = ListActiveNumbersRequest(**data)

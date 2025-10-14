@@ -20,8 +20,4 @@ class SMSEndpoint(HTTPEndpoint):
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:
-            raise SMSException(
-                message=response.body["text"],
-                response=response,
-                is_from_server=True
-            )
+            raise SMSException(message=response.body["text"], response=response, is_from_server=True)

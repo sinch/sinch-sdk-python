@@ -10,6 +10,7 @@ class Configuration:
     """
     Sinch client configuration object.
     """
+
     def __init__(
         self,
         key_id: str,
@@ -23,7 +24,7 @@ class Configuration:
         application_key: str = None,
         application_secret: str = None,
         service_plan_id: str = None,
-        sms_api_token: str = None
+        sms_api_token: str = None,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -79,7 +80,7 @@ class Configuration:
     sms_region_with_service_plan_id = property(
         _get_sms_region_with_service_plan_id,
         _set_sms_region_with_service_plan_id,
-        doc="SMS Region for service plan id version of the SMS API"
+        doc="SMS Region for service plan id version of the SMS API",
     )
 
     def _set_sms_domain_with_service_plan_id(self, domain):
@@ -92,7 +93,7 @@ class Configuration:
     sms_domain_with_service_plan_id = property(
         _get_sms_domain_with_service_plan_id,
         _set_sms_domain_with_service_plan_id,
-        doc="SMS Domain for service plan id version of the SMS API"
+        doc="SMS Domain for service plan id version of the SMS API",
     )
 
     def _set_sms_origin(self):
@@ -105,11 +106,7 @@ class Configuration:
     def _get_sms_region(self):
         return self._sms_region
 
-    sms_region = property(
-        _get_sms_region,
-        _set_sms_region,
-        doc="SMS Region"
-    )
+    sms_region = property(_get_sms_region, _set_sms_region, doc="SMS Region")
 
     def _set_sms_domain(self, domain):
         self._sms_domain = domain
@@ -118,11 +115,7 @@ class Configuration:
     def _get_sms_domain(self):
         return self._sms_domain
 
-    sms_domain = property(
-        _get_sms_domain,
-        _set_sms_domain,
-        doc="SMS Domain"
-    )
+    sms_domain = property(_get_sms_domain, _set_sms_domain, doc="SMS Domain")
 
     def _set_conversation_origin(self):
         self.conversation_origin = self._conversation_region + self._conversation_domain
@@ -134,11 +127,7 @@ class Configuration:
     def _get_conversation_region(self):
         return self._conversation_region
 
-    conversation_region = property(
-        _get_conversation_region,
-        _set_conversation_region,
-        doc="ConversationAPI Region"
-    )
+    conversation_region = property(_get_conversation_region, _set_conversation_region, doc="ConversationAPI Region")
 
     def _set_conversation_domain(self, domain):
         self._conversation_domain = domain
@@ -147,11 +136,7 @@ class Configuration:
     def _get_conversation_domain(self):
         return self._conversation_domain
 
-    conversation_domain = property(
-        _get_conversation_domain,
-        _set_conversation_domain,
-        doc="ConversationAPI Domain"
-    )
+    conversation_domain = property(_get_conversation_domain, _set_conversation_domain, doc="ConversationAPI Domain")
 
     def _set_templates_origin(self):
         self.templates_origin = self._templates_region + self._templates_domain
@@ -163,11 +148,7 @@ class Configuration:
     def _get_templates_region(self):
         return self._templates_region
 
-    templates_region = property(
-        _get_templates_region,
-        _set_templates_region,
-        doc="Conversation API Templates Region"
-    )
+    templates_region = property(_get_templates_region, _set_templates_region, doc="Conversation API Templates Region")
 
     def _set_templates_domain(self, domain):
         self._templates_domain = domain
@@ -176,11 +157,7 @@ class Configuration:
     def _get_templates_domain(self):
         return self._templates_domain
 
-    templates_domain = property(
-        _get_templates_domain,
-        _set_templates_domain,
-        doc="Conversation API Templates Domain"
-    )
+    templates_domain = property(_get_templates_domain, _set_templates_domain, doc="Conversation API Templates Domain")
 
     def _set_voice_origin(self):
         if not self._voice_region:
@@ -195,8 +172,4 @@ class Configuration:
     def _get_voice_region(self):
         return self._voice_region
 
-    voice_region = property(
-        _get_voice_region,
-        _set_voice_region,
-        doc="Voice Region"
-    )
+    voice_region = property(_get_voice_region, _set_voice_region, doc="Voice Region")

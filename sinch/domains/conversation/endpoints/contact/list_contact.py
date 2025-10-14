@@ -16,10 +16,7 @@ class ListContactsEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def build_query_params(self):
         params = {}
@@ -34,15 +31,18 @@ class ListContactsEndpoint(ConversationEndpoint):
     def handle_response(self, response: HTTPResponse) -> ListConversationContactsResponse:
         super(ListContactsEndpoint, self).handle_response(response)
         return ListConversationContactsResponse(
-            contacts=[SinchConversationContact(
-                id=contact["id"],
-                channel_identities=contact["channel_identities"],
-                channel_priority=contact["channel_priority"],
-                display_name=contact["display_name"],
-                email=contact["email"],
-                external_id=contact["external_id"],
-                metadata=contact["metadata"],
-                language=contact["language"]
-            ) for contact in response.body["contacts"]],
-            next_page_token=response.body.get("next_page_token")
+            contacts=[
+                SinchConversationContact(
+                    id=contact["id"],
+                    channel_identities=contact["channel_identities"],
+                    channel_priority=contact["channel_priority"],
+                    display_name=contact["display_name"],
+                    email=contact["email"],
+                    external_id=contact["external_id"],
+                    metadata=contact["metadata"],
+                    language=contact["language"],
+                )
+                for contact in response.body["contacts"]
+            ],
+            next_page_token=response.body.get("next_page_token"),
         )

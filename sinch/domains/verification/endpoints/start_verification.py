@@ -11,7 +11,7 @@ from sinch.domains.verification.models.responses import (
     StartSMSVerificationResponse,
     StartDataVerificationResponse,
     StartPhoneCallVerificationResponse,
-    StartFlashCallVerificationResponse
+    StartFlashCallVerificationResponse,
 )
 
 
@@ -39,10 +39,14 @@ class StartVerificationEndpoint(VerificationEndpoint):
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
-                sms=SMSResponse(
-                    interception_timeout=response.body["sms"].get("interceptionTimeout"),
-                    template=response.body["sms"].get("template")
-                ) if sms_response else None
+                sms=(
+                    SMSResponse(
+                        interception_timeout=response.body["sms"].get("interceptionTimeout"),
+                        template=response.body["sms"].get("template"),
+                    )
+                    if sms_response
+                    else None
+                ),
             )
         elif self.request_data.method == VerificationMethod.FLASH_CALL.value:
             flash_call_response = response.body.get("flashCall")
@@ -50,18 +54,20 @@ class StartVerificationEndpoint(VerificationEndpoint):
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
-                flash_call=FlashCallResponse(
-                    cli_filter=response.body["flashCall"].get("cliFilter"),
-                    interception_timeout=response.body["flashCall"].get("interceptionTimeout"),
-                    report_timeout=response.body["flashCall"].get("reportTimeout"),
-                    deny_call_after=response.body["flashCall"].get("denyCallAfter")
-                ) if flash_call_response else None
+                flash_call=(
+                    FlashCallResponse(
+                        cli_filter=response.body["flashCall"].get("cliFilter"),
+                        interception_timeout=response.body["flashCall"].get("interceptionTimeout"),
+                        report_timeout=response.body["flashCall"].get("reportTimeout"),
+                        deny_call_after=response.body["flashCall"].get("denyCallAfter"),
+                    )
+                    if flash_call_response
+                    else None
+                ),
             )
         elif self.request_data.method == VerificationMethod.CALLOUT.value:
             return StartPhoneCallVerificationResponse(
-                id=response.body.get("id"),
-                method=response.body.get("method"),
-                _links=response.body.get("_links")
+                id=response.body.get("id"), method=response.body.get("method"), _links=response.body.get("_links")
             )
         elif self.request_data.method == VerificationMethod.SEAMLESS.value:
             seamless_response = response.body.get("seamless")
@@ -69,7 +75,7 @@ class StartVerificationEndpoint(VerificationEndpoint):
                 id=response.body.get("id"),
                 method=response.body.get("method"),
                 _links=response.body.get("_links"),
-                seamless=DataResponse(
-                    target_uri=response.body["seamless"].get("targetUri")
-                ) if seamless_response else None
+                seamless=(
+                    DataResponse(target_uri=response.body["seamless"].get("targetUri")) if seamless_response else None
+                ),
             )

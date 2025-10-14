@@ -37,9 +37,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements-dev.txt
 
+    - name: Format check with Black
+      run: |
+        black --check --diff sinch tests
+
     - name: Lint with flake8
       run: |
-        flake8 sinch tests --count --max-complexity=10 --max-line-length=120 --statistics
+        flake8 sinch tests --count --max-complexity=10 --max-line-length=120 --statistics --ignore=E501,W503
 
     - name: Test with Pytest
       run: |

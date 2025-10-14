@@ -21,11 +21,11 @@ from sinch.domains.sms.endpoints.inbounds.list_incoming_messages import ListInbo
 from sinch.domains.sms.endpoints.inbounds.get_incoming_message import GetInboundMessagesEndpoint
 
 from sinch.domains.sms.endpoints.delivery_reports.get_delivery_report_for_number import (
-    GetDeliveryReportForNumberEndpoint
+    GetDeliveryReportForNumberEndpoint,
 )
 from sinch.domains.sms.endpoints.delivery_reports.get_delivery_report_for_batch import GetDeliveryReportForBatchEndpoint
 from sinch.domains.sms.endpoints.delivery_reports.get_all_delivery_reports_for_project import (
-    ListDeliveryReportsEndpoint
+    ListDeliveryReportsEndpoint,
 )
 
 from sinch.domains.sms.models.batches.requests import (
@@ -36,7 +36,7 @@ from sinch.domains.sms.models.batches.requests import (
     CancelBatchRequest,
     UpdateBatchRequest,
     ReplaceBatchRequest,
-    SendDeliveryFeedbackRequest
+    SendDeliveryFeedbackRequest,
 )
 
 from sinch.domains.sms.models.batches.responses import (
@@ -47,7 +47,7 @@ from sinch.domains.sms.models.batches.responses import (
     ListSMSBatchesResponse,
     UpdateSMSBatchResponse,
     ReplaceSMSBatchResponse,
-    SendSMSBatchDryRunResponse
+    SendSMSBatchDryRunResponse,
 )
 
 from sinch.domains.sms.models.groups.requests import (
@@ -57,7 +57,7 @@ from sinch.domains.sms.models.groups.requests import (
     GetSMSGroupRequest,
     GetSMSGroupPhoneNumbersRequest,
     UpdateSMSGroupRequest,
-    ReplaceSMSGroupPhoneNumbersRequest
+    ReplaceSMSGroupPhoneNumbersRequest,
 )
 
 from sinch.domains.sms.models.groups.responses import (
@@ -67,29 +67,23 @@ from sinch.domains.sms.models.groups.responses import (
     SinchListSMSGroupResponse,
     ReplaceSMSGroupResponse,
     GetSMSGroupResponse,
-    SinchGetSMSGroupPhoneNumbersResponse
+    SinchGetSMSGroupPhoneNumbersResponse,
 )
 
-from sinch.domains.sms.models.inbounds.requests import (
-    ListSMSInboundMessageRequest,
-    GetSMSInboundMessageRequest
-)
+from sinch.domains.sms.models.inbounds.requests import ListSMSInboundMessageRequest, GetSMSInboundMessageRequest
 
-from sinch.domains.sms.models.inbounds.responses import (
-    SinchListInboundMessagesResponse,
-    GetInboundMessagesResponse
-)
+from sinch.domains.sms.models.inbounds.responses import SinchListInboundMessagesResponse, GetInboundMessagesResponse
 
 from sinch.domains.sms.models.delivery_reports.requests import (
     ListSMSDeliveryReportsRequest,
     GetSMSDeliveryReportForBatchRequest,
-    GetSMSDeliveryReportForNumberRequest
+    GetSMSDeliveryReportForNumberRequest,
 )
 
 from sinch.domains.sms.models.delivery_reports.responses import (
     ListSMSDeliveryReportsResponse,
     GetSMSDeliveryReportForBatchResponse,
-    GetSMSDeliveryReportForNumberResponse
+    GetSMSDeliveryReportForNumberResponse,
 )
 
 
@@ -105,7 +99,7 @@ class SMSDeliveryReports:
         status: str = None,
         code: str = None,
         page_size: int = None,
-        client_reference: str = None
+        client_reference: str = None,
     ) -> ListSMSDeliveryReportsResponse:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
@@ -118,42 +112,28 @@ class SMSDeliveryReports:
                     end_date=end_date,
                     status=status,
                     code=code,
-                    client_reference=client_reference
-                )
-            )
+                    client_reference=client_reference,
+                ),
+            ),
         )
 
     def get_for_batch(
-        self,
-        batch_id: str,
-        type_: str = None,
-        code: list = None,
-        status: list = None
+        self, batch_id: str, type_: str = None, code: list = None, status: list = None
     ) -> GetSMSDeliveryReportForBatchResponse:
         return self._sinch.configuration.transport.request(
             GetDeliveryReportForBatchEndpoint(
                 sinch=self._sinch,
                 request_data=GetSMSDeliveryReportForBatchRequest(
-                    batch_id=batch_id,
-                    type_=type_,
-                    code=code,
-                    status=status
-                )
+                    batch_id=batch_id, type_=type_, code=code, status=status
+                ),
             )
         )
 
-    def get_for_number(
-        self,
-        batch_id: str,
-        recipient_number: str
-    ) -> GetSMSDeliveryReportForNumberResponse:
+    def get_for_number(self, batch_id: str, recipient_number: str) -> GetSMSDeliveryReportForNumberResponse:
         return self._sinch.configuration.transport.request(
             GetDeliveryReportForNumberEndpoint(
                 sinch=self._sinch,
-                request_data=GetSMSDeliveryReportForNumberRequest(
-                    batch_id=batch_id,
-                    recipient_number=recipient_number
-                )
+                request_data=GetSMSDeliveryReportForNumberRequest(batch_id=batch_id, recipient_number=recipient_number),
             )
         )
 
@@ -169,7 +149,7 @@ class SMSInbounds:
         to: str = None,
         end_date: str = None,
         page_size: int = None,
-        client_reference: str = None
+        client_reference: str = None,
     ) -> SinchListInboundMessagesResponse:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
@@ -181,18 +161,15 @@ class SMSInbounds:
                     to=to,
                     end_date=end_date,
                     start_date=start_date,
-                    client_reference=client_reference
-                )
-            )
+                    client_reference=client_reference,
+                ),
+            ),
         )
 
     def get(self, inbound_id: str) -> GetInboundMessagesResponse:
         return self._sinch.configuration.transport.request(
             GetInboundMessagesEndpoint(
-                sinch=self._sinch,
-                request_data=GetSMSInboundMessageRequest(
-                    inbound_id=inbound_id
-                )
+                sinch=self._sinch, request_data=GetSMSInboundMessageRequest(inbound_id=inbound_id)
             )
         )
 
@@ -218,7 +195,7 @@ class SMSBatches:
         truncate_concat: bool = None,
         max_number_of_message_parts: int = None,
         from_ton: int = None,
-        from_npi: int = None
+        from_npi: int = None,
     ) -> SendSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSEndpoint(
@@ -239,8 +216,8 @@ class SMSBatches:
                     truncate_concat=truncate_concat,
                     max_number_of_message_parts=max_number_of_message_parts,
                     from_npi=from_npi,
-                    from_ton=from_ton
-                )
+                    from_ton=from_ton,
+                ),
             )
         )
 
@@ -251,7 +228,7 @@ class SMSBatches:
         from_s: str = None,
         start_date: str = None,
         end_date: str = None,
-        client_reference: str = None
+        client_reference: str = None,
     ) -> ListSMSBatchesResponse:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
@@ -263,19 +240,14 @@ class SMSBatches:
                     from_s=from_s,
                     start_date=start_date,
                     end_date=end_date,
-                    client_reference=client_reference
-                )
-            )
+                    client_reference=client_reference,
+                ),
+            ),
         )
 
     def get(self, batch_id: str) -> GetSMSBatchResponse:
         return self._sinch.configuration.transport.request(
-            GetSMSEndpoint(
-                sinch=self._sinch,
-                request_data=GetBatchRequest(
-                    batch_id=batch_id
-                )
-            )
+            GetSMSEndpoint(sinch=self._sinch, request_data=GetBatchRequest(batch_id=batch_id))
         )
 
     def send_dry_run(
@@ -294,7 +266,7 @@ class SMSBatches:
         flash_message: bool = None,
         parameters: dict = None,
         client_reference: str = None,
-        max_number_of_message_parts: int = None
+        max_number_of_message_parts: int = None,
     ) -> SendSMSBatchDryRunResponse:
         return self._sinch.configuration.transport.request(
             SendBatchSMSDryRunEndpoint(
@@ -314,19 +286,14 @@ class SMSBatches:
                     flash_message=flash_message,
                     parameters=parameters,
                     client_reference=client_reference,
-                    max_number_of_message_parts=max_number_of_message_parts
-                )
+                    max_number_of_message_parts=max_number_of_message_parts,
+                ),
             )
         )
 
     def cancel(self, batch_id: str) -> CancelSMSBatchResponse:
         return self._sinch.configuration.transport.request(
-            CancelBatchEndpoint(
-                sinch=self._sinch,
-                request_data=CancelBatchRequest(
-                    batch_id=batch_id
-                )
-            )
+            CancelBatchEndpoint(sinch=self._sinch, request_data=CancelBatchRequest(batch_id=batch_id))
         )
 
     def update(
@@ -353,8 +320,8 @@ class SMSBatches:
                     delivery_report=delivery_report,
                     send_at=send_at,
                     expire_at=expire_at,
-                    callback_url=callback_url
-                )
+                    callback_url=callback_url,
+                ),
             )
         )
 
@@ -373,7 +340,7 @@ class SMSBatches:
         flash_message: bool = None,
         parameters: dict = None,
         client_reference: str = None,
-        max_number_of_message_parts: int = None
+        max_number_of_message_parts: int = None,
     ) -> ReplaceSMSBatchResponse:
         return self._sinch.configuration.transport.request(
             ReplaceBatchSMSEndpoint(
@@ -392,23 +359,15 @@ class SMSBatches:
                     flash_message=flash_message,
                     client_reference=client_reference,
                     max_number_of_message_parts=max_number_of_message_parts,
-                    parameters=parameters
-                )
+                    parameters=parameters,
+                ),
             )
         )
 
-    def send_delivery_feedback(
-        self,
-        batch_id: str,
-        recipients: list
-    ) -> SendSMSDeliveryFeedbackResponse:
+    def send_delivery_feedback(self, batch_id: str, recipients: list) -> SendSMSDeliveryFeedbackResponse:
         return self._sinch.configuration.transport.request(
             SendDeliveryReportEndpoint(
-                sinch=self._sinch,
-                request_data=SendDeliveryFeedbackRequest(
-                    batch_id=batch_id,
-                    recipients=recipients
-                )
+                sinch=self._sinch, request_data=SendDeliveryFeedbackRequest(batch_id=batch_id, recipients=recipients)
             )
         )
 
@@ -418,76 +377,39 @@ class SMSGroups:
         self._sinch = sinch
 
     def create(
-        self,
-        name: str,
-        members: list = None,
-        child_groups: list = None,
-        auto_update: dict = None
+        self, name: str, members: list = None, child_groups: list = None, auto_update: dict = None
     ) -> CreateSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             CreateSMSGroupEndpoint(
                 sinch=self._sinch,
                 request_data=CreateSMSGroupRequest(
-                    name=name,
-                    members=members,
-                    child_groups=child_groups,
-                    auto_update=auto_update
-                )
+                    name=name, members=members, child_groups=child_groups, auto_update=auto_update
+                ),
             )
         )
 
-    def list(
-        self,
-        page=0,
-        page_size=None
-    ) -> SinchListSMSGroupResponse:
+    def list(self, page=0, page_size=None) -> SinchListSMSGroupResponse:
         return IntBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListSMSGroupEndpoint(
-                sinch=self._sinch,
-                request_data=ListSMSGroupRequest(
-                    page=page,
-                    page_size=page_size
-                )
-            )
+                sinch=self._sinch, request_data=ListSMSGroupRequest(page=page, page_size=page_size)
+            ),
         )
 
-    def delete(
-        self,
-        group_id: str
-    ) -> SinchDeleteSMSGroupResponse:
+    def delete(self, group_id: str) -> SinchDeleteSMSGroupResponse:
         return self._sinch.configuration.transport.request(
-            DeleteSMSGroupEndpoint(
-                sinch=self._sinch,
-                request_data=DeleteSMSGroupRequest(
-                    group_id=group_id
-                )
-            )
+            DeleteSMSGroupEndpoint(sinch=self._sinch, request_data=DeleteSMSGroupRequest(group_id=group_id))
         )
 
-    def get(
-        self,
-        group_id: str
-    ) -> GetSMSGroupResponse:
+    def get(self, group_id: str) -> GetSMSGroupResponse:
         return self._sinch.configuration.transport.request(
-            GetSMSGroupEndpoint(
-                sinch=self._sinch,
-                request_data=GetSMSGroupRequest(
-                    group_id=group_id
-                )
-            )
+            GetSMSGroupEndpoint(sinch=self._sinch, request_data=GetSMSGroupRequest(group_id=group_id))
         )
 
-    def get_group_phone_numbers(
-        self,
-        group_id: str
-    ) -> SinchGetSMSGroupPhoneNumbersResponse:
+    def get_group_phone_numbers(self, group_id: str) -> SinchGetSMSGroupPhoneNumbersResponse:
         return self._sinch.configuration.transport.request(
             GetSMSGroupPhoneNumbersEndpoint(
-                sinch=self._sinch,
-                request_data=GetSMSGroupPhoneNumbersRequest(
-                    group_id=group_id
-                )
+                sinch=self._sinch, request_data=GetSMSGroupPhoneNumbersRequest(group_id=group_id)
             )
         )
 
@@ -499,7 +421,7 @@ class SMSGroups:
         remove: list = None,
         add_from_group: str = None,
         remove_from_group: str = None,
-        auto_update: dict = None
+        auto_update: dict = None,
     ) -> UpdateSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             UpdateSMSGroupEndpoint(
@@ -511,25 +433,16 @@ class SMSGroups:
                     remove=remove,
                     add_from_group=add_from_group,
                     remove_from_group=remove_from_group,
-                    auto_update=auto_update
-                )
+                    auto_update=auto_update,
+                ),
             )
         )
 
-    def replace(
-        self,
-        group_id: str,
-        members: list,
-        name: str = None
-    ) -> ReplaceSMSGroupResponse:
+    def replace(self, group_id: str, members: list, name: str = None) -> ReplaceSMSGroupResponse:
         return self._sinch.configuration.transport.request(
             ReplaceSMSGroupEndpoint(
                 sinch=self._sinch,
-                request_data=ReplaceSMSGroupPhoneNumbersRequest(
-                    group_id=group_id,
-                    members=members,
-                    name=name
-                )
+                request_data=ReplaceSMSGroupPhoneNumbersRequest(group_id=group_id, members=members, name=name),
             )
         )
 
@@ -538,6 +451,7 @@ class SMSBase:
     """
     Documentation for the SMS API: https://developers.sinch.com/docs/sms/
     """
+
     def __init__(self, sinch):
         self._sinch = sinch
 
@@ -546,6 +460,7 @@ class SMS(SMSBase):
     """
     Synchronous version of the SMS Domain
     """
+
     __doc__ += SMSBase.__doc__
 
     def __init__(self, sinch):

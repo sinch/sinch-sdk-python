@@ -17,10 +17,7 @@ class ListConversationsEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def build_query_params(self):
         query_params = {}
@@ -50,9 +47,10 @@ class ListConversationsEndpoint(ConversationEndpoint):
                     active_channel=conversation["active_channel"],
                     active=conversation["active"],
                     metadata=conversation["metadata"],
-                    metadata_json=conversation["metadata_json"]
-                ) for conversation in response.body["conversations"]
+                    metadata_json=conversation["metadata_json"],
+                )
+                for conversation in response.body["conversations"]
             ],
             next_page_token=response.body["next_page_token"],
-            total_size=response.body["total_size"]
+            total_size=response.body["total_size"],
         )

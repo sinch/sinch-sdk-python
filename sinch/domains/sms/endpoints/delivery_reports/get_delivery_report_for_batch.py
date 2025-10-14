@@ -30,7 +30,7 @@ class GetDeliveryReportForBatchEndpoint(SMSEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
             project_or_service_id=self.project_or_service_id,
-            batch_id=self.request_data.batch_id
+            batch_id=self.request_data.batch_id,
         )
 
     def handle_response(self, response: HTTPResponse):
@@ -40,5 +40,5 @@ class GetDeliveryReportForBatchEndpoint(SMSEndpoint):
             batch_id=response.body.get("batch_id"),
             total_message_count=response.body.get("total_message_count"),
             statuses=response.body.get("statuses"),
-            client_reference=response.body.get("client_reference")
+            client_reference=response.body.get("client_reference"),
         )

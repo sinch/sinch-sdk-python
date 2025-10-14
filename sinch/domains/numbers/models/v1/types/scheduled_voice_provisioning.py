@@ -5,7 +5,9 @@ from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_rtc imp
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_custom import ScheduledVoiceProvisioningCustom
 
 
-ScheduledVoiceProvisioning = Union[ScheduledVoiceProvisioningEST,
-                                   ScheduledVoiceProvisioningFAX,
-                                   ScheduledVoiceProvisioningRTC,
-                                   ScheduledVoiceProvisioningCustom]
+ScheduledVoiceProvisioning = Union[
+    ScheduledVoiceProvisioningEST,
+    ScheduledVoiceProvisioningFAX,
+    ScheduledVoiceProvisioningRTC,
+    ScheduledVoiceProvisioningCustom,
+]

@@ -16,10 +16,7 @@ class CreateConversationEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
@@ -34,5 +31,5 @@ class CreateConversationEndpoint(ConversationEndpoint):
             active_channel=response.body["active_channel"],
             active=response.body["active"],
             metadata=response.body["metadata"],
-            metadata_json=response.body["metadata_json"]
+            metadata_json=response.body["metadata_json"],
         )

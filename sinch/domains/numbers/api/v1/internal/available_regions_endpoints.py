@@ -9,6 +9,7 @@ class ListAvailableRegionsEndpoint(NumbersEndpoint):
     """
     Endpoint to list all the regions that have numbers assigned to a project
     """
+
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/availableRegions"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -25,6 +26,7 @@ class ListAvailableRegionsEndpoint(NumbersEndpoint):
         try:
             super(ListAvailableRegionsEndpoint, self).handle_response(response)
         except NumbersException as ex:
-            raise NumberNotFoundException(message=ex.args[0], response=ex.http_response,
-                                          is_from_server=ex.is_from_server)
+            raise NumberNotFoundException(
+                message=ex.args[0], response=ex.http_response, is_from_server=ex.is_from_server
+            )
         return self.process_response_model(response.body, ListAvailableRegionsResponse)

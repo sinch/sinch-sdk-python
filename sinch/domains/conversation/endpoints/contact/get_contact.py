@@ -19,7 +19,7 @@ class GetContactEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            contact_id=self.request_data.contact_id
+            contact_id=self.request_data.contact_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> GetConversationContactResponse:
@@ -32,5 +32,5 @@ class GetContactEndpoint(ConversationEndpoint):
             email=response.body["email"],
             external_id=response.body["external_id"],
             metadata=response.body["metadata"],
-            language=response.body["language"]
+            language=response.body["language"],
         )

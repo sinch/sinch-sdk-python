@@ -15,7 +15,7 @@ def test_available_number_expects_valid_data():
         "setupPrice": {"amount": "10.00", "currencyCode": "USD"},
         "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"},
         "paymentIntervalMonths": 1,
-        "supportingDocumentationRequired": True
+        "supportingDocumentationRequired": True,
     }
 
     response = AvailableNumber(**data)
@@ -43,7 +43,7 @@ def test_available_number_missing_optional_fields_expects_valid_data():
         "type": "MOBILE",
         "capability": ["SMS", "VOICE"],
         "setupPrice": {"amount": "10.00", "currencyCode": "USD"},
-        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"}
+        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"},
     }
 
     response = AvailableNumber(**data)
@@ -62,7 +62,7 @@ def test_available_number_expects_parsed_new_type():
         "type": "NEW_TYPE",
         "capability": ["SMS", "VOICE"],
         "setupPrice": {"amount": "10.00", "currencyCode": "USD"},
-        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"}
+        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"},
     }
 
     response = AvailableNumber(**data)
@@ -78,7 +78,7 @@ def test_available_number_expects_validation_error_for_missing_required_fields()
         "regionCode": "US",
         "capability": ["SMS", "VOICE"],
         "setupPrice": {"amount": "10.00", "currencyCode": "USD"},
-        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"}
+        "monthlyPrice": {"amount": "5.00", "currencyCode": "USD"},
     }
 
     with pytest.raises(ValidationError):

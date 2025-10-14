@@ -4,9 +4,4 @@ from sinch.domains.numbers.api.v1.available_regions_apis import AvailableRegions
 from sinch.domains.numbers.api.v1.callback_configuration_apis import CallbackConfiguration
 
 
-__all__ = [
-    "ActiveNumbers",
-    "AvailableNumbers",
-    "AvailableRegions",
-    "CallbackConfiguration"
-]
+__all__ = ["ActiveNumbers", "AvailableNumbers", "AvailableRegions", "CallbackConfiguration"]

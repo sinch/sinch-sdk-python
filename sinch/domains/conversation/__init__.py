@@ -5,14 +5,14 @@ from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.conversation.models import (
     SinchConversationChannelIdentities,
     SinchConversationRecipient,
-    ConversationChannel
+    ConversationChannel,
 )
 
 from sinch.domains.conversation.models.app.requests import (
     CreateConversationAppRequest,
     DeleteConversationAppRequest,
     GetConversationAppRequest,
-    UpdateConversationAppRequest
+    UpdateConversationAppRequest,
 )
 
 from sinch.domains.conversation.models.app.responses import (
@@ -20,7 +20,7 @@ from sinch.domains.conversation.models.app.responses import (
     DeleteConversationAppResponse,
     ListConversationAppsResponse,
     GetConversationAppResponse,
-    UpdateConversationAppResponse
+    UpdateConversationAppResponse,
 )
 
 from sinch.domains.conversation.models.contact.requests import (
@@ -30,7 +30,7 @@ from sinch.domains.conversation.models.contact.requests import (
     DeleteConversationContactRequest,
     GetConversationContactRequest,
     MergeConversationContactsRequest,
-    GetConversationChannelProfileRequest
+    GetConversationChannelProfileRequest,
 )
 
 from sinch.domains.conversation.models.contact.responses import (
@@ -40,21 +40,21 @@ from sinch.domains.conversation.models.contact.responses import (
     MergeConversationContactsResponse,
     CreateConversationContactResponse,
     GetConversationContactResponse,
-    GetConversationChannelProfileResponse
+    GetConversationChannelProfileResponse,
 )
 
 from sinch.domains.conversation.models.message.requests import (
     SendConversationMessageRequest,
     ListConversationMessagesRequest,
     DeleteConversationMessageRequest,
-    GetConversationMessageRequest
+    GetConversationMessageRequest,
 )
 
 from sinch.domains.conversation.models.message.responses import (
     SendConversationMessageResponse,
     ListConversationMessagesResponse,
     GetConversationMessageResponse,
-    DeleteConversationMessageResponse
+    DeleteConversationMessageResponse,
 )
 
 from sinch.domains.conversation.models.conversation.requests import (
@@ -64,7 +64,7 @@ from sinch.domains.conversation.models.conversation.requests import (
     DeleteConversationRequest,
     UpdateConversationRequest,
     StopConversationRequest,
-    InjectMessageToConversationRequest
+    InjectMessageToConversationRequest,
 )
 
 from sinch.domains.conversation.models.conversation.responses import (
@@ -74,7 +74,7 @@ from sinch.domains.conversation.models.conversation.responses import (
     SinchDeleteConversationResponse,
     SinchListConversationsResponse,
     SinchStopConversationResponse,
-    SinchInjectMessageResponse
+    SinchInjectMessageResponse,
 )
 
 from sinch.domains.conversation.models.webhook.requests import (
@@ -82,7 +82,7 @@ from sinch.domains.conversation.models.webhook.requests import (
     GetConversationWebhookRequest,
     DeleteConversationWebhookRequest,
     UpdateConversationWebhookRequest,
-    ListConversationWebhookRequest
+    ListConversationWebhookRequest,
 )
 
 from sinch.domains.conversation.models.webhook.responses import (
@@ -90,14 +90,14 @@ from sinch.domains.conversation.models.webhook.responses import (
     GetWebhookResponse,
     SinchListWebhooksResponse,
     SinchDeleteWebhookResponse,
-    UpdateWebhookResponse
+    UpdateWebhookResponse,
 )
 
 from sinch.domains.conversation.models.templates.requests import (
     CreateConversationTemplateRequest,
     GetConversationTemplateRequest,
     DeleteConversationTemplateRequest,
-    UpdateConversationTemplateRequest
+    UpdateConversationTemplateRequest,
 )
 
 from sinch.domains.conversation.models.templates.responses import (
@@ -105,7 +105,7 @@ from sinch.domains.conversation.models.templates.responses import (
     UpdateConversationTemplateResponse,
     DeleteConversationTemplateResponse,
     ListConversationTemplatesResponse,
-    GetConversationTemplateResponse
+    GetConversationTemplateResponse,
 )
 
 from sinch.domains.conversation.models.event.requests import SendConversationEventRequest
@@ -146,7 +146,7 @@ from sinch.domains.conversation.endpoints.conversation.delete_conversation impor
 from sinch.domains.conversation.endpoints.conversation.update_conversation import UpdateConversationEndpoint
 from sinch.domains.conversation.endpoints.conversation.stop_conversation import StopConversationEndpoint
 from sinch.domains.conversation.endpoints.conversation.inject_message_to_conversation import (
-    InjectMessageToConversationEndpoint
+    InjectMessageToConversationEndpoint,
 )
 from sinch.domains.conversation.endpoints.webhooks.create_webhook import CreateWebhookEndpoint
 from sinch.domains.conversation.endpoints.webhooks.list_webhooks import ListWebhooksEndpoint
@@ -181,7 +181,7 @@ class ConversationMessage:
         conversation_metadata: dict = None,
         queue: str = None,
         ttl: str = None,
-        processing_strategy: str = None
+        processing_strategy: str = None,
     ) -> SendConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             SendConversationMessageEndpoint(
@@ -197,38 +197,24 @@ class ConversationMessage:
                     conversation_metadata=conversation_metadata,
                     queue=queue,
                     ttl=ttl,
-                    processing_strategy=processing_strategy
-                )
+                    processing_strategy=processing_strategy,
+                ),
             )
         )
 
-    def get(
-        self,
-        message_id: str,
-        messages_source: str = None
-    ) -> GetConversationMessageResponse:
+    def get(self, message_id: str, messages_source: str = None) -> GetConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             GetConversationMessageEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationMessageRequest(
-                    message_id=message_id,
-                    messages_source=messages_source
-                )
+                request_data=GetConversationMessageRequest(message_id=message_id, messages_source=messages_source),
             )
         )
 
-    def delete(
-        self,
-        message_id: str,
-        messages_source: str = None
-    ) -> DeleteConversationMessageResponse:
+    def delete(self, message_id: str, messages_source: str = None) -> DeleteConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             DeleteConversationMessageEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=DeleteConversationMessageRequest(
-                    message_id=message_id,
-                    messages_source=messages_source
-                )
+                request_data=DeleteConversationMessageRequest(message_id=message_id, messages_source=messages_source),
             )
         )
 
@@ -241,7 +227,7 @@ class ConversationMessage:
         page_token: str = None,
         view: str = None,
         messages_source: str = None,
-        only_recipient_originated: bool = None
+        only_recipient_originated: bool = None,
     ) -> ListConversationMessagesResponse:
         return TokenBasedPaginator._initialize(
             sinch=self._sinch,
@@ -255,9 +241,9 @@ class ConversationMessage:
                     page_token=page_token,
                     view=view,
                     messages_source=messages_source,
-                    only_recipient_originated=only_recipient_originated
-                )
-            )
+                    only_recipient_originated=only_recipient_originated,
+                ),
+            ),
         )
 
 
@@ -272,7 +258,7 @@ class ConversationApp:
         conversation_metadata_report_view: str = None,
         retention_policy: dict = None,
         dispatch_retention_policy: dict = None,
-        processing_mode: str = None
+        processing_mode: str = None,
     ) -> CreateConversationAppResponse:
         """
         Creates a new Conversation API app with one or more configured channels.
@@ -288,8 +274,8 @@ class ConversationApp:
                     conversation_metadata_report_view=conversation_metadata_report_view,
                     retention_policy=retention_policy,
                     dispatch_retention_policy=dispatch_retention_policy,
-                    processing_mode=processing_mode
-                )
+                    processing_mode=processing_mode,
+                ),
             )
         )
 
@@ -299,8 +285,7 @@ class ConversationApp:
         """
         return self._sinch.configuration.transport.request(
             DeleteConversationAppEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=DeleteConversationAppRequest(app_id)
+                project_id=self._sinch.configuration.project_id, request_data=DeleteConversationAppRequest(app_id)
             )
         )
 
@@ -310,9 +295,7 @@ class ConversationApp:
         Returns the information as an array of app objects in the response.
         """
         return self._sinch.configuration.transport.request(
-            ListAppsEndpoint(
-                project_id=self._sinch.configuration.project_id
-            )
+            ListAppsEndpoint(project_id=self._sinch.configuration.project_id)
         )
 
     def get(self, app_id: str) -> GetConversationAppResponse:
@@ -321,10 +304,7 @@ class ConversationApp:
         """
         return self._sinch.configuration.transport.request(
             GetAppEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationAppRequest(
-                    app_id=app_id
-                )
+                project_id=self._sinch.configuration.project_id, request_data=GetConversationAppRequest(app_id=app_id)
             )
         )
 
@@ -337,7 +317,7 @@ class ConversationApp:
         conversation_metadata_report_view=None,
         retention_policy=None,
         dispatch_retention_policy=None,
-        processing_mode=None
+        processing_mode=None,
     ) -> UpdateConversationAppResponse:
         """
         Updates an existing Conversation API app with new configuration options defined in the request.
@@ -354,8 +334,8 @@ class ConversationApp:
                     conversation_metadata_report_view=conversation_metadata_report_view,
                     retention_policy=retention_policy,
                     dispatch_retention_policy=dispatch_retention_policy,
-                    processing_mode=processing_mode
-                )
+                    processing_mode=processing_mode,
+                ),
             )
         )
 
@@ -373,7 +353,7 @@ class ConversationContact:
         email: str = None,
         external_id: str = None,
         metadata: str = None,
-        channel_priority: list = None
+        channel_priority: list = None,
     ) -> UpdateConversationContactResponse:
         """
         Updates an existing Conversation API contact with new configuration options defined in the request.
@@ -390,8 +370,8 @@ class ConversationContact:
                     external_id=external_id,
                     metadata=metadata,
                     channel_priority=channel_priority,
-                    id=contact_id
-                )
+                    id=contact_id,
+                ),
             )
         )
 
@@ -403,7 +383,7 @@ class ConversationContact:
         email: str = None,
         external_id: str = None,
         metadata: str = None,
-        channel_priority: list = None
+        channel_priority: list = None,
     ) -> CreateConversationContactResponse:
         """
         Creates a new Conversation API contact.
@@ -419,8 +399,8 @@ class ConversationContact:
                     email=email,
                     external_id=external_id,
                     metadata=metadata,
-                    channel_priority=channel_priority
-                )
+                    channel_priority=channel_priority,
+                ),
             )
         )
 
@@ -431,9 +411,7 @@ class ConversationContact:
         return self._sinch.configuration.transport.request(
             DeleteContactEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=DeleteConversationContactRequest(
-                    contact_id=contact_id
-                )
+                request_data=DeleteConversationContactRequest(contact_id=contact_id),
             )
         )
 
@@ -445,9 +423,7 @@ class ConversationContact:
         return self._sinch.configuration.transport.request(
             GetContactEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationContactRequest(
-                    contact_id=contact_id
-                )
+                request_data=GetConversationContactRequest(contact_id=contact_id),
             )
         )
 
@@ -457,7 +433,7 @@ class ConversationContact:
         page_token: str = None,
         external_id: str = None,
         channel: str = None,
-        identity: str = None
+        identity: str = None,
     ) -> ListConversationContactsResponse:
         """
         Lists all Conversation API contacts for the project identified by the project_id.
@@ -472,17 +448,12 @@ class ConversationContact:
                     page_token=page_token,
                     external_id=external_id,
                     channel=channel,
-                    identity=identity
-                )
-            )
+                    identity=identity,
+                ),
+            ),
         )
 
-    def merge(
-        self,
-        source_id: str,
-        destination_id: str,
-        strategy: str = None
-    ) -> MergeConversationContactsResponse:
+    def merge(self, source_id: str, destination_id: str, strategy: str = None) -> MergeConversationContactsResponse:
         """
         Merges two existing Conversation API contacts.
         The contact specified by the destination_id will be kept.
@@ -495,10 +466,8 @@ class ConversationContact:
             MergeConversationContactsEndpoint(
                 project_id=self._sinch.configuration.project_id,
                 request_data=MergeConversationContactsRequest(
-                    destination_id=destination_id,
-                    strategy=strategy,
-                    source_id=source_id
-                )
+                    destination_id=destination_id, strategy=strategy, source_id=source_id
+                ),
             )
         )
 
@@ -515,11 +484,7 @@ class ConversationContact:
         return self._sinch.configuration.transport.request(
             GetChannelProfileEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationChannelProfileRequest(
-                    app_id=app_id,
-                    recipient=recipient,
-                    channel=channel
-                )
+                request_data=GetConversationChannelProfileRequest(app_id=app_id, recipient=recipient, channel=channel),
             )
         )
 
@@ -536,7 +501,7 @@ class ConversationEvent:
         callback_url: str = None,
         channel_priority_order: str = None,
         event_metadata: str = None,
-        queue: str = None
+        queue: str = None,
     ) -> SendConversationEventResponse:
         return self._sinch.configuration.transport.request(
             SendEventEndpoint(
@@ -548,8 +513,8 @@ class ConversationEvent:
                     callback_url=callback_url,
                     channel_priority_order=channel_priority_order,
                     event_metadata=event_metadata,
-                    queue=queue
-                )
+                    queue=queue,
+                ),
             )
         )
 
@@ -559,23 +524,14 @@ class ConversationTranscoding:
         self._sinch = sinch
 
     def transcode_message(
-        self,
-        app_id: str,
-        app_message: dict,
-        channels: list,
-        from_: str = None,
-        to: str = None
+        self, app_id: str, app_message: dict, channels: list, from_: str = None, to: str = None
     ) -> TranscodeConversationMessageResponse:
         return self._sinch.configuration.transport.request(
             TranscodeMessageEndpoint(
                 project_id=self._sinch.configuration.project_id,
                 request_data=TranscodeConversationMessageRequest(
-                    app_id=app_id,
-                    app_message=app_message,
-                    channels=channels,
-                    from_=from_,
-                    to=to
-                )
+                    app_id=app_id, app_message=app_message, channels=channels, from_=from_, to=to
+                ),
             )
         )
 
@@ -585,12 +541,7 @@ class ConversationOptIn:
         self._sinch = sinch
 
     def register(
-        self,
-        app_id: str,
-        channels: list,
-        recipient: dict,
-        request_id: str = None,
-        processing_strategy: str = None
+        self, app_id: str, channels: list, recipient: dict, request_id: str = None, processing_strategy: str = None
     ) -> RegisterConversationOptInResponse:
         return self._sinch.configuration.transport.request(
             RegisterOptInEndpoint(
@@ -600,8 +551,8 @@ class ConversationOptIn:
                     recipient=recipient,
                     channels=channels,
                     request_id=request_id,
-                    processing_strategy=processing_strategy
-                )
+                    processing_strategy=processing_strategy,
+                ),
             )
         )
 
@@ -611,12 +562,7 @@ class ConversationOptOut:
         self._sinch = sinch
 
     def register(
-        self,
-        app_id: str,
-        channels: list,
-        recipient: dict,
-        request_id: str = None,
-        processing_strategy: str = None
+        self, app_id: str, channels: list, recipient: dict, request_id: str = None, processing_strategy: str = None
     ) -> RegisterConversationOptOutResponse:
         return self._sinch.configuration.transport.request(
             RegisterOptOutEndpoint(
@@ -626,8 +572,8 @@ class ConversationOptOut:
                     recipient=recipient,
                     channels=channels,
                     request_id=request_id,
-                    processing_strategy=processing_strategy
-                )
+                    processing_strategy=processing_strategy,
+                ),
             )
         )
 
@@ -636,20 +582,13 @@ class ConversationCapability:
     def __init__(self, sinch):
         self._sinch = sinch
 
-    def query(
-        self,
-        app_id: str,
-        recipient: dict,
-        request_id: str = None
-    ) -> QueryConversationCapabilityResponse:
+    def query(self, app_id: str, recipient: dict, request_id: str = None) -> QueryConversationCapabilityResponse:
         return self._sinch.configuration.transport.request(
             CapabilityQueryEndpoint(
                 project_id=self._sinch.configuration.project_id,
                 request_data=QueryConversationCapabilityRequest(
-                    app_id=app_id,
-                    recipient=recipient,
-                    request_id=request_id
-                )
+                    app_id=app_id, recipient=recipient, request_id=request_id
+                ),
             )
         )
 
@@ -666,7 +605,7 @@ class ConversationTemplate:
         create_time: str = None,
         description: str = None,
         id: str = None,
-        update_time: str = None
+        update_time: str = None,
     ) -> CreateConversationTemplateResponse:
         return self._sinch.configuration.transport.request(
             CreateTemplateEndpoint(
@@ -678,25 +617,21 @@ class ConversationTemplate:
                     id=id,
                     translations=translations,
                     default_translation=default_translation,
-                    update_time=update_time
-                )
+                    update_time=update_time,
+                ),
             )
         )
 
     def list(self) -> ListConversationTemplatesResponse:
         return self._sinch.configuration.transport.request(
-            ListTemplatesEndpoint(
-                project_id=self._sinch.configuration.project_id
-            )
+            ListTemplatesEndpoint(project_id=self._sinch.configuration.project_id)
         )
 
     def get(self, template_id: str) -> GetConversationTemplateResponse:
         return self._sinch.configuration.transport.request(
             GetTemplatesEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationTemplateRequest(
-                    template_id=template_id
-                )
+                request_data=GetConversationTemplateRequest(template_id=template_id),
             )
         )
 
@@ -710,7 +645,7 @@ class ConversationTemplate:
         channel: str = None,
         create_time: str = None,
         description: str = None,
-        update_time: str = None
+        update_time: str = None,
     ) -> UpdateConversationTemplateResponse:
         return self._sinch.configuration.transport.request(
             UpdateTemplateEndpoint(
@@ -724,8 +659,8 @@ class ConversationTemplate:
                     default_translation=default_translation,
                     update_time=update_time,
                     update_mask=update_mask,
-                    template_id=template_id
-                )
+                    template_id=template_id,
+                ),
             )
         )
 
@@ -733,9 +668,7 @@ class ConversationTemplate:
         return self._sinch.configuration.transport.request(
             DeleteTemplateEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=DeleteConversationTemplateRequest(
-                    template_id=template_id
-                )
+                request_data=DeleteConversationTemplateRequest(template_id=template_id),
             )
         )
 
@@ -751,7 +684,7 @@ class ConversationWebhook:
         triggers: list,
         client_credentials: dict = None,
         secret: str = None,
-        target_type: str = None
+        target_type: str = None,
     ) -> CreateWebhookResponse:
         return self._sinch.configuration.transport.request(
             CreateWebhookEndpoint(
@@ -762,8 +695,8 @@ class ConversationWebhook:
                     triggers=triggers,
                     client_credentials=client_credentials,
                     secret=secret,
-                    target_type=target_type
-                )
+                    target_type=target_type,
+                ),
             )
         )
 
@@ -776,7 +709,7 @@ class ConversationWebhook:
         update_mask: str = None,
         client_credentials: dict = None,
         secret: str = None,
-        target_type: str = None
+        target_type: str = None,
     ) -> UpdateWebhookResponse:
         return self._sinch.configuration.transport.request(
             UpdateWebhookEndpoint(
@@ -789,8 +722,8 @@ class ConversationWebhook:
                     secret=secret,
                     target_type=target_type,
                     update_mask=update_mask,
-                    webhook_id=webhook_id
-                )
+                    webhook_id=webhook_id,
+                ),
             )
         )
 
@@ -798,9 +731,7 @@ class ConversationWebhook:
         return self._sinch.configuration.transport.request(
             ListWebhooksEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=ListConversationWebhookRequest(
-                    app_id=app_id
-                )
+                request_data=ListConversationWebhookRequest(app_id=app_id),
             )
         )
 
@@ -808,9 +739,7 @@ class ConversationWebhook:
         return self._sinch.configuration.transport.request(
             GetWebhookEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationWebhookRequest(
-                    webhook_id=webhook_id
-                )
+                request_data=GetConversationWebhookRequest(webhook_id=webhook_id),
             )
         )
 
@@ -818,9 +747,7 @@ class ConversationWebhook:
         return self._sinch.configuration.transport.request(
             DeleteWebhookEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=DeleteConversationWebhookRequest(
-                    webhook_id=webhook_id
-                )
+                request_data=DeleteConversationWebhookRequest(webhook_id=webhook_id),
             )
         )
 
@@ -849,8 +776,8 @@ class ConversationConversation:
                     metadata=metadata,
                     conversation_metadata=conversation_metadata,
                     active_channel=active_channel,
-                    active=active
-                )
+                    active=active,
+                ),
             )
         )
 
@@ -860,7 +787,7 @@ class ConversationConversation:
         page_size: int = None,
         page_token: str = None,
         app_id: str = None,
-        contact_id: str = None
+        contact_id: str = None,
     ) -> SinchListConversationsResponse:
         return TokenBasedPaginator._initialize(
             sinch=self._sinch,
@@ -871,18 +798,16 @@ class ConversationConversation:
                     page_size=page_size,
                     page_token=page_token,
                     app_id=app_id,
-                    contact_id=contact_id
-                )
-            )
+                    contact_id=contact_id,
+                ),
+            ),
         )
 
     def get(self, conversation_id: str) -> SinchGetConversationResponse:
         return self._sinch.configuration.transport.request(
             GetConversationEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=GetConversationRequest(
-                    conversation_id=conversation_id
-                )
+                request_data=GetConversationRequest(conversation_id=conversation_id),
             )
         )
 
@@ -890,9 +815,7 @@ class ConversationConversation:
         return self._sinch.configuration.transport.request(
             DeleteConversationEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=DeleteConversationRequest(
-                    conversation_id=conversation_id
-                )
+                request_data=DeleteConversationRequest(conversation_id=conversation_id),
             )
         )
 
@@ -906,7 +829,7 @@ class ConversationConversation:
         contact_id: str = None,
         app_id: str = None,
         active_channel: str = None,
-        active: bool = None
+        active: bool = None,
     ) -> SinchUpdateConversationResponse:
         return self._sinch.configuration.transport.request(
             UpdateConversationEndpoint(
@@ -920,8 +843,8 @@ class ConversationConversation:
                     active_channel=active_channel,
                     active=active,
                     metadata_update_strategy=metadata_update_strategy,
-                    update_mask=update_mask
-                )
+                    update_mask=update_mask,
+                ),
             )
         )
 
@@ -929,9 +852,7 @@ class ConversationConversation:
         return self._sinch.configuration.transport.request(
             StopConversationEndpoint(
                 project_id=self._sinch.configuration.project_id,
-                request_data=StopConversationRequest(
-                    conversation_id=conversation_id
-                )
+                request_data=StopConversationRequest(conversation_id=conversation_id),
             )
         )
 
@@ -944,7 +865,7 @@ class ConversationConversation:
         contact_id: str = None,
         contact_message: dict = None,
         direction: str = None,
-        metadata: str = None
+        metadata: str = None,
     ) -> SinchInjectMessageResponse:
         return self._sinch.configuration.transport.request(
             InjectMessageToConversationEndpoint(
@@ -957,8 +878,8 @@ class ConversationConversation:
                     contact_id=contact_id,
                     contact_message=contact_message,
                     direction=direction,
-                    metadata=metadata
-                )
+                    metadata=metadata,
+                ),
             )
         )
 
@@ -976,6 +897,7 @@ class Conversation(ConversationBase):
     """
     Synchronous version of the Conversation Domain
     """
+
     __doc__ += ConversationBase.__doc__
 
     def __init__(self, sinch):

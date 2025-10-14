@@ -60,17 +60,11 @@ class StartSMSVerificationRequest(StartVerificationRequest):
         payload["smsOptions"] = {}
 
         if payload.get("code_type"):
-            payload["smsOptions"].update({
-                "codeType": payload.pop("code_type")
-            })
+            payload["smsOptions"].update({"codeType": payload.pop("code_type")})
         elif payload.get("expiry"):
-            payload["smsOptions"].update({
-                "expiry": payload.pop("expiry")
-            })
+            payload["smsOptions"].update({"expiry": payload.pop("expiry")})
         elif payload.get("template"):
-            payload["smsOptions"].update({
-                "template": payload.pop("template")
-            })
+            payload["smsOptions"].update({"template": payload.pop("template")})
         return payload
 
 
@@ -82,9 +76,7 @@ class StartFlashCallVerificationRequest(StartVerificationRequest):
     def as_dict(self):
         payload = super().as_dict()
         if payload.get("dial_timeout"):
-            payload["flashCallOptions"] = {
-                "dialTimeout": payload.pop("dial_timeout")
-            }
+            payload["flashCallOptions"] = {"dialTimeout": payload.pop("dial_timeout")}
         return payload
 
 
@@ -101,11 +93,7 @@ class StartCalloutVerificationRequest(StartVerificationRequest):
     def as_dict(self):
         payload = super().as_dict()
         if payload.get("speech_locale"):
-            payload["calloutOptions"] = {
-                "speech": {
-                    "locale": payload.pop("speech_locale")
-                }
-            }
+            payload["calloutOptions"] = {"speech": {"locale": payload.pop("speech_locale")}}
         return payload
 
 
@@ -121,8 +109,7 @@ class ReportVerificationByIdentityRequest(SinchRequestBaseModel):
 
 @dataclass
 class ReportVerificationByIdentityAndSMSRequest(
-    ReportSMSVerificationDataTransformationMixin,
-    ReportVerificationByIdentityRequest
+    ReportSMSVerificationDataTransformationMixin, ReportVerificationByIdentityRequest
 ):
     code: str
     cli: str
@@ -131,8 +118,7 @@ class ReportVerificationByIdentityAndSMSRequest(
 
 @dataclass
 class ReportVerificationByIdentityAndFlashCallRequest(
-    ReportFlashCallVerificationDataTransformationMixin,
-    ReportVerificationByIdentityRequest
+    ReportFlashCallVerificationDataTransformationMixin, ReportVerificationByIdentityRequest
 ):
     cli: str
     method: str = VerificationMethod.FLASH_CALL.value
@@ -140,8 +126,7 @@ class ReportVerificationByIdentityAndFlashCallRequest(
 
 @dataclass
 class ReportVerificationByIdentityAndPhoneCallRequest(
-    ReportPhoneCallVerificationDataTransformationMixin,
-    ReportVerificationByIdentityRequest
+    ReportPhoneCallVerificationDataTransformationMixin, ReportVerificationByIdentityRequest
 ):
     code: str
     method: str = VerificationMethod.CALLOUT.value
@@ -153,10 +138,7 @@ class ReportVerificationByIdRequest(SinchRequestBaseModel):
 
 
 @dataclass
-class ReportVerificationByIdAndSMSRequest(
-    ReportSMSVerificationDataTransformationMixin,
-    ReportVerificationByIdRequest
-):
+class ReportVerificationByIdAndSMSRequest(ReportSMSVerificationDataTransformationMixin, ReportVerificationByIdRequest):
     code: str
     cli: str
     method: str = VerificationMethod.SMS.value
@@ -164,8 +146,7 @@ class ReportVerificationByIdAndSMSRequest(
 
 @dataclass
 class ReportVerificationByIdAndFlashCallRequest(
-    ReportFlashCallVerificationDataTransformationMixin,
-    ReportVerificationByIdRequest
+    ReportFlashCallVerificationDataTransformationMixin, ReportVerificationByIdRequest
 ):
     cli: str
     method: str = VerificationMethod.FLASH_CALL.value
@@ -173,8 +154,7 @@ class ReportVerificationByIdAndFlashCallRequest(
 
 @dataclass
 class ReportVerificationByIdAndPhoneCallRequest(
-    ReportPhoneCallVerificationDataTransformationMixin,
-    ReportVerificationByIdRequest
+    ReportPhoneCallVerificationDataTransformationMixin, ReportVerificationByIdRequest
 ):
     code: str
     method: str = VerificationMethod.CALLOUT.value

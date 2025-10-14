@@ -16,24 +16,26 @@ class GetCallEndpoint(VoiceEndpoint):
         self.request_data = request_data
 
     def build_url(self, sinch) -> str:
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_origin,
-            call_id=self.request_data.call_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.voice_origin, call_id=self.request_data.call_id)
 
     def handle_response(self, response: HTTPResponse) -> GetVoiceCallResponse:
         super().handle_response(response)
         call_origin = response.body.get("from")
         call_destination = response.body.get("to")
         return GetVoiceCallResponse(
-            from_=Destination(
-                type=call_origin["type"],
-                endpoint=call_origin.get["endpoint"],
-            ) if call_origin else None,
-            to=Destination(
-                type=call_destination.get("type"),
-                endpoint=call_destination.get("endpoint")
-            ) if call_destination else None,
+            from_=(
+                Destination(
+                    type=call_origin["type"],
+                    endpoint=call_origin.get["endpoint"],
+                )
+                if call_origin
+                else None
+            ),
+            to=(
+                Destination(type=call_destination.get("type"), endpoint=call_destination.get("endpoint"))
+                if call_destination
+                else None
+            ),
             domain=response.body.get("domain"),
             call_id=response.body.get("callId"),
             duration=response.body.get("duration"),
@@ -43,11 +45,9 @@ class GetCallEndpoint(VoiceEndpoint):
             timestamp=timestamp_to_datetime_in_utc_deserializer(response.body["timestamp"]),
             custom=response.body.get("custom"),
             user_rate=Price(
-                currency_id=response.body["userRate"]["currencyId"],
-                amount=response.body["userRate"]["amount"]
+                currency_id=response.body["userRate"]["currencyId"], amount=response.body["userRate"]["amount"]
             ),
             debit=Price(
-                currency_id=response.body["userRate"]["currencyId"],
-                amount=response.body["userRate"]["amount"]
-            )
+                currency_id=response.body["userRate"]["currencyId"], amount=response.body["userRate"]["amount"]
+            ),
         )

@@ -19,16 +19,12 @@ class MergeConversationContactsEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            destination_id=self.request_data.destination_id
+            destination_id=self.request_data.destination_id,
         )
 
     def request_body(self):
-        return json.dumps({
-            "source_id": self.request_data.source_id
-        })
+        return json.dumps({"source_id": self.request_data.source_id})
 
     def handle_response(self, response: HTTPResponse) -> MergeConversationContactsResponse:
         super(MergeConversationContactsEndpoint, self).handle_response(response)
-        return MergeConversationContactsResponse(
-            **response.body
-        )
+        return MergeConversationContactsResponse(**response.body)

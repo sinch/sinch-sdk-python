@@ -15,8 +15,7 @@ class GetVerificationStatusByReferenceEndpoint(VerificationEndpoint):
 
     def build_url(self, sinch):
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.verification_origin,
-            reference=self.request_data.reference
+            origin=sinch.configuration.verification_origin, reference=self.request_data.reference
         )
 
     def handle_response(self, response: HTTPResponse) -> GetVerificationStatusByReferenceResponse:
@@ -31,5 +30,5 @@ class GetVerificationStatusByReferenceEndpoint(VerificationEndpoint):
             verification_timestamp=response.body.get("verification_timestamp"),
             reference=response.body.get("reference"),
             reason=response.body.get("reason"),
-            call_complete=response.body.get("call_complete")
+            call_complete=response.body.get("call_complete"),
         )

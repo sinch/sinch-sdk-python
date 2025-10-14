@@ -13,7 +13,7 @@ def test_list_available_numbers_request_expects_snake_case_input():
         "page_size": 10,
         "capabilities": ["SMS", "VOICE"],
         "number_search_pattern": "prefix",
-        "number_pattern": "12345"
+        "number_pattern": "12345",
     }
 
     # Instantiate the model
@@ -38,7 +38,7 @@ def test_list_available_numbers_request_expects_camel_case_input():
         "size": 10,
         "capabilities": ["SMS", "VOICE"],
         "numberPattern.searchPattern": "prefix",
-        "numberPattern.pattern": "12345"
+        "numberPattern.pattern": "12345",
     }
 
     # Instantiate the model
@@ -63,7 +63,7 @@ def test_list_available_numbers_request_expects_mixed_case_input():
         "size": 10,
         "capabilities": ["SMS", "VOICE"],
         "number_search_pattern": "prefix",
-        "numberPattern.pattern": "12345"
+        "numberPattern.pattern": "12345",
     }
 
     # Instantiate the model
@@ -82,11 +82,7 @@ def test_list_available_numbers_request_expects_validation_error_for_missing_req
     """
     Test that the model raises a validation error for missing required fields.
     """
-    data = {
-        "number_type": "MOBILE",
-        "size": 10,
-        "capabilities": ["SMS", "VOICE"]
-    }
+    data = {"number_type": "MOBILE", "size": 10, "capabilities": ["SMS", "VOICE"]}
 
     with pytest.raises(ValidationError) as exc_info:
         ListAvailableNumbersRequest(**data)
@@ -104,7 +100,7 @@ def test_list_available_numbers_expects_parsed_extra_field_snake_case():
         "size": 10,
         "region_code": "US",
         "capabilities": ["SMS", "VOICE"],
-        "extraField": "Extra Value"
+        "extraField": "Extra Value",
     }
     response = ListAvailableNumbersRequest(**data)
 
@@ -121,7 +117,7 @@ def test_list_available_numbers_expects_snake_case_to_parsed_extra_field_snake_c
         "size": 10,
         "region_code": "US",
         "capabilities": ["SMS", "VOICE"],
-        "extra_field": "Extra Value"
+        "extra_field": "Extra Value",
     }
     response = ListAvailableNumbersRequest(**data)
 
@@ -138,7 +134,7 @@ def test_list_available_numbers_expects_extra_capability():
         "size": 10,
         "region_code": "US",
         "capabilities": ["SMS", "VOICE", "EXTRA"],
-        "extra_field": "Extra Value"
+        "extra_field": "Extra Value",
     }
     response = ListAvailableNumbersRequest(**data)
 

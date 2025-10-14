@@ -13,5 +13,6 @@ class AvailableNumber(BaseModelConfigurationResponse):
     setup_price: Optional[Money] = Field(default=None, alias="setupPrice")
     monthly_price: Optional[Money] = Field(default=None, alias="monthlyPrice")
     payment_interval_months: Optional[StrictInt] = Field(default=None, alias="paymentIntervalMonths")
-    supporting_documentation_required: Optional[StrictBool] = (
-        Field(default=None, alias="supportingDocumentationRequired"))
+    supporting_documentation_required: Optional[StrictBool] = Field(
+        default=None, alias="supportingDocumentationRequired"
+    )

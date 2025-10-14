@@ -1,19 +1,27 @@
 from typing import Optional, List
 
 from sinch.core.pagination import Paginator, TokenBasedPaginator
-from sinch.domains.numbers.models.v1.response import (
-    ActiveNumber, AvailableNumber
-)
+from sinch.domains.numbers.models.v1.response import ActiveNumber, AvailableNumber
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
-    AvailableNumbersEndpoint, RentAnyNumberEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
+    AvailableNumbersEndpoint,
+    RentAnyNumberEndpoint,
+    RentNumberEndpoint,
+    SearchForNumberEndpoint,
 )
 from sinch.domains.numbers.models.v1.internal import (
-    ListAvailableNumbersRequest, NumberRequest, RentAnyNumberRequest, RentNumberRequest
+    ListAvailableNumbersRequest,
+    NumberRequest,
+    RentAnyNumberRequest,
+    RentNumberRequest,
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityType, NumberPatternDict, NumberSearchPatternType,
-    NumberType, SmsConfigurationDict, VoiceConfigurationDict
+    CapabilityType,
+    NumberPatternDict,
+    NumberSearchPatternType,
+    NumberType,
+    SmsConfigurationDict,
+    VoiceConfigurationDict,
 )
 
 
@@ -31,7 +39,7 @@ class AvailableNumbers(BaseNumbers):
         number_search_pattern: Optional[NumberSearchPatternType] = None,
         capabilities: Optional[List[CapabilityType]] = None,
         page_size: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> Paginator[AvailableNumber]:
         return TokenBasedPaginator(
             sinch=self._sinch,
@@ -44,9 +52,9 @@ class AvailableNumbers(BaseNumbers):
                     capabilities=capabilities,
                     number_pattern=number_pattern,
                     number_search_pattern=number_search_pattern,
-                    **kwargs
-                )
-            )
+                    **kwargs,
+                ),
+            ),
         )
 
     def rent(
@@ -55,14 +63,14 @@ class AvailableNumbers(BaseNumbers):
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> ActiveNumber:
         request_data = RentNumberRequest(
             phone_number=phone_number,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
             callback_url=callback_url,
-            **kwargs
+            **kwargs,
         )
         return self._request(RentNumberEndpoint, request_data)
 
@@ -75,7 +83,7 @@ class AvailableNumbers(BaseNumbers):
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> ActiveNumber:
         request_data = RentAnyNumberRequest(
             region_code=region_code,
@@ -85,6 +93,6 @@ class AvailableNumbers(BaseNumbers):
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
             callback_url=callback_url,
-            **kwargs
+            **kwargs,
         )
         return self._request(RentAnyNumberEndpoint, request_data)

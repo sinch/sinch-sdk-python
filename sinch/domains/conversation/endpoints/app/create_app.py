@@ -16,10 +16,7 @@ class CreateConversationAppEndpoint(ConversationEndpoint):
         self.request_data = request_data
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def request_body(self):
         return self.request_data.as_json()
@@ -35,5 +32,5 @@ class CreateConversationAppEndpoint(ConversationEndpoint):
             rate_limits=response.body["rate_limits"],
             retention_policy=response.body["retention_policy"],
             dispatch_retention_policy=response.body["dispatch_retention_policy"],
-            smart_conversation=response.body["smart_conversation"]
+            smart_conversation=response.body["smart_conversation"],
         )

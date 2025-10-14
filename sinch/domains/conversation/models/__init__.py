@@ -2,10 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from sinch.core.models.base_model import SinchBaseModel
-from sinch.domains.conversation.enums import (
-    ConversationChannel,
-    ConversationRetentionPolicyType
-)
+from sinch.domains.conversation.enums import ConversationChannel, ConversationRetentionPolicyType
 
 
 @dataclass

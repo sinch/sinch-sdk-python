@@ -19,7 +19,7 @@ class GetTemplatesEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.templates_origin,
             project_id=self.project_id,
-            template_id=self.request_data.template_id
+            template_id=self.request_data.template_id,
         )
 
     def handle_response(self, response: HTTPResponse) -> GetConversationTemplateResponse:
@@ -31,5 +31,5 @@ class GetTemplatesEndpoint(ConversationEndpoint):
             create_time=response.body["create_time"],
             translations=response.body["translations"],
             update_time=response.body["update_time"],
-            channel=response.body["channel"]
+            channel=response.body["channel"],
         )

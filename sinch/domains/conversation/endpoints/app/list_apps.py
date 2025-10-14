@@ -15,10 +15,7 @@ class ListAppsEndpoint(ConversationEndpoint):
         self.project_id = project_id
 
     def build_url(self, sinch):
-        return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
-            project_id=self.project_id
-        )
+        return self.ENDPOINT_URL.format(origin=sinch.configuration.conversation_origin, project_id=self.project_id)
 
     def handle_response(self, response: HTTPResponse) -> ListConversationAppsResponse:
         super(ListAppsEndpoint, self).handle_response(response)
@@ -33,7 +30,8 @@ class ListAppsEndpoint(ConversationEndpoint):
                     rate_limits=contact["rate_limits"],
                     retention_policy=contact["retention_policy"],
                     dispatch_retention_policy=contact["dispatch_retention_policy"],
-                    smart_conversation=contact["smart_conversation"]
-                ) for contact in response.body["apps"]
+                    smart_conversation=contact["smart_conversation"],
+                )
+                for contact in response.body["apps"]
             ]
         )

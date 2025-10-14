@@ -9,11 +9,8 @@ from sinch.domains.numbers.models.v1.response import CallbackConfigurationRespon
 def mock_response():
     return HTTPResponse(
         status_code=200,
-        body={
-            "projectId": "j55aa9aa-b888-777c-dd6d-ee55e1010101010",
-            "hmacSecret": "your_hmac_secret"
-        },
-        headers={"Content-Type": "application/json"}
+        body={"projectId": "j55aa9aa-b888-777c-dd6d-ee55e1010101010", "hmacSecret": "your_hmac_secret"},
+        headers={"Content-Type": "application/json"},
     )
 
 
@@ -24,18 +21,14 @@ def endpoint_empty_request_data():
 
 @pytest.fixture
 def endpoint_extra_request_data():
-    data = {
-        "key": "value",
-        "extra_field": "extra value"
-    }
+    data = {"key": "value", "extra_field": "extra value"}
     request_model = BaseModelConfigurationRequest(**data)
     return GetCallbackConfigurationEndpoint("test_project_id", request_data=request_model)
 
 
-endpoint_fixtures = pytest.mark.parametrize("endpoint_fixture", [
-    "endpoint_empty_request_data",
-    "endpoint_extra_request_data"
-])
+endpoint_fixtures = pytest.mark.parametrize(
+    "endpoint_fixture", ["endpoint_empty_request_data", "endpoint_extra_request_data"]
+)
 
 
 @endpoint_fixtures
@@ -59,10 +52,7 @@ def test_build_query_params_expects_correct_mapping(endpoint_extra_request_data)
     """
     Check if Query params is handled and mapped to the appropriate fields correctly.
     """
-    expected_params = {
-        "key": "value",
-        "extraField": "extra value"
-    }
+    expected_params = {"key": "value", "extraField": "extra value"}
     assert endpoint_extra_request_data.build_query_params() == expected_params
 
 

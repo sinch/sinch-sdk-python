@@ -5,7 +5,7 @@ from sinch.core.token_manager import TokenManager
 
 
 def test_configuration_happy_capy_expects_initialization(sinch_client_sync):
-    """ Test that Configuration can be initialized with all parameters """
+    """Test that Configuration can be initialized with all parameters"""
     client_configuration = Configuration(
         key_id="CapyKey",
         key_secret="CapybaraWhisper",
@@ -17,7 +17,7 @@ def test_configuration_happy_capy_expects_initialization(sinch_client_sync):
         service_plan_id="CappyPremiumPlan",
         sms_api_token="HappyCappyToken",
         transport=HTTPTransportRequests(sinch_client_sync),
-        token_manager=TokenManager(sinch_client_sync)
+        token_manager=TokenManager(sinch_client_sync),
     )
 
     assert client_configuration.key_id == "CapyKey"
@@ -67,7 +67,7 @@ def test_if_logger_name_was_preserved_correctly(sinch_client_sync):
         project_id="Kickflip!",
         logger_name=clever_monty_python_quote,
         transport=HTTPTransportRequests(sinch_client_sync),
-        token_manager=TokenManager(sinch_client_sync)
+        token_manager=TokenManager(sinch_client_sync),
     )
     client_configuration.logger.name = clever_monty_python_quote
     assert client_configuration.logger.name == clever_monty_python_quote

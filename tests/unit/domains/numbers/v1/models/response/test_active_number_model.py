@@ -39,7 +39,7 @@ def test_data():
         },
         "callbackUrl": "https://www.your-callback-server.com/callback",
         "extraField": "Extra content",
-        "extraDict": {"key": "value"}
+        "extraDict": {"key": "value"},
     }
 
 
@@ -53,8 +53,7 @@ def assert_sms_configuration(sms_config):
     assert scheduled_provisioning.service_plan_id == "string"
     assert scheduled_provisioning.campaign_id == "string"
     assert scheduled_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
-    expected_last_updated_time = (
-        datetime(2025, 1, 24, 13, 19, 31, 95000, tzinfo=timezone.utc))
+    expected_last_updated_time = datetime(2025, 1, 24, 13, 19, 31, 95000, tzinfo=timezone.utc)
     assert scheduled_provisioning.last_updated_time == expected_last_updated_time
     assert scheduled_provisioning.error_codes == ["ERROR_CODE_UNSPECIFIED"]
 
@@ -64,14 +63,12 @@ def assert_voice_configuration(voice_config):
     Assert voice_configuration fields.
     """
     assert voice_config.type == "EST"
-    expected_last_updated_time = (
-        datetime(2025, 1, 25, 18, 19, 31, 95000, tzinfo=timezone.utc))
+    expected_last_updated_time = datetime(2025, 1, 25, 18, 19, 31, 95000, tzinfo=timezone.utc)
     assert voice_config.last_updated_time == expected_last_updated_time
     assert voice_config.app_id == "string"
     scheduled_voice_provisioning = voice_config.scheduled_voice_provisioning
     assert scheduled_voice_provisioning.type == "EST"
-    expected_last_updated_time = (
-        datetime(2025, 1, 26, 18, 19, 31, 95000, tzinfo=timezone.utc))
+    expected_last_updated_time = datetime(2025, 1, 26, 18, 19, 31, 95000, tzinfo=timezone.utc)
     assert scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert scheduled_voice_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
     assert scheduled_voice_provisioning.trunk_id == "string"
@@ -92,11 +89,9 @@ def test_active_number_response_expects_all_fields_mapped_correctly(test_data):
     assert response.capability == ["SMS"]
     assert response.money.currency_code == "USD"
     assert response.payment_interval_months == 0
-    expected_next_charge_data = (
-        datetime(2025, 1, 22, 13, 19, 31, 95000, tzinfo=timezone.utc))
+    expected_next_charge_data = datetime(2025, 1, 22, 13, 19, 31, 95000, tzinfo=timezone.utc)
     assert response.next_charge_date == expected_next_charge_data
-    expected_expire_at = (
-        datetime(2025, 2, 4, 13, 15, 31, 95000, tzinfo=timezone.utc))
+    expected_expire_at = datetime(2025, 2, 4, 13, 15, 31, 95000, tzinfo=timezone.utc)
     assert response.expire_at == expected_expire_at
     assert response.callback_url == "https://www.your-callback-server.com/callback"
 

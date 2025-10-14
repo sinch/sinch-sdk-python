@@ -1,11 +1,16 @@
 from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.numbers.api.v1 import ActiveNumbers
 from sinch.domains.numbers.api.v1.internal import (
-    ListActiveNumbersEndpoint, GetNumberConfigurationEndpoint, UpdateNumberConfigurationEndpoint,
-    ReleaseNumberFromProjectEndpoint
+    ListActiveNumbersEndpoint,
+    GetNumberConfigurationEndpoint,
+    UpdateNumberConfigurationEndpoint,
+    ReleaseNumberFromProjectEndpoint,
 )
 from sinch.domains.numbers.models.v1.internal import (
-    ListActiveNumbersRequest, ListActiveNumbersResponse, NumberRequest, UpdateNumberConfigurationRequest
+    ListActiveNumbersRequest,
+    ListActiveNumbersResponse,
+    NumberRequest,
+    UpdateNumberConfigurationRequest,
 )
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
@@ -27,7 +32,7 @@ def test_list_active_numbers_expects_valid_request(mock_sinch_client_numbers, mo
         number_type="LOCAL",
         capabilities=["SMS", "VOICE"],
         page_size=10,
-        number_search_pattern="START"
+        number_search_pattern="START",
     )
 
     spy_endpoint.assert_called_once()
@@ -43,7 +48,7 @@ def test_list_active_numbers_expects_valid_request(mock_sinch_client_numbers, mo
     )
 
     assert isinstance(response, TokenBasedPaginator)
-    assert hasattr(response, 'has_next_page')
+    assert hasattr(response, "has_next_page")
     assert response.result == mock_response
     mock_sinch_client_numbers.configuration.transport.request.assert_called_once()
 
@@ -105,17 +110,13 @@ def test_update_active_numbers_expects_valid_request(mock_sinch_client_numbers, 
     spy_endpoint = mocker.spy(UpdateNumberConfigurationEndpoint, "__init__")
 
     active_numbers = ActiveNumbers(mock_sinch_client_numbers)
-    response = active_numbers.update(
-        phone_number="+1234567890",
-        display_name="Test Display Name"
-    )
+    response = active_numbers.update(phone_number="+1234567890", display_name="Test Display Name")
 
     spy_endpoint.assert_called_once()
     _, kwargs = spy_endpoint.call_args
     assert kwargs["project_id"] == "test_project_id"
     assert kwargs["request_data"] == UpdateNumberConfigurationRequest(
-        phone_number="+1234567890",
-        display_name="Test Display Name"
+        phone_number="+1234567890", display_name="Test Display Name"
     )
 
     assert response == mock_response

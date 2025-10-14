@@ -1,15 +1,12 @@
 from unittest.mock import Mock
-from sinch.core.pagination import (
-    IntBasedPaginator,
-    TokenBasedPaginator
-)
+from sinch.core.pagination import IntBasedPaginator, TokenBasedPaginator
 
 
 def test_page_int_iterator_sync_using_manual_pagination(
     first_int_based_pagination_response,
     second_int_based_pagination_response,
     third_int_based_pagination_response,
-    int_based_pagination_request_data
+    int_based_pagination_request_data,
 ):
     endpoint = Mock()
     endpoint.request_data = int_based_pagination_request_data
@@ -18,12 +15,9 @@ def test_page_int_iterator_sync_using_manual_pagination(
     sinch_client.configuration.transport.request.side_effect = [
         first_int_based_pagination_response,
         second_int_based_pagination_response,
-        third_int_based_pagination_response
+        third_int_based_pagination_response,
     ]
-    int_based_paginator = IntBasedPaginator._initialize(
-        sinch=sinch_client,
-        endpoint=endpoint
-    )
+    int_based_paginator = IntBasedPaginator._initialize(sinch=sinch_client, endpoint=endpoint)
     assert int_based_paginator
 
     page_counter = 0
@@ -41,7 +35,7 @@ def test_page_int_iterator_sync_using_auto_pagination(
     first_int_based_pagination_response,
     second_int_based_pagination_response,
     third_int_based_pagination_response,
-    int_based_pagination_request_data
+    int_based_pagination_request_data,
 ):
     endpoint = Mock()
     endpoint.request_data = int_based_pagination_request_data
@@ -50,13 +44,10 @@ def test_page_int_iterator_sync_using_auto_pagination(
     sinch_client.configuration.transport.request.side_effect = [
         first_int_based_pagination_response,
         second_int_based_pagination_response,
-        third_int_based_pagination_response
+        third_int_based_pagination_response,
     ]
 
-    int_based_paginator = IntBasedPaginator._initialize(
-        sinch=sinch_client,
-        endpoint=endpoint
-    )
+    int_based_paginator = IntBasedPaginator._initialize(sinch=sinch_client, endpoint=endpoint)
     assert int_based_paginator
 
     page_counter = 0
@@ -83,13 +74,13 @@ def initialize_token_paginator(endpoint_mock, request_data, responses):
 def test_page_token_iterator_sync_using_manual_pagination(
     token_based_pagination_request_data,
     mock_pagination_active_number_responses,
-    mock_pagination_expected_phone_numbers_response
+    mock_pagination_expected_phone_numbers_response,
 ):
-    """ Test that the pagination iterates correctly through multiple items. """
+    """Test that the pagination iterates correctly through multiple items."""
     token_based_paginator = initialize_token_paginator(
         endpoint_mock=Mock(),
         request_data=token_based_pagination_request_data,
-        responses=mock_pagination_active_number_responses
+        responses=mock_pagination_active_number_responses,
     )
     assert token_based_paginator is not None
 
@@ -112,13 +103,13 @@ def test_page_token_iterator_sync_using_manual_pagination(
 def test_page_token_iterator_sync_using_auto_pagination_expects_iter(
     token_based_pagination_request_data,
     mock_pagination_active_number_responses,
-    mock_pagination_expected_phone_numbers_response
+    mock_pagination_expected_phone_numbers_response,
 ):
     """Test that the pagination iterates correctly through multiple items."""
     token_based_paginator = initialize_token_paginator(
-            endpoint_mock=Mock(),
-            request_data=token_based_pagination_request_data,
-            responses=mock_pagination_active_number_responses
+        endpoint_mock=Mock(),
+        request_data=token_based_pagination_request_data,
+        responses=mock_pagination_active_number_responses,
     )
     assert token_based_paginator is not None
 

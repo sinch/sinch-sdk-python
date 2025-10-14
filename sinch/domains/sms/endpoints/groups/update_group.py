@@ -17,7 +17,7 @@ class UpdateSMSGroupEndpoint(SMSEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.sms_origin,
             project_or_service_id=self.project_or_service_id,
-            group_id=self.request_data.group_id
+            group_id=self.request_data.group_id,
         )
 
     def request_body(self):
@@ -33,5 +33,5 @@ class UpdateSMSGroupEndpoint(SMSEndpoint):
             modified_at=response.body.get("modified_at"),
             name=response.body.get("name"),
             child_groups=response.body.get("child_groups"),
-            auto_update=response.body.get("auto_update")
+            auto_update=response.body.get("auto_update"),
         )

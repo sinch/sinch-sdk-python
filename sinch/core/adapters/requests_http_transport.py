@@ -24,7 +24,7 @@ class HTTPTransportRequests(HTTPTransport):
             auth=request_data.auth,
             headers=request_data.headers,
             timeout=self.sinch.configuration.connection_timeout,
-            params=request_data.query_params
+            params=request_data.query_params,
         )
 
         response_body = self.deserialize_json_response(response)
@@ -36,9 +36,5 @@ class HTTPTransportRequests(HTTPTransport):
 
         return self.handle_response(
             endpoint=endpoint,
-            http_response=HTTPResponse(
-                status_code=response.status_code,
-                body=response_body,
-                headers=response.headers
-            )
+            http_response=HTTPResponse(status_code=response.status_code, body=response_body, headers=response.headers),
         )

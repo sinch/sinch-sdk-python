@@ -7,5 +7,4 @@ from sinch.domains.numbers.models.v1.shared import ScheduledSmsProvisioning
 class SmsConfiguration(BaseModelConfigurationResponse):
     service_plan_id: StrictStr = Field(alias="servicePlanId")
     campaign_id: Optional[StrictStr] = Field(default=None, alias="campaignId")
-    scheduled_provisioning: Optional[ScheduledSmsProvisioning] = (
-        Field(default=None, alias="scheduledProvisioning"))
+    scheduled_provisioning: Optional[ScheduledSmsProvisioning] = Field(default=None, alias="scheduledProvisioning")

@@ -15,8 +15,7 @@ class QueryVoiceNumberEndpoint(VoiceEndpoint):
 
     def build_url(self, sinch) -> str:
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.voice_applications_origin,
-            number=self.request_data.number
+            origin=sinch.configuration.voice_applications_origin, number=self.request_data.number
         )
 
     def handle_response(self, response: HTTPResponse) -> QueryNumberVoiceApplicationResponse:
@@ -26,5 +25,5 @@ class QueryVoiceNumberEndpoint(VoiceEndpoint):
             number_type=response.body["number"]["numberType"],
             normalized_number=response.body["number"]["normalizedNumber"],
             restricted=response.body["number"]["restricted"],
-            rate=response.body["number"]["rate"]
+            rate=response.body["number"]["rate"],
         )

@@ -19,14 +19,12 @@ class DeleteConversationMessageEndpoint(ConversationEndpoint):
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
             project_id=self.project_id,
-            message_id=self.request_data.message_id
+            message_id=self.request_data.message_id,
         )
 
     def build_query_params(self):
         if self.request_data.messages_source:
-            return {
-                "messages_source": self.request_data.messages_source
-            }
+            return {"messages_source": self.request_data.messages_source}
 
     def handle_response(self, response: HTTPResponse) -> DeleteConversationMessageResponse:
         return DeleteConversationMessageResponse()

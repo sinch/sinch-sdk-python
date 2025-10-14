@@ -17,9 +17,7 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
             raise NotImplementedError("ENDPOINT_URL must be defined in the subclass.")
 
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.numbers_origin,
-            project_id=self.project_id,
-            **vars(self.request_data)
+            origin=sinch.configuration.numbers_origin, project_id=self.project_id, **vars(self.request_data)
         )
 
     def build_query_params(self) -> dict:
@@ -58,12 +56,12 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code == 404:
-            error = NotFoundError(**response.body['error'])
+            error = NotFoundError(**response.body["error"])
             raise NumbersException(message=error, response=response, is_from_server=True)
 
         if response.status_code >= 400:
             raise NumbersException(
                 message=f"{response.body['error'].get('message')}  {response.body['error'].get('status')}",
                 response=response,
-                is_from_server=True
+                is_from_server=True,
             )
