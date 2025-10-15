@@ -1,5 +1,7 @@
 from typing import Dict, Any
-from sinch.domains.numbers.models.v1.internal.sms_configuration_request import SmsConfigurationRequest
+from sinch.domains.numbers.models.v1.internal.sms_configuration_request import (
+    SmsConfigurationRequest,
+)
 from sinch.domains.numbers.models.v1.internal.voice_configuration_request import (
     VoiceConfigurationRTC,
     VoiceConfigurationEST,
@@ -50,5 +52,7 @@ def validate_sms_voice_configuration(data: Dict[str, Any]) -> None:
         if key in data and data[key] is not None:
             # Handle legacy requests
             voice_type = data[key].get("type") or "RTC"
-            voice_config_class = voice_config_map.get(voice_type, VoiceConfigurationCustom)
+            voice_config_class = voice_config_map.get(
+                voice_type, VoiceConfigurationCustom
+            )
             voice_config_class(**data[key])

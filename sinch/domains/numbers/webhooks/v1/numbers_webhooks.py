@@ -3,7 +3,9 @@ from typing import Any, Dict, Union
 from datetime import datetime
 import re
 from pydantic import StrictBool, StrictStr
-from sinch.domains.authentication.webhooks.v1.authentication_validation import validate_signature_header
+from sinch.domains.authentication.webhooks.v1.authentication_validation import (
+    validate_signature_header,
+)
 from sinch.domains.numbers.webhooks.v1.events import NumbersWebhooksEvent
 
 
@@ -12,9 +14,7 @@ class NumbersWebhooks:
         self.callback_secret = callback_secret
 
     def validate_authentication_header(
-        self,
-        headers: Dict[StrictStr, StrictStr],
-        json_payload: StrictStr
+        self, headers: Dict[StrictStr, StrictStr], json_payload: StrictStr
     ) -> StrictBool:
         """
         Validate the authorization header for a callback request
@@ -27,12 +27,12 @@ class NumbersWebhooks:
         :rtype: bool
         """
         return validate_signature_header(
-            self.callback_secret,
-            headers,
-            json_payload
+            self.callback_secret, headers, json_payload
         )
 
-    def parse_event(self, event_body: Union[StrictStr, Dict[StrictStr, Any]]) -> NumbersWebhooksEvent:
+    def parse_event(
+        self, event_body: Union[StrictStr, Dict[StrictStr, Any]]
+    ) -> NumbersWebhooksEvent:
         """
         Parses the event payload into a NumbersWebhooksEvent object.
 
@@ -47,7 +47,7 @@ class NumbersWebhooks:
         """
         if isinstance(event_body, str):
             event_body = self._parse_json(event_body)
-        timestamp = event_body.get('timestamp')
+        timestamp = event_body.get("timestamp")
         if timestamp:
             event_body["timestamp"] = self._normalize_iso_timestamp(timestamp)
         try:
@@ -78,7 +78,9 @@ class NumbersWebhooks:
         match_ms = re.search(r"\.(\d{7,})(?=[+-])", timestamp)
         if match_ms:
             micro_trimmed = match_ms.group(1)[:6]
-            timestamp = re.sub(r"\.\d{7,}(?=[+-])", f".{micro_trimmed}", timestamp)
+            timestamp = re.sub(
+                r"\.\d{7,}(?=[+-])", f".{micro_trimmed}", timestamp
+            )
         try:
             return datetime.fromisoformat(timestamp)
         except ValueError as e:

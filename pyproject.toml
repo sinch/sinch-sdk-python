@@ -32,3 +32,15 @@ pydantic = ">=2.0.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 79
+target-version = "py39"
+extend-exclude = [
+    "sinch/core",
+    "tests",
+    "venv",
+    "__pycache__",
+    "dist",
+    "build"
+]

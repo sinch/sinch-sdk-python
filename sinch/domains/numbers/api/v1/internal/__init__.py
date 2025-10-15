@@ -1,13 +1,21 @@
 from sinch.domains.numbers.api.v1.internal.active_numbers_endpoints import (
-    GetNumberConfigurationEndpoint, ListActiveNumbersEndpoint, ReleaseNumberFromProjectEndpoint,
-    UpdateNumberConfigurationEndpoint
+    GetNumberConfigurationEndpoint,
+    ListActiveNumbersEndpoint,
+    ReleaseNumberFromProjectEndpoint,
+    UpdateNumberConfigurationEndpoint,
 )
 from sinch.domains.numbers.api.v1.internal.available_numbers_endpoints import (
-    AvailableNumbersEndpoint, RentAnyNumberEndpoint, RentNumberEndpoint, SearchForNumberEndpoint
+    AvailableNumbersEndpoint,
+    RentAnyNumberEndpoint,
+    RentNumberEndpoint,
+    SearchForNumberEndpoint,
 )
-from sinch.domains.numbers.api.v1.internal.available_regions_endpoints import ListAvailableRegionsEndpoint
+from sinch.domains.numbers.api.v1.internal.available_regions_endpoints import (
+    ListAvailableRegionsEndpoint,
+)
 from sinch.domains.numbers.api.v1.internal.callback_configuration_endpoints import (
-    GetCallbackConfigurationEndpoint, UpdateCallbackConfigurationEndpoint
+    GetCallbackConfigurationEndpoint,
+    UpdateCallbackConfigurationEndpoint,
 )
 
 __all__ = [
@@ -21,5 +29,5 @@ __all__ = [
     "RentAnyNumberEndpoint",
     "SearchForNumberEndpoint",
     "UpdateCallbackConfigurationEndpoint",
-    "UpdateNumberConfigurationEndpoint"
+    "UpdateNumberConfigurationEndpoint",
 ]

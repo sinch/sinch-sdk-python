@@ -18,6 +18,6 @@ class BaseNumbers:
         return self._sinch.configuration.transport.request(
             endpoint_class(
                 project_id=self._sinch.configuration.project_id,
-                request_data=request_data
+                request_data=request_data,
             )
         )

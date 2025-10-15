@@ -1,7 +1,9 @@
 from typing import Optional, List
 from sinch.core.pagination import TokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.internal import ListAvailableRegionsEndpoint
-from sinch.domains.numbers.models.v1.internal import ListAvailableRegionsRequest
+from sinch.domains.numbers.models.v1.internal import (
+    ListAvailableRegionsRequest,
+)
 from sinch.domains.numbers.models.v1.response import AvailableRegion
 from sinch.domains.numbers.models.v1.types import NumberType
 
@@ -11,9 +13,7 @@ class AvailableRegions:
         self._sinch = sinch
 
     def list(
-        self,
-        types: Optional[List[NumberType]] = None,
-        **kwargs
+        self, types: Optional[List[NumberType]] = None, **kwargs
     ) -> Paginator[AvailableRegion]:
         """
         Lists all regions for numbers provided using the project ID.
@@ -36,8 +36,7 @@ class AvailableRegions:
             endpoint=ListAvailableRegionsEndpoint(
                 project_id=self._sinch.configuration.project_id,
                 request_data=ListAvailableRegionsRequest(
-                    types=types,
-                    **kwargs
-                )
-            )
+                    types=types, **kwargs
+                ),
+            ),
         )
