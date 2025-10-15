@@ -5,7 +5,7 @@ coverage
 behave
 
 # Code Quality
-flake8
+ruff
 
 # HTTP Libraries
 requests

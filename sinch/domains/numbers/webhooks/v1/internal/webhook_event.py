@@ -1,4 +1,6 @@
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
+from sinch.domains.numbers.models.v1.internal.base import (
+    BaseModelConfigurationResponse,
+)
 
 
 # Alias for NumbersWebhooksEvent used for request modeling.

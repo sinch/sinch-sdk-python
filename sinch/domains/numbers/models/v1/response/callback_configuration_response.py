@@ -1,6 +1,8 @@
 from typing import Optional
 from pydantic import StrictStr, Field
-from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationResponse
+from sinch.domains.numbers.models.v1.internal.base import (
+    BaseModelConfigurationResponse,
+)
 
 
 class CallbackConfigurationResponse(BaseModelConfigurationResponse):

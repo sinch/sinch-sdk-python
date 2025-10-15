@@ -2,22 +2,29 @@ from typing import Optional, List
 from sinch.core.pagination import TokenBasedPaginator, Paginator
 from sinch.domains.numbers.api.v1.base import BaseNumbers
 from sinch.domains.numbers.api.v1.internal import (
-    GetNumberConfigurationEndpoint, ListActiveNumbersEndpoint, ReleaseNumberFromProjectEndpoint,
-    UpdateNumberConfigurationEndpoint
+    GetNumberConfigurationEndpoint,
+    ListActiveNumbersEndpoint,
+    ReleaseNumberFromProjectEndpoint,
+    UpdateNumberConfigurationEndpoint,
 )
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 from sinch.domains.numbers.models.v1.internal import (
-    ListActiveNumbersRequest, NumberRequest, UpdateNumberConfigurationRequest
+    ListActiveNumbersRequest,
+    NumberRequest,
+    UpdateNumberConfigurationRequest,
 )
 from sinch.domains.numbers.models.v1.types import (
-    CapabilityType, NumberSearchPatternType, NumberType, OrderByType,
-    SmsConfigurationDict, VoiceConfigurationDict
+    CapabilityType,
+    NumberSearchPatternType,
+    NumberType,
+    OrderByType,
+    SmsConfigurationDict,
+    VoiceConfigurationDict,
 )
 
 
 class ActiveNumbers(BaseNumbers):
-
     def list(
         self,
         region_code: str,
@@ -28,7 +35,7 @@ class ActiveNumbers(BaseNumbers):
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         order_by: Optional[OrderByType] = None,
-        **kwargs
+        **kwargs,
     ) -> Paginator[ActiveNumber]:
         return TokenBasedPaginator(
             sinch=self._sinch,
@@ -43,9 +50,9 @@ class ActiveNumbers(BaseNumbers):
                     number_search_pattern=number_search_pattern,
                     page_token=page_token,
                     order_by=order_by,
-                    **kwargs
-                )
-            )
+                    **kwargs,
+                ),
+            ),
         )
 
     def update(
@@ -55,7 +62,7 @@ class ActiveNumbers(BaseNumbers):
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
         callback_url: Optional[str] = None,
-        **kwargs
+        **kwargs,
     ) -> ActiveNumber:
         request_data = UpdateNumberConfigurationRequest(
             phone_number=phone_number,
@@ -63,28 +70,14 @@ class ActiveNumbers(BaseNumbers):
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
             callback_url=callback_url,
-            **kwargs
+            **kwargs,
         )
         return self._request(UpdateNumberConfigurationEndpoint, request_data)
 
-    def get(
-        self,
-        phone_number: str,
-        **kwargs
-    ) -> ActiveNumber:
-        request_data = NumberRequest(
-            phone_number=phone_number,
-            **kwargs
-        )
+    def get(self, phone_number: str, **kwargs) -> ActiveNumber:
+        request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(GetNumberConfigurationEndpoint, request_data)
 
-    def release(
-            self,
-            phone_number: str,
-            **kwargs
-    ) -> ActiveNumber:
-        request_data = NumberRequest(
-            phone_number=phone_number,
-            **kwargs
-        )
+    def release(self, phone_number: str, **kwargs) -> ActiveNumber:
+        request_data = NumberRequest(phone_number=phone_number, **kwargs)
         return self._request(ReleaseNumberFromProjectEndpoint, request_data)
