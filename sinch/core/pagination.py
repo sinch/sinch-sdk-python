@@ -62,28 +62,52 @@ class Paginator(ABC, Generic[BM]):
         pass
 
 
-class IntBasedPaginator(Paginator):
-    __doc__ = Paginator.__doc__
+class IntBasedPaginator(Paginator[BM]):
+    """Base paginator for integer-based pagination with explicit page navigation and metadata."""
 
-    def _calculate_next_page(self):
-        if self.result.page_size:
-            self.has_next_page = True
-        else:
-            self.has_next_page = False
+    def __init__(self, sinch, endpoint, result=None):
+        super().__init__(sinch, endpoint, result or sinch.configuration.transport.request(endpoint))
+
+    def content(self) -> list[BM]:
+        """Returns the content list from the result."""
+        return getattr(self.result, "delivery_reports", [])
 
     def next_page(self):
+        """Returns a new paginator instance for the next page."""
+        if not self.has_next_page:
+            return None
+
         self.endpoint.request_data.page += 1
         self.result = self._sinch.configuration.transport.request(self.endpoint)
         self._calculate_next_page()
         return self
 
-    def auto_paging_iter(self):
-        return PageIterator(self)
+    def iterator(self):
+        """Iterates over individual items across all pages."""
+        paginator = self
+        while paginator:
+            yield from paginator.content()
+
+            next_page_instance = paginator.next_page()
+            if not next_page_instance:
+                break
+            paginator = next_page_instance
+
+    def _calculate_next_page(self):
+        """Calculates if there's a next page based on count, page, and page_size."""
+        if hasattr(self.result, 'count') and hasattr(self.result, 'page') and hasattr(self.result, 'page_size'):
+            # Calculate total pages needed
+            total_pages = (self.result.count + self.result.page_size - 1) // self.result.page_size
+            # Check if current page is less than total pages - 1 (0-indexed)
+            self.has_next_page = self.result.page < (total_pages - 1)
+        else:
+            self.has_next_page = False
 
     @classmethod
     def _initialize(cls, sinch, endpoint):
+        """Creates an instance of the paginator skipping first page."""
         result = sinch.configuration.transport.request(endpoint)
-        return cls(sinch, endpoint, result)
+        return cls(sinch, endpoint, result=result)
 
 
 class TokenBasedPaginator(Paginator[BM]):

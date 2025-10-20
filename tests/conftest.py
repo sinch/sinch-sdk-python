@@ -17,7 +17,7 @@ class IntBasedPaginationResponse(SinchBaseModel):
     count: int
     page: int
     page_size: int
-    pig_dogs: list
+    delivery_reports: list
 
 
 @dataclass
@@ -200,7 +200,10 @@ def first_int_based_pagination_response():
         count=4,
         page=0,
         page_size=2,
-        pig_dogs=["Bartosz", "Piotr"]
+        delivery_reports=[
+            {"at": "2025-10-19T16:45:31.935Z", "batch_id": "01K7YNS82JMYGAKAATHFP0QTB5", "code": 0, "recipient": "34683607594", "status": "Delivered", "type": "recipient_delivery_report_sms"},
+            {"at": "2025-10-19T16:40:26.855Z", "batch_id": "01K7YNFY30DS2KKVQZVBFANHMR", "code": 0, "recipient": "34683607594", "status": "Delivered", "type": "recipient_delivery_report_sms"}
+        ]
     )
 
 
@@ -210,7 +213,10 @@ def second_int_based_pagination_response():
         count=4,
         page=1,
         page_size=2,
-        pig_dogs=["Walaszek", "Połać"]
+        delivery_reports=[
+            {"at": "2025-10-19T16:35:15.123Z", "batch_id": "01K7YNFY30DS2KKVQZVBFANHMR", "code": 401, "recipient": "34683607595", "status": "Dispatched", "type": "recipient_delivery_report_sms"},
+            {"at": "2025-10-19T16:30:10.456Z", "batch_id": "01K7YNFY30DS2KKVQZVBFANHMR", "code": 402, "recipient": "34683607596", "status": "Failed", "type": "recipient_delivery_report_sms"}
+        ]
     )
 
 
@@ -219,8 +225,8 @@ def third_int_based_pagination_response():
     return IntBasedPaginationResponse(
         count=4,
         page=2,
-        page_size=0,
-        pig_dogs=[]
+        page_size=2,
+        delivery_reports=[]
     )
 
 
