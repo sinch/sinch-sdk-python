@@ -70,7 +70,7 @@ class IntBasedPaginator(Paginator[BM]):
 
     def content(self) -> list[BM]:
         """Returns the content list from the result."""
-        return getattr(self.result, "delivery_reports", [])
+        return getattr(self.result, "content", [])
 
     def next_page(self):
         """Returns a new paginator instance for the next page."""

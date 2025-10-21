@@ -296,3 +296,62 @@ def mock_pagination_expected_phone_numbers_response():
     return [
         "+12345678901", "+12345678902", "+12345678903", "+12345678904", "+12345678905"
     ]
+
+
+@pytest.fixture
+def mock_int_pagination_responses():
+    from datetime import datetime
+    from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
+    
+    return [
+        Mock(content=[
+            RecipientDeliveryReport(
+                at=datetime.fromisoformat("2025-10-19T16:45:31.935Z"),
+                batch_id="01K7YNS82JMYGAKAATHFP0QTB5",
+                code=400,
+                recipient="34683607594",
+                status="DELIVERED",
+                type="recipient_delivery_report_sms"
+            ),
+            RecipientDeliveryReport(
+                at=datetime.fromisoformat("2025-10-19T16:40:26.855Z"),
+                batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
+                code=400,
+                recipient="34683607594",
+                status="DELIVERED",
+                type="recipient_delivery_report_sms"
+            )
+        ],
+             count=4, page=0, page_size=2),
+        Mock(content=[
+            RecipientDeliveryReport(
+                at=datetime.fromisoformat("2025-10-19T16:35:15.123Z"),
+                batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
+                code=401,
+                recipient="34683607595",
+                status="DISPATCHED",
+                type="recipient_delivery_report_sms"
+            ),
+            RecipientDeliveryReport(
+                at=datetime.fromisoformat("2025-10-19T16:30:10.456Z"),
+                batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
+                code=402,
+                recipient="34683607596",
+                status="FAILED",
+                type="recipient_delivery_report_sms"
+            )
+        ],
+             count=4, page=1, page_size=2),
+        Mock(content=[],
+             count=4, page=2, page_size=2)
+    ]
+
+
+@pytest.fixture
+def mock_int_pagination_expected_delivery_reports():
+    return [
+        "01K7YNS82JMYGAKAATHFP0QTB5",
+        "01K7YNFY30DS2KKVQZVBFANHMR", 
+        "01K7YNFY30DS2KKVQZVBFANHMR",
+        "01K7YNFY30DS2KKVQZVBFANHMR"
+    ]
