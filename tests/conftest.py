@@ -2,6 +2,8 @@
 import os
 from dataclasses import dataclass
 from unittest.mock import Mock, MagicMock
+from sinch.domains.sms.models.v1.internal.list_delivery_reports_response import ListDeliveryReportsResponse
+from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
 
 import pytest
 
@@ -12,24 +14,21 @@ from sinch.domains.authentication.models.v1.authentication import OAuthToken
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 
-@dataclass
-class IntBasedPaginationResponse(SinchBaseModel):
-    count: int
-    page: int
-    page_size: int
-    delivery_reports: list
+def parse_iso_datetime(iso_string):
+    """
+    Parse ISO datetime string that may end with 'Z' (UTC indicator).
+    Compatible with Python 3.9+ by replacing 'Z' with '+00:00'.
+    """
+    from datetime import datetime
+    if iso_string.endswith('Z'):
+        iso_string = iso_string[:-1] + '+00:00'
+    return datetime.fromisoformat(iso_string)
 
 
 @dataclass
 class IntBasedPaginationRequest(SinchRequestBaseModel):
     page: int
     page_size: int = 0
-
-
-@dataclass
-class TokenBasedPaginationResponse(SinchBaseModel):
-    pig_dogs: list
-    next_page_token: str = None
 
 
 @dataclass
@@ -195,34 +194,8 @@ def int_based_pagination_request_data():
 
 
 @pytest.fixture
-def first_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=0,
-        page_size=2,
-        delivery_reports=[
-            {"at": "2025-10-19T16:45:31.935Z", "batch_id": "01K7YNS82JMYGAKAATHFP0QTB5", "code": 0, "recipient": "34683607594", "status": "Delivered", "type": "recipient_delivery_report_sms"},
-            {"at": "2025-10-19T16:40:26.855Z", "batch_id": "01K7YNFY30DS2KKVQZVBFANHMR", "code": 0, "recipient": "34683607594", "status": "Delivered", "type": "recipient_delivery_report_sms"}
-        ]
-    )
-
-
-@pytest.fixture
-def second_int_based_pagination_response():
-    return IntBasedPaginationResponse(
-        count=4,
-        page=1,
-        page_size=2,
-        delivery_reports=[
-            {"at": "2025-10-19T16:35:15.123Z", "batch_id": "01K7YNFY30DS2KKVQZVBFANHMR", "code": 401, "recipient": "34683607595", "status": "Dispatched", "type": "recipient_delivery_report_sms"},
-            {"at": "2025-10-19T16:30:10.456Z", "batch_id": "01K7YNFY30DS2KKVQZVBFANHMR", "code": 402, "recipient": "34683607596", "status": "Failed", "type": "recipient_delivery_report_sms"}
-        ]
-    )
-
-
-@pytest.fixture
 def third_int_based_pagination_response():
-    return IntBasedPaginationResponse(
+    return ListDeliveryReportsResponse(
         count=4,
         page=2,
         page_size=2,
@@ -306,7 +279,7 @@ def mock_int_pagination_responses():
     return [
         Mock(content=[
             RecipientDeliveryReport(
-                at=datetime.fromisoformat("2025-10-19T16:45:31.935Z"),
+                at=parse_iso_datetime("2025-10-19T16:45:31.935Z"),
                 batch_id="01K7YNS82JMYGAKAATHFP0QTB5",
                 code=400,
                 recipient="34683607594",
@@ -314,7 +287,7 @@ def mock_int_pagination_responses():
                 type="recipient_delivery_report_sms"
             ),
             RecipientDeliveryReport(
-                at=datetime.fromisoformat("2025-10-19T16:40:26.855Z"),
+                at=parse_iso_datetime("2025-10-19T16:40:26.855Z"),
                 batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
                 code=400,
                 recipient="34683607594",
@@ -325,7 +298,7 @@ def mock_int_pagination_responses():
              count=4, page=0, page_size=2),
         Mock(content=[
             RecipientDeliveryReport(
-                at=datetime.fromisoformat("2025-10-19T16:35:15.123Z"),
+                at=parse_iso_datetime("2025-10-19T16:35:15.123Z"),
                 batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
                 code=401,
                 recipient="34683607595",
@@ -333,7 +306,7 @@ def mock_int_pagination_responses():
                 type="recipient_delivery_report_sms"
             ),
             RecipientDeliveryReport(
-                at=datetime.fromisoformat("2025-10-19T16:30:10.456Z"),
+                at=parse_iso_datetime("2025-10-19T16:30:10.456Z"),
                 batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
                 code=402,
                 recipient="34683607596",

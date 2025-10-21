@@ -2,16 +2,7 @@ import pytest
 from datetime import datetime, timezone
 from pydantic import ValidationError
 from sinch.domains.sms.models.v1.response.recipient_delivery_report import RecipientDeliveryReport
-
-
-def parse_iso_datetime(iso_string):
-    """
-    Parse ISO datetime string that may end with 'Z' (UTC indicator).
-    Compatible with Python 3.9+ by replacing 'Z' with '+00:00'.
-    """
-    if iso_string.endswith('Z'):
-        iso_string = iso_string[:-1] + '+00:00'
-    return datetime.fromisoformat(iso_string)
+from tests.conftest import parse_iso_datetime
 
 
 @pytest.fixture
@@ -20,7 +11,7 @@ def sample_recipient_delivery_report_data():
     Sample data for RecipientDeliveryReport testing.
     """
     return {
-        "at": "2022-08-30T08:16:08.930Z",
+        "at": parse_iso_datetime("2022-08-30T08:16:08.930Z"),
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "code": 401,
         "recipient": "+44231235674",
@@ -43,7 +34,7 @@ def test_recipient_delivery_report_expects_valid_inputs(status, code, report_typ
     Test that the model correctly parses valid inputs with different statuses and codes.
     """
     data = {
-        "at": "2022-08-30T08:16:08.930Z",
+        "at": parse_iso_datetime("2022-08-30T08:16:08.930Z"),
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "code": code,
         "recipient": "+44231235674",
@@ -72,7 +63,7 @@ def test_recipient_delivery_report_expects_with_optional_fields(sample_recipient
         "encoding": "GSM",
         "number_of_message_parts": 1,
         "operator": "35000",
-        "operator_status_at": "2019-08-24T14:15:22Z"
+        "operator_status_at": parse_iso_datetime("2019-08-24T14:15:22Z")
     })
 
     report = RecipientDeliveryReport(**data)
@@ -122,7 +113,7 @@ def test_recipient_delivery_report_expects_validation_error_for_missing_batch_id
     Test that missing 'batch_id' field raises a ValidationError.
     """
     data = {
-        "at": "2022-08-30T08:16:08.930Z",
+        "at": parse_iso_datetime("2022-08-30T08:16:08.930Z"),
         "code": 401,
         "recipient": "+44231235674",
         "status": "Dispatched",
@@ -159,7 +150,7 @@ def test_recipient_delivery_report_expects_custom_encoding():
     Test that the model accepts custom encoding values due to Union + StrictStr.
     """
     data = {
-        "at": "2022-08-30T08:16:08.930Z",
+        "at": parse_iso_datetime("2022-08-30T08:16:08.930Z"),
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "code": 401,
         "recipient": "+44231235674",
@@ -177,7 +168,7 @@ def test_recipient_delivery_report_expects_custom_status():
     Test that the model accepts custom status values due to Union + StrictStr.
     """
     data = {
-        "at": "2022-08-30T08:16:08.930Z",
+        "at": parse_iso_datetime("2022-08-30T08:16:08.930Z"),
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "code": 401,
         "recipient": "+44231235674",
@@ -194,7 +185,7 @@ def test_recipient_delivery_report_expects_custom_type():
     Test that the model accepts custom type values due to Union + StrictStr.
     """
     data = {
-        "at": "2022-08-30T08:16:08.930Z",
+        "at": parse_iso_datetime("2022-08-30T08:16:08.930Z"),
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "code": 401,
         "recipient": "+44231235674",
