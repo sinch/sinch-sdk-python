@@ -4,14 +4,14 @@ from typing import List, Optional
 from sinch.core.pagination import Paginator, SMSPaginator
 from sinch.domains.sms.api.v1.base import BaseSms
 from sinch.domains.sms.api.v1.internal import (
-    GetDeliveryReportByBatchIdEndpoint,
-    GetDeliveryReportByPhoneNumberEndpoint,
+    GetBatchDeliveryReportEndpoint,
+    GetRecipientDeliveryReportEndpoint,
     ListDeliveryReportsEndpoint,
 )
 from sinch.domains.sms.models.v1.internal import (
     GetDeliveryReportByPhoneNumberRequest,
     ListDeliveryReportsRequest,
-    GetDeliveryReportsByBatchIdRequest,
+    GetDeliveryReportByBatchIdRequest,
 )
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
@@ -33,7 +33,7 @@ class DeliveryReports(BaseSms):
         client_reference: Optional[str] = None,
         **kwargs,
     ) -> BatchDeliveryReport:
-        request_data = GetDeliveryReportsByBatchIdRequest(
+        request_data = GetDeliveryReportByBatchIdRequest(
             batch_id=batch_id,
             type=report_type,
             status=status,
@@ -41,7 +41,7 @@ class DeliveryReports(BaseSms):
             client_reference=client_reference,
             **kwargs,
         )
-        return self._request(GetDeliveryReportByBatchIdEndpoint, request_data)
+        return self._request(GetBatchDeliveryReportEndpoint, request_data)
 
     def get_for_number(
         self, batch_id: str, recipient: str, **kwargs
@@ -49,9 +49,7 @@ class DeliveryReports(BaseSms):
         request_data = GetDeliveryReportByPhoneNumberRequest(
             batch_id=batch_id, recipient_msisdn=recipient, **kwargs
         )
-        return self._request(
-            GetDeliveryReportByPhoneNumberEndpoint, request_data
-        )
+        return self._request(GetRecipientDeliveryReportEndpoint, request_data)
 
     def list(
         self,

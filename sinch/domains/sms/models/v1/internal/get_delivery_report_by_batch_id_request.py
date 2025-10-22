@@ -10,7 +10,7 @@ from sinch.domains.sms.models.v1.internal.base import (
 )
 
 
-class GetDeliveryReportsByBatchIdRequest(BaseModelConfigurationRequest):
+class GetDeliveryReportByBatchIdRequest(BaseModelConfigurationRequest):
     batch_id: StrictStr
     type: Optional[DeliveryReportType] = Field(
         default=None,
