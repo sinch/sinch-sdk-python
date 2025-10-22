@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.sms.models.v1.internal import GetDeliveryReportsByPhoneNumberRequest
+from sinch.domains.sms.models.v1.internal import GetDeliveryReportByPhoneNumberRequest
 
 
 @pytest.mark.parametrize(
@@ -20,7 +20,7 @@ def test_get_delivery_report_by_phone_number_request_expects_valid_inputs(batch_
         "recipient_msisdn": recipient_msisdn
     }
 
-    request = GetDeliveryReportsByPhoneNumberRequest(**data)
+    request = GetDeliveryReportByPhoneNumberRequest(**data)
 
     assert request.batch_id == batch_id
     assert request.recipient_msisdn == recipient_msisdn
@@ -35,7 +35,7 @@ def test_get_delivery_report_by_phone_number_request_expects_validation_error_fo
     }
     
     with pytest.raises(ValidationError) as exc_info:
-        GetDeliveryReportsByPhoneNumberRequest(**data)
+            GetDeliveryReportByPhoneNumberRequest(**data)
     
     assert "batch_id" in str(exc_info.value)
 
@@ -49,7 +49,7 @@ def test_get_delivery_report_by_phone_number_request_expects_validation_error_fo
     }
     
     with pytest.raises(ValidationError) as exc_info:
-        GetDeliveryReportsByPhoneNumberRequest(**data)
+            GetDeliveryReportByPhoneNumberRequest(**data)
     
     assert "recipient_msisdn" in str(exc_info.value)
 
@@ -64,7 +64,7 @@ def test_get_delivery_report_by_phone_number_request_with_additional_kwargs():
         "extra_field": "extra_value"
     }
 
-    request = GetDeliveryReportsByPhoneNumberRequest(**data)
+    request = GetDeliveryReportByPhoneNumberRequest(**data)
 
     assert request.batch_id == "01FC66621XXXXX119Z8PMV1QPQ"
     assert request.recipient_msisdn == "+44231235674"

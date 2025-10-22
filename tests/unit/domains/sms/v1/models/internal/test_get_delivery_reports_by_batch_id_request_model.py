@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 from sinch.domains.sms.models.v1.internal import GetDeliveryReportsByBatchIdRequest
-from sinch.domains.sms.models.v1.types import DeliveryStatusType, DeliveryReceiptStatusCodeType
+from sinch.domains.sms.models.v1.types import DeliveryStatusType, DeliveryReceiptStatusCodeType, DeliveryReportType
 
 
 @pytest.mark.parametrize(
@@ -9,7 +9,7 @@ from sinch.domains.sms.models.v1.types import DeliveryStatusType, DeliveryReceip
     [
         ("batch123", "summary", ["Queued", "Dispatched"], [400, 401], "summary"),
         ("batch456", "full", ["Dispatched", "Delivered"], [401, 400], "full"),
-        ("batch789", None, ["Failed", "Cancelled"], [402, 403], "summary"),  # Default value
+        ("batch789", None, ["Failed", "Cancelled"], [402, 403], None),
     ]
 )
 def test_get_delivery_reports_by_batch_id_request_expects_valid_input(
@@ -49,7 +49,7 @@ def test_get_delivery_reports_by_batch_id_request_expects_status_list():
     
     assert request.batch_id == "batch123"
     assert request.status == ["QUEUED", "DELIVERED", "FAILED"]
-    assert request.type == "summary"  # Default value
+    assert request.type is None
     assert request.code is None
 
 
@@ -66,7 +66,7 @@ def test_get_delivery_reports_by_batch_id_request_ecpects_code_list():
     
     assert request.batch_id == "batch123"
     assert request.code == [400, 401, 402]
-    assert request.type == "summary"  # Default value
+    assert request.type is None
     assert request.status is None
 
 
@@ -82,3 +82,29 @@ def test_get_delivery_reports_by_batch_id_request_expects_validation_error_for_m
         GetDeliveryReportsByBatchIdRequest(**data)
     
     assert "batch_id" in str(exc_info.value)
+
+
+def test_get_delivery_reports_by_batch_id_request_expects_delivery_report_type_validation():
+    """
+    Test that the model correctly handles DeliveryReportType enum values.
+    """
+    # Test with valid enum values
+    valid_types = ["summary", "full"]
+    
+    for report_type in valid_types:
+        data = {
+            "batch_id": "batch123",
+            "type": report_type
+        }
+        
+        request = GetDeliveryReportsByBatchIdRequest(**data)
+        assert request.type == report_type
+        assert request.batch_id == "batch123"
+
+    data = {
+        "batch_id": "batch123",
+        "type": "custom_type"
+    }
+    
+    request = GetDeliveryReportsByBatchIdRequest(**data)
+    assert request.type == "custom_type"

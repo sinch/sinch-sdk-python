@@ -2,7 +2,10 @@
 import os
 from dataclasses import dataclass
 from unittest.mock import Mock, MagicMock
-from sinch.domains.sms.models.v1.internal.list_delivery_reports_response import ListDeliveryReportsResponse
+from sinch.domains.sms.models.v1.internal import (
+    ListDeliveryReportsRequest,
+    ListDeliveryReportsResponse,
+)
 from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
 
 import pytest
@@ -186,8 +189,8 @@ def token_based_pagination_request_data():
 
 
 @pytest.fixture
-def int_based_pagination_request_data():
-    return IntBasedPaginationRequest(
+def sms_pagination_request_data():
+    return ListDeliveryReportsRequest(
         page=0,
         page_size=2
     )
@@ -272,7 +275,7 @@ def mock_pagination_expected_phone_numbers_response():
 
 
 @pytest.fixture
-def mock_int_pagination_responses():
+def mock_sms_pagination_responses():
     from datetime import datetime
     from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
     
@@ -282,7 +285,7 @@ def mock_int_pagination_responses():
                 at=parse_iso_datetime("2025-10-19T16:45:31.935Z"),
                 batch_id="01K7YNS82JMYGAKAATHFP0QTB5",
                 code=400,
-                recipient="34683607594",
+                recipient="12346836075",
                 status="DELIVERED",
                 type="recipient_delivery_report_sms"
             ),
@@ -290,7 +293,7 @@ def mock_int_pagination_responses():
                 at=parse_iso_datetime("2025-10-19T16:40:26.855Z"),
                 batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
                 code=400,
-                recipient="34683607594",
+                recipient="12346836075",
                 status="DELIVERED",
                 type="recipient_delivery_report_sms"
             )
@@ -299,7 +302,7 @@ def mock_int_pagination_responses():
         Mock(content=[
             RecipientDeliveryReport(
                 at=parse_iso_datetime("2025-10-19T16:35:15.123Z"),
-                batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
+                batch_id="01K7YNGZ45XW8KKPQRSTUVWXYZ",
                 code=401,
                 recipient="34683607595",
                 status="DISPATCHED",
@@ -307,7 +310,7 @@ def mock_int_pagination_responses():
             ),
             RecipientDeliveryReport(
                 at=parse_iso_datetime("2025-10-19T16:30:10.456Z"),
-                batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
+                batch_id="01K7YNHM67YZ3LMNOPQRSTUVWX",
                 code=402,
                 recipient="34683607596",
                 status="FAILED",
@@ -324,7 +327,7 @@ def mock_int_pagination_responses():
 def mock_int_pagination_expected_delivery_reports():
     return [
         "01K7YNS82JMYGAKAATHFP0QTB5",
-        "01K7YNFY30DS2KKVQZVBFANHMR", 
         "01K7YNFY30DS2KKVQZVBFANHMR",
-        "01K7YNFY30DS2KKVQZVBFANHMR"
+        "01K7YNGZ45XW8KKPQRSTUVWXYZ",
+        "01K7YNHM67YZ3LMNOPQRSTUVWX"
     ]

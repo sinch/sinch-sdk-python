@@ -2,6 +2,7 @@ from typing import Optional, List
 from pydantic import StrictStr, Field
 from sinch.domains.sms.models.v1.types import (
     DeliveryReceiptStatusCodeType,
+    DeliveryReportType,
     DeliveryStatusType,
 )
 from sinch.domains.sms.models.v1.internal.base import (
@@ -11,9 +12,9 @@ from sinch.domains.sms.models.v1.internal.base import (
 
 class GetDeliveryReportsByBatchIdRequest(BaseModelConfigurationRequest):
     batch_id: StrictStr
-    type: Optional[str] = Field(
-        default="summary",
-        description="The type of delivery report. Default: summary",
+    type: Optional[DeliveryReportType] = Field(
+        default=None,
+        description="The type of delivery report.",
     )
     status: Optional[List[DeliveryStatusType]] = Field(
         default=None,

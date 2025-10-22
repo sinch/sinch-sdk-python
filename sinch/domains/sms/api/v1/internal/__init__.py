@@ -1,12 +1,12 @@
 from sinch.domains.sms.api.v1.internal.delivery_reports_endpoints import (
     GetDeliveryReportByBatchIdEndpoint,
-    GetDeliveryReportsByPhoneNumberEndpoint,
+    GetDeliveryReportByPhoneNumberEndpoint,
     ListDeliveryReportsEndpoint,
 )
 
 
 __all__ = [
     "GetDeliveryReportByBatchIdEndpoint",
-    "GetDeliveryReportsByPhoneNumberEndpoint",
+    "GetDeliveryReportByPhoneNumberEndpoint",
     "ListDeliveryReportsEndpoint",
 ]

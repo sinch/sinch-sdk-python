@@ -1,13 +1,13 @@
 from unittest.mock import Mock
 import pytest
 from sinch.core.pagination import (
-    IntBasedPaginator,
+    SMSPaginator,
     TokenBasedPaginator
 )
 
 
-# Helper function to initialize int paginator
-def initialize_int_paginator(endpoint_mock, request_data, responses):
+# Helper function to initialize SMS paginator
+def initialize_sms_paginator(endpoint_mock, request_data, responses):
     client = Mock()
     
     # Create a mock that returns different responses based on page number
@@ -23,33 +23,33 @@ def initialize_int_paginator(endpoint_mock, request_data, responses):
     client.configuration.transport.request.side_effect = mock_request
     endpoint_mock.request_data = request_data
 
-    return IntBasedPaginator(sinch=client, endpoint=endpoint_mock)
+    return SMSPaginator(sinch=client, endpoint=endpoint_mock)
 
 
-def test_page_int_iterator_sync_using_manual_pagination(
-    int_based_pagination_request_data,
-    mock_int_pagination_responses,
+def test_page_sms_iterator_sync_using_manual_pagination(
+    sms_pagination_request_data,
+    mock_sms_pagination_responses,
     mock_int_pagination_expected_delivery_reports
 ):
     """Test that the pagination iterates correctly through multiple items."""
-    int_based_paginator = initialize_int_paginator(
+    sms_paginator = initialize_sms_paginator(
         endpoint_mock=Mock(),
-        request_data=int_based_pagination_request_data,
-        responses=mock_int_pagination_responses
+        request_data=sms_pagination_request_data,
+        responses=mock_sms_pagination_responses
     )
-    assert int_based_paginator is not None
+    assert sms_paginator is not None
 
     page_counter = 0
-    assert int_based_paginator.result.page == page_counter
+    assert sms_paginator.result.page == page_counter
 
     delivery_reports_list = []
     reached_last_page = False
     while not reached_last_page:
-        delivery_reports_list.extend([report.batch_id for report in int_based_paginator.content()])
-        if int_based_paginator.has_next_page:
-            int_based_paginator = int_based_paginator.next_page()
+        delivery_reports_list.extend([report.batch_id for report in sms_paginator.content()])
+        if sms_paginator.has_next_page:
+            sms_paginator = sms_paginator.next_page()
             page_counter += 1
-            assert isinstance(int_based_paginator, IntBasedPaginator)
+            assert isinstance(sms_paginator, SMSPaginator)
         else:
             reached_last_page = True
 
@@ -57,24 +57,24 @@ def test_page_int_iterator_sync_using_manual_pagination(
     assert delivery_reports_list == mock_int_pagination_expected_delivery_reports
 
 
-def test_page_int_iterator_sync_using_auto_pagination(
-    int_based_pagination_request_data,
-    mock_int_pagination_responses,
+def test_page_sms_iterator_sync_using_auto_pagination(
+    sms_pagination_request_data,
+    mock_sms_pagination_responses,
     mock_int_pagination_expected_delivery_reports
 ):
     """Test that the pagination iterates correctly through multiple items."""
-    int_based_paginator = initialize_int_paginator(
+    sms_paginator = initialize_sms_paginator(
         endpoint_mock=Mock(),
-        request_data=int_based_pagination_request_data,
-        responses=mock_int_pagination_responses
+        request_data=sms_pagination_request_data,
+        responses=mock_sms_pagination_responses
     )
-    assert int_based_paginator is not None
+    assert sms_paginator is not None
 
     page_counter = 0
-    assert int_based_paginator.result.page == page_counter
+    assert sms_paginator.result.page == page_counter
 
     all_delivery_reports = []
-    for delivery_report in int_based_paginator.iterator():
+    for delivery_report in sms_paginator.iterator():
         all_delivery_reports.append(delivery_report.batch_id)
     
     # Should have 4 delivery reports total (2 from page 0, 2 from page 1, 0 from page 2)

@@ -62,7 +62,7 @@ class Paginator(ABC, Generic[BM]):
         pass
 
 
-class IntBasedPaginator(Paginator[BM]):
+class SMSPaginator(Paginator[BM]):
     """Base paginator for integer-based pagination with explicit page navigation and metadata."""
 
     def __init__(self, sinch, endpoint, result=None):

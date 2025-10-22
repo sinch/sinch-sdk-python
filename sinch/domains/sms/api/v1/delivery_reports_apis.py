@@ -1,16 +1,15 @@
 from datetime import datetime
 from typing import List, Optional
 
-from sinch.core.pagination import Paginator, IntBasedPaginator
+from sinch.core.pagination import Paginator, SMSPaginator
 from sinch.domains.sms.api.v1.base import BaseSms
 from sinch.domains.sms.api.v1.internal import (
     GetDeliveryReportByBatchIdEndpoint,
-    GetDeliveryReportsByPhoneNumberEndpoint,
+    GetDeliveryReportByPhoneNumberEndpoint,
     ListDeliveryReportsEndpoint,
 )
 from sinch.domains.sms.models.v1.internal import (
-    ListDeliveryReportsResponse,
-    GetDeliveryReportsByPhoneNumberRequest,
+    GetDeliveryReportByPhoneNumberRequest,
     ListDeliveryReportsRequest,
     GetDeliveryReportsByBatchIdRequest,
 )
@@ -28,7 +27,7 @@ class DeliveryReports(BaseSms):
     def get(
         self,
         batch_id: str,
-        report_type: Optional[str] = "summary",
+        report_type: Optional[str] = None,
         status: Optional[List[DeliveryStatusType]] = None,
         code: Optional[List[DeliveryReceiptStatusCodeType]] = None,
         client_reference: Optional[str] = None,
@@ -45,13 +44,13 @@ class DeliveryReports(BaseSms):
         return self._request(GetDeliveryReportByBatchIdEndpoint, request_data)
 
     def get_for_number(
-        self, batch_id: str, recipient_msisdn: str, **kwargs
+        self, batch_id: str, recipient: str, **kwargs
     ) -> RecipientDeliveryReport:
-        request_data = GetDeliveryReportsByPhoneNumberRequest(
-            batch_id=batch_id, recipient_msisdn=recipient_msisdn, **kwargs
+        request_data = GetDeliveryReportByPhoneNumberRequest(
+            batch_id=batch_id, recipient_msisdn=recipient, **kwargs
         )
         return self._request(
-            GetDeliveryReportsByPhoneNumberEndpoint, request_data
+            GetDeliveryReportByPhoneNumberEndpoint, request_data
         )
 
     def list(
@@ -65,7 +64,7 @@ class DeliveryReports(BaseSms):
         client_reference: Optional[str] = None,
         **kwargs,
     ) -> Paginator[RecipientDeliveryReport]:
-        return IntBasedPaginator(
+        return SMSPaginator(
             sinch=self._sinch,
             endpoint=ListDeliveryReportsEndpoint(
                 project_id=self._sinch.configuration.project_id,

@@ -3,7 +3,7 @@ from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.internal import (
     GetDeliveryReportsByBatchIdRequest,
-    GetDeliveryReportsByPhoneNumberRequest,
+    GetDeliveryReportByPhoneNumberRequest,
     ListDeliveryReportsRequest,
     ListDeliveryReportsResponse,
 )
@@ -47,7 +47,7 @@ class GetDeliveryReportByBatchIdEndpoint(SmsEndpoint):
         return self.process_response_model(response.body, BatchDeliveryReport)
 
 
-class GetDeliveryReportsByPhoneNumberEndpoint(SmsEndpoint):
+class GetDeliveryReportByPhoneNumberEndpoint(SmsEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{service_plan_id}/batches/{batch_id}/delivery_report/{recipient_msisdn}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -55,9 +55,9 @@ class GetDeliveryReportsByPhoneNumberEndpoint(SmsEndpoint):
     def __init__(
         self,
         project_id: str,
-        request_data: GetDeliveryReportsByPhoneNumberRequest,
+        request_data: GetDeliveryReportByPhoneNumberRequest,
     ):
-        super(GetDeliveryReportsByPhoneNumberEndpoint, self).__init__(
+        super(GetDeliveryReportByPhoneNumberEndpoint, self).__init__(
             project_id, request_data
         )
         self.project_id = project_id
@@ -68,7 +68,7 @@ class GetDeliveryReportsByPhoneNumberEndpoint(SmsEndpoint):
     ) -> RecipientDeliveryReport:
         try:
             super(
-                GetDeliveryReportsByPhoneNumberEndpoint, self
+                GetDeliveryReportByPhoneNumberEndpoint, self
             ).handle_response(response)
         except SmsException as e:
             raise SmsException(
