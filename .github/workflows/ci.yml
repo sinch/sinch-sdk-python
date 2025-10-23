@@ -41,6 +41,8 @@ jobs:
       run: |
         ruff check sinch/domains/numbers --statistics
         ruff format sinch/domains/numbers --check --diff
+        ruff check sinch/domains/sms --statistics
+        ruff format sinch/domains/sms --check --diff
 
     - name: Test with Pytest
       run: |
