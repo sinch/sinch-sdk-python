@@ -2,8 +2,8 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.internal import (
-    GetDeliveryReportByBatchIdRequest,
-    GetDeliveryReportByPhoneNumberRequest,
+    GetBatchDeliveryReportRequest,
+    GetRecipientDeliveryReportRequest,
     ListDeliveryReportsRequest,
     ListDeliveryReportsResponse,
 )
@@ -22,7 +22,7 @@ class GetBatchDeliveryReportEndpoint(SmsEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(
-        self, project_id: str, request_data: GetDeliveryReportByBatchIdRequest
+        self, project_id: str, request_data: GetBatchDeliveryReportRequest
     ):
         super(GetBatchDeliveryReportEndpoint, self).__init__(
             project_id, request_data
@@ -55,7 +55,7 @@ class GetRecipientDeliveryReportEndpoint(SmsEndpoint):
     def __init__(
         self,
         project_id: str,
-        request_data: GetDeliveryReportByPhoneNumberRequest,
+        request_data: GetRecipientDeliveryReportRequest,
     ):
         super(GetRecipientDeliveryReportEndpoint, self).__init__(
             project_id, request_data

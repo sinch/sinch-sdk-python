@@ -9,9 +9,9 @@ from sinch.domains.sms.api.v1.internal import (
     ListDeliveryReportsEndpoint,
 )
 from sinch.domains.sms.models.v1.internal import (
-    GetDeliveryReportByPhoneNumberRequest,
+    GetRecipientDeliveryReportRequest,
     ListDeliveryReportsRequest,
-    GetDeliveryReportByBatchIdRequest,
+    GetBatchDeliveryReportRequest,
 )
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
@@ -33,7 +33,7 @@ class DeliveryReports(BaseSms):
         client_reference: Optional[str] = None,
         **kwargs,
     ) -> BatchDeliveryReport:
-        request_data = GetDeliveryReportByBatchIdRequest(
+        request_data = GetBatchDeliveryReportRequest(
             batch_id=batch_id,
             type=report_type,
             status=status,
@@ -46,7 +46,7 @@ class DeliveryReports(BaseSms):
     def get_for_number(
         self, batch_id: str, recipient: str, **kwargs
     ) -> RecipientDeliveryReport:
-        request_data = GetDeliveryReportByPhoneNumberRequest(
+        request_data = GetRecipientDeliveryReportRequest(
             batch_id=batch_id, recipient_msisdn=recipient, **kwargs
         )
         return self._request(GetRecipientDeliveryReportEndpoint, request_data)

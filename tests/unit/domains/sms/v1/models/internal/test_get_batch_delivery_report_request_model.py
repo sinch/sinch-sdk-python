@@ -1,7 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.sms.models.v1.internal import GetDeliveryReportByBatchIdRequest
-from sinch.domains.sms.models.v1.types import DeliveryStatusType, DeliveryReceiptStatusCodeType, DeliveryReportType
+from sinch.domains.sms.models.v1.internal import GetBatchDeliveryReportRequest
 
 
 @pytest.mark.parametrize(
@@ -12,7 +11,7 @@ from sinch.domains.sms.models.v1.types import DeliveryStatusType, DeliveryReceip
         ("batch789", None, ["Failed", "Cancelled"], [402, 403], None),
     ]
 )
-def test_get_delivery_reports_by_batch_id_request_expects_valid_input(
+def test_get_batch_delivery_report_request_expects_valid_input(
     batch_id, report_type, status, code, expected_report_type
 ):
     """
@@ -28,7 +27,7 @@ def test_get_delivery_reports_by_batch_id_request_expects_valid_input(
     # Remove None values
     data = {k: v for k, v in data.items() if v is not None}
     
-    request = GetDeliveryReportByBatchIdRequest(**data)
+    request = GetBatchDeliveryReportRequest(**data)
     
     assert request.batch_id == batch_id
     assert request.type == expected_report_type
@@ -36,7 +35,7 @@ def test_get_delivery_reports_by_batch_id_request_expects_valid_input(
     assert request.code == code
 
 
-def test_get_delivery_reports_by_batch_id_request_expects_status_list():
+def test_get_batch_delivery_report_request_expects_status_list():
     """
     Test that the model correctly handles status list input.
     """
@@ -45,7 +44,7 @@ def test_get_delivery_reports_by_batch_id_request_expects_status_list():
         "status": ["QUEUED", "DELIVERED", "FAILED"]
     }
     
-    request = GetDeliveryReportByBatchIdRequest(**data)
+    request = GetBatchDeliveryReportRequest(**data)
     
     assert request.batch_id == "batch123"
     assert request.status == ["QUEUED", "DELIVERED", "FAILED"]
@@ -53,7 +52,7 @@ def test_get_delivery_reports_by_batch_id_request_expects_status_list():
     assert request.code is None
 
 
-def test_get_delivery_reports_by_batch_id_request_ecpects_code_list():
+def test_get_batch_delivery_report_request_expects_code_list():
     """
     Test that the model correctly handles code list input.
     """
@@ -62,7 +61,7 @@ def test_get_delivery_reports_by_batch_id_request_ecpects_code_list():
         "code": [400, 401, 402]
     }
     
-    request = GetDeliveryReportByBatchIdRequest(**data)
+    request = GetBatchDeliveryReportRequest(**data)
     
     assert request.batch_id == "batch123"
     assert request.code == [400, 401, 402]
@@ -70,7 +69,7 @@ def test_get_delivery_reports_by_batch_id_request_ecpects_code_list():
     assert request.status is None
 
 
-def test_get_delivery_reports_by_batch_id_request_expects_validation_error_for_missing_batch_id():
+def test_get_batch_delivery_report_request_expects_validation_error_for_missing_batch_id():
     """
     Test that missing required batch_id field raises a ValidationError.
     """
@@ -79,12 +78,12 @@ def test_get_delivery_reports_by_batch_id_request_expects_validation_error_for_m
     }
     
     with pytest.raises(ValidationError) as exc_info:
-        GetDeliveryReportByBatchIdRequest(**data)
+        GetBatchDeliveryReportRequest(**data)
     
     assert "batch_id" in str(exc_info.value)
 
 
-def test_get_delivery_reports_by_batch_id_request_expects_delivery_report_type_validation():
+def test_get_batch_delivery_report_request_expects_delivery_report_type_validation():
     """
     Test that the model correctly handles DeliveryReportType enum values.
     """
@@ -97,7 +96,7 @@ def test_get_delivery_reports_by_batch_id_request_expects_delivery_report_type_v
             "type": report_type
         }
         
-        request = GetDeliveryReportByBatchIdRequest(**data)
+        request = GetBatchDeliveryReportRequest(**data)
         assert request.type == report_type
         assert request.batch_id == "batch123"
 
@@ -106,5 +105,5 @@ def test_get_delivery_reports_by_batch_id_request_expects_delivery_report_type_v
         "type": "custom_type"
     }
     
-    request = GetDeliveryReportByBatchIdRequest(**data)
+    request = GetBatchDeliveryReportRequest(**data)
     assert request.type == "custom_type"
