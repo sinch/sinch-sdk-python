@@ -1,5 +1,8 @@
+import pytest
+from sinch.core.models.http_response import HTTPResponse
 from sinch.core.pagination import SMSPaginator
 from sinch.domains.sms.api.v1 import DeliveryReports
+from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.api.v1.internal import (
     GetBatchDeliveryReportEndpoint,
     GetRecipientDeliveryReportEndpoint,
@@ -150,3 +153,29 @@ def test_list_delivery_reports_expects_valid_request(
     assert hasattr(response, "has_next_page")
     assert response.result == mock_response
     mock_sinch_client_sms.configuration.transport.request.assert_called_once()
+
+
+def test_sms_endpoint_handle_response_raises_exception_on_error(mock_sinch_client_sms):
+    """
+    Test that SmsEndpoint.handle_response raises SmsException when status_code >= 400.
+    """
+    
+    request_data = GetBatchDeliveryReportRequest(
+        batch_id="test_batch_id",
+        type="summary"
+    )
+    endpoint = GetBatchDeliveryReportEndpoint("test_project_id", request_data)
+    
+    error_response = HTTPResponse(
+        status_code=400,
+        body=1,
+        headers={}
+    )
+    
+    with pytest.raises(SmsException) as exc_info:
+        endpoint.handle_response(error_response)
+    
+    assert str(exc_info.value) == "Error 400"
+    assert exc_info.value.http_response == error_response
+    assert exc_info.value.is_from_server is True
+    assert exc_info.value.response_status_code == 400

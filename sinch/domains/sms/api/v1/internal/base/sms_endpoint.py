@@ -4,6 +4,7 @@ from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.types import BM
 from sinch.core.enums import HTTPAuthentication
+from sinch.domains.sms.api.v1.exceptions import SmsException
 
 
 class SmsEndpoint(HTTPEndpoint, ABC):
@@ -72,9 +73,10 @@ class SmsEndpoint(HTTPEndpoint, ABC):
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:
-            print(response.body)
-            # raise SmsException(
-            #     message=f"{response.body['error'].get('message')}  {response.body['error'].get('status')}",
-            #     response=response,
-            #     is_from_server=True,
-            # )
+            error_message = f"Error {response.status_code}"
+
+            raise SmsException(
+                message=error_message,
+                response=response,
+                is_from_server=True,
+            )
