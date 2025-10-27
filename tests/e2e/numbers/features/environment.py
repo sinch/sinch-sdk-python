@@ -11,3 +11,4 @@ def before_all(context):
     context.sinch = SinchClient(**client_params)
     context.sinch.configuration.auth_origin = 'http://localhost:3011'
     context.sinch.configuration.numbers_origin = 'http://localhost:3013'
+    context.sinch.configuration.sms_origin = 'http://localhost:3017'

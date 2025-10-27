@@ -145,7 +145,6 @@ def application_secret():
 def service_plan_id():
     return os.getenv("SERVICE_PLAN_ID")
 
-
 @pytest.fixture
 def http_response():
     return HTTPResponse(
@@ -249,6 +248,27 @@ def mock_sinch_client_numbers():
 
     class MockSinchClient:
         configuration = MockConfiguration()
+
+    return MockSinchClient()
+
+
+@pytest.fixture
+def mock_sinch_client_sms():
+    class SMSMockConfiguration:
+        sms_origin = "https://mock-sms-api.sinch.com"
+        sms_origin_with_service_plan_id = "https://mock-sms-api.sinch.com"
+        project_id = "test_project_id"
+        service_plan_id = "test_service_plan_id"
+        authentication_method = "project_auth"
+        transport = MagicMock()
+        transport.request = MagicMock()
+        
+        def get_sms_origin_for_auth(self):
+            """Returns the appropriate SMS origin based on authentication method."""
+            return self.sms_origin_with_service_plan_id if self.authentication_method == "sms_auth" else self.sms_origin
+
+    class MockSinchClient:
+        configuration = SMSMockConfiguration()
 
     return MockSinchClient()
 

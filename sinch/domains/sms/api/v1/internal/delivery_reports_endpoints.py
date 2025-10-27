@@ -16,7 +16,7 @@ from sinch.domains.sms.models.v1.response import (
 
 class GetBatchDeliveryReportEndpoint(SmsEndpoint):
     ENDPOINT_URL = (
-        "{origin}/xms/v1/{service_plan_id}/batches/{batch_id}/delivery_report"
+        "{origin}/xms/v1/{project_id}/batches/{batch_id}/delivery_report"
     )
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -31,7 +31,7 @@ class GetBatchDeliveryReportEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
+        return self.request_data.model_dump_for_query_params()
 
     def handle_response(self, response: HTTPResponse) -> BatchDeliveryReport:
         try:
@@ -48,7 +48,7 @@ class GetBatchDeliveryReportEndpoint(SmsEndpoint):
 
 
 class GetRecipientDeliveryReportEndpoint(SmsEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{service_plan_id}/batches/{batch_id}/delivery_report/{recipient_msisdn}"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/batches/{batch_id}/delivery_report/{recipient_msisdn}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
@@ -82,7 +82,7 @@ class GetRecipientDeliveryReportEndpoint(SmsEndpoint):
 
 
 class ListDeliveryReportsEndpoint(SmsEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{service_plan_id}/delivery_reports"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/delivery_reports"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
@@ -96,7 +96,7 @@ class ListDeliveryReportsEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
+        return self.request_data.model_dump_for_query_params()
 
     def handle_response(
         self, response: HTTPResponse

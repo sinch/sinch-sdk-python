@@ -12,18 +12,19 @@ class Configuration:
     """
     def __init__(
         self,
-        key_id: str,
-        key_secret: str,
-        project_id: str,
         transport: HTTPTransport,
         token_manager: TokenManager,
+        connection_timeout=10,
+        key_id: str = None,
+        key_secret: str = None,
+        project_id: str = None,
         logger: Logger = None,
         logger_name: str = None,
-        connection_timeout=10,
         application_key: str = None,
         application_secret: str = None,
         service_plan_id: str = None,
-        sms_api_token: str = None
+        sms_api_token: str = None,
+        sms_region: str = None,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -33,6 +34,9 @@ class Configuration:
         self.connection_timeout = connection_timeout
         self.sms_api_token = sms_api_token
         self.service_plan_id = service_plan_id
+        
+        # Determine authentication method based on provided parameters
+        self._authentication_method = self._determine_authentication_method()
         self.auth_origin = "https://auth.sinch.com"
         self.numbers_origin = "https://numbers.api.sinch.com"
         self.verification_origin = "https://verification.api.sinch.com"
@@ -41,11 +45,10 @@ class Configuration:
         self._voice_region = None
         self._conversation_region = "eu"
         self._conversation_domain = ".conversation.api.sinch.com"
-        self._sms_region = "us"
-        self._sms_region_with_service_plan_id = "us"
+        self._sms_region = sms_region
+        self._sms_region_with_service_plan_id = sms_region
         self._sms_domain = "https://zt.{}.sms.api.sinch.com"
         self._sms_domain_with_service_plan_id = "https://{}.sms.api.sinch.com"
-        self._sms_authentication = HTTPAuthentication.OAUTH.value
         self._templates_region = "eu"
         self._templates_domain = ".template.api.sinch.com"
         self.token_manager = token_manager
@@ -65,9 +68,12 @@ class Configuration:
             self.logger = logging.getLogger("Sinch")
 
     def _set_sms_origin_with_service_plan_id(self):
-        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(
-            self._sms_region_with_service_plan_id
-        )
+        if self._sms_region_with_service_plan_id:
+            self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(
+                self._sms_region_with_service_plan_id
+            )
+        else:
+            self.sms_origin_with_service_plan_id = None
 
     def _set_sms_region_with_service_plan_id(self, region):
         self._sms_region_with_service_plan_id = region
@@ -96,7 +102,10 @@ class Configuration:
     )
 
     def _set_sms_origin(self):
-        self.sms_origin = self._sms_domain.format(self._sms_region)
+        if self._sms_region:
+            self.sms_origin = self._sms_domain.format(self._sms_region)
+        else:
+            self.sms_origin = None
 
     def _set_sms_region(self, region):
         self._sms_region = region
@@ -200,3 +209,53 @@ class Configuration:
         _set_voice_region,
         doc="Voice Region"
     )
+
+    def _determine_authentication_method(self):
+        """
+        Determines the authentication method based on provided parameters.
+        Priority: SMS authentication (service_plan_id + sms_api_token) over project authentication (project_id).
+        """
+        if self.service_plan_id and self.sms_api_token:
+            return "sms_auth"
+        elif self.project_id:
+            return "project_auth"
+        else:
+            # No authentication parameters provided - will be validated later
+            return None
+
+    @property
+    def authentication_method(self):
+        """Returns the determined authentication method"""
+        return self._authentication_method
+
+    def validate_authentication_parameters(self):
+        """
+        Validates that sufficient authentication parameters are provided.
+        This should be called before making actual API requests.
+        """
+        if self._authentication_method is None or self._authentication_method == "project_auth":
+            # Default to project_auth and validate parameters
+            if not self.project_id:
+                raise ValueError(
+                    "Project authentication requires 'project_id'"
+                )
+            if not self.key_id or not self.key_secret:
+                raise ValueError(
+                    "Project authentication requires 'key_id' and 'key_secret'"
+                )
+        elif self._authentication_method == "sms_auth":
+            if not self.service_plan_id or not self.sms_api_token:
+                raise ValueError(
+                    "SMS authentication requires both 'service_plan_id' and 'sms_api_token'"
+                )
+
+    def get_sms_origin_for_auth(self):
+        """
+        Returns the appropriate SMS origin based on the authentication method.
+        - SMS auth (service_plan_id + sms_api_token): uses sms_origin_with_service_plan_id
+        - Project auth (project_id): uses regular sms_origin
+        """
+        if self._authentication_method == "sms_auth":
+            return self.sms_origin_with_service_plan_id
+        else:
+            return self.sms_origin

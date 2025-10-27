@@ -1,5 +1,5 @@
 from typing import Literal, Union
-from pydantic import StrictStr
+from pydantic import StrictInt
 
 
 DeliveryReceiptStatusCodeType = Union[
@@ -23,5 +23,5 @@ DeliveryReceiptStatusCodeType = Union[
         417,
         418,
     ],
-    StrictStr,
+    StrictInt,
 ]

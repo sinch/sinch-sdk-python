@@ -15,6 +15,17 @@ class BaseModelConfigurationRequest(BaseModel):
         extra="allow",
     )
 
+    def model_dump_for_query_params(self, exclude_none=True, by_alias=True):
+        """
+        Serializes the model for use as query parameters.
+        Converts list values to comma-separated strings for APIs that expect this format.
+        """
+        data = self.model_dump(exclude_none=exclude_none, by_alias=by_alias)
+        for key, value in data.items():
+            if isinstance(value, list):
+                data[key] = ",".join(str(item) for item in value)
+        return data
+
 
 class BaseModelConfigurationResponse(BaseModel):
     """

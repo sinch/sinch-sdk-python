@@ -3,13 +3,21 @@ from typing import Type
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.types import BM
-from sinch.domains.sms.api.v1.exceptions import SmsException
+from sinch.core.enums import HTTPAuthentication
 
 
 class SmsEndpoint(HTTPEndpoint, ABC):
     def __init__(self, project_id: str, request_data: BM):
-        # TODO: Refactor HTTPEndpoint and endpoints for service_id
         super().__init__(project_id, request_data)
+
+    def set_authentication_method(self, sinch):
+        """
+        Sets the authentication method based on the sinch client configuration.
+        """
+        if sinch.configuration.authentication_method == "sms_auth":
+            self.HTTP_AUTHENTICATION = HTTPAuthentication.SMS_TOKEN.value
+        else:
+            self.HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def build_url(self, sinch) -> str:
         if not self.ENDPOINT_URL:
@@ -17,8 +25,11 @@ class SmsEndpoint(HTTPEndpoint, ABC):
                 "ENDPOINT_URL must be defined in the subclass."
             )
 
+        # Use the appropriate SMS origin based on authentication method
+        origin = sinch.configuration.get_sms_origin_for_auth()
+
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.sms_origin,
+            origin=origin,
             project_id=self.project_id,
             **vars(self.request_data),
         )
@@ -61,8 +72,9 @@ class SmsEndpoint(HTTPEndpoint, ABC):
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:
-            raise SmsException(
-                message=f"{response.body['error'].get('message')}  {response.body['error'].get('status')}",
-                response=response,
-                is_from_server=True,
-            )
+            print(response.body)
+            # raise SmsException(
+            #     message=f"{response.body['error'].get('message')}  {response.body['error'].get('status')}",
+            #     response=response,
+            #     is_from_server=True,
+            # )

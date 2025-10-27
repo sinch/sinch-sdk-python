@@ -15,10 +15,18 @@ class BaseSms:
         Returns:
             The response from the Sinch transport request.
         """
-        return self._sinch.configuration.transport.request(
-            endpoint_class(
-                # TODO: Refactor project_id to service_plan_id
-                project_id=self._sinch.configuration.project_id,
-                request_data=request_data,
-            )
+        # Use service_plan_id for SMS auth, project_id for project auth
+        if self._sinch.configuration.authentication_method == "sms_auth":
+            endpoint_id = self._sinch.configuration.service_plan_id
+        else:
+            endpoint_id = self._sinch.configuration.project_id
+
+        endpoint = endpoint_class(
+            project_id=endpoint_id,
+            request_data=request_data,
         )
+
+        # Set the authentication method based on configuration
+        endpoint.set_authentication_method(self._sinch)
+
+        return self._sinch.configuration.transport.request(endpoint)
