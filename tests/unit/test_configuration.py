@@ -154,6 +154,28 @@ def test_configuration_expects_authentication_method_determination_only_service_
         client_configuration.validate_authentication_parameters()
 
 
+def test_configuration_expects_no_error_when_both_auth_methods_provided_with_complete_project_auth(sinch_client_sync):
+    """ 
+    Test that when both service_plan_id and complete project auth are provided,
+    no error is raised even though sms_api_token is missing.
+    This ensures project auth takes precedence when fully configured.
+    """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        service_plan_id="test_service_plan",  # Incomplete SMS auth
+        project_id="test_project_id",          # Complete project auth
+        key_id="test_key_id",
+        key_secret="test_key_secret"
+    )
+    
+    # Should use project_auth as the authentication method
+    assert client_configuration.authentication_method == "project_auth"
+    
+    # Should not raise an error because complete project auth is provided
+    client_configuration.validate_authentication_parameters()
+
+
 def test_configuration_expects_sms_origin_for_auth_sms_authentication(sinch_client_sync):
     """ Test that SMS authentication returns sms_origin_with_service_plan_id """
     client_configuration = Configuration(

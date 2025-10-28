@@ -1,5 +1,6 @@
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.utils import model_dump_for_query_params
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.internal import (
     GetBatchDeliveryReportRequest,
@@ -31,7 +32,7 @@ class GetBatchDeliveryReportEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        return self.request_data.model_dump_for_query_params()
+        return model_dump_for_query_params(self.request_data)
 
     def handle_response(self, response: HTTPResponse) -> BatchDeliveryReport:
         try:
@@ -96,7 +97,7 @@ class ListDeliveryReportsEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        return self.request_data.model_dump_for_query_params()
+        return model_dump_for_query_params(self.request_data)
 
     def handle_response(
         self, response: HTTPResponse

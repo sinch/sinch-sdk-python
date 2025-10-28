@@ -233,7 +233,10 @@ class Configuration:
         Validates that sufficient authentication parameters are provided.
         This should be called before making actual API requests.
         """
-        if self.service_plan_id and not self.sms_api_token:
+        # Check for incomplete SMS auth only if not using project auth
+        # This prevents false positives when both service_plan_id and project_id are provided
+        has_project_auth = self.project_id and self.key_id and self.key_secret
+        if self.service_plan_id and not self.sms_api_token and not has_project_auth:
             raise ValueError(
                 "The sms_api_token is required when using service_plan_id"
             )

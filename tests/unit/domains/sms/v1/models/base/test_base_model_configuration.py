@@ -1,3 +1,4 @@
+from sinch.core.models.utils import model_dump_for_query_params
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationRequest,
 )
@@ -15,7 +16,7 @@ def test_model_dump_for_query_params_expects_simple_fields():
     model = TestModel(
         batch_id="01FC66621XXXXX119Z8PMV1QPQ", status="delivered"
     )
-    result = model.model_dump_for_query_params()
+    result = model_dump_for_query_params(model)
 
     assert result["batch_id"] == "01FC66621XXXXX119Z8PMV1QPQ"
     assert result["status"] == "delivered"
@@ -31,7 +32,7 @@ def test_model_dump_for_query_params_expects_list_to_comma_separated_string():
         code: list[int] = None
 
     model = TestModel(status=["Delivered", "Failed"], code=[15, 0])
-    result = model.model_dump_for_query_params()
+    result = model_dump_for_query_params(model)
 
     assert result["status"] == "Delivered,Failed"
     assert result["code"] == "15,0"
@@ -48,7 +49,7 @@ def test_model_dump_for_query_params_expects_empty_values_filtered():
         code: list[int] = []
 
     model = TestModel(batch_id="01FC66621XXXXX119Z8PMV1QPQ", status="", code=[])
-    result = model.model_dump_for_query_params()
+    result = model_dump_for_query_params(model)
 
     assert "batch_id" in result
     assert result["batch_id"] == "01FC66621XXXXX119Z8PMV1QPQ"
