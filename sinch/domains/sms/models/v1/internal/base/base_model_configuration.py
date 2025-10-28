@@ -19,12 +19,20 @@ class BaseModelConfigurationRequest(BaseModel):
         """
         Serializes the model for use as query parameters.
         Converts list values to comma-separated strings for APIs that expect this format.
+        Filters out empty values (empty strings and empty lists).
         """
         data = self.model_dump(exclude_none=exclude_none, by_alias=by_alias)
+        filtered_data = {}
         for key, value in data.items():
+            if value == "":
+                continue
+            if isinstance(value, list) and len(value) == 0:
+                continue
             if isinstance(value, list):
-                data[key] = ",".join(str(item) for item in value)
-        return data
+                filtered_data[key] = ",".join(str(item) for item in value)
+            else:
+                filtered_data[key] = value
+        return filtered_data
 
 
 class BaseModelConfigurationResponse(BaseModel):

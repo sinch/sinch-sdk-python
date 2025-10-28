@@ -35,3 +35,22 @@ def test_model_dump_for_query_params_expects_list_to_comma_separated_string():
 
     assert result["status"] == "Delivered,Failed"
     assert result["code"] == "15,0"
+
+
+def test_model_dump_for_query_params_expects_empty_values_filtered():
+    """
+    Test that empty strings and empty lists are filtered out.
+    """
+
+    class TestModel(BaseModelConfigurationRequest):
+        batch_id: str
+        status: str = ""
+        code: list[int] = []
+
+    model = TestModel(batch_id="01FC66621XXXXX119Z8PMV1QPQ", status="", code=[])
+    result = model.model_dump_for_query_params()
+
+    assert "batch_id" in result
+    assert result["batch_id"] == "01FC66621XXXXX119Z8PMV1QPQ"
+    assert "status" not in result
+    assert "code" not in result

@@ -254,21 +254,27 @@ def mock_sinch_client_numbers():
 
 @pytest.fixture
 def mock_sinch_client_sms():
-    class SMSMockConfiguration:
-        sms_origin = "https://mock-sms-api.sinch.com"
-        sms_origin_with_service_plan_id = "https://mock-sms-api.sinch.com"
-        project_id = "test_project_id"
-        service_plan_id = "test_service_plan_id"
-        authentication_method = "project_auth"
-        transport = MagicMock()
-        transport.request = MagicMock()
-        
-        def get_sms_origin_for_auth(self):
-            """Returns the appropriate SMS origin based on authentication method."""
-            return self.sms_origin_with_service_plan_id if self.authentication_method == "sms_auth" else self.sms_origin
-
+    from sinch.core.clients.sinch_client_configuration import Configuration
+    from sinch.core.ports.http_transport import HTTPTransport
+    from sinch.core.token_manager import TokenManager
+    
+    mock_transport = MagicMock(spec=HTTPTransport)
+    mock_transport.request = MagicMock()
+    
+    mock_token_manager = MagicMock(spec=TokenManager)
+    
+    config = Configuration(
+        transport=mock_transport,
+        token_manager=mock_token_manager,
+        project_id="test_project_id",
+        service_plan_id="test_service_plan_id",
+        sms_region="eu"
+    )
+    
+    config._authentication_method = "project_auth"
+    
     class MockSinchClient:
-        configuration = SMSMockConfiguration()
+        configuration = config
 
     return MockSinchClient()
 

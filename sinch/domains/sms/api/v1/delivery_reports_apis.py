@@ -64,12 +64,12 @@ class DeliveryReports(BaseSms):
     ) -> Paginator[RecipientDeliveryReport]:
         # Use service_plan_id for SMS auth, project_id for project auth
         if self._sinch.configuration.authentication_method == "sms_auth":
-            endpoint_id = self._sinch.configuration.service_plan_id
+            path_identifier = self._sinch.configuration.service_plan_id
         else:
-            endpoint_id = self._sinch.configuration.project_id
+            path_identifier = self._sinch.configuration.project_id
 
         endpoint = ListDeliveryReportsEndpoint(
-            project_id=endpoint_id,
+            project_id=path_identifier,
             request_data=ListDeliveryReportsRequest(
                 page=page,
                 page_size=page_size,

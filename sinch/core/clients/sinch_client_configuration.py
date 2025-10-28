@@ -233,20 +233,24 @@ class Configuration:
         Validates that sufficient authentication parameters are provided.
         This should be called before making actual API requests.
         """
+        if self.service_plan_id and not self.sms_api_token:
+            raise ValueError(
+                "The sms_api_token is required when using service_plan_id"
+            )
         if self._authentication_method is None or self._authentication_method == "project_auth":
             # Default to project_auth and validate parameters
             if not self.project_id:
                 raise ValueError(
-                    "Project authentication requires 'project_id'"
+                    "The project_id is required"
                 )
             if not self.key_id or not self.key_secret:
                 raise ValueError(
-                    "Project authentication requires 'key_id' and 'key_secret'"
+                    "The key_id and key_secret are required"
                 )
         elif self._authentication_method == "sms_auth":
             if not self.service_plan_id or not self.sms_api_token:
                 raise ValueError(
-                    "SMS authentication requires both 'service_plan_id' and 'sms_api_token'"
+                    "The service_plan_id and sms_api_token are required"
                 )
 
     def get_sms_origin_for_auth(self):

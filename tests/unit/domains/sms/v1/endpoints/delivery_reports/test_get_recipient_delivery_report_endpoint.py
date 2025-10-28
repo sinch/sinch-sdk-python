@@ -47,7 +47,7 @@ def endpoint(request_data):
 def test_build_url(endpoint, mock_sinch_client_sms):
     assert (
         endpoint.build_url(mock_sinch_client_sms)
-        == "https://mock-sms-api.sinch.com/xms/v1/test_project_id/batches/01FC66621XXXXX119Z8PMV1QPQ/delivery_report/+1234567890"
+        == "https://zt.eu.sms.api.sinch.com/xms/v1/test_project_id/batches/01FC66621XXXXX119Z8PMV1QPQ/delivery_report/+1234567890"
     )
 
 

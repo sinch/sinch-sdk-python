@@ -136,12 +136,12 @@ def test_configuration_expects_authentication_method_determination_insufficient_
     
     assert client_configuration.authentication_method is None
     
-    with pytest.raises(ValueError, match="Project authentication requires 'project_id'"):
+    with pytest.raises(ValueError, match="The project_id is required"):
         client_configuration.validate_authentication_parameters()
 
 
 def test_configuration_expects_authentication_method_determination_only_service_plan_id(sinch_client_sync):
-    """ Test that only service_plan_id without sms_api_token is None """
+    """ Test that only service_plan_id without sms_api_token raises appropriate error """
     client_configuration = Configuration(
         transport=HTTPTransportRequests(sinch_client_sync),
         token_manager=TokenManager(sinch_client_sync),
@@ -150,7 +150,7 @@ def test_configuration_expects_authentication_method_determination_only_service_
     
     assert client_configuration.authentication_method is None
     
-    with pytest.raises(ValueError, match="Project authentication requires 'project_id'"):
+    with pytest.raises(ValueError, match="The sms_api_token is required when using service_plan_id"):
         client_configuration.validate_authentication_parameters()
 
 

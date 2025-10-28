@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import pytest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.pagination import SMSPaginator
@@ -74,7 +75,6 @@ def test_get_for_number_expects_correct_request(mock_sinch_client_sms, mocker):
     Test that the DeliveryReports.get_for_number() method sends the correct request
     and handles the response properly.
     """
-    from datetime import datetime, timezone
 
     mock_response = RecipientDeliveryReport(
         batch_id="01FC66621XXXXX119Z8PMV1QPQ",
@@ -114,7 +114,6 @@ def test_list_delivery_reports_expects_valid_request(
     Test that the DeliveryReports.list() method sends the correct request
     and handles the response properly.
     """
-    from datetime import datetime, timezone
 
     mock_response = ListDeliveryReportsResponse(
         page=0, page_size=2, count=1, delivery_reports=[]
@@ -175,7 +174,7 @@ def test_sms_endpoint_handle_response_raises_exception_on_error(mock_sinch_clien
     with pytest.raises(SmsException) as exc_info:
         endpoint.handle_response(error_response)
     
-    assert str(exc_info.value) == "Error 400"
+    assert exc_info.value.args[0] == "Error 400"
     assert exc_info.value.http_response == error_response
     assert exc_info.value.is_from_server is True
     assert exc_info.value.response_status_code == 400
