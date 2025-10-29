@@ -145,7 +145,6 @@ def application_secret():
 def service_plan_id():
     return os.getenv("SERVICE_PLAN_ID")
 
-
 @pytest.fixture
 def http_response():
     return HTTPResponse(
@@ -249,6 +248,35 @@ def mock_sinch_client_numbers():
 
     class MockSinchClient:
         configuration = MockConfiguration()
+
+    return MockSinchClient()
+
+
+@pytest.fixture
+def mock_sinch_client_sms():
+    from sinch.core.clients.sinch_client_configuration import Configuration
+    from sinch.core.ports.http_transport import HTTPTransport
+    from sinch.core.token_manager import TokenManager
+    
+    mock_transport = MagicMock(spec=HTTPTransport)
+    mock_transport.request = MagicMock()
+    
+    mock_token_manager = MagicMock(spec=TokenManager)
+    
+    config = Configuration(
+        transport=mock_transport,
+        token_manager=mock_token_manager,
+        project_id="test_project_id",
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        service_plan_id="test_service_plan_id",
+        sms_region="eu"
+    )
+    
+    config._authentication_method = "project_auth"
+    
+    class MockSinchClient:
+        configuration = config
 
     return MockSinchClient()
 

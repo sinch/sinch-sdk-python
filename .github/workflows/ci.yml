@@ -76,6 +76,8 @@ jobs:
         cp sinch-sdk-mockserver/features/numbers/callback-configuration.feature ./tests/e2e/numbers/features/
         cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
         cp sinch-sdk-mockserver/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
+        cp sinch-sdk-mockserver/features/sms/delivery-reports.feature ./tests/e2e/sms/features/
+        cp sinch-sdk-mockserver/features/sms/delivery-reports_servicePlanId.feature ./tests/e2e/sms/features/
 
     - name: Wait for mock server
       run: .github/scripts/wait-for-mockserver.sh

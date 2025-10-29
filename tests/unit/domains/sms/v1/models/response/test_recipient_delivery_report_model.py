@@ -1,7 +1,9 @@
 import pytest
 from datetime import datetime, timezone
 from pydantic import ValidationError
-from sinch.domains.sms.models.v1.response.recipient_delivery_report import RecipientDeliveryReport
+from sinch.domains.sms.models.v1.response.recipient_delivery_report import (
+    RecipientDeliveryReport,
+)
 from tests.conftest import parse_iso_datetime
 
 
@@ -16,7 +18,7 @@ def sample_recipient_delivery_report_data():
         "code": 401,
         "recipient": "+44231235674",
         "status": "Dispatched",
-        "type": "recipient_delivery_report_sms"
+        "type": "recipient_delivery_report_sms",
     }
 
 
@@ -27,9 +29,11 @@ def sample_recipient_delivery_report_data():
         ("Failed", 402, "recipient_delivery_report_sms"),
         ("Queued", 400, "recipient_delivery_report_mms"),
         ("Dispatched", 401, "recipient_delivery_report_mms"),
-    ]
+    ],
 )
-def test_recipient_delivery_report_expects_valid_inputs(status, code, report_type):
+def test_recipient_delivery_report_expects_valid_inputs(
+    status, code, report_type
+):
     """
     Test that the model correctly parses valid inputs with different statuses and codes.
     """
@@ -39,7 +43,7 @@ def test_recipient_delivery_report_expects_valid_inputs(status, code, report_typ
         "code": code,
         "recipient": "+44231235674",
         "status": status,
-        "type": report_type
+        "type": report_type,
     }
 
     report = RecipientDeliveryReport(**data)
@@ -52,19 +56,23 @@ def test_recipient_delivery_report_expects_valid_inputs(status, code, report_typ
     assert report.type == report_type
 
 
-def test_recipient_delivery_report_expects_with_optional_fields(sample_recipient_delivery_report_data):
+def test_recipient_delivery_report_expects_with_optional_fields(
+    sample_recipient_delivery_report_data,
+):
     """
     Test that the model works with all optional fields provided.
     """
     data = sample_recipient_delivery_report_data.copy()
-    data.update({
-        "applied_originator": "My Originator",
-        "client_reference": "my_client_reference",
-        "encoding": "GSM",
-        "number_of_message_parts": 1,
-        "operator": "35000",
-        "operator_status_at": parse_iso_datetime("2019-08-24T14:15:22Z")
-    })
+    data.update(
+        {
+            "applied_originator": "My Originator",
+            "client_reference": "my_client_reference",
+            "encoding": "GSM",
+            "number_of_message_parts": 1,
+            "operator": "35000",
+            "operator_status_at": parse_iso_datetime("2019-08-24T14:15:22Z"),
+        }
+    )
 
     report = RecipientDeliveryReport(**data)
 
@@ -73,10 +81,14 @@ def test_recipient_delivery_report_expects_with_optional_fields(sample_recipient
     assert report.encoding == "GSM"
     assert report.number_of_message_parts == 1
     assert report.operator == "35000"
-    assert report.operator_status_at == parse_iso_datetime("2019-08-24T14:15:22Z")
+    assert report.operator_status_at == parse_iso_datetime(
+        "2019-08-24T14:15:22Z"
+    )
 
 
-def test_recipient_delivery_report_expects_without_optional_fields(sample_recipient_delivery_report_data):
+def test_recipient_delivery_report_expects_without_optional_fields(
+    sample_recipient_delivery_report_data,
+):
     """
     Test that the model works without optional fields.
     """
@@ -99,12 +111,12 @@ def test_recipient_delivery_report_expects_validation_error_for_missing_at():
         "code": 401,
         "recipient": "+44231235674",
         "status": "Dispatched",
-        "type": "recipient_delivery_report_sms"
+        "type": "recipient_delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         RecipientDeliveryReport(**data)
-    
+
     assert "at" in str(exc_info.value)
 
 
@@ -117,12 +129,12 @@ def test_recipient_delivery_report_expects_validation_error_for_missing_batch_id
         "code": 401,
         "recipient": "+44231235674",
         "status": "Dispatched",
-        "type": "recipient_delivery_report_sms"
+        "type": "recipient_delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         RecipientDeliveryReport(**data)
-    
+
     assert "batch_id" in str(exc_info.value)
 
 
@@ -136,12 +148,12 @@ def test_recipient_delivery_report_expects_invalid_datetime_format():
         "code": 401,
         "recipient": "+44231235674",
         "status": "Dispatched",
-        "type": "recipient_delivery_report_sms"
+        "type": "recipient_delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         RecipientDeliveryReport(**data)
-    
+
     assert "at" in str(exc_info.value)
 
 
@@ -156,7 +168,7 @@ def test_recipient_delivery_report_expects_custom_encoding():
         "recipient": "+44231235674",
         "status": "Dispatched",
         "type": "recipient_delivery_report_sms",
-        "encoding": "CUSTOM_ENCODING"
+        "encoding": "CUSTOM_ENCODING",
     }
 
     report = RecipientDeliveryReport(**data)
@@ -173,7 +185,7 @@ def test_recipient_delivery_report_expects_custom_status():
         "code": 401,
         "recipient": "+44231235674",
         "status": "CUSTOM_STATUS",
-        "type": "recipient_delivery_report_sms"
+        "type": "recipient_delivery_report_sms",
     }
 
     report = RecipientDeliveryReport(**data)
@@ -190,7 +202,7 @@ def test_recipient_delivery_report_expects_custom_type():
         "code": 401,
         "recipient": "+44231235674",
         "status": "Dispatched",
-        "type": "custom_delivery_report_type"
+        "type": "custom_delivery_report_type",
     }
 
     report = RecipientDeliveryReport(**data)

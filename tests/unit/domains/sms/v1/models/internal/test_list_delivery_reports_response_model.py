@@ -32,7 +32,13 @@ def test_data():
     }
 
 
-def assert_delivery_report_fields(delivery_report, expected_batch_id, expected_recipient, expected_code, expected_status):
+def assert_delivery_report_fields(
+    delivery_report,
+    expected_batch_id,
+    expected_recipient,
+    expected_code,
+    expected_status,
+):
     """Helper function to assert delivery report fields."""
     assert delivery_report.batch_id == expected_batch_id
     assert delivery_report.recipient == expected_recipient
@@ -43,7 +49,9 @@ def assert_delivery_report_fields(delivery_report, expected_batch_id, expected_r
 
 def test_list_delivery_reports_response_empty_content_expects_empty_list():
     """Test that empty delivery reports list returns empty content."""
-    model = ListDeliveryReportsResponse(count=0, page=0, page_size=30, delivery_reports=None)
+    model = ListDeliveryReportsResponse(
+        count=0, page=0, page_size=30, delivery_reports=None
+    )
     assert model.count == 0
     assert model.page == 0
     assert model.page_size == 30
@@ -57,43 +65,49 @@ def test_list_delivery_reports_response_expects_correct_mapping(test_data):
     response = ListDeliveryReportsResponse(**test_data)
     assert hasattr(response, "content")
     assert response.content == response.delivery_reports
-    
+
     # Test top-level fields
     assert response.count == 2
     assert response.page == 0
     assert response.page_size == 2
-    
+
     # Test content property
     content = response.content
     assert isinstance(content, list)
     assert len(content) == 2
-    
+
     # Test first delivery report
     first_report = content[0]
-    expected_first_at = datetime(2025, 1, 19, 16, 45, 31, 935000, tzinfo=timezone.utc)
-    expected_first_operator_at = datetime(2025, 1, 19, 16, 45, 0, tzinfo=timezone.utc)
+    expected_first_at = datetime(
+        2025, 1, 19, 16, 45, 31, 935000, tzinfo=timezone.utc
+    )
+    expected_first_operator_at = datetime(
+        2025, 1, 19, 16, 45, 0, tzinfo=timezone.utc
+    )
     assert first_report.at == expected_first_at
     assert first_report.operator_status_at == expected_first_operator_at
     assert_delivery_report_fields(
-        first_report, 
-        "01K7YNS82JMYGAKAATHFP0QTB5", 
-        "34683607594", 
-        401, 
-        "Delivered"
+        first_report,
+        "01K7YNS82JMYGAKAATHFP0QTB5",
+        "34683607594",
+        401,
+        "Delivered",
     )
-    
+
     # Test second delivery report
     second_report = content[1]
-    expected_second_at = datetime(2025, 1, 19, 16, 40, 26, 855000, tzinfo=timezone.utc)
-    expected_second_operator_at = datetime(2025, 1, 19, 16, 40, 0, tzinfo=timezone.utc)
+    expected_second_at = datetime(
+        2025, 1, 19, 16, 40, 26, 855000, tzinfo=timezone.utc
+    )
+    expected_second_operator_at = datetime(
+        2025, 1, 19, 16, 40, 0, tzinfo=timezone.utc
+    )
     assert second_report.at == expected_second_at
     assert second_report.operator_status_at == expected_second_operator_at
     assert_delivery_report_fields(
-        second_report, 
-        "01K7YNFY30DS2KKVQZVBFANHMR", 
-        "34683607595", 
-        402, 
-        "Dispatched"
+        second_report,
+        "01K7YNFY30DS2KKVQZVBFANHMR",
+        "34683607595",
+        402,
+        "Dispatched",
     )
-
-

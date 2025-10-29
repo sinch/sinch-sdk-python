@@ -77,6 +77,8 @@ class SMSPaginator(Paginator[BM]):
         if not self.has_next_page:
             return None
 
+        if self.endpoint.request_data.page is None:
+            self.endpoint.request_data.page = 0
         self.endpoint.request_data.page += 1
         self.result = self._sinch.configuration.transport.request(self.endpoint)
         self._calculate_next_page()
@@ -95,11 +97,16 @@ class SMSPaginator(Paginator[BM]):
 
     def _calculate_next_page(self):
         """Calculates if there's a next page based on count, page, and page_size."""
-        if hasattr(self.result, 'count') and hasattr(self.result, 'page') and hasattr(self.result, 'page_size'):
-            # Calculate total pages needed
-            total_pages = (self.result.count + self.result.page_size - 1) // self.result.page_size
-            # Check if current page is less than total pages - 1 (0-indexed)
-            self.has_next_page = self.result.page < (total_pages - 1)
+        if hasattr(self.result, 'count') and hasattr(self.result, 'page'):
+            # Use the requested page_size from the endpoint
+            request_page_size = self.endpoint.request_data.page_size or 1
+            if request_page_size > 0 and hasattr(self.result, 'page_size'):
+                # Calculate total pages needed using the request page_size
+                total_pages = (self.result.count + request_page_size - 1) // request_page_size
+                # Check if current page is less than total pages - 1 (0-indexed)
+                self.has_next_page = self.result.page < (total_pages - 1)
+            else:
+                self.has_next_page = False
         else:
             self.has_next_page = False
 

@@ -20,7 +20,7 @@ def test_list_delivery_reports_request_expects_parsed_input():
     """Test that the model correctly parses input with all parameters."""
     start = datetime(2025, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
     end = datetime(2025, 1, 8, 12, 0, 0, tzinfo=timezone.utc)
-    
+
     model = ListDeliveryReportsRequest(
         page=1,
         page_size=50,
@@ -45,9 +45,11 @@ def test_list_delivery_reports_request_expects_parsed_input():
     [
         (-1, ValidationError),
         (-10, ValidationError),
-    ]
+    ],
 )
-def test_list_delivery_reports_request_expects_validation_error_for_invalid_page(page, expected_error):
+def test_list_delivery_reports_request_expects_validation_error_for_invalid_page(
+    page, expected_error
+):
     """Test that invalid page values raise ValidationError."""
     with pytest.raises(expected_error):
         ListDeliveryReportsRequest(page=page)
@@ -59,9 +61,11 @@ def test_list_delivery_reports_request_expects_validation_error_for_invalid_page
         (0, ValidationError),
         (101, ValidationError),
         (-1, ValidationError),
-    ]
+    ],
 )
-def test_list_delivery_reports_request_expects_validation_error_for_invalid_page_size(page_size, expected_error):
+def test_list_delivery_reports_request_expects_validation_error_for_invalid_page_size(
+    page_size, expected_error
+):
     """Test that invalid page_size values raise ValidationError."""
     with pytest.raises(expected_error):
         ListDeliveryReportsRequest(page_size=page_size)

@@ -1,6 +1,9 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.sms.models.v1.response.batch_delivery_report import BatchDeliveryReport
+from sinch.domains.sms.models.v1.response.batch_delivery_report import (
+    BatchDeliveryReport,
+)
+
 
 @pytest.fixture
 def sample_message_delivery_status():
@@ -11,7 +14,7 @@ def sample_message_delivery_status():
         "code": 401,
         "count": 1,
         "recipients": ["+1234567890"],
-        "status": "Dispatched"
+        "status": "Dispatched",
     }
 
 
@@ -25,22 +28,24 @@ def sample_batch_delivery_report_data(sample_message_delivery_status):
         "client_reference": "my_client_reference",
         "statuses": [sample_message_delivery_status],
         "total_message_count": 1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
 
 
-def test_batch_delivery_report_expects_valid_input(sample_batch_delivery_report_data):
+def test_batch_delivery_report_expects_valid_input(
+    sample_batch_delivery_report_data,
+):
     """
     Test that the model correctly parses valid input.
     """
     report = BatchDeliveryReport(**sample_batch_delivery_report_data)
-    
+
     assert report.batch_id == "01FC66621XXXXX119Z8PMV1QPQ"
     assert report.client_reference == "my_client_reference"
     assert report.total_message_count == 1
     assert report.type == "delivery_report_sms"
     assert len(report.statuses) == 1
-    
+
     status = report.statuses[0]
     assert status.code == 401
     assert status.count == 1
@@ -54,18 +59,20 @@ def test_batch_delivery_report_expects_without_client_reference():
     """
     data = {
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
-        "statuses": [{
-            "code": 401,
-            "count": 1,
-            "recipients": ["+44231235674"],
-            "status": "Dispatched"
-        }],
+        "statuses": [
+            {
+                "code": 401,
+                "count": 1,
+                "recipients": ["+44231235674"],
+                "status": "Dispatched",
+            }
+        ],
         "total_message_count": 1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
-    
+
     report = BatchDeliveryReport(**data)
-    
+
     assert report.batch_id == "01FC66621XXXXX119Z8PMV1QPQ"
     assert report.client_reference is None
     assert report.total_message_count == 1
@@ -83,29 +90,29 @@ def test_batch_delivery_report_expects_with_multiple_statuses():
                 "code": 401,
                 "count": 1,
                 "recipients": ["+44231235674"],
-                "status": "Dispatched"
+                "status": "Dispatched",
             },
             {
                 "code": 0,
                 "count": 1,
                 "recipients": ["+44231235675"],
-                "status": "Delivered"
-            }
+                "status": "Delivered",
+            },
         ],
         "total_message_count": 2,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
-    
+
     report = BatchDeliveryReport(**data)
-    
+
     assert report.batch_id == "01FC66621XXXXX119Z8PMV1QPQ"
     assert report.total_message_count == 2
     assert len(report.statuses) == 2
-    
+
     # Check first status
     assert report.statuses[0].code == 401
     assert report.statuses[0].status == "Dispatched"
-    
+
     # Check second status
     assert report.statuses[1].code == 0
     assert report.statuses[1].status == "Delivered"
@@ -117,21 +124,17 @@ def test_batch_delivery_report_expects_no_recipients():
     """
     data = {
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
-        "statuses": [{
-            "code": 401,
-            "count": 1,
-            "status": "Dispatched"
-        }],
+        "statuses": [{"code": 401, "count": 1, "status": "Dispatched"}],
         "total_message_count": 1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
-    
+
     report = BatchDeliveryReport(**data)
-    
+
     assert report.batch_id == "01FC66621XXXXX119Z8PMV1QPQ"
     assert report.total_message_count == 1
     assert len(report.statuses) == 1
-    
+
     status = report.statuses[0]
     assert status.code == 401
     assert status.count == 1
@@ -144,18 +147,14 @@ def test_batch_delivery_report_expects_validation_error_for_missing_batch_id():
     Test that missing required batch_id field raises a ValidationError.
     """
     data = {
-        "statuses": [{
-            "code": 401,
-            "count": 1,
-            "status": "Dispatched"
-        }],
+        "statuses": [{"code": 401, "count": 1, "status": "Dispatched"}],
         "total_message_count": 1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         BatchDeliveryReport(**data)
-    
+
     assert "batch_id" in str(exc_info.value)
 
 
@@ -166,12 +165,12 @@ def test_batch_delivery_report_expects_validation_error_for_missing_statuses():
     data = {
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "total_message_count": 1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         BatchDeliveryReport(**data)
-    
+
     assert "statuses" in str(exc_info.value)
 
 
@@ -181,17 +180,13 @@ def test_batch_delivery_report_expects_validation_error_for_missing_total_messag
     """
     data = {
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
-        "statuses": [{
-            "code": 401,
-            "count": 1,
-            "status": "Dispatched"
-        }],
-        "type": "delivery_report_sms"
+        "statuses": [{"code": 401, "count": 1, "status": "Dispatched"}],
+        "type": "delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         BatchDeliveryReport(**data)
-    
+
     assert "total_message_count" in str(exc_info.value)
 
 
@@ -201,17 +196,13 @@ def test_batch_delivery_report_expects_validation_error_for_missing_type():
     """
     data = {
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
-        "statuses": [{
-            "code": 401,
-            "count": 1,
-            "status": "Dispatched"
-        }],
-        "total_message_count": 1
+        "statuses": [{"code": 401, "count": 1, "status": "Dispatched"}],
+        "total_message_count": 1,
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         BatchDeliveryReport(**data)
-    
+
     assert "type" in str(exc_info.value)
 
 
@@ -221,18 +212,14 @@ def test_batch_delivery_report_expects_validation_error_for_negative_total_messa
     """
     data = {
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
-        "statuses": [{
-            "code": 401,
-            "count": 1,
-            "status": "Dispatched"
-        }],
+        "statuses": [{"code": 401, "count": 1, "status": "Dispatched"}],
         "total_message_count": -1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
-    
+
     with pytest.raises(ValidationError) as exc_info:
         BatchDeliveryReport(**data)
-    
+
     assert "total_message_count" in str(exc_info.value)
 
 
@@ -244,7 +231,7 @@ def test_batch_delivery_report_expects_empty_statuses():
         "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
         "statuses": [],
         "total_message_count": 1,
-        "type": "delivery_report_sms"
+        "type": "delivery_report_sms",
     }
 
     report = BatchDeliveryReport(**data)

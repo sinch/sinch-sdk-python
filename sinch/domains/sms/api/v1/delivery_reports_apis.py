@@ -62,19 +62,26 @@ class DeliveryReports(BaseSms):
         client_reference: Optional[str] = None,
         **kwargs,
     ) -> Paginator[RecipientDeliveryReport]:
-        return SMSPaginator(
-            sinch=self._sinch,
-            endpoint=ListDeliveryReportsEndpoint(
-                project_id=self._sinch.configuration.project_id,
-                request_data=ListDeliveryReportsRequest(
-                    page=page,
-                    page_size=page_size,
-                    start_date=start_date,
-                    end_date=end_date,
-                    status=status,
-                    code=code,
-                    client_reference=client_reference,
-                    **kwargs,
-                ),
+        # Use service_plan_id for SMS auth, project_id for project auth
+        if self._sinch.configuration.authentication_method == "sms_auth":
+            path_identifier = self._sinch.configuration.service_plan_id
+        else:
+            path_identifier = self._sinch.configuration.project_id
+
+        endpoint = ListDeliveryReportsEndpoint(
+            project_id=path_identifier,
+            request_data=ListDeliveryReportsRequest(
+                page=page,
+                page_size=page_size,
+                start_date=start_date,
+                end_date=end_date,
+                status=status,
+                code=code,
+                client_reference=client_reference,
+                **kwargs,
             ),
         )
+        # Set the authentication method based on configuration
+        endpoint.set_authentication_method(self._sinch)
+
+        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
