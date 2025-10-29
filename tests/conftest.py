@@ -267,6 +267,8 @@ def mock_sinch_client_sms():
         transport=mock_transport,
         token_manager=mock_token_manager,
         project_id="test_project_id",
+        key_id="test_key_id",
+        key_secret="test_key_secret",
         service_plan_id="test_service_plan_id",
         sms_region="eu"
     )

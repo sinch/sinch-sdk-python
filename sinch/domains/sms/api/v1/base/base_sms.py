@@ -15,6 +15,8 @@ class BaseSms:
         Returns:
             The response from the Sinch transport request.
         """
+        self._sinch.configuration.validate_authentication_parameters()
+
         # Use service_plan_id for SMS auth, project_id for project auth
         if self._sinch.configuration.authentication_method == "sms_auth":
             path_identifier = self._sinch.configuration.service_plan_id

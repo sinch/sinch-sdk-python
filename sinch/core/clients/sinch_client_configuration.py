@@ -231,8 +231,12 @@ class Configuration:
     def validate_authentication_parameters(self):
         """
         Validates that sufficient authentication parameters are provided.
+        Recalculates the authentication method based on current credentials before validating.
         This should be called before making actual API requests.
         """
+
+        self._authentication_method = self._determine_authentication_method()
+        
         # Check for incomplete SMS auth only if not using project auth
         # This prevents false positives when both service_plan_id and project_id are provided
         has_project_auth = self.project_id and self.key_id and self.key_secret
