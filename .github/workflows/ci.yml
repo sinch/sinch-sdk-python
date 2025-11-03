@@ -78,6 +78,8 @@ jobs:
         cp sinch-sdk-mockserver/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
         cp sinch-sdk-mockserver/features/sms/delivery-reports.feature ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/sms/delivery-reports_servicePlanId.feature ./tests/e2e/sms/features/
+        cp sinch-sdk-mockserver/features/sms/batches.feature ./tests/e2e/sms/features/
+        cp sinch-sdk-mockserver/features/sms/batches_servicePlanId.feature ./tests/e2e/sms/features/
 
     - name: Wait for mock server
       run: .github/scripts/wait-for-mockserver.sh
@@ -85,4 +87,5 @@ jobs:
 
     - name: Run e2e tests sync
       run: |
-        behave tests/e2e/**/features
+        python -m behave tests/e2e/numbers/features
+        python -m behave tests/e2e/sms/features

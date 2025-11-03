@@ -1,5 +1,6 @@
 from abc import ABC
-from typing import Type
+from typing import Type, Union, get_origin
+from pydantic import TypeAdapter
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.types import BM
@@ -61,13 +62,21 @@ class SmsEndpoint(HTTPEndpoint, ABC):
 
         Args:
             response_body (dict): The raw response body.
-            response_model (type): The Pydantic model class to map the response.
+            response_model (type): The Pydantic model class or Union type to map the response.
 
         Returns:
             Parsed response object.
         """
         try:
-            return response_model.model_validate(response_body)
+            # Check if response_model is a Union type
+            origin = get_origin(response_model)
+            if origin is Union:
+                # Use TypeAdapter for Union types
+                adapter = TypeAdapter(response_model)
+                return adapter.validate_python(response_body)
+            else:
+                # Use standard model_validate for regular Pydantic models
+                return response_model.model_validate(response_body)
         except Exception as e:
             raise ValueError(f"Invalid response structure: {e}") from e
 
