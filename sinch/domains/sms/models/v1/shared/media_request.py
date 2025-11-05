@@ -15,7 +15,7 @@ class MediaRequest(BaseModelConfigurationRequest):
         default=...,
         description="List of Phone numbers and group IDs that will receive the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628)",
     )
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="Sender number. Must be valid phone number, short code or alphanumeric. Required if Automatic Default Originator not configured.",
@@ -27,7 +27,7 @@ class MediaRequest(BaseModelConfigurationRequest):
         default=None,
         description="Contains the parameters that will be used for customizing the message for each recipient.   [Click here to learn more about parameterization](/docs/sms/resources/message-info/message-parameterization).",
     )
-    type: Optional[StrictStr] = Field(default=None, description="MMS")
+    type: Optional[StrictStr] = Field(default="mt_media", description="MMS")
     delivery_report: Optional[DeliveryReportType] = None
     send_at: Optional[datetime] = Field(
         default=None,

@@ -14,7 +14,7 @@ class TextRequest(BaseModelConfigurationRequest):
         default=...,
         description="List of Phone numbers and group IDs that will receive the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628)",
     )
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="Sender number. Must be valid phone number, short code or alphanumeric. Required if Automatic Default Originator not configured.",
@@ -28,7 +28,9 @@ class TextRequest(BaseModelConfigurationRequest):
     body: constr(strict=True, max_length=2000, min_length=0) = Field(
         default=..., description="The message content"
     )
-    type: Optional[StrictStr] = Field(default=None, description="Regular SMS")
+    type: Optional[StrictStr] = Field(
+        default="mt_text", description="Regular SMS"
+    )
     delivery_report: Optional[DeliveryReportType] = None
     send_at: Optional[datetime] = Field(
         default=None,

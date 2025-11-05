@@ -14,7 +14,7 @@ class BinaryResponse(BaseModelConfigurationResponse):
         default=None,
         description="A list of phone numbers and group IDs that have received the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628).",
     )
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="The sender number provided.  Required if the Automatic Default Originator is not configured.",

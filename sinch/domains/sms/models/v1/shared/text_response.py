@@ -17,7 +17,7 @@ class TextResponse(BaseModelConfigurationResponse):
         default=None,
         description="List of Phone numbers and group IDs that will receive the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628)",
     )
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="Sender number. Must be valid phone number, short code or alphanumeric. Required if Automatic Default Originator not configured.",

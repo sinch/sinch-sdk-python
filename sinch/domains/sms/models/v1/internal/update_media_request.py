@@ -9,12 +9,12 @@ from sinch.domains.sms.models.v1.internal.base import (
 
 
 class UpdateMediaRequest(BaseModelConfigurationRequest):
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="Sender number. Must be valid phone number, short code or alphanumeric.",
     )
-    type: Optional[StrictStr] = Field(default=None, description="MMS")
+    type: Optional[StrictStr] = Field(default="mt_media", description="MMS")
     to_add: Optional[conlist(StrictStr)] = Field(
         default=None,
         description="List of phone numbers and group IDs to add to the batch.",

@@ -84,24 +84,18 @@ class Batches(BaseSms):
         page_size: Optional[int] = None,
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
-        var_from: Optional[List[str]] = None,
+        from_: Optional[List[str]] = None,
         client_reference: Optional[str] = None,
         **kwargs,
     ) -> Paginator[BatchResponse]:
-        # Use service_plan_id for SMS auth, project_id for project auth
-        if self._sinch.configuration.authentication_method == "sms_auth":
-            path_identifier = self._sinch.configuration.service_plan_id
-        else:
-            path_identifier = self._sinch.configuration.project_id
-
         endpoint = ListBatchesEndpoint(
-            project_id=path_identifier,
+            project_id=self._get_path_identifier(),
             request_data=ListBatchesRequest(
                 page=page,
                 page_size=page_size,
                 start_date=start_date,
                 end_date=end_date,
-                var_from=var_from,
+                from_=from_,
                 client_reference=client_reference,
                 **kwargs,
             ),

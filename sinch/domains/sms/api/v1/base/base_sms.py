@@ -4,6 +4,20 @@ class BaseSms:
     def __init__(self, sinch):
         self._sinch = sinch
 
+    def _get_path_identifier(self) -> str:
+        """
+        Returns the appropriate path identifier based on authentication method.
+        - SMS auth: returns service_plan_id
+        - Project auth: returns project_id
+
+        Returns:
+            str: The path identifier to use for the endpoint.
+        """
+        if self._sinch.configuration.authentication_method == "sms_auth":
+            return self._sinch.configuration.service_plan_id
+        else:
+            return self._sinch.configuration.project_id
+
     def _request(self, endpoint_class, request_data):
         """
         A helper method to make requests to endpoints.
@@ -17,14 +31,8 @@ class BaseSms:
         """
         self._sinch.configuration.validate_authentication_parameters()
 
-        # Use service_plan_id for SMS auth, project_id for project auth
-        if self._sinch.configuration.authentication_method == "sms_auth":
-            path_identifier = self._sinch.configuration.service_plan_id
-        else:
-            path_identifier = self._sinch.configuration.project_id
-
         endpoint = endpoint_class(
-            project_id=path_identifier,
+            project_id=self._get_path_identifier(),
             request_data=request_data,
         )
 

@@ -11,7 +11,7 @@ class ListBatchesRequest(BaseModelConfigurationRequest):
     page_size: Optional[conint(strict=True, le=100, ge=1)] = 30
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
-    var_from: Optional[conlist(StrictStr)] = Field(default=None, alias="from")
+    from_: Optional[conlist(StrictStr)] = Field(default=None, alias="from")
     client_reference: Optional[
         constr(strict=True, max_length=2048, min_length=0)
     ] = None

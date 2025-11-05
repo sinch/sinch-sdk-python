@@ -8,13 +8,13 @@ from sinch.domains.sms.models.v1.internal.base import (
 
 
 class UpdateBinaryRequest(BaseModelConfigurationRequest):
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="Sender number. Must be valid phone number, short code or alphanumeric.",
     )
     type: Optional[StrictStr] = Field(
-        default=None,
+        default="mt_binary",
         description="SMS in [binary](https://community.sinch.com/t5/Glossary/Binary-SMS/ta-p/7470) format.",
     )
     to_add: Optional[conlist(StrictStr)] = Field(

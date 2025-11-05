@@ -5,42 +5,49 @@ from sinch.domains.sms.models.v1.response.dry_run_response import DryRunResponse
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
 
 
+def _setup_sinch_client(context, use_service_plan_auth=False):
+    """Helper function to setup Sinch client"""
+    from sinch import SinchClient
+    
+    if use_service_plan_auth:
+        sinch = SinchClient(
+            service_plan_id='CappyPremiumPlan',
+            sms_api_token='HappyCappyToken',
+        )
+        sinch.configuration.sms_origin_with_service_plan_id = 'http://localhost:3017'
+    else:
+        sinch = SinchClient(
+            project_id='tinyfrog-jump-high-over-lilypadbasin',
+            key_id='keyId',
+            key_secret='keySecret',
+        )
+    
+    sinch.configuration.auth_origin = 'http://localhost:3011'
+    sinch.configuration.sms_origin = 'http://localhost:3017'
+    
+    context.sinch = sinch
+    context.batches_service = sinch.sms.batches
+
+
 @given('the SMS service "Batches" is available')
 def step_sms_service_batches_available(context):
     """Ensures the Sinch client is initialized"""
-    from sinch import SinchClient
-    
-    context.sinch = SinchClient(
-        project_id='tinyfrog-jump-high-over-lilypadbasin',
-        key_id='keyId',
-        key_secret='keySecret',
-    )
-    context.sinch.configuration.auth_origin = 'http://localhost:3011'
-    context.sinch.configuration.sms_origin = 'http://localhost:3017'
+    _setup_sinch_client(context, use_service_plan_auth=False)
 
 
 @given('the SMS service "Batches" is available and is configured for servicePlanId authentication')
 def step_sms_service_batches_available_with_service_plan(context):
     """Ensures the Sinch client is initialized with service_plan_id authentication"""
-    from sinch import SinchClient
-    
-    # Create a new client with service_plan_id authentication
-    context.sinch = SinchClient(
-        service_plan_id='CappyPremiumPlan',
-        sms_api_token='HappyCappyToken',
-    )
-    context.sinch.configuration.auth_origin = 'http://localhost:3011'
-    context.sinch.configuration.sms_origin = 'http://localhost:3017'
-    context.sinch.configuration.sms_origin_with_service_plan_id = 'http://localhost:3017'
+    _setup_sinch_client(context, use_service_plan_auth=True)
 
 
 @when('I send a request to send a text message')
 def step_send_text_message(context):
     """Send a text message"""
-    context.response = context.sinch.sms.batches.send(
+    context.response = context.batches_service.send(
         body='SMS body message',
         to=['+12017777777'],
-        var_from='+12015555555',
+        from_='+12015555555',
         send_at=datetime(2024, 6, 6, 9, 25, 0, tzinfo=timezone.utc),
         delivery_report='full',
         feedback_enabled=True,
@@ -53,7 +60,7 @@ def step_validate_text_sms_details(context):
     data: BatchResponse = context.response
     assert data.id == '01W4FFL35P4NC4K35SMSBATCH1'
     assert data.to == ['12017777777']
-    assert data.var_from == '12015555555'
+    assert data.from_ == '12015555555'
     assert data.canceled is False
     assert data.body == 'SMS body message'
     assert data.type == 'mt_text'
@@ -70,10 +77,10 @@ def step_validate_text_sms_details(context):
 @when('I send a request to send a text message with multiple parameters')
 def step_send_text_message_with_parameters(context):
     """Send a text message with multiple parameters"""
-    context.response = context.sinch.sms.batches.send(
+    context.response = context.batches_service.send(
         body='Hello ${name}! Get 20% off with this discount code ${code}',
         to=['+12017777777', '+12018888888'],
-        var_from='+12015555555',
+        from_='+12015555555',
         parameters={
             'name': {
                 '+12017777777': 'John',
@@ -94,7 +101,7 @@ def step_validate_text_sms_with_parameters(context):
     data: BatchResponse = context.response
     assert data.id == '01W4FFL35P4NC4K35SMSBATCH2'
     assert data.to == ['12017777777', '12018888888']
-    assert data.var_from == '12015555555'
+    assert data.from_ == '12015555555'
     assert data.canceled is False
     
     expected_parameters = {
@@ -121,8 +128,8 @@ def step_validate_text_sms_with_parameters(context):
 @when('I send a request to perform a dry run of a batch')
 def step_perform_dry_run(context):
     """Perform a dry run of a batch"""
-    context.dry_run_response = context.sinch.sms.batches.dry_run(
-        var_from='+12015555555',
+    context.dry_run_response = context.batches_service.dry_run(
+        from_='+12015555555',
         to=[
             '+12017777777',
             '+12018888888',
@@ -171,7 +178,7 @@ def step_validate_dry_run_response(context):
 @when('I send a request to list the SMS batches')
 def step_list_sms_batches(context):
     """List SMS batches"""
-    context.response = context.sinch.sms.batches.list(
+    context.response = context.batches_service.list(
         page_size=2,
     )
 
@@ -187,7 +194,7 @@ def step_validate_batches_count(context, count):
 @when('I send a request to list all the SMS batches')
 def step_list_all_sms_batches(context):
     """List all SMS batches using iterator"""
-    response = context.sinch.sms.batches.list(page_size=2)
+    response = context.batches_service.list(page_size=2)
     batches_list = []
     
     for batch in response.iterator():
@@ -199,7 +206,7 @@ def step_list_all_sms_batches(context):
 @when('I iterate manually over the SMS batches pages')
 def step_iterate_manually_batches(context):
     """Manually iterate over SMS batches pages"""
-    context.list_response = context.sinch.sms.batches.list(
+    context.list_response = context.batches_service.list(
         page_size=2,
     )
     
@@ -235,7 +242,7 @@ def step_validate_batches_pages_count(context, count):
 @when('I send a request to retrieve an SMS batch')
 def step_retrieve_sms_batch(context):
     """Retrieve an SMS batch"""
-    context.batch = context.sinch.sms.batches.get(
+    context.batch = context.batches_service.get(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
     )
 
@@ -246,7 +253,7 @@ def step_validate_batch_details(context):
     batch: BatchResponse = context.batch
     assert batch.id == '01W4FFL35P4NC4K35SMSBATCH1'
     assert batch.to == ['12017777777']
-    assert batch.var_from == '12015555555'
+    assert batch.from_ == '12015555555'
     assert batch.canceled is False
     assert batch.body == 'SMS body message'
     assert batch.type == 'mt_text'
@@ -263,9 +270,9 @@ def step_validate_batch_details(context):
 @when('I send a request to update an SMS batch')
 def step_update_sms_batch(context):
     """Update an SMS batch"""
-    context.batch = context.sinch.sms.batches.update(
+    context.batch = context.batches_service.update(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
-        var_from='+12016666666',
+        from_='+12016666666',
         to_add=[
             '01W4FFL35P4NC4K35SMSGROUP1',
         ],
@@ -279,7 +286,7 @@ def step_validate_updated_batch_details(context):
     batch: BatchResponse = context.batch
     assert batch.id == '01W4FFL35P4NC4K35SMSBATCH1'
     assert batch.to == ['12017777777', '01W4FFL35P4NC4K35SMSGROUP1']
-    assert batch.var_from == '12016666666'
+    assert batch.from_ == '12016666666'
     assert batch.canceled is False
     assert batch.body == 'SMS body message'
     assert batch.type == 'mt_text'
@@ -296,9 +303,9 @@ def step_validate_updated_batch_details(context):
 @when('I send a request to replace an SMS batch')
 def step_replace_sms_batch(context):
     """Replace an SMS batch"""
-    context.batch = context.sinch.sms.batches.replace(
+    context.batch = context.batches_service.replace(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
-        var_from='+12016666666',
+        from_='+12016666666',
         to=['+12018888888'],
         body='This is the replacement batch',
         send_at=datetime(2024, 6, 6, 9, 35, 0, tzinfo=timezone.utc),
@@ -311,7 +318,7 @@ def step_validate_replaced_batch_details(context):
     batch: BatchResponse = context.batch
     assert batch.id == '01W4FFL35P4NC4K35SMSBATCH1'
     assert batch.to == ['12018888888']
-    assert batch.var_from == '12016666666'
+    assert batch.from_ == '12016666666'
     assert batch.canceled is False
     assert batch.body == 'This is the replacement batch'
     assert batch.type == 'mt_text'
@@ -328,7 +335,7 @@ def step_validate_replaced_batch_details(context):
 @when('I send a request to cancel an SMS batch')
 def step_cancel_sms_batch(context):
     """Cancel an SMS batch"""
-    context.batch = context.sinch.sms.batches.cancel(
+    context.batch = context.batches_service.cancel(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
     )
 
@@ -344,7 +351,7 @@ def step_validate_cancelled_batch(context):
 @when('I send a request to send delivery feedbacks')
 def step_send_delivery_feedback(context):
     """Send delivery feedback"""
-    context.delivery_feedback_response = context.sinch.sms.batches.send_delivery_feedback(
+    context.delivery_feedback_response = context.batches_service.send_delivery_feedback(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
         recipients=[
             '+12017777777',
@@ -356,4 +363,3 @@ def step_send_delivery_feedback(context):
 def step_validate_delivery_feedback_response(context):
     """Validate delivery feedback response"""
     assert context.delivery_feedback_response is None
-

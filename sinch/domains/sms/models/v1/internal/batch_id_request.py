@@ -7,5 +7,5 @@ from sinch.domains.sms.models.v1.internal.base import (
 class BatchIdRequest(BaseModelConfigurationRequest):
     batch_id: StrictStr = Field(
         default=...,
-        description="The unique identifier of the batch message for which delivery feedback is being provided.",
+        description="The unique identifier of the batch message.",
     )

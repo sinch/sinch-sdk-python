@@ -14,7 +14,7 @@ class BinaryRequest(BaseModelConfigurationRequest):
         default=...,
         description="A list of phone numbers and group IDs that will receive the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628).",
     )
-    var_from: Optional[StrictStr] = Field(
+    from_: Optional[StrictStr] = Field(
         default=None,
         alias="from",
         description="Sender number. Must be valid phone number, short code or alphanumeric. Required if Automatic Default Originator not configured.",
@@ -28,7 +28,7 @@ class BinaryRequest(BaseModelConfigurationRequest):
         description="The UDH header of a binary message HEX encoded. Max 140 bytes including the `body`.",
     )
     type: Optional[StrictStr] = Field(
-        default=None,
+        default="mt_binary",
         description="SMS in [binary](https://community.sinch.com/t5/Glossary/Binary-SMS/ta-p/7470) format.",
     )
     delivery_report: Optional[DeliveryReportType] = None
