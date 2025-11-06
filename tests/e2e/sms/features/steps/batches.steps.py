@@ -51,6 +51,7 @@ def step_send_text_message(context):
         send_at=datetime(2024, 6, 6, 9, 25, 0, tzinfo=timezone.utc),
         delivery_report='full',
         feedback_enabled=True,
+        type='mt_text',
     )
 
 
