@@ -1,4 +1,3 @@
-from sinch.domains.sms.models.v1.types.batch_response import BatchResponse
 from sinch.domains.sms.models.v1.types.delivery_receipt_status_code_type import (
     DeliveryReceiptStatusCodeType,
 )
@@ -21,3 +20,15 @@ __all__ = [
     "EncodingType",
     "RecipientDeliveryReportType",
 ]
+
+
+# Lazy import to avoid circular dependency
+# BatchResponse imports from shared which may import from types
+def __getattr__(name: str):
+    if name == "BatchResponse":
+        from sinch.domains.sms.models.v1.types.batch_response import (
+            BatchResponse,
+        )
+
+        return BatchResponse
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -26,7 +26,7 @@ def _setup_sinch_client(context, use_service_plan_auth=False):
     sinch.configuration.sms_origin = 'http://localhost:3017'
     
     context.sinch = sinch
-    context.batches_service = sinch.sms.batches
+    context.sms = sinch.sms
 
 
 @given('the SMS service "Batches" is available')
@@ -44,7 +44,7 @@ def step_sms_service_batches_available_with_service_plan(context):
 @when('I send a request to send a text message')
 def step_send_text_message(context):
     """Send a text message"""
-    context.response = context.batches_service.send(
+    context.response = context.sms.send_sms_batch(
         body='SMS body message',
         to=['+12017777777'],
         from_='+12015555555',
@@ -77,7 +77,7 @@ def step_validate_text_sms_details(context):
 @when('I send a request to send a text message with multiple parameters')
 def step_send_text_message_with_parameters(context):
     """Send a text message with multiple parameters"""
-    context.response = context.batches_service.send(
+    context.response = context.sms.send_sms_batch(
         body='Hello ${name}! Get 20% off with this discount code ${code}',
         to=['+12017777777', '+12018888888'],
         from_='+12015555555',
@@ -128,7 +128,7 @@ def step_validate_text_sms_with_parameters(context):
 @when('I send a request to perform a dry run of a batch')
 def step_perform_dry_run(context):
     """Perform a dry run of a batch"""
-    context.dry_run_response = context.batches_service.dry_run(
+    context.dry_run_response = context.sms.batches.dry_run_sms(
         from_='+12015555555',
         to=[
             '+12017777777',
@@ -143,7 +143,6 @@ def step_perform_dry_run(context):
         },
         body='Hello ${name}!',
         delivery_report='none',
-        type='mt_text',
     )
 
 
@@ -178,7 +177,7 @@ def step_validate_dry_run_response(context):
 @when('I send a request to list the SMS batches')
 def step_list_sms_batches(context):
     """List SMS batches"""
-    context.response = context.batches_service.list(
+    context.response = context.sms.batches.list(
         page_size=2,
     )
 
@@ -194,7 +193,7 @@ def step_validate_batches_count(context, count):
 @when('I send a request to list all the SMS batches')
 def step_list_all_sms_batches(context):
     """List all SMS batches using iterator"""
-    response = context.batches_service.list(page_size=2)
+    response = context.sms.batches.list(page_size=2)
     batches_list = []
     
     for batch in response.iterator():
@@ -206,7 +205,7 @@ def step_list_all_sms_batches(context):
 @when('I iterate manually over the SMS batches pages')
 def step_iterate_manually_batches(context):
     """Manually iterate over SMS batches pages"""
-    context.list_response = context.batches_service.list(
+    context.list_response = context.sms.batches.list(
         page_size=2,
     )
     
@@ -242,7 +241,7 @@ def step_validate_batches_pages_count(context, count):
 @when('I send a request to retrieve an SMS batch')
 def step_retrieve_sms_batch(context):
     """Retrieve an SMS batch"""
-    context.batch = context.batches_service.get(
+    context.batch = context.sms.batches.get(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
     )
 
@@ -270,7 +269,7 @@ def step_validate_batch_details(context):
 @when('I send a request to update an SMS batch')
 def step_update_sms_batch(context):
     """Update an SMS batch"""
-    context.batch = context.batches_service.update(
+    context.batch = context.sms.batches.update_sms(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
         from_='+12016666666',
         to_add=[
@@ -303,7 +302,7 @@ def step_validate_updated_batch_details(context):
 @when('I send a request to replace an SMS batch')
 def step_replace_sms_batch(context):
     """Replace an SMS batch"""
-    context.batch = context.batches_service.replace(
+    context.batch = context.sms.batches.replace_sms(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
         from_='+12016666666',
         to=['+12018888888'],
@@ -335,7 +334,7 @@ def step_validate_replaced_batch_details(context):
 @when('I send a request to cancel an SMS batch')
 def step_cancel_sms_batch(context):
     """Cancel an SMS batch"""
-    context.batch = context.batches_service.cancel(
+    context.batch = context.sms.batches.cancel(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
     )
 
@@ -351,7 +350,7 @@ def step_validate_cancelled_batch(context):
 @when('I send a request to send delivery feedbacks')
 def step_send_delivery_feedback(context):
     """Send delivery feedback"""
-    context.delivery_feedback_response = context.batches_service.send_delivery_feedback(
+    context.delivery_feedback_response = context.sms.batches.send_delivery_feedback(
         batch_id='01W4FFL35P4NC4K35SMSBATCH1',
         recipients=[
             '+12017777777',

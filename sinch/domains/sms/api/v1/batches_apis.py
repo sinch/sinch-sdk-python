@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict
 from pydantic import TypeAdapter, BaseModel
 from sinch.core.pagination import Paginator, SMSPaginator
 from sinch.domains.sms.models.v1.response.dry_run_response import (
@@ -14,6 +14,23 @@ from sinch.domains.sms.models.v1.internal import (
     SendSMSRequest,
     UpdateBatchMessageRequest,
 )
+from sinch.domains.sms.models.v1.internal.dry_run_request import (
+    DryRunTextRequest,
+    DryRunBinaryRequest,
+    DryRunMediaRequest,
+)
+from sinch.domains.sms.models.v1.internal.update_batch_message_request import (
+    UpdateTextRequestWithBatchId,
+    UpdateBinaryRequestWithBatchId,
+    UpdateMediaRequestWithBatchId,
+)
+from sinch.domains.sms.models.v1.internal.replace_batch_request import (
+    ReplaceTextRequest,
+    ReplaceBinaryRequest,
+    ReplaceMediaRequest,
+)
+from sinch.domains.sms.models.v1.shared import MediaBody
+from sinch.domains.sms.models.v1.types import DeliveryReportType
 from sinch.domains.sms.api.v1.internal import (
     CancelBatchMessageEndpoint,
     DryRunEndpoint,
@@ -33,7 +50,7 @@ class Batches(BaseSms):
         request_data = BatchIdRequest(batch_id=batch_id, **kwargs)
         return self._request(CancelBatchMessageEndpoint, request_data)
 
-    def dry_run(
+    def _dry_run(
         self,
         request: Optional[DryRunRequest] = None,
         per_recipient: Optional[bool] = None,
@@ -74,6 +91,127 @@ class Batches(BaseSms):
 
         return self._request(DryRunEndpoint, request_data)
 
+    def dry_run_sms(
+        self,
+        to: List[str],
+        from_: str,
+        body: str,
+        per_recipient: Optional[bool] = None,
+        number_of_recipients: Optional[int] = None,
+        parameters: Optional[Dict[str, Dict[str, str]]] = None,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        flash_message: Optional[bool] = None,
+        max_number_of_message_parts: Optional[int] = None,
+        truncate_concat: Optional[bool] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None,
+        **kwargs,
+    ) -> DryRunResponse:
+        """
+        Perform a dry run for a text SMS batch.
+        """
+        request = DryRunTextRequest(
+            to=to,
+            from_=from_,
+            body=body,
+            per_recipient=per_recipient,
+            number_of_recipients=number_of_recipients,
+            parameters=parameters,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            flash_message=flash_message,
+            max_number_of_message_parts=max_number_of_message_parts,
+            truncate_concat=truncate_concat,
+            from_ton=from_ton,
+            from_npi=from_npi,
+            **kwargs,
+        )
+        return self._dry_run(request=request)
+
+    def dry_run_binary(
+        self,
+        to: List[str],
+        from_: str,
+        body: str,
+        udh: str,
+        per_recipient: Optional[bool] = None,
+        number_of_recipients: Optional[int] = None,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None,
+        **kwargs,
+    ) -> DryRunResponse:
+        """
+        Perform a dry run for a binary SMS batch.
+        """
+        request = DryRunBinaryRequest(
+            to=to,
+            from_=from_,
+            body=body,
+            udh=udh,
+            per_recipient=per_recipient,
+            number_of_recipients=number_of_recipients,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            from_ton=from_ton,
+            from_npi=from_npi,
+            **kwargs,
+        )
+        return self._dry_run(request=request)
+
+    def dry_run_mms(
+        self,
+        to: List[str],
+        from_: str,
+        body: MediaBody,
+        per_recipient: Optional[bool] = None,
+        number_of_recipients: Optional[int] = None,
+        parameters: Optional[Dict[str, Dict[str, str]]] = None,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        strict_validation: Optional[bool] = None,
+        **kwargs,
+    ) -> DryRunResponse:
+        request = DryRunMediaRequest(
+            to=to,
+            from_=from_,
+            body=body,
+            per_recipient=per_recipient,
+            number_of_recipients=number_of_recipients,
+            parameters=parameters,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            strict_validation=strict_validation,
+            **kwargs,
+        )
+        return self._dry_run(request=request)
+
     def get(self, batch_id: str, **kwargs) -> BatchResponse:
         request_data = BatchIdRequest(batch_id=batch_id, **kwargs)
         return self._request(GetBatchMessageEndpoint, request_data)
@@ -104,7 +242,7 @@ class Batches(BaseSms):
 
         return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
 
-    def replace(
+    def _replace(
         self,
         batch_id: str,
         request: Optional[ReplaceBatchRequest] = None,
@@ -124,7 +262,116 @@ class Batches(BaseSms):
 
         return self._request(ReplaceBatchEndpoint, request_data)
 
-    def send(
+    def replace_sms(
+        self,
+        batch_id: str,
+        to: List[str],
+        from_: str,
+        body: str,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        flash_message: Optional[bool] = None,
+        max_number_of_message_parts: Optional[int] = None,
+        truncate_concat: Optional[bool] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None,
+        parameters: Optional[Dict[str, Dict[str, str]]] = None,
+        **kwargs,
+    ) -> BatchResponse:
+        request = ReplaceTextRequest(
+            batch_id=batch_id,
+            to=to,
+            from_=from_,
+            body=body,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            flash_message=flash_message,
+            max_number_of_message_parts=max_number_of_message_parts,
+            truncate_concat=truncate_concat,
+            from_ton=from_ton,
+            from_npi=from_npi,
+            parameters=parameters,
+            **kwargs,
+        )
+        return self._replace(batch_id=batch_id, request=request)
+
+    def replace_binary(
+        self,
+        batch_id: str,
+        to: List[str],
+        from_: str,
+        body: str,
+        udh: str,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None,
+        **kwargs,
+    ) -> BatchResponse:
+        request = ReplaceBinaryRequest(
+            batch_id=batch_id,
+            to=to,
+            from_=from_,
+            body=body,
+            udh=udh,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            from_ton=from_ton,
+            from_npi=from_npi,
+            **kwargs,
+        )
+        return self._replace(batch_id=batch_id, request=request)
+
+    def replace_mms(
+        self,
+        batch_id: str,
+        to: List[str],
+        from_: str,
+        body: MediaBody,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        strict_validation: Optional[bool] = None,
+        parameters: Optional[Dict[str, Dict[str, str]]] = None,
+        **kwargs,
+    ) -> BatchResponse:
+        request = ReplaceMediaRequest(
+            batch_id=batch_id,
+            to=to,
+            from_=from_,
+            body=body,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            strict_validation=strict_validation,
+            parameters=parameters,
+            **kwargs,
+        )
+        return self._replace(batch_id=batch_id, request=request)
+
+    def _send(
         self, request: Optional[SendSMSRequest] = None, **kwargs
     ) -> BatchResponse:
         # SendSMSRequest is a Union type, so we need to use TypeAdapter to validate
@@ -150,7 +397,7 @@ class Batches(BaseSms):
         )
         return self._request(DeliveryFeedbackEndpoint, request_data)
 
-    def update(
+    def _update(
         self,
         batch_id: str,
         request: Optional[UpdateBatchMessageRequest] = None,
@@ -171,3 +418,121 @@ class Batches(BaseSms):
         request_data = adapter.validate_python(input_data)
 
         return self._request(UpdateBatchMessageEndpoint, request_data)
+
+    def update_sms(
+        self,
+        batch_id: str,
+        from_: Optional[str] = None,
+        to_add: Optional[List[str]] = None,
+        to_remove: Optional[List[str]] = None,
+        body: Optional[str] = None,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        parameters: Optional[Dict[str, Dict[str, str]]] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None,
+        max_number_of_message_parts: Optional[int] = None,
+        truncate_concat: Optional[bool] = None,
+        flash_message: Optional[bool] = None,
+        **kwargs,
+    ) -> BatchResponse:
+        request = UpdateTextRequestWithBatchId(
+            batch_id=batch_id,
+            from_=from_,
+            to_add=to_add,
+            to_remove=to_remove,
+            body=body,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            parameters=parameters,
+            from_ton=from_ton,
+            from_npi=from_npi,
+            max_number_of_message_parts=max_number_of_message_parts,
+            truncate_concat=truncate_concat,
+            flash_message=flash_message,
+            **kwargs,
+        )
+        return self._update(batch_id=batch_id, request=request)
+
+    def update_binary(
+        self,
+        batch_id: str,
+        udh: str,
+        from_: Optional[str] = None,
+        to_add: Optional[List[str]] = None,
+        to_remove: Optional[List[str]] = None,
+        body: Optional[str] = None,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        from_ton: Optional[int] = None,
+        from_npi: Optional[int] = None,
+        **kwargs,
+    ) -> BatchResponse:
+        request = UpdateBinaryRequestWithBatchId(
+            batch_id=batch_id,
+            udh=udh,
+            from_=from_,
+            to_add=to_add,
+            to_remove=to_remove,
+            body=body,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            from_ton=from_ton,
+            from_npi=from_npi,
+            **kwargs,
+        )
+        return self._update(batch_id=batch_id, request=request)
+
+    def update_mms(
+        self,
+        batch_id: str,
+        from_: Optional[str] = None,
+        to_add: Optional[List[str]] = None,
+        to_remove: Optional[List[str]] = None,
+        body: Optional[MediaBody] = None,
+        delivery_report: Optional[DeliveryReportType] = None,
+        send_at: Optional[datetime] = None,
+        expire_at: Optional[datetime] = None,
+        callback_url: Optional[str] = None,
+        client_reference: Optional[str] = None,
+        feedback_enabled: Optional[bool] = None,
+        parameters: Optional[Dict[str, Dict[str, str]]] = None,
+        strict_validation: Optional[bool] = None,
+        **kwargs,
+    ) -> BatchResponse:
+        """
+        Update an MMS batch.
+        """
+        request = UpdateMediaRequestWithBatchId(
+            batch_id=batch_id,
+            from_=from_,
+            to_add=to_add,
+            to_remove=to_remove,
+            body=body,
+            delivery_report=delivery_report,
+            send_at=send_at,
+            expire_at=expire_at,
+            callback_url=callback_url,
+            client_reference=client_reference,
+            feedback_enabled=feedback_enabled,
+            parameters=parameters,
+            strict_validation=strict_validation,
+            **kwargs,
+        )
+        return self._update(batch_id=batch_id, request=request)

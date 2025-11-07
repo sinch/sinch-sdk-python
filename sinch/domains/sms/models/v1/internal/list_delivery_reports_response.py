@@ -1,6 +1,8 @@
 from typing import Optional
 from pydantic import Field, StrictInt, conlist
-from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
+from sinch.domains.sms.models.v1.response.recipient_delivery_report import (
+    RecipientDeliveryReport,
+)
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
 )
