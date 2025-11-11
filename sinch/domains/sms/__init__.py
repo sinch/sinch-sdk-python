@@ -1,3 +1,3 @@
-from sinch.domains.sms.api.sms import SMS
+from sinch.domains.sms.sms import SMS
 
 __all__ = ["SMS"]
