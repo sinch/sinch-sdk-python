@@ -8,7 +8,4 @@ from sinch.domains.sms.models.v1.shared.media_response import MediaResponse
 _BatchResponseUnion = Union[TextResponse, BinaryResponse, MediaResponse]
 
 # Discriminated union for validation
-BatchResponse = Annotated[
-    _BatchResponseUnion,
-    Field(discriminator="type")
-]
+BatchResponse = Annotated[_BatchResponseUnion, Field(discriminator="type")]
