@@ -1,10 +1,16 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import Field, StrictInt, StrictStr
-from sinch.domains.sms.models.v1.types import (
+from sinch.domains.sms.models.v1.types.delivery_receipt_status_code_type import (
     DeliveryReceiptStatusCodeType,
+)
+from sinch.domains.sms.models.v1.types.delivery_status_type import (
     DeliveryStatusType,
+)
+from sinch.domains.sms.models.v1.types.encoding_type import (
     EncodingType,
+)
+from sinch.domains.sms.models.v1.types.recipient_delivery_report_type import (
     RecipientDeliveryReportType,
 )
 from sinch.domains.sms.models.v1.internal.base import (
