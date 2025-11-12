@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Type, Union, get_origin
+from typing import Annotated, Type, Union, get_origin, get_args
 from pydantic import TypeAdapter
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
@@ -68,15 +68,21 @@ class SmsEndpoint(HTTPEndpoint, ABC):
             Parsed response object.
         """
         try:
-            # Check if response_model is a Union type
             origin = get_origin(response_model)
-            if origin is Union:
+            # Check if response_model is an Annotated type (e.g., discriminated union)
+            if origin is Annotated:
+                args = get_args(response_model)
+                if args and get_origin(args[0]) is Union:
+                    # Use TypeAdapter for Annotated Union types (discriminated unions)
+                    adapter = TypeAdapter(response_model)
+                    return adapter.validate_python(response_body)
+            # Check if response_model is a Union type
+            elif origin is Union:
                 # Use TypeAdapter for Union types
                 adapter = TypeAdapter(response_model)
                 return adapter.validate_python(response_body)
-            else:
-                # Use standard model_validate for regular Pydantic models
-                return response_model.model_validate(response_body)
+            # Use standard model_validate for regular Pydantic models
+            return response_model.model_validate(response_body)
         except Exception as e:
             raise ValueError(f"Invalid response structure: {e}") from e
 

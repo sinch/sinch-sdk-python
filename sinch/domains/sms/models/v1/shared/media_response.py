@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Literal, Optional
 from datetime import datetime
 from pydantic import Field, StrictBool, StrictStr, conlist, constr
 from sinch.domains.sms.models.v1.types.delivery_report_type import (
@@ -34,7 +34,7 @@ class MediaResponse(BaseModelConfigurationResponse):
         default=None,
         description="Contains the parameters that will be used for customizing the message for each recipient.   [Click here to learn more about parameterization](/docs/sms/resources/message-info/message-parameterization).",
     )
-    type: StrictStr = Field(default=..., description="Media message")
+    type: Literal["mt_media"] = Field(default=..., description="Media message")
     created_at: Optional[datetime] = Field(
         default=None,
         description="Timestamp for when batch was created.     YYYY-MM-DDThh:mm:ss.SSSZ format",

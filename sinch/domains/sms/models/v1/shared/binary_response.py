@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Literal, Optional
 from datetime import datetime
 from pydantic import Field, StrictBool, StrictStr, conlist, constr, conint
 from sinch.domains.sms.models.v1.internal.base import (
@@ -31,7 +31,7 @@ class BinaryResponse(BaseModelConfigurationResponse):
         default=None,
         description="The [UDH](https://community.sinch.com/t5/Glossary/UDH-User-Data-Header/ta-p/7776) header of a binary message HEX encoded. Max 140 bytes including the `body`.",
     )
-    type: StrictStr = Field(
+    type: Literal["mt_binary"] = Field(
         default=...,
         description="SMS in [binary](https://community.sinch.com/t5/Glossary/Binary-SMS/ta-p/7470) format.",
     )

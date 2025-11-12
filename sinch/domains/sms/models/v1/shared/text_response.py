@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Literal, Optional
 from datetime import datetime
 from pydantic import Field, StrictBool, StrictStr, conlist, constr, conint
 from sinch.domains.sms.models.v1.types.delivery_report_type import (
@@ -35,7 +35,7 @@ class TextResponse(BaseModelConfigurationResponse):
     body: Optional[constr(strict=True, max_length=2000, min_length=0)] = Field(
         default=None, description="The message content"
     )
-    type: StrictStr = Field(default=..., description="Regular SMS")
+    type: Literal["mt_text"] = Field(default=..., description="Regular SMS")
     created_at: Optional[datetime] = Field(
         default=None,
         description="Timestamp for when batch was created. Formatted as [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601):`YYYY-MM-DDThh:mm:ss.SSSZ`.",
