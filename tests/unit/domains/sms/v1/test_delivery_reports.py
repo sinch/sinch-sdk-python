@@ -155,33 +155,32 @@ def test_list_delivery_reports_expects_valid_request(
     mock_sinch_client_sms.configuration.transport.request.assert_called_once()
 
 
-def test_sms_endpoint_handle_response_raises_exception_on_error(mock_sinch_client_sms):
+def test_sms_endpoint_handle_response_raises_exception_on_error(
+    mock_sinch_client_sms,
+):
     """
     Test that SmsEndpoint.handle_response raises SmsException when status_code >= 400.
     """
-    
+
     request_data = GetBatchDeliveryReportRequest(
-        batch_id="test_batch_id",
-        type="summary"
+        batch_id="test_batch_id", type="summary"
     )
     endpoint = GetBatchDeliveryReportEndpoint("test_project_id", request_data)
-    
-    error_response = HTTPResponse(
-        status_code=400,
-        body=1,
-        headers={}
-    )
-    
+
+    error_response = HTTPResponse(status_code=400, body=1, headers={})
+
     with pytest.raises(SmsException) as exc_info:
         endpoint.handle_response(error_response)
-    
+
     assert exc_info.value.args[0] == "Error 400"
     assert exc_info.value.http_response == error_response
     assert exc_info.value.is_from_server is True
     assert exc_info.value.response_status_code == 400
 
 
-def test_delivery_reports_expects_validation_recalculates_auth_method_when_credentials_change(mock_sinch_client_sms):
+def test_delivery_reports_expects_validation_recalculates_auth_method_when_credentials_change(
+    mock_sinch_client_sms,
+):
     """
     Test that SMS requests validate authentication and recalculate auth method
     when credentials change after initialization.
@@ -209,8 +208,7 @@ def test_delivery_reports_expects_validation_recalculates_auth_method_when_crede
     # Make an SMS request. This should trigger validation and recalculate auth method
     delivery_reports = DeliveryReports(mock_sinch_client_sms)
     response = delivery_reports.get(
-        batch_id="01FC66621XXXXX119Z8PMV1QPQ",
-        report_type="summary"
+        batch_id="01FC66621XXXXX119Z8PMV1QPQ", report_type="summary"
     )
 
     assert config.authentication_method == "sms_auth"
