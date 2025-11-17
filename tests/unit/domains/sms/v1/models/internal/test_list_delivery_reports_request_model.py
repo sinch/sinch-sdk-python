@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 import pytest
 from pydantic import ValidationError
 from sinch.domains.sms.models.v1.internal import ListDeliveryReportsRequest

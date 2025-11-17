@@ -2,7 +2,6 @@ import json
 import pytest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.internal import DryRunEndpoint
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.internal.dry_run_request import (
     DryRunTextRequest,
     DryRunBinaryRequest,
@@ -173,7 +172,7 @@ def test_request_body_expects_excludes_query_params(text_request_data):
 def test_request_body_expects_binary_request_data(binary_request_data):
     """Test that binary request body contains correct fields."""
     binary_request_data.per_recipient = False
-    binary_request_data.number_of_recipients = None
+    binary_request_data.number_of_recipients = 100
 
     endpoint = DryRunEndpoint("test_project_id", binary_request_data)
     body = json.loads(endpoint.request_body())

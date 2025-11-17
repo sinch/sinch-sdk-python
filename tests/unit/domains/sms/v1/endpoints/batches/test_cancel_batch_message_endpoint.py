@@ -2,7 +2,6 @@ import pytest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.internal import CancelBatchMessageEndpoint
 from sinch.domains.sms.models.v1.internal import BatchIdRequest
-from sinch.domains.sms.models.v1.types import BatchResponse
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from datetime import datetime, timezone

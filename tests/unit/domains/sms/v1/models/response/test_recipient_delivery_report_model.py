@@ -1,5 +1,4 @@
 import pytest
-from datetime import datetime, timezone
 from pydantic import ValidationError
 from sinch.domains.sms.models.v1.response.recipient_delivery_report import (
     RecipientDeliveryReport,

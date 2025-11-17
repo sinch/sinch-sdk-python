@@ -1,5 +1,4 @@
 import pytest
-from pydantic import ValidationError
 from sinch.domains.sms.models.v1.response.dry_run_response import (
     DryRunResponse,
 )

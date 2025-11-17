@@ -3,13 +3,11 @@ import pytest
 from datetime import datetime, timezone
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.internal import UpdateBatchMessageEndpoint
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.internal.update_batch_message_request import (
     UpdateTextRequestWithBatchId,
     UpdateBinaryRequestWithBatchId,
     UpdateMediaRequestWithBatchId,
 )
-from sinch.domains.sms.models.v1.types import BatchResponse
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
 from sinch.domains.sms.models.v1.shared import MediaBody
 

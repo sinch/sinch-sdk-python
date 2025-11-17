@@ -148,10 +148,10 @@ class ReplaceBatchEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def request_body(self):
-        # Used mode='json' to serialize datetime objects to ISO-8601 strings
-        # Exclude batch_id from body since it's in the URL path
+        # Use mode='json' to serialize datetime objects to ISO-8601 strings
+        path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            mode="json", by_alias=True, exclude_none=True, exclude={"batch_id"}
+            mode="json", by_alias=True, exclude_none=True, exclude=path_params
         )
         return json.dumps(request_data)
 
@@ -211,8 +211,9 @@ class DeliveryFeedbackEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def request_body(self):
+        path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True
+            by_alias=True, exclude_none=True, exclude=path_params
         )
         return json.dumps(request_data)
 
@@ -243,9 +244,9 @@ class UpdateBatchMessageEndpoint(SmsEndpoint):
 
     def request_body(self):
         # Use mode='json' to serialize datetime objects to ISO-8601 strings
-        # Exclude batch_id from body since it's in the URL path
+        path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            mode="json", by_alias=True, exclude_none=True, exclude={"batch_id"}
+            mode="json", by_alias=True, exclude_none=True, exclude=path_params
         )
         return json.dumps(request_data)
 

@@ -3,11 +3,9 @@ import pytest
 from datetime import datetime, timezone
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.internal import SendSMSEndpoint
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.shared.text_request import TextRequest
 from sinch.domains.sms.models.v1.shared.binary_request import BinaryRequest
 from sinch.domains.sms.models.v1.shared.media_request import MediaRequest
-from sinch.domains.sms.models.v1.types import BatchResponse
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
 from sinch.domains.sms.models.v1.shared import MediaBody
 
@@ -47,7 +45,7 @@ def media_request_data():
 @pytest.fixture
 def mock_response():
     return HTTPResponse(
-        status_code=200,
+        status_code=201,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "to": ["+46701234567", "+46709876543"],

@@ -5,7 +5,6 @@ from sinch.domains.sms.models.v1.internal import ListBatchesRequest
 from sinch.domains.sms.models.v1.response.list_batches_response import (
     ListBatchesResponse,
 )
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from datetime import datetime, timezone
 
 

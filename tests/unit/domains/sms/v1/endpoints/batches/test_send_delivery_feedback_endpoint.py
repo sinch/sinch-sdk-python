@@ -2,7 +2,6 @@ import json
 import pytest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.internal import DeliveryFeedbackEndpoint
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.models.v1.internal import DeliveryFeedbackRequest
 
 
@@ -11,15 +10,6 @@ def request_data():
     return DeliveryFeedbackRequest(
         batch_id="01FC66621XXXXX119Z8PMV1QPQ",
         recipients=["+46701234567", "+46709876543"],
-    )
-
-
-@pytest.fixture
-def mock_response():
-    return HTTPResponse(
-        status_code=204,
-        body=None,
-        headers={"Content-Type": "application/json"},
     )
 
 
@@ -41,9 +31,8 @@ def test_request_body_expects_correct_data(request_data):
     endpoint = DeliveryFeedbackEndpoint("test_project_id", request_data)
     body = json.loads(endpoint.request_body())
 
-    assert "batch_id" in body
+    assert "batch_id" not in body
     assert "recipients" in body
-    assert body["batch_id"] == "01FC66621XXXXX119Z8PMV1QPQ"
     assert body["recipients"] == ["+46701234567", "+46709876543"]
 
 
@@ -72,7 +61,7 @@ def test_request_body_expects_empty_recipients():
 
 
 def test_handle_response_expects_success_with_empty_body():
-    """Test that response with 200 status code and empty body is handled correctly."""
+    """Test that response with 202 status code and empty body is handled correctly."""
     request_data = DeliveryFeedbackRequest(
         batch_id="01FC66621XXXXX119Z8PMV1QPQ",
         recipients=["+46701234567"],
@@ -80,9 +69,8 @@ def test_handle_response_expects_success_with_empty_body():
     endpoint = DeliveryFeedbackEndpoint("test_project_id", request_data)
 
     empty_response = HTTPResponse(
-        status_code=200,
-        body={},
-        headers={"Content-Type": "application/json"},
+        status_code=202,
+        headers={},
     )
 
     result = endpoint.handle_response(empty_response)
