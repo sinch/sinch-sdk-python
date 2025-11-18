@@ -1,6 +1,12 @@
 from typing import Literal, Optional
 from datetime import datetime
-from pydantic import Field, StrictBool, StrictStr, conlist, constr, conint
+from pydantic import (
+    Field,
+    StrictBool,
+    StrictStr,
+    conlist,
+    StrictInt,
+)
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
 )
@@ -10,7 +16,7 @@ class BinaryResponse(BaseModelConfigurationResponse):
     id: Optional[StrictStr] = Field(
         default=None, description="Unique identifier for batch."
     )
-    to: Optional[conlist(StrictStr, min_length=1, max_length=1000)] = Field(
+    to: Optional[conlist(StrictStr)] = Field(
         default=None,
         description="A list of phone numbers and group IDs that have received the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628).",
     )
@@ -20,7 +26,7 @@ class BinaryResponse(BaseModelConfigurationResponse):
         description="The sender number provided.  Required if the Automatic Default Originator is not configured.",
     )
     canceled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="Indicates whether or not the batch has been canceled.",
     )
     body: Optional[StrictStr] = Field(
@@ -55,25 +61,21 @@ class BinaryResponse(BaseModelConfigurationResponse):
         default=None,
         description="If set, the date and time the message will expire. Formatted as [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601). For example: `YYYY-MM-DDThh:mm:ss.SSSZ`.",
     )
-    callback_url: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    callback_url: Optional[StrictStr] = Field(
         default=None, description="The callback URL provided in the request."
     )
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    client_reference: Optional[StrictStr] = Field(
         default=None,
         description="The string input to identify this batch message. If set, the identifier will be added in the delivery report/callback of this batch.",
     )
     feedback_enabled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="If set to true, then [feedback](/docs/sms/api-reference/sms/tag/Batches/#tag/Batches/operation/deliveryFeedback) is expected after successful delivery.",
     )
-    from_ton: Optional[conint(strict=True, le=6, ge=0)] = Field(
+    from_ton: Optional[StrictInt] = Field(
         default=None, description="The type of number for the sender number."
     )
-    from_npi: Optional[conint(strict=True, le=18, ge=0)] = Field(
+    from_npi: Optional[StrictInt] = Field(
         default=None,
         description="Number Plan Indicator for the sender number.",
     )

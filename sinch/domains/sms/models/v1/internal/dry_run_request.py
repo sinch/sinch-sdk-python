@@ -1,5 +1,5 @@
 from typing import Union, Optional
-from pydantic import BaseModel, Field, StrictBool, conint
+from pydantic import BaseModel, Field, StrictBool, StrictInt
 from sinch.domains.sms.models.v1.shared.text_request import TextRequest
 from sinch.domains.sms.models.v1.shared.binary_request import (
     BinaryRequest,
@@ -13,10 +13,10 @@ class DryRunMixin(BaseModel):
     """Mixin that adds dry run query parameters to request models."""
 
     per_recipient: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="Whether to include per recipient details in the response",
     )
-    number_of_recipients: Optional[conint(strict=True, le=1000, ge=0)] = Field(
+    number_of_recipients: Optional[StrictInt] = Field(
         default=None,
         description="Max number of recipients to include per recipient details for in the response",
     )

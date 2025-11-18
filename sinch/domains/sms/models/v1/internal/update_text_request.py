@@ -1,6 +1,12 @@
 from typing import Dict, Optional
 from datetime import datetime
-from pydantic import Field, StrictBool, StrictStr, conlist, constr, conint
+from pydantic import (
+    Field,
+    StrictBool,
+    StrictStr,
+    conlist,
+    StrictInt,
+)
 from sinch.domains.sms.models.v1.types import DeliveryReportType
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationRequest,
@@ -33,40 +39,34 @@ class UpdateTextRequest(BaseModelConfigurationRequest):
         default=None,
         description="If set, the system will stop trying to deliver the message at this point.  Constraints: Must be after `send_at`  Default: 3 days after `send_at` ",
     )
-    callback_url: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    callback_url: Optional[StrictStr] = Field(
         default=None,
         description="Override the default callback URL for this batch.  Constraints: Must be valid URL. ",
     )
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    client_reference: Optional[StrictStr] = Field(
         default=None,
         description="The client identifier of a batch message. If set, the identifier will be added in the delivery report/callback of this batch",
     )
     feedback_enabled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="If set to `true`, then [feedback](/docs/sms/api-reference/sms/tag/Batches/#tag/Batches/operation/deliveryFeedback) is expected after successful delivery.",
     )
-    parameters: Optional[
-        Dict[str, Dict[str, constr(strict=True, max_length=1600)]]
-    ] = Field(
+    parameters: Optional[Dict[StrictStr, Dict[StrictStr, StrictStr]]] = Field(
         default=None,
         description="Contains the parameters that will be used for customizing the message for each recipient.   [Click here to learn more about parameterization](/docs/sms/resources/message-info/message-parameterization).",
     )
-    body: Optional[constr(strict=True, max_length=2000, min_length=0)] = Field(
+    body: Optional[StrictStr] = Field(
         default=None, description="The message content"
     )
-    from_ton: Optional[conint(strict=True, le=6, ge=0)] = Field(
+    from_ton: Optional[StrictInt] = Field(
         default=None,
         description="The type of number for the sender number. Use to override the automatic detection.",
     )
-    from_npi: Optional[conint(strict=True, le=18, ge=0)] = Field(
+    from_npi: Optional[StrictInt] = Field(
         default=None,
         description="Number Plan Indicator for the sender number. Use to override the automatic detection.",
     )
-    max_number_of_message_parts: Optional[conint(strict=True, ge=1)] = Field(
+    max_number_of_message_parts: Optional[StrictInt] = Field(
         default=None,
         description="Message will be dispatched only if it is not split to more parts than Max Number of Message Parts",
     )
@@ -75,6 +75,6 @@ class UpdateTextRequest(BaseModelConfigurationRequest):
         description="If set to true the message will be shortened when exceeding one part.",
     )
     flash_message: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="Shows message on screen without user interaction while not saving the message to the inbox.",
     )

@@ -44,7 +44,7 @@ def step_sms_service_batches_available_with_service_plan(context):
 @when('I send a request to send a text message')
 def step_send_text_message(context):
     """Send a text message"""
-    context.response = context.sms.send_sms_batch(
+    context.response = context.sms.batches.send_sms(
         body='SMS body message',
         to=['+12017777777'],
         from_='+12015555555',
@@ -77,7 +77,7 @@ def step_validate_text_sms_details(context):
 @when('I send a request to send a text message with multiple parameters')
 def step_send_text_message_with_parameters(context):
     """Send a text message with multiple parameters"""
-    context.response = context.sms.send_sms_batch(
+    context.response = context.sms.batches.send_sms(
         body='Hello ${name}! Get 20% off with this discount code ${code}',
         to=['+12017777777', '+12018888888'],
         from_='+12015555555',
@@ -326,7 +326,7 @@ def step_validate_replaced_batch_details(context):
     assert batch.delivery_report == 'none'
     assert batch.send_at == datetime(2024, 6, 6, 9, 35, 0, tzinfo=timezone.utc)
     assert batch.expire_at == datetime(2024, 6, 9, 9, 35, 0, tzinfo=timezone.utc)
-    assert batch.feedback_enabled is False
+    assert batch.feedback_enabled is None
     assert isinstance(batch, TextResponse)
     assert batch.flash_message is False
 

@@ -51,7 +51,7 @@ class TestDryRunMixin:
         """Test per_recipient defaults to False and can be set to True/False."""
         # Default value
         request = DryRunTextRequest(**sample_text_request_data)
-        assert request.per_recipient is False
+        assert request.per_recipient is None
 
         request = DryRunTextRequest(
             **sample_text_request_data, per_recipient=True
@@ -84,20 +84,6 @@ class TestDryRunMixin:
         )
         assert request.number_of_recipients == number_of_recipients
 
-    @pytest.mark.parametrize(
-        "number_of_recipients",
-        [-1, 1001, -100, 2000],
-    )
-    def test_dry_run_mixin_expects_validation_error_for_invalid_number_of_recipients(
-        self, sample_text_request_data, number_of_recipients
-    ):
-        """Test that number_of_recipients rejects values outside 0-1000 range."""
-        with pytest.raises(ValidationError) as exc_info:
-            DryRunTextRequest(
-                **sample_text_request_data,
-                number_of_recipients=number_of_recipients,
-            )
-        assert "number_of_recipients" in str(exc_info.value)
 
     def test_dry_run_mixin_expects_number_of_recipients_not_string(
         self, sample_text_request_data
@@ -121,7 +107,7 @@ class TestDryRunTextRequest:
         assert request.from_ == sample_text_request_data["from_"]
         assert request.body == sample_text_request_data["body"]
         assert request.type == "mt_text"
-        assert request.per_recipient is False
+        assert request.per_recipient is None
         assert request.number_of_recipients is None
 
         send_at = datetime(2025, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
@@ -193,7 +179,7 @@ class TestDryRunBinaryRequest:
         assert request.body == sample_binary_request_data["body"]
         assert request.udh == sample_binary_request_data["udh"]
         assert request.type == "mt_binary"
-        assert request.per_recipient is False
+        assert request.per_recipient is None
         assert request.number_of_recipients is None
 
         send_at = datetime(2025, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
@@ -258,7 +244,7 @@ class TestDryRunMediaRequest:
         assert isinstance(request.body, MediaBody)
         assert request.body.url == sample_media_request_data["body"].url
         assert request.type == "mt_media"
-        assert request.per_recipient is False
+        assert request.per_recipient is None
         assert request.number_of_recipients is None
 
         send_at = datetime(2025, 1, 1, 12, 0, 0, tzinfo=timezone.utc)

@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import Field, StrictBool, StrictStr, conlist, constr, conint
+from pydantic import Field, StrictBool, StrictStr, conlist, StrictInt
 from sinch.domains.sms.models.v1.types import (
     DeliveryReportType,
 )
@@ -40,27 +40,23 @@ class BinaryRequest(BaseModelConfigurationRequest):
         default=None,
         description="If set, the system will stop trying to deliver the message at this point. Must be after `send_at`. Default and max is 3 days after `send_at`.   Formatted as [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601). For example: `YYYY-MM-DDThh:mm:ss.SSSZ`.",
     )
-    callback_url: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    callback_url: Optional[StrictStr] = Field(
         default=None,
         description="Override the *default* callback URL for this batch. Must be a valid URL. Learn how to set a default callback URL [here](https://community.sinch.com/t5/SMS/How-do-I-assign-a-callback-URL-to-an-SMS-service-plan/ta-p/8414).",
     )
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    client_reference: Optional[StrictStr] = Field(
         default=None,
         description="The client identifier of a batch message. If set, the identifier will be added in the delivery report/callback of this batch.",
     )
     feedback_enabled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="If set to true then [feedback](/docs/sms/api-reference/sms/tag/Batches/#tag/Batches/operation/deliveryFeedback) is expected after successful delivery.",
     )
-    from_ton: Optional[conint(strict=True, le=6, ge=0)] = Field(
+    from_ton: Optional[StrictInt] = Field(
         default=None,
         description="The type of number for the sender number. Use to override the automatic detection.",
     )
-    from_npi: Optional[conint(strict=True, le=18, ge=0)] = Field(
+    from_npi: Optional[StrictInt] = Field(
         default=None,
         description="Number Plan Indicator for the sender number. Use to override the automatic detection.",
     )

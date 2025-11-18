@@ -98,7 +98,7 @@ def test_batch_response_expects_text_response_variations(text_response_data):
     response = adapter.validate_python(minimal_data)
     assert isinstance(response, TextResponse)
     assert response.type == "mt_text"
-    assert response.canceled is False
+    assert response.canceled is None
 
     text_response_data["parameters"] = {
         "name": {"+12017777777": "John", "default": "there"},

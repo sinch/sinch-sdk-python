@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import Field, StrictStr, conlist, conint
+from pydantic import Field, StrictStr, conlist, StrictInt
 from sinch.domains.sms.models.v1.shared import MessageDeliveryStatus
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
@@ -19,7 +19,7 @@ class BatchDeliveryReport(BaseModelConfigurationResponse):
         default=...,
         description="Array with status objects. Only status codes with at least one recipient will be listed.",
     )
-    total_message_count: conint(strict=True, ge=0) = Field(
+    total_message_count: StrictInt = Field(
         default=..., description="The total number of messages in the batch."
     )
     type: StrictStr = Field(

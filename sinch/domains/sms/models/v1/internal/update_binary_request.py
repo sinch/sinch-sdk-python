@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import Field, StrictBool, StrictStr, conlist, conint, constr
+from pydantic import Field, StrictBool, StrictStr, conlist, StrictInt
 from sinch.domains.sms.models.v1.types import DeliveryReportType
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationRequest,
@@ -34,20 +34,16 @@ class UpdateBinaryRequest(BaseModelConfigurationRequest):
         default=None,
         description="If set, the system will stop trying to deliver the message at this point.  Constraints: Must be after `send_at`  Default: 3 days after `send_at` ",
     )
-    callback_url: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    callback_url: Optional[StrictStr] = Field(
         default=None,
         description="Override the default callback URL for this batch.  Constraints: Must be valid URL. ",
     )
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    client_reference: Optional[StrictStr] = Field(
         default=None,
         description="The client identifier of a batch message. If set, the identifier will be added in the delivery report/callback of this batch",
     )
     feedback_enabled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="If set to `true`, then [feedback](/docs/sms/api-reference/sms/tag/Batches/#tag/Batches/operation/deliveryFeedback) is expected after successful delivery.",
     )
     body: Optional[StrictStr] = Field(
@@ -58,11 +54,11 @@ class UpdateBinaryRequest(BaseModelConfigurationRequest):
         default=...,
         description="The UDH header of a binary message HEX encoded. Max 140 bytes together with body.",
     )
-    from_ton: Optional[conint(strict=True, le=6, ge=0)] = Field(
+    from_ton: Optional[StrictInt] = Field(
         default=None,
         description="The type of number for the sender number. Use to override the automatic detection.",
     )
-    from_npi: Optional[conint(strict=True, le=18, ge=0)] = Field(
+    from_npi: Optional[StrictInt] = Field(
         default=None,
         description="Number Plan Indicator for the sender number. Use to override the automatic detection.",
     )
