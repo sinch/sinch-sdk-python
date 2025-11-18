@@ -206,23 +206,6 @@ def test_batch_delivery_report_expects_validation_error_for_missing_type():
     assert "type" in str(exc_info.value)
 
 
-def test_batch_delivery_report_expects_validation_error_for_negative_total_message_count():
-    """
-    Test that negative total_message_count raises a ValidationError.
-    """
-    data = {
-        "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
-        "statuses": [{"code": 401, "count": 1, "status": "Dispatched"}],
-        "total_message_count": -1,
-        "type": "delivery_report_sms",
-    }
-
-    with pytest.raises(ValidationError) as exc_info:
-        BatchDeliveryReport(**data)
-
-    assert "total_message_count" in str(exc_info.value)
-
-
 def test_batch_delivery_report_expects_empty_statuses():
     """
     Test that empty statuses list is allowed.

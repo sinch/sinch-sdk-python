@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 from datetime import datetime
-from pydantic import Field, StrictBool, StrictStr, conlist, constr
+from pydantic import Field, StrictBool, StrictStr, conlist
 from sinch.domains.sms.models.v1.types import DeliveryReportType
 from sinch.domains.sms.models.v1.shared import MediaBody
 from sinch.domains.sms.models.v1.internal.base import (
@@ -32,30 +32,24 @@ class UpdateMediaRequest(BaseModelConfigurationRequest):
         default=None,
         description="If set, the system will stop trying to deliver the message at this point.  Constraints: Must be after `send_at`  Default: 3 days after `send_at` ",
     )
-    callback_url: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    callback_url: Optional[StrictStr] = Field(
         default=None,
         description="Override the default callback URL for this batch.  Constraints: Must be valid URL. ",
     )
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    client_reference: Optional[StrictStr] = Field(
         default=None,
         description="The client identifier of a batch message. If set, the identifier will be added in the delivery report/callback of this batch",
     )
     feedback_enabled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="If set to `true`, then [feedback](/docs/sms/api-reference/sms/tag/Batches/#tag/Batches/operation/deliveryFeedback) is expected after successful delivery.",
     )
     body: Optional[MediaBody] = None
-    parameters: Optional[
-        Dict[str, Dict[str, constr(strict=True, max_length=1600)]]
-    ] = Field(
+    parameters: Optional[Dict[StrictStr, Dict[StrictStr, StrictStr]]] = Field(
         default=None,
         description="Contains the parameters that will be used for customizing the message for each recipient.   [Click here to learn more about parameterization](/docs/sms/resources/message-info/message-parameterization).",
     )
     strict_validation: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="Whether or not you want the media included in your message to be checked against [Sinch MMS channel best practices](/docs/mms/bestpractices/). If set to true, your message will be rejected if it doesn't conform to the listed recommendations, otherwise no validation will be performed. ",
     )

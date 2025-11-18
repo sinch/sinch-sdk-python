@@ -1,6 +1,6 @@
 from typing import Dict, Literal, Optional
 from datetime import datetime
-from pydantic import Field, StrictBool, StrictStr, conlist, constr
+from pydantic import Field, StrictBool, StrictStr, conlist
 from sinch.domains.sms.models.v1.types.delivery_report_type import (
     DeliveryReportType,
 )
@@ -14,7 +14,7 @@ class MediaResponse(BaseModelConfigurationResponse):
     id: Optional[StrictStr] = Field(
         default=None, description="Unique identifier for batch"
     )
-    to: Optional[conlist(StrictStr, min_length=1, max_length=1000)] = Field(
+    to: Optional[conlist(StrictStr)] = Field(
         default=None,
         description="List of Phone numbers and group IDs that will receive the batch. [More info](https://community.sinch.com/t5/Glossary/MSISDN/ta-p/7628)",
     )
@@ -24,13 +24,11 @@ class MediaResponse(BaseModelConfigurationResponse):
         description="Sender number.    Required if Automatic Default Originator not configured.",
     )
     canceled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="Indicates if the batch has been canceled or not.",
     )
     body: Optional[MediaBody] = None
-    parameters: Optional[
-        Dict[str, Dict[str, constr(strict=True, max_length=1600)]]
-    ] = Field(
+    parameters: Optional[Dict[StrictStr, Dict[StrictStr, StrictStr]]] = Field(
         default=None,
         description="Contains the parameters that will be used for customizing the message for each recipient.   [Click here to learn more about parameterization](/docs/sms/resources/message-info/message-parameterization).",
     )
@@ -52,20 +50,16 @@ class MediaResponse(BaseModelConfigurationResponse):
         default=None,
         description="If set the system will stop trying to deliver the message at this point.     Must be after `send_at`. Default and max is 3 days after send_at.     YYYY-MM-DDThh:mm:ss.SSSZ format",
     )
-    callback_url: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    callback_url: Optional[StrictStr] = Field(
         default=None,
         description="Override the default callback URL for this batch. Must be valid URL.",
     )
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = Field(
+    client_reference: Optional[StrictStr] = Field(
         default=None,
         description="The client identifier of a batch message. If set, the identifier will be added in the delivery report/callback of this batch",
     )
     feedback_enabled: Optional[StrictBool] = Field(
-        default=False,
+        default=None,
         description="If set to true then [feedback](/docs/sms/api-reference/sms/tag/Batches/#tag/Batches/operation/deliveryFeedback) is expected after successful delivery.",
     )
     strict_validation: Optional[StrictBool] = Field(

@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import conlist, conint, constr
+from pydantic import conlist, StrictInt, StrictStr
 from sinch.domains.sms.models.v1.types import DeliveryReceiptStatusCodeType
 from sinch.domains.sms.models.v1.types import DeliveryStatusType
 from sinch.domains.sms.models.v1.internal.base import (
@@ -9,12 +9,10 @@ from sinch.domains.sms.models.v1.internal.base import (
 
 
 class ListDeliveryReportsRequest(BaseModelConfigurationRequest):
-    page: Optional[conint(strict=True, ge=0)] = 0
-    page_size: Optional[conint(strict=True, le=100, ge=1)] = 30
+    page: Optional[StrictInt] = None
+    page_size: Optional[StrictInt] = None
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     status: Optional[conlist(DeliveryStatusType)] = None
     code: Optional[conlist(DeliveryReceiptStatusCodeType)] = None
-    client_reference: Optional[
-        constr(strict=True, max_length=2048, min_length=0)
-    ] = None
+    client_reference: Optional[StrictStr] = None

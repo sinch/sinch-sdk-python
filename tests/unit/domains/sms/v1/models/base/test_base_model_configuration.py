@@ -48,7 +48,9 @@ def test_model_dump_for_query_params_expects_empty_values_filtered():
         status: str = ""
         code: list[int] = []
 
-    model = TestModel(batch_id="01FC66621XXXXX119Z8PMV1QPQ", status="", code=[])
+    model = TestModel(
+        batch_id="01FC66621XXXXX119Z8PMV1QPQ", status="", code=[]
+    )
     result = model_dump_for_query_params(model)
 
     assert "batch_id" in result

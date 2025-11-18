@@ -69,19 +69,19 @@ def test_batch_response_expects_parses_all_response_types(
     Verifies discriminator routes correctly based on type field.
     """
     adapter = TypeAdapter(BatchResponse)
-    
+
     text_response = adapter.validate_python(text_response_data)
     assert isinstance(text_response, TextResponse)
     assert text_response.type == "mt_text"
     assert text_response.body == "Hello World!"
     assert text_response.delivery_report == "full"
-    
+
     binary_response = adapter.validate_python(binary_response_data)
     assert isinstance(binary_response, BinaryResponse)
     assert not isinstance(binary_response, TextResponse)
     assert binary_response.type == "mt_binary"
     assert binary_response.udh == "06050423F423F4"
-    
+
     media_response = adapter.validate_python(media_response_data)
     assert isinstance(media_response, MediaResponse)
     assert media_response.type == "mt_media"
@@ -98,7 +98,7 @@ def test_batch_response_expects_text_response_variations(text_response_data):
     response = adapter.validate_python(minimal_data)
     assert isinstance(response, TextResponse)
     assert response.type == "mt_text"
-    assert response.canceled is False
+    assert response.canceled is None
 
     text_response_data["parameters"] = {
         "name": {"+12017777777": "John", "default": "there"},
@@ -109,8 +109,12 @@ def test_batch_response_expects_text_response_variations(text_response_data):
     assert response.parameters["name"]["+12017777777"] == "John"
     assert response.parameters["code"]["+12017777777"] == "HALLOWEEN20"
 
-    expected_created_at = datetime(2024, 1, 15, 14, 30, 22, 123000, tzinfo=timezone.utc)
-    expected_modified_at = datetime(2024, 1, 15, 14, 35, 45, 789000, tzinfo=timezone.utc)
+    expected_created_at = datetime(
+        2024, 1, 15, 14, 30, 22, 123000, tzinfo=timezone.utc
+    )
+    expected_modified_at = datetime(
+        2024, 1, 15, 14, 35, 45, 789000, tzinfo=timezone.utc
+    )
     expected_send_at = datetime(2024, 1, 15, 15, 0, 0, tzinfo=timezone.utc)
     expected_expire_at = datetime(2024, 1, 18, 15, 0, 0, tzinfo=timezone.utc)
     assert response.created_at == expected_created_at
@@ -151,7 +155,12 @@ def test_batch_response_expects_discriminator_behavior():
         adapter.validate_python({"id": "test", "body": "Hello"})
 
     # Extra fields are allowed and don't affect routing
-    text_with_extra = {"type": "mt_text", "id": "test", "body": "Hello", "extra": "value"}
+    text_with_extra = {
+        "type": "mt_text",
+        "id": "test",
+        "body": "Hello",
+        "extra": "value",
+    }
     response = adapter.validate_python(text_with_extra)
     assert isinstance(response, TextResponse)
 

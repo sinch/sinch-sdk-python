@@ -1,3 +1,4 @@
+import re
 from abc import ABC
 from typing import Annotated, Type, Union, get_origin, get_args
 from pydantic import TypeAdapter
@@ -35,6 +36,25 @@ class SmsEndpoint(HTTPEndpoint, ABC):
             project_id=self.project_id,
             **vars(self.request_data),
         )
+
+    def _get_path_params_from_url(self) -> set:
+        """
+        Extracts path parameters from ENDPOINT_URL template.
+
+        Returns:
+            set: Set of path parameter names that should be excluded from request body.
+        """
+        if not self.ENDPOINT_URL:
+            return set()
+
+        # Extract all placeholders from the URL template (e.g., {batch_id}, {project_id})
+        path_params = set(re.findall(r"\{(\w+)\}", self.ENDPOINT_URL))
+
+        # Exclude 'origin' and 'project_id' as they are always path params but not from request_data
+        path_params.discard("origin")
+        path_params.discard("project_id")
+
+        return path_params
 
     def build_query_params(self) -> dict:
         """
