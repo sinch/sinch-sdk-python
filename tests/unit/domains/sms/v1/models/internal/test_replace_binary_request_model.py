@@ -69,6 +69,3 @@ def test_replace_binary_request_expects_required_fields(
     with pytest.raises(ValidationError) as exc_info:
         ReplaceBinaryRequest(**data)
     assert missing_field in str(exc_info.value)
-
-
-

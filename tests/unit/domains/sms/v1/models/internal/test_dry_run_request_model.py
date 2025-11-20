@@ -84,7 +84,6 @@ class TestDryRunMixin:
         )
         assert request.number_of_recipients == number_of_recipients
 
-
     def test_dry_run_mixin_expects_number_of_recipients_not_string(
         self, sample_text_request_data
     ):

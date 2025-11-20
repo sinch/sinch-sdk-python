@@ -89,6 +89,3 @@ def test_delivery_feedback_request_expects_recipients_must_be_list_of_strings(
             batch_id="01W4FFL35P4NC4K35SMSBATCH3",
             recipients=invalid_recipients,
         )
-
-
-

@@ -15,7 +15,7 @@ def sample_replace_media_request_data():
         "from_": "+46800123456",
         "body": MediaBody(
             url="https://capybara.com/video.mp4",
-            message="Watch this amazing capybara video!",
+            message="Hi ${name}! Watch this amazing capybara video!",
             subject="Capybara Video",
         ),
     }
@@ -31,7 +31,10 @@ def test_replace_media_request_expects_valid_inputs_and_all_fields(
     assert request.from_ == sample_replace_media_request_data["from_"]
     assert isinstance(request.body, MediaBody)
     assert request.body.url == "https://capybara.com/video.mp4"
-    assert request.body.message == "Watch this amazing capybara video!"
+    assert (
+        request.body.message
+        == "Hi ${name}! Watch this amazing capybara video!"
+    )
     assert request.body.subject == "Capybara Video"
     assert request.type == "mt_media"
     assert request.delivery_report is None

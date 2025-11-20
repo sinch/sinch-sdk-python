@@ -138,9 +138,7 @@ def test_batches_get_expects_correct_request(
     mock_sinch_client_sms.configuration.transport.request.assert_called_once()
 
 
-def test_batches_list_expects_correct_request(
-    mock_sinch_client_sms, mocker
-):
+def test_batches_list_expects_correct_request(mock_sinch_client_sms, mocker):
     """Test that list sends the correct request and returns a paginator."""
     mock_list_batches_response = ListBatchesResponse(
         count=2,
@@ -221,7 +219,9 @@ def test_batches_send_sms_expects_correct_request(
     assert kwargs["request_data"].truncate_concat is True
     assert kwargs["request_data"].from_ton == 1
     assert kwargs["request_data"].from_npi == 1
-    assert kwargs["request_data"].parameters == {"name": {"+46701234567": "John"}}
+    assert kwargs["request_data"].parameters == {
+        "name": {"+46701234567": "John"}
+    }
 
     assert isinstance(response, TextResponse)
     assert response.id == "01FC66621XXXXX119Z8PMV1QPQ"
@@ -351,7 +351,9 @@ def test_batches_send_mms_expects_correct_request(
     assert kwargs["request_data"].delivery_report == "full"
     assert kwargs["request_data"].feedback_enabled is True
     assert kwargs["request_data"].strict_validation is True
-    assert kwargs["request_data"].parameters == {"name": {"+46701234567": "John"}}
+    assert kwargs["request_data"].parameters == {
+        "name": {"+46701234567": "John"}
+    }
 
     assert isinstance(response, MediaResponse)
     assert response.id == "01FC66621XXXXX119Z8PMV1QPQ"
@@ -827,7 +829,7 @@ def test_batches_send_expects_correct_request(
 
 
 def test_batches_expects_validation_recalculates_auth_method_when_credentials_change(
-    mock_sinch_client_sms,
+    mock_sinch_client_sms, mocker
 ):
     """Test that SMS requests validate authentication and recalculate auth method when credentials change after initialization."""
     config = mock_sinch_client_sms.configuration
@@ -850,14 +852,24 @@ def test_batches_expects_validation_recalculates_auth_method_when_credentials_ch
     )
     config.transport.request.return_value = mock_response
 
+    # Initialize Batches service BEFORE changing the authentication method
+    batches = Batches(mock_sinch_client_sms)
+
+    spy_endpoint = mocker.spy(GetBatchMessageEndpoint, "__init__")
+
     config.sms_api_token = "test_sms_token"
 
     assert config.authentication_method == "project_auth"
 
     # Make an SMS request. This should trigger validation and recalculate auth method
-    batches = Batches(mock_sinch_client_sms)
     response = batches.get(batch_id="01FC66621XXXXX119Z8PMV1QPQ")
 
     assert config.authentication_method == "sms_auth"
+
+    # Verify that project_id parameter contains the service_plan_id
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    assert kwargs["project_id"] == config.service_plan_id
+
     assert isinstance(response, TextResponse)
     assert response.id == "01FC66621XXXXX119Z8PMV1QPQ"

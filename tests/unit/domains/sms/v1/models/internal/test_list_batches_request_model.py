@@ -73,6 +73,3 @@ def test_list_batches_request_expects_empty_from_list():
     model = ListBatchesRequest(from_=[])
 
     assert model.from_ == []
-
-
-
