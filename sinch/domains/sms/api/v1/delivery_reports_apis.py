@@ -34,7 +34,9 @@ class DeliveryReports(BaseSms):
         **kwargs,
     ) -> BatchDeliveryReport:
         """
-        Retrieve a delivery report
+        Delivery reports can be retrieved even if no callback was requested. The difference between a summary and a full
+        report is only that the full report contains the phone numbers in
+        [E.164](https://community.sinch.com/t5/Glossary/E-164/ta-p/7537) format for each status code.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -69,7 +71,7 @@ class DeliveryReports(BaseSms):
         self, batch_id: str, recipient: str, **kwargs
     ) -> RecipientDeliveryReport:
         """
-        Retrieve a recipient delivery report
+        A recipient delivery report contains the message status for a single recipient phone number.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -100,7 +102,8 @@ class DeliveryReports(BaseSms):
         **kwargs,
     ) -> Paginator[RecipientDeliveryReport]:
         """
-        Retrieve a list of delivery reports
+        Get a list of finished delivery reports.
+        This operation supports pagination.
 
         :param page: The page number starting from 0. (optional)
         :type page: Optional[int]
