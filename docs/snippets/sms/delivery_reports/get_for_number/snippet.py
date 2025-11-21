@@ -11,9 +11,9 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-# The ID of the batch to retrieve
+# The ID of the batch to get delivery reports for
 batch_id = "BATCH_ID"
-# The recipient phone number in E.164 format
+# The phone number to get delivery reports for
 recipient = "+1234567890"
 
 response = sinch_client.sms.delivery_reports.get_for_number(
