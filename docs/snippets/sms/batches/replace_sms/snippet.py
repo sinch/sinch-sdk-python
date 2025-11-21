@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from sinch import SinchClient
-from sinch.domains.sms.models.v1.shared import TextRequest
 
 load_dotenv()
 
@@ -12,12 +11,15 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-request = TextRequest(
+# The ID of the batch to replace
+batch_id = "BATCH_ID"
+
+response = sinch_client.sms.batches.replace_sms(
+    batch_id=batch_id,
     to=["+1234567890"],
     from_="+2345678901",
-    body="Hello, this is a test message!"
+    body="Updated message content"
 )
 
-response = sinch_client.sms.batches.send(request=request)
+print(f"Replaced batch:\n{response}")
 
-print(f"Batch sent:\n{response}")

@@ -11,7 +11,14 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
-response = sinch_client.sms.batches.get(batch_id=batch_id)
+# The ID of the batch to send delivery feedback for
+batch_id = "BATCH_ID"
+# The recipient phone numbers in E.164 format
+recipients = ["+1234567890"]
 
-print(f"Batch details:\n{response}")
+sinch_client.sms.batches.send_delivery_feedback(
+    batch_id=batch_id,
+    recipients=recipients
+)
+
+print("Delivery feedback sent successfully")

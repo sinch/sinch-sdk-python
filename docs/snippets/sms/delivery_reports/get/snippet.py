@@ -11,11 +11,8 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
-response = sinch_client.sms.batches.update_sms(
-    batch_id=batch_id,
-    body="Updated message body",
-    to_add=["+1987654321"]
-)
+# The ID of the batch to get delivery report for
+batch_id = "BATCH_ID"
+response = sinch_client.sms.delivery_reports.get(batch_id=batch_id)
 
-print(f"Updated batch:\n{response}")
+print(f"Delivery report for batch:\n{response}")

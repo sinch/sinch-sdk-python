@@ -11,12 +11,8 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
-response = sinch_client.sms.batches.replace_sms(
-    batch_id=batch_id,
-    to=["+1234567890"],
-    from_="+12345678901",
-    body="Updated message content"
-)
+# The ID of the batch to cancel
+batch_id = "BATCH_ID"
+response = sinch_client.sms.batches.cancel(batch_id=batch_id)
 
-print(f"Replaced batch:\n{response}")
+print(f"Cancelled batch:\n{response}")

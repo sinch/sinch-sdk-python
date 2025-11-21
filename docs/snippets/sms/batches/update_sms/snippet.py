@@ -11,7 +11,14 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
-response = sinch_client.sms.batches.cancel(batch_id=batch_id)
+# The ID of the batch to update
+batch_id = "BATCH_ID"
 
-print(f"Cancelled batch:\n{response}")
+response = sinch_client.sms.batches.update_sms(
+    batch_id=batch_id,
+    body="Updated message body",
+    to_add=["+1987654321"]
+)
+
+print(f"Updated batch:\n{response}")
+

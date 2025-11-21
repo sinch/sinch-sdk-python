@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from sinch import SinchClient
-from sinch.domains.sms.models.v1.shared import MediaBody
 
 load_dotenv()
 
@@ -12,17 +11,11 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
-
-body = MediaBody(
-    url="https://example.com/image.jpg",
-    message="Updated MMS message body"
+response = sinch_client.sms.batches.dry_run_sms(
+    to=["+1234567890"],
+    from_="+2345678901",
+    body="Test message for dry run"
 )
 
-response = sinch_client.sms.batches.update_mms(
-    batch_id=batch_id,
-    body=body,
-    to_add=["+1987654321"]
-)
+print(f"Dry run result:\n{response}")
 
-print(f"Updated batch:\n{response}")

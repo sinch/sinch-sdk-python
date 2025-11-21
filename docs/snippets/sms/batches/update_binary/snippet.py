@@ -12,21 +12,21 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
-
-# Example: Encode message body as Base64
-message = "Updated binary message content"
-body = base64.b64encode(message.encode('utf-8')).decode('utf-8')
+# The ID of the batch to update
+batch_id = "BATCH_ID"
 
 # Example: UDH header (HEX encoded)
 udh = "06050423F423F4"
 
-response = sinch_client.sms.batches.replace_binary(
+# Example: Encode message body as Base64 (optional)
+message = "Updated binary message body"
+body = base64.b64encode(message.encode('utf-8')).decode('utf-8')
+
+response = sinch_client.sms.batches.update_binary(
     batch_id=batch_id,
-    to=["+1234567890"],
-    from_="+2345678901",
+    udh=udh,
     body=body,
-    udh=udh
+    to_add=["+1987654321"]
 )
 
-print(f"Replaced batch:\n{response}")
+print(f"Updated batch:\n{response}")

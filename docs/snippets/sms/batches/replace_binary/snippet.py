@@ -1,7 +1,7 @@
 import os
+import base64
 from dotenv import load_dotenv
 from sinch import SinchClient
-from sinch.domains.sms.models.v1.shared import MediaBody
 
 load_dotenv()
 
@@ -12,18 +12,22 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-batch_id = "MY_BATCH_ID"
+# The ID of the batch to replace
+batch_id = "BATCH_ID"
 
-body = MediaBody(
-    url="https://example.com/image.jpg",
-    message="Updated MMS message content"
-)
+# Example: Encode message body as Base64
+message = "Updated binary message content"
+body = base64.b64encode(message.encode('utf-8')).decode('utf-8')
 
-response = sinch_client.sms.batches.replace_mms(
+# Example: UDH header (HEX encoded)
+udh = "06050423F423F4"
+
+response = sinch_client.sms.batches.replace_binary(
     batch_id=batch_id,
     to=["+1234567890"],
     from_="+2345678901",
-    body=body
+    body=body,
+    udh=udh
 )
 
 print(f"Replaced batch:\n{response}")
