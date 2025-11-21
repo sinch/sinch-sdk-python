@@ -53,7 +53,12 @@ from sinch.domains.sms.models.v1.types import BatchResponse
 class Batches(BaseSms):
     def cancel(self, batch_id: str, **kwargs) -> BatchResponse:
         """
-        Cancel a batch message
+        A batch can be canceled at any point. If a batch is canceled while it's currently being delivered some messages
+        currently being processed might still be delivered. The delivery report will indicate which messages were
+        canceled and which  weren't.
+
+        Canceling a batch scheduled in the future will result in an empty delivery report while canceling an already
+        sent batch would result in no change to the completed delivery report.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -76,7 +81,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> DryRunResponse:
         """
-        Dry run
+        This operation will perform a dry run of a batch which calculates the bodies and number of parts for all
+        messages in the batch without actually sending any messages.
 
         :param request: The request object. (optional)
         :type request: Optional[DryRunRequest]
@@ -149,7 +155,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> DryRunResponse:
         """
-        Dry run a text SMS batch.
+        This operation will perform a dry run of a batch which calculates the bodies and number of parts for all
+        messages in the batch without actually sending any messages (SMS).
 
         :param to: The list of phone numbers to send the message to. (required)
         :type to: List[str]
@@ -234,7 +241,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> DryRunResponse:
         """
-        Dry run a binary SMS batch.
+        This operation will perform a dry run of a batch which calculates the bodies and number of parts for all
+        messages in the batch without actually sending any messages (Binary).
 
         :param to: The list of phone numbers to send the message to. (required)
         :type to: List[str]
@@ -309,7 +317,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> DryRunResponse:
         """
-        Dry run
+        This operation will perform a dry run of a batch which calculates the bodies and number of parts for all
+        messages in the batch without actually sending any messages (MMS).
 
         :param to: The list of phone numbers to send the message to. (required)
         :type to: List[str]
@@ -365,7 +374,7 @@ class Batches(BaseSms):
 
     def get(self, batch_id: str, **kwargs) -> BatchResponse:
         """
-        Get a batch message
+        This operation returns a specific batch that matches the provided batch ID.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -391,7 +400,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> Paginator[BatchResponse]:
         """
-        List Batches
+        With the list operation you can list batch messages created in the last 14 days that you have created.
+        This operation supports pagination.
 
         :param page: The page number starting from 0. (optional)
         :type page: Optional[int]
@@ -440,8 +450,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        This operation will replace all the parameters of a batch with the provided values. It is the same as cancelling a batch
-        and sending a new one instead.
+        This operation will replace all the parameters of a batch with the provided values.
+        It is the same as cancelling a batch and sending a new one instead.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -490,9 +500,8 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-
-        This operation will replace all the parameters of a batch with the provided values. It is the same as cancelling a batch
-        and sending a new one instead.
+        This operation will replace all the parameters of a batch with the provided values.
+        It is the same as cancelling a batch and sending a new one instead (MMS).
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -574,7 +583,7 @@ class Batches(BaseSms):
     ) -> BatchResponse:
         """
         This operation will replace all the parameters of a batch with the provided values.
-        It is the same as cancelling a batch and sending a new one instead.
+        It is the same as cancelling a batch and sending a new one instead (Binary).
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -646,7 +655,7 @@ class Batches(BaseSms):
     ) -> BatchResponse:
         """
         This operation will replace all the parameters of a batch with the provided values.
-        It is the same as cancelling a batch and sending a new one instead.
+        It is the same as cancelling a batch and sending a new one instead (MMS).
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -701,7 +710,15 @@ class Batches(BaseSms):
         self, request: Optional[SendSMSRequest] = None, **kwargs
     ) -> BatchResponse:
         """
-        Send a SMS batch.
+        Send a message or a batch of messages.
+
+        Depending on the length of the body, one message might be split into multiple parts and charged accordingly.
+
+        Any groups targeted in a scheduled batch will be evaluated at the time of sending.
+        If a group is deleted between batch creation and scheduled date, it will be considered empty.
+
+        Be sure to use the correct [region](/docs/sms/api-reference/#base-url) in the server URL.
+
         :param request: The request object. (optional)
         :type request: Optional[SendSMSRequest]
         :param **kwargs: Additional parameters for the request.
@@ -747,7 +764,14 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Send a text SMS batch.
+        Send a message or a batch of messages (SMS).
+
+        Depending on the length of the body, one message might be split into multiple parts and charged accordingly.
+
+        Any groups targeted in a scheduled batch will be evaluated at the time of sending.
+        If a group is deleted between batch creation and scheduled date, it will be considered empty.
+
+        Be sure to use the correct [region](/docs/sms/api-reference/#base-url) in the server URL.
 
         :param to: The list of phone numbers to send the message to. (required)
         :type to: List[str]
@@ -824,7 +848,15 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Send a binary SMS batch.
+        Send a message or a batch of messages (Binary).
+
+        Depending on the length of the body, one message might be split into multiple parts and charged accordingly.
+
+        Any groups targeted in a scheduled batch will be evaluated at the time of sending.
+        If a group is deleted between batch creation and scheduled date, it will be considered empty.
+
+        Be sure to use the correct [region](/docs/sms/api-reference/#base-url) in the server URL.
+
         :param to: The list of phone numbers to send the message to. (required)
         :type to: List[str]
         :param from_: The sender phone number. (required)
@@ -890,7 +922,15 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Send an MMS batch.
+        Send a message or a batch of messages (MMS).
+
+        Depending on the length of the body, one message might be split into multiple parts and charged accordingly.
+
+        Any groups targeted in a scheduled batch will be evaluated at the time of sending.
+        If a group is deleted between batch creation and scheduled date, it will be considered empty.
+
+        Be sure to use the correct [region](/docs/sms/api-reference/#base-url) in the server URL.
+
         :param to: The list of phone numbers to send the message to. (required)
         :type to: List[str]
         :param from_: The sender phone number. (required)
@@ -941,7 +981,16 @@ class Batches(BaseSms):
         self, batch_id: str, recipients: List[str], **kwargs
     ) -> None:
         """
-        Send delivery feedback for a message
+        Send feedback if your system can confirm successful message delivery.
+
+        Feedback can only be provided if `feedback_enabled` was set when batch was submitted.
+
+        **Batches**: It is possible to submit feedback multiple times for the same batch for different recipients.
+        Feedback without specified recipients is treated as successful message delivery to all recipients referenced
+        in the batch. Note that the `recipients` key is still required even if the value is empty.
+
+        **Groups**: If the batch message was creating using a group ID, at least one recipient is required.
+        Excluding recipients (an empty recipient list) does not work and will result in a failed request.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -969,7 +1018,7 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Update a Batch message
+        This operation updates all specified parameters of a batch that matches the provided batch ID.
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -1021,7 +1070,7 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Update a Batch message (SMS)
+        This operation updates all specified parameters of a batch that matches the provided batch ID. (SMS)
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -1106,7 +1155,7 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Update a Batch message (Binary)
+        This operation updates all specified parameters of a batch that matches the provided batch ID. (Binary)
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
@@ -1181,7 +1230,7 @@ class Batches(BaseSms):
         **kwargs,
     ) -> BatchResponse:
         """
-        Update a Batch message (MMS)
+        This operation updates all specified parameters of a batch that matches the provided batch ID. (MMS)
 
         :param batch_id: The batch ID you received from sending a message. (required)
         :type batch_id: str
