@@ -8,6 +8,7 @@ from sinch.domains.conversation import Conversation
 from sinch.domains.sms import SMS
 from sinch.domains.verification import Verification
 from sinch.domains.voice import Voice
+from sinch.domains.number_lookup import NumberLookup
 
 
 class SinchClient:
@@ -50,3 +51,4 @@ class SinchClient:
         self.sms = SMS(self)
         self.verification = Verification(self)
         self.voice = Voice(self)
+        self.number_lookup = NumberLookup(self)
