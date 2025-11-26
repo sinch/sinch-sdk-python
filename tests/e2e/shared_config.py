@@ -12,4 +12,5 @@ def create_test_client():
     client.configuration.auth_origin = 'http://localhost:3011'
     client.configuration.numbers_origin = 'http://localhost:3013'
     client.configuration.sms_origin = 'http://localhost:3017'
+    client.configuration.number_lookup_origin = 'http://localhost:3022'
     return client
