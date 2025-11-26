@@ -1,6 +1,6 @@
-from datetime import datetime, date
 from typing import Optional, Dict, Any
 from pydantic import Field, StrictStr, conlist, field_serializer
+from sinch.core.models.utils import serialize_datetime_in_dict
 from sinch.domains.number_lookup.models.v1.internal.base import (
     BaseModelConfigurationRequest,
 )
@@ -23,18 +23,4 @@ class LookupNumberRequest(BaseModelConfigurationRequest):
     def serialize_rnd_feature_options(
         self, value: Optional[Dict[str, Any]]
     ) -> Optional[Dict[str, Any]]:
-        if value is None:
-            return None
-
-        serialized = {}
-        for key, val in value.items():
-            if isinstance(val, (datetime, date)):
-                # Convert datetime/date to ISO 8601 date format (YYYY-MM-DD)
-                if isinstance(val, datetime):
-                    serialized[key] = val.date().isoformat()
-                else:
-                    serialized[key] = val.isoformat()
-            else:
-                # Pass string values directly to the backend without modification
-                serialized[key] = val
-        return serialized
+        return serialize_datetime_in_dict(value)
