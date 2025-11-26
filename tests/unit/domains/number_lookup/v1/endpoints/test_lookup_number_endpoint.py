@@ -1,4 +1,5 @@
 import json
+from unittest.mock import MagicMock
 import pytest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.number_lookup.api.v1.internal import LookupNumberEndpoint
@@ -48,6 +49,30 @@ def test_build_url_expects_correct_url(
         "https://lookup.api.sinch.com/v2/projects/test_project_id/lookups"
     )
     assert endpoint.build_url(mock_sinch_client_number_lookup) == expected_url
+
+
+def test_build_url_with_custom_domain_expects_overridden_url():
+    """Check if endpoint URL uses custom domain when configured."""
+    request_data = LookupNumberRequest(
+        number="+12312312312", features=["LineType", "SimSwap"]
+    )
+    endpoint = LookupNumberEndpoint("test_project_id", request_data)
+    
+    class MockConfiguration:
+        number_lookup_origin = "https://custom.lookup.domain.com"
+        project_id = "test_project_id"
+        transport = MagicMock()
+        transport.request = MagicMock()
+    
+    class MockSinchClient:
+        configuration = MockConfiguration()
+    
+    mock_sinch = MockSinchClient()
+    
+    expected_url = (
+        "https://custom.lookup.domain.com/v2/projects/test_project_id/lookups"
+    )
+    assert endpoint.build_url(mock_sinch) == expected_url
 
 
 def test_request_body_expects_correct_json(endpoint):

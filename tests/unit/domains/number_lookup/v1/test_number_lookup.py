@@ -1,7 +1,10 @@
+from datetime import datetime, timezone
 from sinch.domains.number_lookup.api.v1.number_lookup_apis import NumberLookup
 from sinch.domains.number_lookup.api.v1.internal import LookupNumberEndpoint
 from sinch.domains.number_lookup.models.v1.internal import LookupNumberRequest
 from sinch.domains.number_lookup.models.v1.response import LookupNumberResponse
+from sinch.domains.number_lookup.models.v1.shared import Line, SimSwap, VoIPDetection, Rnd
+from sinch.domains.number_lookup.models.v1.types import RndFeatureOptionsDict
 
 
 def test_lookup_expects_valid_request(mock_sinch_client_number_lookup, mocker):
@@ -125,7 +128,20 @@ def test_lookup_full_response_expects_valid_request(
     and handles the full response properly.
     """
     mock_response = LookupNumberResponse(
-        number="+15555678901", country_code="US", trace_id="test-trace-id"
+        number="+15555678901",
+        country_code="US",
+        trace_id="test-trace-id",
+        line=Line(
+            carrier="T-Mobile USA",
+            type="Mobile",
+            mobile_country_code="310",
+            mobile_network_code="260",
+            ported=True,
+            porting_date=datetime(2024, 8, 20, 10, 15, 30, tzinfo=timezone.utc),
+        ),
+        sim_swap=SimSwap(swapped=True, swap_period="SP24H"),
+        voip_detection=VoIPDetection(probability="High"),
+        rnd=Rnd(disconnected=True),
     )
     mock_sinch_client_number_lookup.configuration.transport.request.return_value = mock_response
 
@@ -150,4 +166,17 @@ def test_lookup_full_response_expects_valid_request(
     assert response.number == "+15555678901"
     assert response.country_code == "US"
     assert response.trace_id == "test-trace-id"
+    assert response.line is not None
+    assert response.line.carrier == "T-Mobile USA"
+    assert response.line.type == "Mobile"
+    assert response.line.mobile_country_code == "310"
+    assert response.line.mobile_network_code == "260"
+    assert response.line.ported is True
+    assert response.line.porting_date == datetime(2024, 8, 20, 10, 15, 30, tzinfo=timezone.utc)
+    assert response.sim_swap.swapped is True
+    assert response.sim_swap.swap_period == "SP24H"
+    assert response.voip_detection is not None
+    assert response.voip_detection.probability == "High"
+    assert response.rnd is not None
+    assert response.rnd.disconnected is True
     mock_sinch_client_number_lookup.configuration.transport.request.assert_called_once()

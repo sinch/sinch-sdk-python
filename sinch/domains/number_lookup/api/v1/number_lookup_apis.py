@@ -3,14 +3,17 @@ from sinch.domains.number_lookup.api.v1.base import BaseLookup
 from sinch.domains.number_lookup.api.v1.internal import LookupNumberEndpoint
 from sinch.domains.number_lookup.models.v1.internal import LookupNumberRequest
 from sinch.domains.number_lookup.models.v1.response import LookupNumberResponse
-from sinch.domains.number_lookup.models.v1.types import RndFeatureOptionsDict
+from sinch.domains.number_lookup.models.v1.types import (
+    RndFeatureOptionsDict,
+    LookupFeaturesType,
+)
 
 
 class NumberLookup(BaseLookup):
     def lookup(
         self,
         number: str,
-        features: Optional[List[str]] = None,
+        features: Optional[List[LookupFeaturesType]] = None,
         rnd_feature_options: Optional[RndFeatureOptionsDict] = None,
         **kwargs,
     ) -> LookupNumberResponse:

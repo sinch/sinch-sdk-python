@@ -4,7 +4,7 @@ from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.types import BM
 from sinch.domains.number_lookup.api.v1.internal.base import LookupEndpoint
-from sinch.domains.number_lookup.exceptions import LookupException
+from sinch.domains.number_lookup.exceptions import NumberLookupException
 from sinch.domains.number_lookup.models.v1.internal import LookupNumberRequest
 from sinch.domains.number_lookup.models.v1.response import LookupNumberResponse
 
@@ -42,8 +42,8 @@ class LookupNumberEndpoint(LookupEndpoint):
     def handle_response(self, response: HTTPResponse) -> LookupNumberResponse:
         try:
             super(LookupNumberEndpoint, self).handle_response(response)
-        except LookupException as e:
-            raise LookupException(
+        except NumberLookupException as e:
+            raise NumberLookupException(
                 message=e.args[0],
                 response=e.http_response,
                 is_from_server=e.is_from_server,
