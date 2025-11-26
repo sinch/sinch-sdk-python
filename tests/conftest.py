@@ -253,6 +253,20 @@ def mock_sinch_client_numbers():
 
 
 @pytest.fixture
+def mock_sinch_client_number_lookup():
+    class MockConfiguration:
+        number_lookup_origin = "https://lookup.api.sinch.com"
+        project_id = "test_project_id"
+        transport = MagicMock()
+        transport.request = MagicMock()
+
+    class MockSinchClient:
+        configuration = MockConfiguration()
+
+    return MockSinchClient()
+
+
+@pytest.fixture
 def mock_sinch_client_sms():
     from sinch.core.clients.sinch_client_configuration import Configuration
     from sinch.core.ports.http_transport import HTTPTransport
