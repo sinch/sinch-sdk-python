@@ -1,16 +1,19 @@
 from datetime import datetime, timezone
 from behave import given, when, then
+from sinch.domains.number_lookup.api.v1.number_lookup_apis import NumberLookup
 from sinch.domains.number_lookup.models.v1.response import LookupNumberResponse
 
 
 @given('the Number Lookup service is available')
 def step_service_is_available(context):
     assert hasattr(context, 'sinch') and context.sinch, 'Sinch client was not initialized'
+    assert isinstance(context.sinch.number_lookup, NumberLookup), 'Number Lookup service is not available'
+    context.number_lookup = context.sinch.number_lookup
 
 
 @when('I send a request to lookup for a phone number with no additional features')
 def step_lookup_number_no_features(context):
-    context.response = context.sinch.number_lookup.lookup(
+    context.response = context.number_lookup.lookup(
         number='+12016666666'
     )
 
@@ -35,7 +38,7 @@ def step_validate_lookup_line_only(context):
 
 @when('I send a request to lookup for a phone number with all the features')
 def step_lookup_number_all_features(context):
-    context.response = context.sinch.number_lookup.lookup(
+    context.response = context.number_lookup.lookup(
         number='+12015555555',
         features=['LineType', 'RND', 'SimSwap', 'VoIPDetection'],
         rnd_feature_options={'contactDate': '2025-09-09'}
