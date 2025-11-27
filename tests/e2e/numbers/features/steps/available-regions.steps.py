@@ -1,4 +1,5 @@
 from behave import given, when, then
+from sinch.domains.numbers.virtual_numbers import VirtualNumbers
 
 
 def count_region_type(regions, number_types):
@@ -10,17 +11,19 @@ def count_region_type(regions, number_types):
 def step_regions_service_is_available(context):
     """Ensures the Sinch client is initialized"""
     assert hasattr(context, 'sinch') and context.sinch, 'Sinch client was not initialized'
+    assert isinstance(context.sinch.numbers, VirtualNumbers), 'Numbers service is not available'
+    context.numbers = context.sinch.numbers
 
 
 @when('I send a request to list all the regions')
 def step_list_all_regions(context):
-    response = context.sinch.numbers.regions.list()
+    response = context.numbers.regions.list()
     context.response = response.content()
 
 
 @when('I send a request to list the TOLL_FREE regions')
 def step_list_toll_free_regions(context):
-    response = context.sinch.numbers.regions.list(
+    response = context.numbers.regions.list(
         types=['TOLL_FREE']
     )
     context.response = response.content()
@@ -28,7 +31,7 @@ def step_list_toll_free_regions(context):
 
 @when('I send a request to list the TOLL_FREE or MOBILE regions')
 def step_list_toll_free_or_mobile_regions(context):
-    response = context.sinch.numbers.regions.list(
+    response = context.numbers.regions.list(
         types=['TOLL_FREE', 'MOBILE']
     )
     context.response = response.content()

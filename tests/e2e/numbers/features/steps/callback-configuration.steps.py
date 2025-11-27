@@ -2,17 +2,20 @@ from behave import given, when, then
 
 from sinch.domains.numbers.api.v1.exceptions import NumberNotFoundException
 from sinch.domains.numbers.models.v1.errors import NotFoundError
+from sinch.domains.numbers.virtual_numbers import VirtualNumbers
 
 
 @given('the Numbers service "Callback Configuration" is available')
 def step_callback_config_service_is_available(context):
     """Ensures the Sinch client is initialized"""
     assert hasattr(context, 'sinch') and context.sinch, 'Sinch client was not initialized'
+    assert isinstance(context.sinch.numbers, VirtualNumbers), 'Numbers service is not available'
+    context.numbers = context.sinch.numbers
 
 
 @when('I send a request to retrieve the callback configuration')
 def step_retrieve_callback_configuration(context):
-    context.response = context.sinch.numbers.callback_configuration.get()
+    context.response = context.numbers.callback_configuration.get()
 
 
 @then('the response contains the project\'s callback configuration')
@@ -24,7 +27,7 @@ def step_check_callback_configuration(context):
 @when('I send a request to update the callback configuration with the secret "{hmac_secret}"')
 def step_update_callback_configuration(context, hmac_secret):
     try:
-        context.response = context.sinch.numbers.callback_configuration.update(hmac_secret=hmac_secret)
+        context.response = context.numbers.callback_configuration.update(hmac_secret=hmac_secret)
         context.error = None
     except NumberNotFoundException as e:
         context.error = e
