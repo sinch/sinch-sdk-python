@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
-from pydantic import Field, StrictInt, StrictStr
+from pydantic import Field, StrictInt, StrictStr, field_validator
 from sinch.domains.sms.models.v1.types.delivery_receipt_status_code_type import (
     DeliveryReceiptStatusCodeType,
 )
@@ -15,6 +15,9 @@ from sinch.domains.sms.models.v1.types.recipient_delivery_report_type import (
 )
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
+)
+from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+    normalize_iso_timestamp,
 )
 
 
@@ -64,3 +67,12 @@ class RecipientDeliveryReport(BaseModelConfigurationResponse):
     type: RecipientDeliveryReportType = Field(
         default=..., description="The recipient delivery report type."
     )
+
+    @field_validator("at", "operator_status_at", mode="before")
+    @classmethod
+    def normalize_timestamp(
+        cls, value: Optional[Union[str, datetime]]
+    ) -> Optional[Union[str, datetime]]:
+        if isinstance(value, str):
+            return normalize_iso_timestamp(value)
+        return value
