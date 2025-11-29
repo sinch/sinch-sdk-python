@@ -1,4 +1,3 @@
-import json
 import requests
 from datetime import datetime, timezone
 from behave import given, when, then
@@ -17,7 +16,6 @@ SINCH_SMS_CALLBACK_SECRET = 'KayakingTheSwell'
 def parse_event(context, response):
     context.headers = dict(response.headers)
     context.raw_event = response.text
-    return json.loads(context.raw_event)
 
 
 @given('the SMS Webhooks handler is available')
@@ -32,15 +30,9 @@ def step_send_incoming_sms_event(context):
     context.event = context.sms_webhook.parse_event(context.raw_event)
 
 
-@then('the header of the event "IncomingSMS" contains a valid signature')
-def step_check_valid_signature_incoming_sms(context):
-    assert context.sms_webhook.validate_authentication_header(
-        context.headers, context.raw_event
-    ), 'Signature validation failed'
-
-
-@then('the header of the event "DeliveryReport" contains a valid signature')
-def step_check_valid_signature_delivery_report(context):
+@then('the header of the event "{event_type}" contains a valid signature')
+@then('the header of the event "{event_type}" with the status "{status}" contains a valid signature')
+def step_check_valid_signature(context, event_type, status=None):
     assert context.sms_webhook.validate_authentication_header(
         context.headers, context.raw_event
     ), 'Signature validation failed'
@@ -101,20 +93,6 @@ def step_send_recipient_delivery_report_event_aborted(context):
     )
     parse_event(context, response)
     context.event = context.sms_webhook.parse_event(context.raw_event)
-
-
-@then('the header of the event "DeliveryReport" with the status "Delivered" contains a valid signature')
-def step_check_valid_signature_with_status_delivered(context):
-    assert context.sms_webhook.validate_authentication_header(
-        context.headers, context.raw_event
-    ), 'Signature validation failed'
-
-
-@then('the header of the event "DeliveryReport" with the status "Aborted" contains a valid signature')
-def step_check_valid_signature_with_status_aborted(context):
-    assert context.sms_webhook.validate_authentication_header(
-        context.headers, context.raw_event
-    ), 'Signature validation failed'
 
 
 @then('the SMS event describes an SMS recipient delivery report event with the status "Delivered"')

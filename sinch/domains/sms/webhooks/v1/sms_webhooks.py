@@ -83,14 +83,6 @@ class SmsWebhooks:
             "recipient_delivery_report_sms",
             "recipient_delivery_report_mms",
         ):
-            if "at" in event_body and isinstance(event_body["at"], str):
-                event_body["at"] = normalize_iso_timestamp(event_body["at"])
-            if "operator_status_at" in event_body and isinstance(
-                event_body["operator_status_at"], str
-            ):
-                event_body["operator_status_at"] = normalize_iso_timestamp(
-                    event_body["operator_status_at"]
-                )
             return RecipientDeliveryReport(**event_body)
 
         # Handle incoming SMS messages using discriminated union

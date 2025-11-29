@@ -9,7 +9,9 @@ class MediaItem(WebhookEvent):
     content_type: StrictStr = Field(
         ..., description="Content type of the media file"
     )
-    status: StrictStr = Field(..., description="Status of the media upload")
+    status: Union[Literal["Uploaded", "Failed"], StrictStr] = Field(
+        ..., description="Status of the media upload"
+    )
     code: StrictInt = Field(..., description="Status code")
 
 
