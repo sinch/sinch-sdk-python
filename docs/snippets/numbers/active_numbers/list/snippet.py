@@ -1,7 +1,8 @@
 """
 Sinch Python Snippet
 
-This snippet is available at https://github.com/sinch/sinch-sdk-python-snippets
+TODO: Update links when v2 is released.
+This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
 """
 
 import os
