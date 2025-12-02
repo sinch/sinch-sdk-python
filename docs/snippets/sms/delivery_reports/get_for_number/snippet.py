@@ -1,3 +1,10 @@
+"""
+Sinch Python Snippet
+
+TODO: Update links when v2 is released.
+This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+"""
+
 import os
 from dotenv import load_dotenv
 from sinch import SinchClient
@@ -13,8 +20,8 @@ sinch_client = SinchClient(
 
 # The ID of the batch to get delivery reports for
 batch_id = "BATCH_ID"
-# The phone number to get delivery reports for
-recipient = "+1234567890"
+# The phone number from which you will receive delivery reports, in E.164 format (e.g., +1234567890).
+recipient = "RECIPIENT_PHONE_NUMBER"
 
 response = sinch_client.sms.delivery_reports.get_for_number(
     batch_id=batch_id,
