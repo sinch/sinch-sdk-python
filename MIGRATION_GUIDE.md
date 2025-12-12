@@ -92,6 +92,8 @@ token_client.configuration.sms_region_with_service_plan_id = "eu"
 
 
 In V2:
+- The sms_region no longer defaults to us and is now a required field.
+
 ```python
 from sinch import SinchClient
 
