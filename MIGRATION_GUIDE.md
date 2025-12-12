@@ -46,6 +46,7 @@ This guide lists all removed classes and interfaces from V1 and how to migrate t
 #### Replacement APIs
 
 The SMS domain API access remains the same: `sinch.sms.batches` and `sinch.sms.delivery_reports`. However, the underlying models and method signatures have changed.
+Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and will be available in future minor versions.
 
 ##### Batches API
 
@@ -92,7 +93,7 @@ token_client.configuration.sms_region_with_service_plan_id = "eu"
 
 
 In V2:
-- The sms_region no longer defaults to us and is now a required field.
+- The `sms_region` no longer defaults to us. Set it explicitly before using the SMS API, otherwise calls will fail at runtime. The parameter is now exposed on `SinchClient` (not just the configuration object) to ensure the region is provided. Note that `sms_region` is only required when using the SMS API endpoints.
 
 ```python
 from sinch import SinchClient
@@ -111,4 +112,8 @@ token_client = SinchClient(
     sms_api_token="your-sms-api-token",
     sms_region="us",
 )
+
+# Note: The code is backward compatible. The sms_region can still be set through the configuration object,
+# but you must ensure this setting is done BEFORE any SMS API call:
+sinch_client.configuration.sms_region = "eu"
 ```
