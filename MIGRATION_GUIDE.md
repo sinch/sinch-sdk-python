@@ -93,7 +93,7 @@ token_client.configuration.sms_region_with_service_plan_id = "eu"
 
 
 In V2:
-- The `sms_region` no longer defaults to us. Set it explicitly before using the SMS API, otherwise calls will fail at runtime. The parameter is now exposed on `SinchClient` (not just the configuration object) to ensure the region is provided. Note that `sms_region` is only required when using the SMS API endpoints.
+- The `sms_region` no longer defaults to `us`. Set it explicitly before using the SMS API, otherwise calls will fail at runtime. The parameter is now exposed on `SinchClient` (not just the configuration object) to ensure the region is provided. Note that `sms_region` is only required when using the SMS API endpoints.
 
 ```python
 from sinch import SinchClient
