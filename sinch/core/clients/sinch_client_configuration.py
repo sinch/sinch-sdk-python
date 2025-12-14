@@ -266,8 +266,21 @@ class Configuration:
         Returns the appropriate SMS origin based on the authentication method.
         - SMS auth (service_plan_id + sms_api_token): uses sms_origin_with_service_plan_id
         - Project auth (project_id): uses regular sms_origin
+
+        Raises:
+            ValueError: If the SMS origin is None (sms_region not set)
         """
         if self._authentication_method == "sms_auth":
-            return self.sms_origin_with_service_plan_id
+            origin = self.sms_origin_with_service_plan_id
         else:
-            return self.sms_origin
+            origin = self.sms_origin
+
+        if origin is None:
+            raise ValueError(
+                "SMS region is required. "
+                "Provide sms_region when initializing SinchClient "
+                "Example: SinchClient(project_id='...', key_id='...', key_secret='...', sms_region='eu')"
+                "or set it via sinch_client.configuration.sms_region. "
+            )
+
+        return origin
