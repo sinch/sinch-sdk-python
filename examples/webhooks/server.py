@@ -17,6 +17,7 @@ app = Flask(__name__)
 config = load_config()
 port = int(config.get('SERVER_PORT') or 3001)
 numbers_webhooks_secret = config.get('NUMBERS_WEBHOOKS_SECRET')
+sms_webhooks_secret = config.get('SMS_WEBHOOKS_SECRET')
 sinch_client = get_sinch_client(config)
 
 # Set up logging at the INFO level
@@ -24,7 +25,7 @@ logging.basicConfig()
 sinch_client.configuration.logger.setLevel(logging.INFO)
 
 numbers_controller = NumbersController(sinch_client, numbers_webhooks_secret)
-sms_controller = SmsController(sinch_client)
+sms_controller = SmsController(sinch_client, sms_webhooks_secret)
 
 
 # Middleware to capture raw body

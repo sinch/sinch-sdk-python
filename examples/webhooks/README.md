@@ -22,14 +22,6 @@ This directory contains both the webhook handlers and the server application (`s
 1. **Environment Variables**:  
    Rename [.env.example](.env.example) to `.env` in this directory (`examples/webhooks/`), then add your credentials from the Sinch dashboard under the Access Keys section.
    
-   - To use [Numbers](https://developers.sinch.com/docs/numbers/), you need to fill the following variables 
-   with the values from your Sinch account:
-   ``` 
-   SINCH_PROJECT_ID=Your Sinch Project ID
-   SINCH_KEY_ID=Your Sinch Access Key ID
-   SINCH_KEY_SECRET=Your Sinch Key Secret associated to your Sinch Access Key
-   ```
-   
    - Server Port:  
    Define the port your server will listen to on (default: 3001):
    ```
@@ -57,9 +49,7 @@ This directory contains both the webhook handlers and the server application (`s
    poetry install
 ```
 
-3. Rename `.env.example` to `.env` and update it with your configuration (see above).
-
-4. Start the server:
+3. Start the server:
 ``` bash
    poetry run python server.py
 ```
@@ -102,3 +92,9 @@ Use the `https` forwarding URL in your callback configuration. For example:
 Use this value to configure the callback URLs:
  - **Numbers**: Set the `callbackUrl` parameter when renting or updating a number via the API
  - **SMS**: Set the `callback_url` parameter when configuring your SMS service plan via the API
+
+You can also set these callback URLs in the Sinch dashboard; the API parameters above override the default values configured there.
+
+> **Note**: If you have set a webhook secret (e.g., `SMS_WEBHOOKS_SECRET`), the webhook URL must be configured in the Sinch dashboard
+> and cannot be overridden via API parameters. The webhook secret is used to validate incoming webhook requests,
+> and the URL associated with it must be set in the dashboard.

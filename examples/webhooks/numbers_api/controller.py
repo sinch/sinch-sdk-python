@@ -14,14 +14,16 @@ class NumbersController:
 
         webhooks_service = self.sinch_client.numbers.webhooks(self.webhooks_secret)
 
-        valid_auth = webhooks_service.validate_authentication_header(
-            headers=headers,
-            json_payload=body_str
-        )
+        ensure_valid_authentication = False
+        if ensure_valid_authentication:
+            valid_auth = webhooks_service.validate_authentication_header(
+                headers=headers,
+                json_payload=body_str
+            )
 
-        if not valid_auth:
-            self.logger.error('Invalid authentication header')
-            return Response(status=401)
+            if not valid_auth:
+                self.logger.error('Invalid authentication header')
+                return Response(status=401)
 
         event = webhooks_service.parse_event(body_str)
 
