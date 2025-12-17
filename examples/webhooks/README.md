@@ -33,7 +33,7 @@ This directory contains both the webhook handlers and the server application (`s
    ```
    NUMBERS_WEBHOOKS_SECRET=Your Sinch Numbers Webhook Secret
    ```
-     - SMS controller: To configure the `sms` webhooks secret, contact your account manager to enable SMS callbacks. For more details, refer to
+     - SMS controller: To configure the `sms` webhooks secret, contact your account manager to enable authentication for SMS callbacks. For more details, refer to
        [SMS API](https://developers.sinch.com/docs/sms/api-reference/sms/tag/Webhooks/#tag/Webhooks/section/Callbacks), 
 
    ```
