@@ -31,12 +31,4 @@ def get_sinch_client(config: dict) -> SinchClient:
     Returns:
         SinchClient: Configured Sinch client instance
     """
-    project_id = config.get('SINCH_PROJECT_ID')
-    key_id = config.get('SINCH_KEY_ID')
-    key_secret = config.get('SINCH_KEY_SECRET')
-
-    return SinchClient(
-        project_id=project_id,
-        key_id=key_id,
-        key_secret=key_secret,
-    )
+    return SinchClient()

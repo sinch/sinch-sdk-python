@@ -17,22 +17,17 @@ class SmsController:
 
         webhooks_service = self.sinch_client.sms.webhooks(self.webhooks_secret)
 
+        # Signature headers may be absent unless your account manager enables them
+        # (see README: Configuration -> Controller Settings -> SMS controller);
+        # leave auth disabled here unless SMS callbacks are configured.
         ensure_valid_authentication = False
         if ensure_valid_authentication:
-            valid_auth = webhooks_service.validate_authentication_header(
+            webhooks_service.validate_authentication_header(
                 headers=headers,
                 json_payload=body_str
             )
 
-            if not valid_auth:
-                self.logger.error('Invalid authentication header')
-                return Response(status=401)
-
         event = webhooks_service.parse_event(body_str)
-
-        event_type = getattr(event, 'type', None)
-
-        self.logger.info(f'Handling SMS event: {event_type}')
 
         handle_sms_event(sms_event=event, logger=self.logger)
 
