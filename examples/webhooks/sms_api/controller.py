@@ -22,10 +22,13 @@ class SmsController:
         # leave auth disabled here unless SMS callbacks are configured.
         ensure_valid_authentication = False
         if ensure_valid_authentication:
-            webhooks_service.validate_authentication_header(
+            valid_auth = webhooks_service.validate_authentication_header(
                 headers=headers,
                 json_payload=body_str
             )
+
+            if not valid_auth:
+                return Response(status=401)
 
         event = webhooks_service.parse_event(body_str)
 
