@@ -2,7 +2,7 @@
 
 Sinch Python SDK Code Snippets
 
-This repository contains code snippets demonstrating usage of the
+This directory contains code snippets demonstrating usage of the
 [Sinch Python SDK](https://github.com/sinch/sinch-sdk-python).
 
 ## Requirements
