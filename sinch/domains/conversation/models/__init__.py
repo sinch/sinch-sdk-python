@@ -4,7 +4,7 @@ from typing import Optional
 from sinch.core.models.base_model import SinchBaseModel
 from sinch.domains.conversation.enums import (
     ConversationChannel,
-    ConversationRetentionPolicyType
+    ConversationRetentionPolicyType,
 )
 
 
@@ -58,7 +58,9 @@ class SinchConversationRetentionPolicy(SinchBaseModel):
 
 
 @dataclass
-class SinchConversationTelegramCredentials(SinchBaseModel):  # TODO: add more communication channels
+class SinchConversationTelegramCredentials(
+    SinchBaseModel
+):  # TODO: add more communication channels
     token: str
 
 

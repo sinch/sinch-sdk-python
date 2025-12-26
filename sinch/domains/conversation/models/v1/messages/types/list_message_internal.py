@@ -1,0 +1,31 @@
+from typing import Optional
+from pydantic import Field, StrictStr, conlist
+from sinch.domains.conversation.models.v1.messages.shared.list_section import (
+    ListSection,
+)
+from sinch.domains.conversation.models.v1.messages.shared.media_properties_internal import (
+    MediaPropertiesInternal,
+)
+from sinch.domains.conversation.models.v1.messages.shared.list_message_properties_internal import (
+    ListMessagePropertiesInternal,
+)
+from sinch.domains.conversation.models.v1.messages.internal.base import (
+    BaseModelConfigurationResponse,
+)
+
+
+class ListMessageInternal(BaseModelConfigurationResponse):
+    title: StrictStr = Field(
+        default=...,
+        description="A title for the message that is displayed near the products or choices.",
+    )
+    description: Optional[StrictStr] = Field(
+        default=None,
+        description="This is an optional field, containing a description for the message.",
+    )
+    media: Optional[MediaPropertiesInternal] = None
+    sections: conlist(ListSection) = Field(
+        default=...,
+        description="List of ListSection objects containing choices to be presented in the list message.",
+    )
+    message_properties: Optional[ListMessagePropertiesInternal] = None
