@@ -1,0 +1,36 @@
+from typing import Literal, Union
+from pydantic import StrictStr
+
+
+ReasonCode = Union[
+    Literal[
+        "UNKNOWN",
+        "INTERNAL_ERROR",
+        "RATE_LIMITED",
+        "RECIPIENT_INVALID_CHANNEL_IDENTITY",
+        "RECIPIENT_NOT_REACHABLE",
+        "RECIPIENT_NOT_OPTED_IN",
+        "OUTSIDE_ALLOWED_SENDING_WINDOW",
+        "CHANNEL_FAILURE",
+        "CHANNEL_BAD_CONFIGURATION",
+        "CHANNEL_CONFIGURATION_MISSING",
+        "MEDIA_TYPE_UNSUPPORTED",
+        "MEDIA_TOO_LARGE",
+        "MEDIA_NOT_REACHABLE",
+        "NO_CHANNELS_LEFT",
+        "TEMPLATE_NOT_FOUND",
+        "TEMPLATE_INSUFFICIENT_PARAMETERS",
+        "TEMPLATE_NON_EXISTING_LANGUAGE_OR_VERSION",
+        "DELIVERY_TIMED_OUT",
+        "DELIVERY_REJECTED_DUE_TO_POLICY",
+        "CONTACT_NOT_FOUND",
+        "BAD_REQUEST",
+        "UNKNOWN_APP",
+        "NO_CHANNEL_IDENTITY_FOR_CONTACT",
+        "CHANNEL_REJECT",
+        "NO_PERMISSION",
+        "NO_PROFILE_AVAILABLE",
+        "UNSUPPORTED_OPERATION",
+    ],
+    StrictStr,
+]
