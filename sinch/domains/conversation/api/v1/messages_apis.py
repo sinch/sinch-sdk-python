@@ -1,11 +1,10 @@
 from typing import Optional
 
-from sinch.domains.conversation.models.v1.messages.internal import (
-    DeleteMessageRequest,
-    GetMessageRequest,
+from sinch.domains.conversation.models.v1.messages.internal.request import (
+    MessageIdRequest,
     UpdateMessageMetadataRequest,
 )
-from sinch.domains.conversation.models.v1.messages.types import (
+from sinch.domains.conversation.models.v1.messages.response.types import (
     ConversationMessageResponse,
 )
 from sinch.domains.conversation.models.v1.messages.types import (
@@ -35,7 +34,7 @@ class Messages(BaseConversation):
         :param message_id: The unique ID of the message. (required)
         :type message_id: str
         :param messages_source: Specifies the message source for which the request will be processed. Used for
-            operations on messages in Dispatch Mode. For more information,
+            operations on messages in Dispatch Mode. Defaults to `CONVERSATION_SOURCE` when not specified. For more information,
             see [Processing Modes](https://developers.sinch.com/docs/conversation/processing-modes/).
             (optional)
         :type messages_source: Optional[MessagesSource]
@@ -47,7 +46,7 @@ class Messages(BaseConversation):
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        request_data = DeleteMessageRequest(
+        request_data = MessageIdRequest(
             message_id=message_id, messages_source=messages_source, **kwargs
         )
         return self._request(DeleteMessageEndpoint, request_data)
@@ -64,7 +63,7 @@ class Messages(BaseConversation):
         :param message_id: The unique ID of the message. (required)
         :type message_id: str
         :param messages_source: Specifies the message source for which the request will be processed. Used for
-            operations on messages in Dispatch Mode. For more information,
+            operations on messages in Dispatch Mode. Defaults to `CONVERSATION_SOURCE` when not specified. For more information,
             see [Processing Modes](https://developers.sinch.com/docs/conversation/processing-modes/).
             (optional)
         :type messages_source: Optional[MessagesSource]
@@ -76,7 +75,7 @@ class Messages(BaseConversation):
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        request_data = GetMessageRequest(
+        request_data = MessageIdRequest(
             message_id=message_id, messages_source=messages_source, **kwargs
         )
         return self._request(GetMessageEndpoint, request_data)
@@ -96,7 +95,7 @@ class Messages(BaseConversation):
         :param metadata: Metadata that should be associated with the message. (required)
         :type metadata: str
         :param messages_source: Specifies the message source for which the request will be processed. Used for
-            operations on messages in Dispatch Mode. For more information,
+            operations on messages in Dispatch Mode. Defaults to `CONVERSATION_SOURCE` when not specified. For more information,
             see [Processing Modes](https://developers.sinch.com/docs/conversation/processing-modes/).
             (optional)
         :type messages_source: Optional[MessagesSource]

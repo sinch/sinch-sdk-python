@@ -1,9 +1,6 @@
 from sinch.domains.conversation.models.v1.messages.types.agent_type import (
     AgentType,
 )
-from sinch.domains.conversation.models.v1.messages.types.conversation_message_response import (
-    ConversationMessageResponse,
-)
 from sinch.domains.conversation.models.v1.messages.types.channel_specific_message_type import (
     ChannelSpecificMessageType,
 )
@@ -25,6 +22,9 @@ from sinch.domains.conversation.models.v1.messages.types.messages_source_type im
 from sinch.domains.conversation.models.v1.messages.types.payment_order_status_type import (
     PaymentOrderStatusType,
 )
+from sinch.domains.conversation.models.v1.messages.types.reason_code_type import (
+    ReasonCodeType,
+)
 
 __all__ = [
     "AgentType",
@@ -32,8 +32,8 @@ __all__ = [
     "ConversationDirectionType",
     "ProcessingModeType",
     "CardHeightType",
-    "ConversationMessageResponse",
     "ChannelSpecificMessageType",
     "MessagesSourceType",
     "PaymentOrderStatusType",
+    "ReasonCodeType",
 ]

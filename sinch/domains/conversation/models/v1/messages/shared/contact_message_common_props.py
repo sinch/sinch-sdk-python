@@ -1,6 +1,6 @@
 from typing import Optional
-from sinch.domains.conversation.models.v1.messages.shared.reply_to_internal import (
-    ReplyToInternal,
+from sinch.domains.conversation.models.v1.messages.response.shared.reply_to import (
+    ReplyTo,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfigurationResponse,
@@ -8,4 +8,4 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 
 
 class ContactMessageCommonProps(BaseModelConfigurationResponse):
-    reply_to: Optional[ReplyToInternal] = None
+    reply_to: Optional[ReplyTo] = None

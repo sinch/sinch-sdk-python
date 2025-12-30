@@ -45,6 +45,7 @@ jobs:
         ruff format sinch/domains/sms --check --diff
         ruff check sinch/domains/number_lookup --statistics
         ruff format sinch/domains/number_lookup --check --diff
+        ruff check sinch/domains/conversation --statistics
         ruff format sinch/domains/conversation --check --diff
 
     - name: Test with Pytest

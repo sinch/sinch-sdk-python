@@ -1,12 +1,11 @@
 import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
-from sinch.domains.conversation.models.v1.messages.internal import (
-    DeleteMessageRequest,
-    GetMessageRequest,
+from sinch.domains.conversation.models.v1.messages.internal.request import (
+    MessageIdRequest,
     UpdateMessageMetadataRequest,
 )
-from sinch.domains.conversation.models.v1.messages.types import (
+from sinch.domains.conversation.models.v1.messages.response.types import (
     ConversationMessageResponse,
 )
 from sinch.domains.conversation.api.v1.internal.base import (
@@ -15,21 +14,35 @@ from sinch.domains.conversation.api.v1.internal.base import (
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 
 
-class DeleteMessageEndpoint(ConversationEndpoint):
+class MessageEndpoint(ConversationEndpoint):
+    """
+    Base class for message-related endpoints that share common query parameter handling.
+    """
+
+    QUERY_PARAM_FIELDS = {"messages_source"}
+    BODY_PARAM_FIELDS = set()
+
+    def build_query_params(self) -> dict:
+        path_params = self._get_path_params_from_url()
+        exclude_set = path_params.union(self.BODY_PARAM_FIELDS)
+        query_params = self.request_data.model_dump(
+            include=self.QUERY_PARAM_FIELDS,
+            exclude_none=True,
+            by_alias=True,
+            exclude=exclude_set,
+        )
+        return query_params
+
+
+class DeleteMessageEndpoint(MessageEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/messages/{message_id}"
     HTTP_METHOD = HTTPMethods.DELETE.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: DeleteMessageRequest):
+    def __init__(self, project_id: str, request_data: MessageIdRequest):
         super(DeleteMessageEndpoint, self).__init__(project_id, request_data)
         self.project_id = project_id
         self.request_data = request_data
-
-    def build_query_params(self) -> dict:
-        path_params = self._get_path_params_from_url()
-        return self.request_data.model_dump(
-            exclude_none=True, by_alias=True, exclude=path_params
-        )
 
     def handle_response(self, response: HTTPResponse):
         try:
@@ -42,21 +55,15 @@ class DeleteMessageEndpoint(ConversationEndpoint):
             )
 
 
-class GetMessageEndpoint(ConversationEndpoint):
+class GetMessageEndpoint(MessageEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/messages/{message_id}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: GetMessageRequest):
+    def __init__(self, project_id: str, request_data: MessageIdRequest):
         super(GetMessageEndpoint, self).__init__(project_id, request_data)
         self.project_id = project_id
         self.request_data = request_data
-
-    def build_query_params(self) -> dict:
-        path_params = self._get_path_params_from_url()
-        return self.request_data.model_dump(
-            exclude_none=True, by_alias=True, exclude=path_params
-        )
 
     def handle_response(
         self, response: HTTPResponse
@@ -74,12 +81,12 @@ class GetMessageEndpoint(ConversationEndpoint):
         )
 
 
-class UpdateMessageMetadataEndpoint(ConversationEndpoint):
+class UpdateMessageMetadataEndpoint(MessageEndpoint):
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/messages/{message_id}"
     HTTP_METHOD = HTTPMethods.PATCH.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    QUERY_PARAM_FIELDS = {"messages_source"}
+    BODY_PARAM_FIELDS = {"metadata"}
 
     def __init__(
         self, project_id: str, request_data: UpdateMessageMetadataRequest
@@ -90,17 +97,14 @@ class UpdateMessageMetadataEndpoint(ConversationEndpoint):
         self.project_id = project_id
         self.request_data = request_data
 
-    def build_query_params(self) -> dict:
-        query_params = self.request_data.model_dump(
-            include=self.QUERY_PARAM_FIELDS, exclude_none=True, by_alias=True
-        )
-        return query_params
-
     def request_body(self):
         path_params = self._get_path_params_from_url()
         exclude_set = path_params.union(self.QUERY_PARAM_FIELDS)
         request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True, exclude=exclude_set
+            include=self.BODY_PARAM_FIELDS,
+            by_alias=True,
+            exclude_none=True,
+            exclude=exclude_set,
         )
         return json.dumps(request_data)
 

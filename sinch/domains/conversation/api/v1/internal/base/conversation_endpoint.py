@@ -1,7 +1,6 @@
 import re
 from abc import ABC
 from typing import Type, Union, get_origin, get_args
-from pydantic import TypeAdapter
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.types import BM
@@ -15,7 +14,9 @@ class ConversationEndpoint(HTTPEndpoint, ABC):
     def build_url(self, sinch) -> str:
         if not self.ENDPOINT_URL:
             raise NotImplementedError(
-                "ENDPOINT_URL must be defined in the subclass."
+                f"ENDPOINT_URL must be defined in the Conversation endpoint subclass "
+                f"'{self.__class__.__name__}'. "
+                f"Please add the ENDPOINT_URL class attribute to this endpoint class."
             )
 
         return self.ENDPOINT_URL.format(
@@ -90,6 +91,13 @@ class ConversationEndpoint(HTTPEndpoint, ABC):
                     except Exception as e:
                         last_error = e
                         continue
+
+                # If all Union types failed, raise an error with the last error details
+                if last_error is not None:
+                    raise ValueError(
+                        f"Invalid response structure: None of the Union types matched. "
+                        f"Last error: {last_error}"
+                    ) from last_error
 
             # Use standard model_validate for regular Pydantic models
             return response_model.model_validate(response_body)

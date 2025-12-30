@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import Field, StrictStr
-from sinch.domains.conversation.models.v1.messages.shared.media_properties_internal import (
-    MediaPropertiesInternal,
+from sinch.domains.conversation.models.v1.messages.response.shared.media_properties import (
+    MediaProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfigurationResponse,
@@ -17,7 +17,7 @@ class ChoiceItem(BaseModelConfigurationResponse):
         default=None,
         description="Optional parameter. The description (or subtitle) of this choice item.",
     )
-    media: Optional[MediaPropertiesInternal] = Field(
+    media: Optional[MediaProperties] = Field(
         default=None,
         description="Optional parameter. The media of this choice item.",
     )

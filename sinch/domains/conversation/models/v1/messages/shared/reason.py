@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import Field, StrictStr
-from sinch.domains.conversation.models.v1.messages.shared.reason_code import (
-    ReasonCode,
+from sinch.domains.conversation.models.v1.messages.types.reason_code_type import (
+    ReasonCodeType,
 )
 from sinch.domains.conversation.models.v1.messages.shared.reason_sub_code import (
     ReasonSubCode,
@@ -12,7 +12,7 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 
 
 class Reason(BaseModelConfigurationResponse):
-    code: Optional[ReasonCode] = None
+    code: Optional[ReasonCodeType] = None
     description: Optional[StrictStr] = Field(
         default=None, description="A textual description of the reason."
     )
