@@ -1,5 +1,5 @@
 from typing import Union
-from sinch.domains.conversation.models.v1.messages.response.shared.contact_message import (
+from sinch.domains.conversation.models.v1.messages.categories.contact.contact_message import (
     ChannelSpecificContactMessage,
     ChoiceResponseContactMessage,
     FallbackContactMessage,

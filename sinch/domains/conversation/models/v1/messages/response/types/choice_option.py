@@ -1,5 +1,5 @@
 from typing import Union
-from sinch.domains.conversation.models.v1.messages.response.shared.choice_options import (
+from sinch.domains.conversation.models.v1.messages.categories.choice.choice_options import (
     CallChoiceMessage,
     LocationChoiceMessage,
     TextChoiceMessage,

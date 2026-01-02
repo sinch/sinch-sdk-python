@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import Field, StrictStr
-from sinch.domains.conversation.models.v1.messages.response.shared.media_properties import (
+from sinch.domains.conversation.models.v1.messages.categories.media.media_properties import (
     MediaProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

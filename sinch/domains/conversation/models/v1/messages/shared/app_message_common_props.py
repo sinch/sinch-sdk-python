@@ -1,14 +1,14 @@
 from typing import Dict, Optional
 from pydantic import Field, StrictStr
-from sinch.domains.conversation.models.v1.messages.response.shared.channel_specific_message import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.channel_specific_message import (
     ChannelSpecificMessage,
 )
 from sinch.domains.conversation.models.v1.messages.shared import Agent
-from sinch.domains.conversation.models.v1.messages.response.shared.omni_message_override import (
-    OmniMessageOverride,
-)
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfigurationResponse,
+)
+from sinch.domains.conversation.models.v1.messages.shared.override.omni_message_override import (
+    OmniMessageOverride,
 )
 
 

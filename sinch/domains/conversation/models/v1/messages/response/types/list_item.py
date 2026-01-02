@@ -1,8 +1,8 @@
 from typing import Union
-from sinch.domains.conversation.models.v1.messages.response.shared.list_item_choice import (
+from sinch.domains.conversation.models.v1.messages.categories.list.list_item_choice import (
     ListItemChoice,
 )
-from sinch.domains.conversation.models.v1.messages.response.shared.list_item_product import (
+from sinch.domains.conversation.models.v1.messages.categories.list.list_item_product import (
     ListItemProduct,
 )
 

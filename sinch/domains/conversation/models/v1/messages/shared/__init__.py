@@ -2,9 +2,6 @@ from sinch.domains.conversation.models.v1.messages.shared.address_info import (
     AddressInfo,
 )
 from sinch.domains.conversation.models.v1.messages.shared.agent import Agent
-from sinch.domains.conversation.models.v1.messages.shared.app_message_common_props import (
-    AppMessageCommonProps,
-)
 from sinch.domains.conversation.models.v1.messages.shared.channel_identity import (
     ChannelIdentity,
 )
@@ -30,9 +27,6 @@ from sinch.domains.conversation.models.v1.messages.shared.reason import Reason
 from sinch.domains.conversation.models.v1.messages.shared.reason_sub_code import (
     ReasonSubCode,
 )
-from sinch.domains.conversation.models.v1.messages.shared.template_reference_field import (
-    TemplateReferenceField,
-)
 
 __all__ = [
     "AddressInfo",
@@ -44,8 +38,24 @@ __all__ = [
     "ConversationMessageCommonProps",
     "Coordinates",
     "ListSection",
+    "OmniMessageOverride",
     "ProductItem",
     "Reason",
     "ReasonSubCode",
-    "TemplateReferenceField",
 ]
+
+
+def __getattr__(name: str):
+    if name == "OmniMessageOverride":
+        from sinch.domains.conversation.models.v1.messages.shared.override.omni_message_override import (
+            OmniMessageOverride,
+        )
+
+        return OmniMessageOverride
+    if name == "AppMessageCommonProps":
+        from sinch.domains.conversation.models.v1.messages.shared.app_message_common_props import (
+            AppMessageCommonProps,
+        )
+
+        return AppMessageCommonProps
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -19,11 +19,23 @@ from sinch.domains.conversation.models.v1.messages.types.card_height_type import
 from sinch.domains.conversation.models.v1.messages.types.messages_source_type import (
     MessagesSourceType,
 )
+from sinch.domains.conversation.models.v1.messages.types.payment_order_goods_type import (
+    PaymentOrderGoodsType,
+)
 from sinch.domains.conversation.models.v1.messages.types.payment_order_status_type import (
     PaymentOrderStatusType,
 )
+from sinch.domains.conversation.models.v1.messages.types.payment_order_type import (
+    PaymentOrderType,
+)
+from sinch.domains.conversation.models.v1.messages.types.pix_key_type import (
+    PixKeyType,
+)
 from sinch.domains.conversation.models.v1.messages.types.reason_code_type import (
     ReasonCodeType,
+)
+from sinch.domains.conversation.models.v1.messages.types.whatsapp_interactive_nfm_reply_name_type import (
+    WhatsAppInteractiveNfmReplyNameType,
 )
 
 __all__ = [
@@ -34,6 +46,10 @@ __all__ = [
     "CardHeightType",
     "ChannelSpecificMessageType",
     "MessagesSourceType",
+    "PaymentOrderGoodsType",
     "PaymentOrderStatusType",
+    "PaymentOrderType",
+    "PixKeyType",
     "ReasonCodeType",
+    "WhatsAppInteractiveNfmReplyNameType",
 ]

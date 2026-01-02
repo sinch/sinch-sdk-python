@@ -1,5 +1,5 @@
 from typing import Union
-from sinch.domains.conversation.models.v1.messages.response.shared.app_message import (
+from sinch.domains.conversation.models.v1.messages.categories.app.app_message import (
     CardAppMessage,
     CarouselAppMessage,
     ChoiceAppMessage,

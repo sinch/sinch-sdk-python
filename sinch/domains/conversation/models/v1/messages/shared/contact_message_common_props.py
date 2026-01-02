@@ -1,5 +1,5 @@
 from typing import Optional
-from sinch.domains.conversation.models.v1.messages.response.shared.reply_to import (
+from sinch.domains.conversation.models.v1.messages.categories.common.reply_to import (
     ReplyTo,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
