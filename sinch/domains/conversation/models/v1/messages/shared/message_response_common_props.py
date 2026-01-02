@@ -15,7 +15,7 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 )
 
 
-class ConversationMessageCommonProps(BaseModelConfigurationResponse):
+class MessageResponseCommonProps(BaseModelConfigurationResponse):
     accept_time: Optional[datetime] = Field(
         default=None,
         description="The time Conversation API processed the message.",

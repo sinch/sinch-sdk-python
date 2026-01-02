@@ -1,5 +1,5 @@
 from sinch.domains.conversation.models.v1.messages.shared import (
-    ConversationMessageCommonProps,
+    MessageResponseCommonProps,
 )
 from sinch.domains.conversation.models.v1.messages.response.types.app_message import (
     AppMessage,
@@ -12,13 +12,13 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 )
 
 
-class AppMessageConversationMessage(
-    ConversationMessageCommonProps, BaseModelConfigurationResponse
+class AppMessageResponse(
+    MessageResponseCommonProps, BaseModelConfigurationResponse
 ):
     app_message: AppMessage
 
 
-class ContactMessageConversationMessage(
-    ConversationMessageCommonProps, BaseModelConfigurationResponse
+class ContactMessageResponse(
+    MessageResponseCommonProps, BaseModelConfigurationResponse
 ):
     contact_message: ContactMessage
