@@ -45,6 +45,8 @@ jobs:
         ruff format sinch/domains/sms --check --diff
         ruff check sinch/domains/number_lookup --statistics
         ruff format sinch/domains/number_lookup --check --diff
+        ruff check sinch/domains/conversation --statistics
+        ruff format sinch/domains/conversation --check --diff
 
     - name: Test with Pytest
       run: |
@@ -84,6 +86,7 @@ jobs:
         cp sinch-sdk-mockserver/features/sms/batches_servicePlanId.feature ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/sms/webhooks.feature ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
+        cp sinch-sdk-mockserver/features/conversation/messages.feature ./tests/e2e/conversation/features/
 
     - name: Wait for mock server
       run: .github/scripts/wait-for-mockserver.sh
