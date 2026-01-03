@@ -20,6 +20,9 @@ class NumberLookup(BaseLookup):
         """
         Performs a number lookup.
         You can make a minimal request or add additional options to the features array.
+        
+        .. versionadded:: 2.1
+            This method now supports enhanced lookup features with improved accuracy.
 
         :param number: MSISDN in E.164 format to query (e.g., "+12312312312")
         :type number: str
@@ -32,6 +35,9 @@ class NumberLookup(BaseLookup):
 
         :returns: LookupNumberResponse
         :rtype: LookupNumberResponse
+        
+        .. note::
+            In version 2.1, the lookup performance has been optimized for faster response times.
         """
         request_data = LookupNumberRequest(
             number=number,
