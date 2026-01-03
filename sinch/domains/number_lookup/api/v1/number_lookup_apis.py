@@ -15,6 +15,7 @@ class NumberLookup(BaseLookup):
         number: str,
         features: Optional[List[LookupFeaturesType]] = None,
         rnd_feature_options: Optional[RndFeatureOptionsDict] = None,
+        new_parameter_test: Optional[str] = None,
         **kwargs,
     ) -> LookupNumberResponse:
         """
@@ -35,6 +36,8 @@ class NumberLookup(BaseLookup):
         :type features: Optional[List[str]]
         :param rnd_feature_options: Optional dictionary with RND feature options
         :type rnd_feature_options: Optional[RndFeatureOptionsDict]
+        :param new_parameter_test: Test parameter added in v2.1 for demonstration purposes
+        :type new_parameter_test: Optional[str]
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
@@ -53,4 +56,5 @@ class NumberLookup(BaseLookup):
             rnd_feature_options=rnd_feature_options,
             **kwargs,
         )
+        # Note: new_parameter_test is for documentation testing only
         return self._request(LookupNumberEndpoint, request_data)
