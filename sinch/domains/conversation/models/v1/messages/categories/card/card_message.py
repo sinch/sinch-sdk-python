@@ -9,7 +9,7 @@ from sinch.domains.conversation.models.v1.messages.categories.media import (
 from sinch.domains.conversation.models.v1.messages.response.types.choice_option import (
     ChoiceOption,
 )
-from sinch.domains.conversation.models.v1.messages.categories.common.message_properties import (
+from sinch.domains.conversation.models.v1.messages.categories.card.message_properties import (
     MessageProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

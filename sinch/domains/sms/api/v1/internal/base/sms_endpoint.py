@@ -26,8 +26,6 @@ class SmsEndpoint(HTTPEndpoint, ABC):
         if not self.ENDPOINT_URL:
             raise NotImplementedError(
                 f"ENDPOINT_URL must be defined in the SMS endpoint subclass "
-                f"'{self.__class__.__name__}'. "
-                f"Please add the ENDPOINT_URL class attribute to this endpoint class."
             )
 
         # Use the appropriate SMS origin based on authentication method

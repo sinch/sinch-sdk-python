@@ -15,8 +15,6 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
         if not self.ENDPOINT_URL:
             raise NotImplementedError(
                 f"ENDPOINT_URL must be defined in the Numbers endpoint subclass "
-                f"'{self.__class__.__name__}'. "
-                f"Please add the ENDPOINT_URL class attribute to this endpoint class."
             )
 
         return self.ENDPOINT_URL.format(

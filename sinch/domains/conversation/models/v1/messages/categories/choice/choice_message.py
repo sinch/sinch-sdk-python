@@ -9,7 +9,7 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 from sinch.domains.conversation.models.v1.messages.categories.text import (
     TextMessage,
 )
-from sinch.domains.conversation.models.v1.messages.categories.common.message_properties import (
+from sinch.domains.conversation.models.v1.messages.categories.card.message_properties import (
     MessageProperties,
 )
 

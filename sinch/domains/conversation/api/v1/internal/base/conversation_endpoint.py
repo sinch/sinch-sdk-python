@@ -15,9 +15,10 @@ class ConversationEndpoint(HTTPEndpoint, ABC):
         if not self.ENDPOINT_URL:
             raise NotImplementedError(
                 f"ENDPOINT_URL must be defined in the Conversation endpoint subclass "
-                f"'{self.__class__.__name__}'. "
-                f"Please add the ENDPOINT_URL class attribute to this endpoint class."
+                f"'{self.__class__.__name__}'."
             )
+
+        # TODO: Add support and validation for conversation_region in SinchClient initialization;
 
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.conversation_origin,
