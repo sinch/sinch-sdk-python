@@ -25,7 +25,7 @@ class SmsEndpoint(HTTPEndpoint, ABC):
     def build_url(self, sinch) -> str:
         if not self.ENDPOINT_URL:
             raise NotImplementedError(
-                "ENDPOINT_URL must be defined in the subclass."
+                "ENDPOINT_URL must be defined in the SMS endpoint subclass "
             )
 
         # Use the appropriate SMS origin based on authentication method
