@@ -1,6 +1,6 @@
 from datetime import datetime
-from typing import List, Optional
-from pydantic import Field, StrictStr, StrictInt
+from typing import Optional
+from pydantic import Field, StrictStr, StrictInt, conlist
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment.order_item import (
     OrderItem,
 )
@@ -10,7 +10,7 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 
 
 class PaymentOrder(BaseModelConfigurationResponse):
-    items: List[OrderItem] = Field(
+    items: conlist(OrderItem) = Field(
         ..., description="The items list for this order."
     )
     subtotal_value: StrictInt = Field(

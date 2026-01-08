@@ -34,6 +34,9 @@ from sinch.domains.conversation.models.v1.messages.types.pix_key_type import (
 from sinch.domains.conversation.models.v1.messages.types.reason_code_type import (
     ReasonCodeType,
 )
+from sinch.domains.conversation.models.v1.messages.types.reason_sub_code_type import (
+    ReasonSubCodeType,
+)
 from sinch.domains.conversation.models.v1.messages.types.whatsapp_interactive_nfm_reply_name_type import (
     WhatsAppInteractiveNfmReplyNameType,
 )
@@ -51,5 +54,6 @@ __all__ = [
     "PaymentOrderType",
     "PixKeyType",
     "ReasonCodeType",
+    "ReasonSubCodeType",
     "WhatsAppInteractiveNfmReplyNameType",
 ]
