@@ -18,10 +18,10 @@ class ConversationEndpoint(HTTPEndpoint, ABC):
                 f"'{self.__class__.__name__}'."
             )
 
-        # TODO: Add support and validation for conversation_region in SinchClient initialization;
+        origin = sinch.configuration.get_conversation_origin()
 
         return self.ENDPOINT_URL.format(
-            origin=sinch.configuration.conversation_origin,
+            origin=origin,
             project_id=self.project_id,
             **vars(self.request_data),
         )
