@@ -6,6 +6,93 @@ This release removes legacy SDK support.
 
 This guide lists all removed classes and interfaces from V1 and how to migrate to their V2 equivalents.
 
+## Client Initialization
+
+### Overview
+
+In V2, region parameters are required for domain-specific APIs (SMS and Conversation). These parameters must be set explicitly when initializing `SinchClient`, otherwise API calls will fail at runtime. The parameters are exposed directly on `SinchClient` to ensure they are provided.
+
+### SMS Region
+
+**In V1:**
+```python
+from sinch import SinchClient
+
+# Using Project auth
+sinch_client = SinchClient(
+    project_id="your-project-id",
+    key_id="your-key-id",
+    key_secret="your-key-secret",
+)
+sinch_client.configuration.sms_region = "eu"
+
+# Or using SMS token auth
+token_client = SinchClient(
+    service_plan_id='your-service-plan-id',
+    sms_api_token='your-sms-api-token'
+)
+token_client.configuration.sms_region_with_service_plan_id = "eu"
+```
+
+**In V2:**
+- The `sms_region` no longer defaults to `us`. Set it explicitly before using the SMS API, otherwise calls will fail at runtime. The parameter is now exposed on `SinchClient` (not just the configuration object) to ensure the region is provided. Note that `sms_region` is only required when using the SMS API endpoints.
+
+```python
+from sinch import SinchClient
+
+# Using Project auth
+sinch_client = SinchClient(
+    project_id="your-project-id",
+    key_id="your-key-id",
+    key_secret="your-key-secret",
+    sms_region="eu",
+)
+
+# Or using SMS token auth
+token_client = SinchClient(
+    service_plan_id="your-service-plan-id",
+    sms_api_token="your-sms-api-token",
+    sms_region="us",
+)
+
+# Note: The code is backward compatible. The sms_region can still be set through the configuration object,
+# but you must ensure this setting is done BEFORE any SMS API call:
+sinch_client.configuration.sms_region = "eu"
+```
+
+### Conversation Region
+
+**In V1:**
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id="your-project-id",
+    key_id="your-key-id",
+    key_secret="your-key-secret",
+)
+
+sinch_client.configuration.conversation_region = "eu"
+```
+
+**In V2:**
+- The `conversation_region` no longer defaults to `eu`. This parameter is required now when using the Conversation API endpoints. Set it explicitly when initializing `SinchClient`, otherwise calls will fail at runtime. The parameter is exposed on `SinchClient` to ensure the region is provided.
+
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id="your-project-id",
+    key_id="your-key-id",
+    key_secret="your-key-secret",
+    conversation_region="eu",
+)
+
+# Note: The conversation_region can also be set through the configuration object,
+# but you must ensure this setting is done BEFORE any Conversation API call:
+sinch_client.configuration.conversation_region = "eu"
+```
+
 ### [`SMS`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/sms)
 
 #### Replacement models
@@ -68,52 +155,3 @@ Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and 
 | `list()` with `ListSMSDeliveryReportsRequest` | `list()` the parameters `start_date` and `end_date` now accepts both `str` and `datetime`  |
 | `get_for_batch()` with `GetSMSDeliveryReportForBatchRequest` | `get()` with `batch_id: str` and optional parameters: `report_type`, `status`, `code`, `client_reference` |
 | `get_for_number()` with `GetSMSDeliveryReportForNumberRequest` | `get_for_number()` with `batch_id: str` and `recipient: str` parameters |
-
-#### SMS client initialization (with region)
-In V1:
-```python
-from sinch import SinchClient
-
-# Using Project auth
-sinch_client = SinchClient(
-    project_id="your-project-id",
-    key_id="your-key-id",
-    key_secret="your-key-secret",
-)
-sinch_client.configuration.sms_region = "eu"
-
-# Or using SMS token auth
-token_client = SinchClient(
-        service_plan_id='your-service-plan-id',
-        sms_api_token='your-sms-api-token'
-)
-token_client.configuration.sms_region_with_service_plan_id = "eu"
-
-```
-
-
-In V2:
-- The `sms_region` no longer defaults to `us`. Set it explicitly before using the SMS API, otherwise calls will fail at runtime. The parameter is now exposed on `SinchClient` (not just the configuration object) to ensure the region is provided. Note that `sms_region` is only required when using the SMS API endpoints.
-
-```python
-from sinch import SinchClient
-
-# Using Project auth
-sinch_client = SinchClient(
-    project_id="your-project-id",
-    key_id="your-key-id",
-    key_secret="your-key-secret",
-    sms_region="eu",
-)
-
-# or using SMS token auth
-token_client = SinchClient(
-    service_plan_id="your-service-plan-id",
-    sms_api_token="your-sms-api-token",
-    sms_region="us",
-)
-
-# Note: The code is backward compatible. The sms_region can still be set through the configuration object,
-# but you must ensure this setting is done BEFORE any SMS API call:
-sinch_client.configuration.sms_region = "eu"
-```

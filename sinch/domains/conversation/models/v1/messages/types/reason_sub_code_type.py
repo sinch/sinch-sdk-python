@@ -2,7 +2,7 @@ from typing import Literal, Union
 from pydantic import StrictStr
 
 
-ReasonSubCode = Union[
+ReasonSubCodeType = Union[
     Literal[
         "UNSPECIFIED_SUB_CODE",
         "ATTACHMENT_REJECTED",

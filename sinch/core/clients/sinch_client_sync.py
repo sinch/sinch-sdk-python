@@ -29,6 +29,7 @@ class SinchClient:
         service_plan_id: str = None,
         sms_api_token: str = None,
         sms_region: str = None,
+        conversation_region: str = None,
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -43,6 +44,7 @@ class SinchClient:
             service_plan_id=service_plan_id,
             sms_api_token=sms_api_token,
             sms_region=sms_region,
+            conversation_region=conversation_region,
         )
 
         self.authentication = Authentication(self)

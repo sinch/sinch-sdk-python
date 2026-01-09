@@ -25,6 +25,7 @@ class Configuration:
         service_plan_id: str = None,
         sms_api_token: str = None,
         sms_region: str = None,
+        conversation_region: str = None,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -44,8 +45,8 @@ class Configuration:
         self.number_lookup_origin = "https://lookup.api.sinch.com"
         self._voice_domain = "https://{}.api.sinch.com"
         self._voice_region = None
-        self._conversation_region = "eu"
-        self._conversation_domain = ".conversation.api.sinch.com"
+        self._conversation_region = conversation_region
+        self._conversation_domain = "https://{}.conversation.api.sinch.com/"
         self._sms_region = sms_region
         self._sms_region_with_service_plan_id = sms_region
         self._sms_domain = "https://zt.{}.sms.api.sinch.com"
@@ -135,7 +136,10 @@ class Configuration:
     )
 
     def _set_conversation_origin(self):
-        self.conversation_origin = self._conversation_region + self._conversation_domain
+        if self._conversation_region:
+            self.conversation_origin = self._conversation_domain.format(self._conversation_region)
+        else:
+            self.conversation_origin = None
 
     def _set_conversation_region(self, region):
         self._conversation_region = region
@@ -284,3 +288,20 @@ class Configuration:
             )
 
         return origin
+
+    def get_conversation_origin(self):
+        """
+        Returns the conversation origin.
+
+        Raises:
+            ValueError: If the conversation region is None (conversation_region not set)
+        """
+        if self.conversation_origin is None:
+            raise ValueError(
+                "Conversation region is required. "
+                "Provide conversation_region when initializing SinchClient "
+                "Example: SinchClient(project_id='...', key_id='...', key_secret='...', conversation_region='eu')"
+                "or set it via sinch_client.configuration.conversation_region. "
+            )
+
+        return self.conversation_origin
