@@ -24,9 +24,6 @@ from sinch.domains.conversation.models.v1.messages.shared.product_item import (
     ProductItem,
 )
 from sinch.domains.conversation.models.v1.messages.shared.reason import Reason
-from sinch.domains.conversation.models.v1.messages.shared.reason_sub_code import (
-    ReasonSubCode,
-)
 
 __all__ = [
     "AddressInfo",
@@ -41,7 +38,6 @@ __all__ = [
     "OmniMessageOverride",
     "ProductItem",
     "Reason",
-    "ReasonSubCode",
 ]
 
 
