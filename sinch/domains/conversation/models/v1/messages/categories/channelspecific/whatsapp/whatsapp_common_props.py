@@ -3,10 +3,8 @@ from pydantic import Field
 from sinch.domains.conversation.models.v1.messages.response.types.whatsapp_interactive_header import (
     WhatsAppInteractiveHeader,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows.whatsapp_interactive_body import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows import (
     WhatsAppInteractiveBody,
-)
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows.whatsapp_interactive_footer import (
     WhatsAppInteractiveFooter,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

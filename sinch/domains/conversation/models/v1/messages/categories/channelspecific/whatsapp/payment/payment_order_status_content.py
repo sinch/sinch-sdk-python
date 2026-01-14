@@ -1,5 +1,5 @@
 from pydantic import Field, StrictStr
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment.payment_order_status_order import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment import (
     PaymentOrderStatusOrder,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

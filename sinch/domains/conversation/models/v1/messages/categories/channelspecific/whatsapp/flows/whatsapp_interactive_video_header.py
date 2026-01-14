@@ -1,6 +1,6 @@
 from typing import Literal
 from pydantic import Field
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows.whatsapp_interactive_header_media import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows import (
     WhatsAppInteractiveHeaderMedia,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

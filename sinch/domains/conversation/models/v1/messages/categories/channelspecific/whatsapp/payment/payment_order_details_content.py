@@ -9,7 +9,7 @@ from sinch.domains.conversation.models.v1.messages.types.payment_order_goods_typ
 from sinch.domains.conversation.models.v1.messages.response.types.payment_settings import (
     PaymentSettings,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment.payment_order import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment import (
     PaymentOrder,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

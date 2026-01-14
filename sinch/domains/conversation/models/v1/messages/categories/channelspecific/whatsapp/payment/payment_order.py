@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import Field, StrictStr, StrictInt, conlist
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment.order_item import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment import (
     OrderItem,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

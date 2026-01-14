@@ -1,6 +1,6 @@
 from typing import Literal
 from pydantic import Field
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.nfmreply.whatsapp_interactive_nfm_reply import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.nfmreply import (
     WhatsAppInteractiveNfmReply,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
