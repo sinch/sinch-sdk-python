@@ -1,6 +1,6 @@
 from typing import Literal
 from pydantic import Field, StrictInt
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_regular_price_commerce import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce import (
     KakaoTalkRegularPriceCommerce,
 )
 

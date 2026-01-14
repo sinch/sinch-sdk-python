@@ -1,6 +1,6 @@
 from typing import Literal
 from pydantic import Field, StrictStr
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_button import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.buttons import (
     KakaoTalkButton,
 )
 
