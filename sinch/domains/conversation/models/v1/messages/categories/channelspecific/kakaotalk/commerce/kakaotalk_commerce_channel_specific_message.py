@@ -1,7 +1,8 @@
 from typing import Optional
 from pydantic import Field, StrictStr, conlist
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_channel_specific_message import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce import (
     KakaoTalkChannelSpecificMessage,
+    KakaoTalkCommerceImage,
 )
 from sinch.domains.conversation.models.v1.messages.response.types.kakaotalk_button import (
     KakaoTalkButton,
@@ -11,9 +12,6 @@ from sinch.domains.conversation.models.v1.messages.response.types.kakaotalk_comm
 )
 from sinch.domains.conversation.models.v1.messages.response.types.kakaotalk_coupon import (
     KakaoTalkCoupon,
-)
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_commerce_image import (
-    KakaoTalkCommerceImage,
 )
 
 

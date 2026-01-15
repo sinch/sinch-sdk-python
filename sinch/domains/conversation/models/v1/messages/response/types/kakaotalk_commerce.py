@@ -1,11 +1,11 @@
 from typing import Union
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_regular_price_commerce import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce.kakaotalk_regular_price_commerce import (
     KakaoTalkRegularPriceCommerce,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_discount_fixed_commerce import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce.kakaotalk_discount_fixed_commerce import (
     KakaoTalkDiscountFixedCommerce,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_discount_rate_commerce import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce.kakaotalk_discount_rate_commerce import (
     KakaoTalkDiscountRateCommerce,
 )
 

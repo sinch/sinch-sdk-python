@@ -9,7 +9,7 @@ from sinch.domains.conversation.models.v1.messages.response.types.kakaotalk_comm
 from sinch.domains.conversation.models.v1.messages.response.types.kakaotalk_coupon import (
     KakaoTalkCoupon,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_commerce_image import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce import (
     KakaoTalkCommerceImage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (

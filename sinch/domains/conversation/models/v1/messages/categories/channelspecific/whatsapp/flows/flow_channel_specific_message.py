@@ -3,7 +3,7 @@ from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.whatsapp_common_props import (
     WhatsAppCommonProps,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows.flow_action_payload import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows import (
     FlowActionPayload,
 )
 

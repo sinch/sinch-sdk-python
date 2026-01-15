@@ -1,12 +1,8 @@
 from typing import Optional
 from pydantic import Field, conlist
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_carousel_head import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce import (
     KakaoTalkCarouselHead,
-)
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_carousel_tail import (
     KakaoTalkCarouselTail,
-)
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.kakaotalk_commerce_message import (
     KakaoTalkCommerceMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
