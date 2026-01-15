@@ -6,12 +6,11 @@ from sinch.domains.sms.models.v1.internal import (
     ListDeliveryReportsRequest,
     ListDeliveryReportsResponse,
 )
-from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
 
 import pytest
 
 from sinch import SinchClient
-from sinch.core.models.base_model import SinchBaseModel, SinchRequestBaseModel
+from sinch.core.models.base_model import SinchRequestBaseModel
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.v1.authentication import OAuthToken
 from sinch.domains.numbers.models.v1.response import ActiveNumber
@@ -266,8 +265,10 @@ def mock_sinch_client_number_lookup():
     return MockSinchClient()
 
 
-@pytest.fixture
-def mock_sinch_client_sms():
+def _create_mock_sinch_client(**config_kwargs):
+    """
+    Helper function to create a mock Sinch client with the given configuration.
+    """
     from sinch.core.clients.sinch_client_configuration import Configuration
     from sinch.core.ports.http_transport import HTTPTransport
     from sinch.core.token_manager import TokenManager
@@ -277,22 +278,37 @@ def mock_sinch_client_sms():
     
     mock_token_manager = MagicMock(spec=TokenManager)
     
-    config = Configuration(
-        transport=mock_transport,
-        token_manager=mock_token_manager,
-        project_id="test_project_id",
-        key_id="test_key_id",
-        key_secret="test_key_secret",
-        service_plan_id="test_service_plan_id",
-        sms_region="eu"
-    )
+    default_config = {
+        "transport": mock_transport,
+        "token_manager": mock_token_manager,
+        "project_id": "test_project_id",
+        "key_id": "test_key_id",
+        "key_secret": "test_key_secret",
+    }
+    default_config.update(config_kwargs)
     
+    config = Configuration(**default_config)
     config._authentication_method = "project_auth"
     
     class MockSinchClient:
         configuration = config
 
     return MockSinchClient()
+
+
+@pytest.fixture
+def mock_sinch_client_sms():
+    return _create_mock_sinch_client(
+        service_plan_id="test_service_plan_id",
+        sms_region="eu"
+    )
+
+
+@pytest.fixture
+def mock_sinch_client_conversation():
+    return _create_mock_sinch_client(
+        conversation_region="us"
+    )
 
 
 @pytest.fixture
