@@ -50,7 +50,7 @@ def test_sinch_client_expects_to_be_initialized_with_conversation_region():
         conversation_region="eu"
     )
     assert sinch_client.configuration.conversation_region == "eu"
-    assert sinch_client.configuration.conversation_origin == "https://eu.conversation.api.sinch.com/"
+    assert sinch_client.configuration.conversation_origin == "https://eu.conversation.api.sinch.com"
 
 
 def test_sinch_client_expects_conversation_region_error_when_not_provided():
