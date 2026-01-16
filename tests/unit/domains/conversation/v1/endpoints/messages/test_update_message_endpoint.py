@@ -164,50 +164,34 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_conversation)
     """Test that the URL is built correctly."""
     assert (
         endpoint.build_url(mock_sinch_client_conversation)
-        == "https://us.conversation.api.sinch.com//v1/projects/test_project_id/messages/UPDATE123456789ABCDEFGHIJKLMNOP"
+        == "https://us.conversation.api.sinch.com/v1/projects/test_project_id/messages/UPDATE123456789ABCDEFGHIJKLMNOP"
     )
 
 
-def test_messages_source_query_param_expects_parsed_params():
+def test_messages_source_query_param_expects_parsed_params(request_data):
     """
     Test that the URL is built correctly with messages_source query parameter.
     metadata is from body application/json, so it should not be in query params.
     """
-    request_data = UpdateMessageMetadataRequest(
-        message_id="UPDATE123456789ABCDEFGHIJKLMNOP",
-        metadata="updated_metadata_value",
-        messages_source="CONVERSATION_SOURCE"
-    )
+    request_data.messages_source = "DISPATCH_SOURCE"
     endpoint = UpdateMessageMetadataEndpoint("test_project_id", request_data)
     
     query_params = endpoint.build_query_params()
     assert "metadata" not in query_params
-    assert query_params["messages_source"] == "CONVERSATION_SOURCE"
+    assert query_params["messages_source"] == "DISPATCH_SOURCE"
 
 
-def test_request_body_expects_excludes_message_id(request_data):
+def test_request_body_expects_excludes_message_id_and_query_params(request_data):
     """
-    Test that message_id is excluded from request body.
-    """
-    endpoint = UpdateMessageMetadataEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
-
-    assert "message_id" not in body
-    assert "metadata" in body
-    assert body["metadata"] == "updated_metadata_value"
-
-
-def test_request_body_expects_excludes_query_params(request_data):
-    """
-    Test that messages_source is excluded from request body (it's a query param).
+    Test that message_id and messages_source are excluded from request body.
+    metadata should always be included in the request body.
     """
     request_data.messages_source = "CONVERSATION_SOURCE"
-    
     endpoint = UpdateMessageMetadataEndpoint("test_project_id", request_data)
     body = json.loads(endpoint.request_body())
 
-    assert "message_id" not in body
     assert "messages_source" not in body
+    assert "message_id" not in body
     assert "metadata" in body
     assert body["metadata"] == "updated_metadata_value"
 

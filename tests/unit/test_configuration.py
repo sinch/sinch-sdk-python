@@ -56,14 +56,14 @@ def test_set_sms_region_with_service_plan_id_property_and_check_that_sms_origin_
 def test_set_conversation_region_property_expects_updated_conversation_origin(sinch_client_sync):
     """ Test that setting the conversation region property updates the conversation origin """
     sinch_client_sync.configuration.conversation_region = "us"
-    assert sinch_client_sync.configuration.conversation_origin == "https://us.conversation.api.sinch.com/"
+    assert sinch_client_sync.configuration.conversation_origin == "https://us.conversation.api.sinch.com"
 
 
 def test_set_conversation_domain_property_expects_updated_conversation_origin(sinch_client_sync):
     """ Test that setting the conversation domain property updates the conversation origin """
     sinch_client_sync.configuration.conversation_region = "eu"
-    sinch_client_sync.configuration.conversation_domain = "https://{}.test.conversation.api.sinch.com/"
-    assert sinch_client_sync.configuration.conversation_origin == "https://eu.test.conversation.api.sinch.com/"
+    sinch_client_sync.configuration.conversation_domain = "https://{}.test.conversation.api.sinch.com"
+    assert sinch_client_sync.configuration.conversation_origin == "https://eu.test.conversation.api.sinch.com"
 
 
 def test_if_logger_name_was_preserved_correctly(sinch_client_sync):
@@ -225,4 +225,4 @@ def test_configuration_expects_get_conversation_origin_with_region(sinch_client_
     actual_origin = client_configuration.get_conversation_origin()
     
     assert actual_origin == expected_origin
-    assert actual_origin == "https://us.conversation.api.sinch.com/"
+    assert actual_origin == "https://us.conversation.api.sinch.com"

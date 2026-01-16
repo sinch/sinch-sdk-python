@@ -44,7 +44,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_conversation)
     """
     assert (
         endpoint.build_url(mock_sinch_client_conversation)
-        == "https://us.conversation.api.sinch.com//v1/projects/test_project_id/messages/01FC66621XXXXX119Z8PMV1QPQ"
+        == "https://us.conversation.api.sinch.com/v1/projects/test_project_id/messages/01FC66621XXXXX119Z8PMV1QPQ"
     )
 
 
