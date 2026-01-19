@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import date
 from pydantic import Field, conlist
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfigurationResponse,
@@ -40,6 +41,6 @@ class ContactInfoMessage(BaseModelConfigurationResponse):
     urls: Optional[conlist(UrlInfo)] = Field(
         default=None, description="URLs/websites associated with the contact."
     )
-    birthday: Optional[str] = Field(
+    birthday: Optional[date] = Field(
         default=None, description="Date of birth in YYYY-MM-DD format."
     )

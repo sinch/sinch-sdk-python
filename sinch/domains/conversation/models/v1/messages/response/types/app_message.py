@@ -15,10 +15,10 @@ AppMessage = Union[
     CardAppMessage,
     CarouselAppMessage,
     ChoiceAppMessage,
+    ContactInfoAppMessage,
+    ListAppMessage,
     LocationAppMessage,
     MediaAppMessage,
     TemplateAppMessage,
     TextAppMessage,
-    ListAppMessage,
-    ContactInfoAppMessage,
 ]
