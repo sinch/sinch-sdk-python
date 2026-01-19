@@ -46,7 +46,7 @@ class Configuration:
         self._voice_domain = "https://{}.api.sinch.com"
         self._voice_region = None
         self._conversation_region = conversation_region
-        self._conversation_domain = "https://{}.conversation.api.sinch.com/"
+        self._conversation_domain = "https://{}.conversation.api.sinch.com"
         self._sms_region = sms_region
         self._sms_region_with_service_plan_id = sms_region
         self._sms_domain = "https://zt.{}.sms.api.sinch.com"
