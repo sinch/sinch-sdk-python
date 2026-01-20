@@ -133,6 +133,7 @@ def test_parsing_contact_info_app_message_expects_correct_fields(contact_info_ap
     assert len(parsed_response.contact_info_message.urls) == 1
     assert isinstance(parsed_response.contact_info_message.birthday, date)
     assert parsed_response.contact_info_message.birthday == date(1968, 7, 7)
-    assert parsed_response.explicit_channel_message is not None
     assert parsed_response.channel_specific_message is not None
+    assert parsed_response.explicit_channel_omni_message is not None
+    assert parsed_response.explicit_channel_message is not None
     assert parsed_response.agent is not None
