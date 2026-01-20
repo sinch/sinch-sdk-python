@@ -12,7 +12,6 @@ def template_app_message_data():
             "channel_template": {
                 "KAKAOTALK": {
                     "template_id": "my template ID value",
-                    "version": "a version",
                     "language_code": "en-US"
                 }
             },
@@ -93,7 +92,6 @@ def test_parsing_template_app_message_expects_correct_fields(template_app_messag
     assert parsed_response.template_message.channel_template is not None
     assert "KAKAOTALK" in parsed_response.template_message.channel_template
     assert parsed_response.template_message.channel_template["KAKAOTALK"].template_id == "my template ID value"
-    assert parsed_response.template_message.channel_template["KAKAOTALK"].version == "a version"
     assert parsed_response.template_message.channel_template["KAKAOTALK"].language_code == "en-US"
     assert parsed_response.template_message.omni_template is not None
     assert parsed_response.template_message.omni_template.template_id == "another template ID"
