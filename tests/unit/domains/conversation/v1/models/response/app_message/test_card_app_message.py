@@ -143,5 +143,6 @@ def test_parsing_card_app_message_expects_correct_fields(card_app_message_data):
     assert parsed_response.card_message.media_message.filename_override == "filename override value"
     assert len(parsed_response.card_message.choices) == 6
     assert parsed_response.channel_specific_message is not None
+    assert parsed_response.explicit_channel_omni_message is not None
     assert parsed_response.explicit_channel_message is not None
     assert parsed_response.agent is not None
