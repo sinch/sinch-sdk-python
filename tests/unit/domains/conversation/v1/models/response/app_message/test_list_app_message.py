@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def list_app_message_data():
-    """Test data for ListAppMessage from Java SDK."""
     return {
         "list_message": {
             "title": "a list message title value",

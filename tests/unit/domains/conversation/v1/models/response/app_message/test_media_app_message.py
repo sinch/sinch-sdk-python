@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def media_app_message_data():
-    """Test data for MediaAppMessage from Java SDK."""
     return {
         "media_message": {
             "url": "an url value",

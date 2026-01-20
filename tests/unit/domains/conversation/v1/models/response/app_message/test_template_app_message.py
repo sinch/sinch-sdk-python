@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def template_app_message_data():
-    """Test data for TemplateAppMessage from Java SDK."""
     return {
         "template_message": {
             "channel_template": {

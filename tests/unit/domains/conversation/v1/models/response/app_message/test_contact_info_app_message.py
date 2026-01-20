@@ -7,7 +7,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def contact_info_app_message_data():
-    """Test data for ContactInfoAppMessage from Java SDK."""
     return {
         "contact_info_message": {
             "name": {

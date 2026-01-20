@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def card_app_message_data():
-    """Test data for CardAppMessage from Java SDK."""
     return {
         "card_message": {
             "title": "title value",
