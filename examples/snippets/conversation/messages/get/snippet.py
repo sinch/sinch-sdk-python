@@ -19,7 +19,7 @@ sinch_client = SinchClient(
 )
 
 # The ID of the message to retrieve
-message_id = os.environ.get("SINCH_MESSAGE_ID") or "MESSAGE_ID"
+message_id = "MESSAGE_ID"
 
 response = sinch_client.conversation.messages.get(message_id=message_id)
 

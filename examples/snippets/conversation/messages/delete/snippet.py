@@ -19,7 +19,7 @@ sinch_client = SinchClient(
 )
 
 # The ID of the message to delete
-message_id = os.environ.get("SINCH_MESSAGE_ID") or "MESSAGE_ID"
+message_id = "MESSAGE_ID"
 
 sinch_client.conversation.messages.delete(message_id=message_id)
 
