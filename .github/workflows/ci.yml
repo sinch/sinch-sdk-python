@@ -96,3 +96,5 @@ jobs:
       run: |
         python -m behave tests/e2e/numbers/features
         python -m behave tests/e2e/sms/features
+        python -m behave tests/e2e/conversation/features
+        python -m behave tests/e2e/number-lookup/features
