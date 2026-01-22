@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def text_app_message_data():
-    """Test data for TextAppMessage from Java SDK."""
     return {
         "text_message": {
             "text": "This is a text message."

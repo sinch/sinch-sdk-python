@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def carousel_app_message_data():
-    """Test data for CarouselAppMessage from Java SDK."""
     return {
         "carousel_message": {
             "cards": [

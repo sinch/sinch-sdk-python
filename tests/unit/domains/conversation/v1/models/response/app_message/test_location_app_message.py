@@ -6,7 +6,6 @@ from sinch.domains.conversation.models.v1.messages.categories.app.app_message im
 
 @pytest.fixture
 def location_app_message_data():
-    """Test data for LocationAppMessage from Java SDK."""
     return {
         "location_message": {
             "coordinates": {
