@@ -27,52 +27,44 @@ from sinch.domains.conversation.models.v1.messages.categories.text import (
     TextMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 from sinch.domains.conversation.models.v1.messages.shared.app_message_common_props import (
     AppMessageCommonProps,
 )
 
 
-class CardAppMessage(AppMessageCommonProps, BaseModelConfigurationResponse):
+class CardAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     card_message: Optional[CardMessage] = None
 
 
-class CarouselAppMessage(
-    AppMessageCommonProps, BaseModelConfigurationResponse
-):
+class CarouselAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     carousel_message: Optional[CarouselMessage] = None
 
 
-class ChoiceAppMessage(AppMessageCommonProps, BaseModelConfigurationResponse):
+class ChoiceAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     choice_message: Optional[ChoiceMessage] = None
 
 
-class LocationAppMessage(
-    AppMessageCommonProps, BaseModelConfigurationResponse
-):
+class LocationAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     location_message: Optional[LocationMessage] = None
 
 
-class MediaAppMessage(AppMessageCommonProps, BaseModelConfigurationResponse):
+class MediaAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     media_message: Optional[MediaProperties] = None
 
 
-class TemplateAppMessage(
-    AppMessageCommonProps, BaseModelConfigurationResponse
-):
+class TemplateAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     template_message: Optional[TemplateMessage] = None
 
 
-class TextAppMessage(AppMessageCommonProps, BaseModelConfigurationResponse):
+class TextAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     text_message: Optional[TextMessage] = None
 
 
-class ListAppMessage(AppMessageCommonProps, BaseModelConfigurationResponse):
+class ListAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     list_message: Optional[ListMessage] = None
 
 
-class ContactInfoAppMessage(
-    AppMessageCommonProps, BaseModelConfigurationResponse
-):
+class ContactInfoAppMessage(AppMessageCommonProps, BaseModelConfiguration):
     contact_info_message: Optional[ContactInfoMessage] = None

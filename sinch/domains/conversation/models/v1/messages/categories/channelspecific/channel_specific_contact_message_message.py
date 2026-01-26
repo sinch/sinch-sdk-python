@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     WhatsAppInteractiveNfmReplyMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ChannelSpecificContactMessageMessage(BaseModelConfigurationResponse):
+class ChannelSpecificContactMessageMessage(BaseModelConfiguration):
     message_type: Literal["nfm_reply"] = Field(
         ..., description="The message type."
     )

@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr, StrictInt
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class OrderItem(BaseModelConfigurationResponse):
+class OrderItem(BaseModelConfiguration):
     retailer_id: StrictStr = Field(
         ..., description="Unique ID of the retailer."
     )

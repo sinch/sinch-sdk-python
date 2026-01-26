@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.shared.choice_item import (
     ChoiceItem,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ListItemChoice(BaseModelConfigurationResponse):
+class ListItemChoice(BaseModelConfiguration):
     choice: ChoiceItem = Field(...)

@@ -1,21 +1,73 @@
-from typing import Optional
+from typing import Any, Dict, List, Optional, Union
 
 from sinch.domains.conversation.models.v1.messages.internal.request import (
     MessageIdRequest,
     UpdateMessageMetadataRequest,
+    SendMessageRequest,
+    SendMessageRequestBody,
 )
 from sinch.domains.conversation.models.v1.messages.response.types import (
     ConversationMessageResponse,
+    SendMessageResponse,
 )
 from sinch.domains.conversation.models.v1.messages.types import (
     MessagesSourceType,
+    ConversationChannelType,
+    ProcessingStrategyType,
+    MetadataUpdateStrategyType,
+    MessageQueueType,
+    MessageContentType,
+    CardMessageDict,
+    CarouselMessageDict,
+    ChoiceMessageDict,
+    ContactInfoMessageDict,
+    ListMessageDict,
+    LocationMessageDict,
+    MediaPropertiesDict,
+    TemplateMessageDict,
+    RecipientDict,
+    ChannelRecipientIdentityDict,
+    SendMessageRequestBodyDict,
+)
+from sinch.domains.conversation.models.v1.messages.categories.text import (
+    TextMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.card import (
+    CardMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.carousel import (
+    CarouselMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.choice import (
+    ChoiceMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.contactinfo import (
+    ContactInfoMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.list import (
+    ListMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.location import (
+    LocationMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.media import (
+    MediaProperties,
+)
+from sinch.domains.conversation.models.v1.messages.categories.template import (
+    TemplateMessage,
 )
 from sinch.domains.conversation.api.v1.internal import (
     DeleteMessageEndpoint,
     GetMessageEndpoint,
     UpdateMessageMetadataEndpoint,
+    SendMessageEndpoint,
 )
 from sinch.domains.conversation.api.v1.base import BaseConversation
+from sinch.domains.conversation.api.v1.utils import (
+    build_recipient_dict,
+    coerce_recipient,
+    split_send_kwargs,
+)
 
 
 class Messages(BaseConversation):
@@ -114,3 +166,946 @@ class Messages(BaseConversation):
             **kwargs,
         )
         return self._request(UpdateMessageMetadataEndpoint, request_data)
+
+    def _send_message_variant(
+        self,
+        app_id: str,
+        contact_id: Optional[str],
+        recipient_identities: Optional[List[ChannelRecipientIdentityDict]],
+        message_field: str,
+        message: object,
+        message_cls: type,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        - Builds Recipient Dictionary from contact_id or recipient_identities
+        - Normalizes recipient dict -> Recipient model
+        - Normalizes message dict -> message_cls(**message)
+        - Builds SendMessageRequest(message=..., recipient=..., app_id=...) and sends the request
+        """
+        recipient_dict = build_recipient_dict(
+            contact_id=contact_id, recipient_identities=recipient_identities
+        )
+        recipient_model = coerce_recipient(recipient_dict)
+        if isinstance(message, dict):
+            message = message_cls(**message)
+
+        message_kwargs, request_kwargs = split_send_kwargs(kwargs)
+        send_message_request_body = SendMessageRequestBody(
+            **{message_field: message},
+            **message_kwargs,
+        )
+        request_data = SendMessageRequest(
+            app_id=app_id,
+            recipient=recipient_model,
+            message=send_message_request_body,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **request_kwargs,
+        )
+        return self._request(SendMessageEndpoint, request_data)
+
+    def send(
+        self,
+        app_id: str,
+        recipient: Union[RecipientDict, dict],
+        message: Union[SendMessageRequestBodyDict, dict],
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param recipient: The recipient of the message. Can be a Recipient object or a dict (identified_by/contact_id).
+        :type recipient: Union[RecipientDict, dict]
+        :param message: The message content to send. Can be a SendMessageRequestBodyDict or a dict.
+        :type message: Union[SendMessageRequestBodyDict, dict]
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the request.
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        recipient = coerce_recipient(recipient)
+        # Coerce message to SendMessageRequestBody if it's a dict
+        if isinstance(message, dict):
+            message = SendMessageRequestBody(**message)
+        message_kwargs, request_kwargs = split_send_kwargs(kwargs)
+        # message kwargs are applied directly to the message model (if provided as dict)
+        if message_kwargs:
+            message = SendMessageRequestBody(
+                **message.model_dump(), **message_kwargs
+            )
+        request_data = SendMessageRequest(
+            app_id=app_id,
+            recipient=recipient,
+            message=message,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **request_kwargs,
+        )
+        return self._request(SendMessageEndpoint, request_data)
+
+    def send_text_message(
+        self,
+        app_id: str,
+        text: str,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a text message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param text: The text content of the message.
+        :type text: str
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="text_message",
+            message=TextMessage(text=text),
+            message_cls=TextMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_card_message(
+        self,
+        app_id: str,
+        card_message: CardMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a card message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param card_message: The card message content.
+        :type card_message: CardMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="card_message",
+            message=card_message,
+            message_cls=CardMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_carousel_message(
+        self,
+        app_id: str,
+        carousel_message: CarouselMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a carousel message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param carousel_message: The carousel message content.
+        :type carousel_message: CarouselMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="carousel_message",
+            message=carousel_message,
+            message_cls=CarouselMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_choice_message(
+        self,
+        app_id: str,
+        choice_message: ChoiceMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a choice message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param choice_message: The choice message content.
+        :type choice_message: ChoiceMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="choice_message",
+            message=choice_message,
+            message_cls=ChoiceMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_contact_info_message(
+        self,
+        app_id: str,
+        contact_info_message: ContactInfoMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a contact info message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param contact_info_message: The contact info message content.
+        :type contact_info_message: ContactInfoMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="contact_info_message",
+            message=contact_info_message,
+            message_cls=ContactInfoMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_list_message(
+        self,
+        app_id: str,
+        list_message: ListMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a list message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param list_message: The list message content.
+        :type list_message: ListMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="list_message",
+            message=list_message,
+            message_cls=ListMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_location_message(
+        self,
+        app_id: str,
+        location_message: LocationMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a location message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param location_message: The location message content.
+        :type location_message: LocationMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="location_message",
+            message=location_message,
+            message_cls=LocationMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_media_message(
+        self,
+        app_id: str,
+        media_message: MediaPropertiesDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a media message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param media_message: The media message content.
+        :type media_message: MediaPropertiesDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="media_message",
+            message=media_message,
+            message_cls=MediaProperties,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )
+
+    def send_template_message(
+        self,
+        app_id: str,
+        template_message: TemplateMessageDict,
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
+        ttl: Optional[Union[str, int]] = None,
+        callback_url: Optional[str] = None,
+        channel_priority_order: Optional[List[ConversationChannelType]] = None,
+        channel_properties: Optional[Dict[str, str]] = None,
+        message_metadata: Optional[str] = None,
+        conversation_metadata: Optional[Dict[str, Any]] = None,
+        queue: Optional[MessageQueueType] = None,
+        processing_strategy: Optional[ProcessingStrategyType] = None,
+        correlation_id: Optional[str] = None,
+        conversation_metadata_update_strategy: Optional[
+            MetadataUpdateStrategyType
+        ] = None,
+        message_content_type: Optional[MessageContentType] = None,
+        **kwargs,
+    ) -> SendMessageResponse:
+        """
+        Send a template message from a Conversation app to a contact associated with that app.
+        If the recipient is not associated with an existing contact, a new contact will be created.
+        The message is added to the active conversation with the contact if a conversation already exists.
+        If no active conversation exists a new one is started automatically.
+
+        :param app_id: The ID of the Conversation API app sending the message.
+        :type app_id: str
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
+        :param template_message: The template message content.
+        :type template_message: TemplateMessageDict
+        :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
+        :type ttl: Optional[Union[str, int]]
+        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
+        :type callback_url: Optional[str]
+        :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
+        :type channel_priority_order: Optional[List[ConversationChannelType]]
+        :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
+        :type channel_properties: Optional[Dict[str, str]]
+        :param message_metadata: Metadata that should be associated with the message. Up to 1024 characters long.
+        :type message_metadata: Optional[str]
+        :param conversation_metadata: Metadata that will be associated with the conversation. Up to 2048 characters long.
+        :type conversation_metadata: Optional[Dict[str, Any]]
+        :param queue: Select the priority type for the message. Can be 'NORMAL_PRIORITY' or 'HIGH_PRIORITY'.
+        :type queue: Optional[MessageQueueType]
+        :param processing_strategy: Overrides the app's Processing Mode. Can be 'DEFAULT' or 'DISPATCH_ONLY'.
+        :type processing_strategy: Optional[ProcessingStrategyType]
+        :param correlation_id: An arbitrary identifier that will be propagated to callbacks related to this message. Up to 128 characters long.
+        :type correlation_id: Optional[str]
+        :param conversation_metadata_update_strategy: Update strategy for the conversation_metadata field. Can be 'REPLACE' or 'MERGE_PATCH'.
+        :type conversation_metadata_update_strategy: Optional[MetadataUpdateStrategyType]
+        :param message_content_type: Classifies the message content for use with consent management. Can be 'CONTENT_UNKNOWN', 'CONTENT_MARKETING', or 'CONTENT_NOTIFICATION'.
+        :type message_content_type: Optional[MessageContentType]
+        :param **kwargs: Additional parameters for the message body (e.g., agent, etc.).
+        :type **kwargs: dict
+
+        :returns: SendMessageResponse
+        :rtype: SendMessageResponse
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return self._send_message_variant(
+            app_id=app_id,
+            contact_id=contact_id,
+            recipient_identities=recipient_identities,
+            message_field="template_message",
+            message=template_message,
+            message_cls=TemplateMessage,
+            ttl=ttl,
+            callback_url=callback_url,
+            channel_priority_order=channel_priority_order,
+            channel_properties=channel_properties,
+            message_metadata=message_metadata,
+            conversation_metadata=conversation_metadata,
+            queue=queue,
+            processing_strategy=processing_strategy,
+            correlation_id=correlation_id,
+            conversation_metadata_update_strategy=conversation_metadata_update_strategy,
+            message_content_type=message_content_type,
+            **kwargs,
+        )

@@ -40,6 +40,49 @@ from sinch.domains.conversation.models.v1.messages.types.reason_sub_code_type im
 from sinch.domains.conversation.models.v1.messages.types.whatsapp_interactive_nfm_reply_name_type import (
     WhatsAppInteractiveNfmReplyNameType,
 )
+from sinch.domains.conversation.models.v1.messages.types.processing_strategy_type import (
+    ProcessingStrategyType,
+)
+from sinch.domains.conversation.models.v1.messages.types.metadata_update_strategy_type import (
+    MetadataUpdateStrategyType,
+)
+from sinch.domains.conversation.models.v1.messages.types.message_queue_type import (
+    MessageQueueType,
+)
+from sinch.domains.conversation.models.v1.messages.types.message_content_type import (
+    MessageContentType,
+)
+from sinch.domains.conversation.models.v1.messages.types.list_message_dict import (
+    ListMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.media_properties_dict import (
+    MediaPropertiesDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.card_message_dict import (
+    CardMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.carousel_message_dict import (
+    CarouselMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.choice_message_dict import (
+    ChoiceMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.contact_info_message_dict import (
+    ContactInfoMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.location_message_dict import (
+    LocationMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.template_message_dict import (
+    TemplateMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.recipient_dict import (
+    RecipientDict,
+    ChannelRecipientIdentityDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.send_message_request_body_dict import (
+    SendMessageRequestBodyDict,
+)
 
 __all__ = [
     "AgentType",
@@ -48,6 +91,17 @@ __all__ = [
     "ProcessingModeType",
     "CardHeightType",
     "ChannelSpecificMessageType",
+    "ListMessageDict",
+    "MediaPropertiesDict",
+    "CardMessageDict",
+    "CarouselMessageDict",
+    "ChoiceMessageDict",
+    "ContactInfoMessageDict",
+    "LocationMessageDict",
+    "TemplateMessageDict",
+    "RecipientDict",
+    "ChannelRecipientIdentityDict",
+    "SendMessageRequestBodyDict",
     "MessagesSourceType",
     "PaymentOrderGoodsType",
     "PaymentOrderStatusType",
@@ -56,4 +110,8 @@ __all__ = [
     "ReasonCodeType",
     "ReasonSubCodeType",
     "WhatsAppInteractiveNfmReplyNameType",
+    "ProcessingStrategyType",
+    "MetadataUpdateStrategyType",
+    "MessageQueueType",
+    "MessageContentType",
 ]

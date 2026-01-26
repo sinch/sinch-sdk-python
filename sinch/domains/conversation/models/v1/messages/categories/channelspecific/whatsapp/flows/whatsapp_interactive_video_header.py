@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     WhatsAppInteractiveHeaderMedia,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class WhatsAppInteractiveVideoHeader(BaseModelConfigurationResponse):
+class WhatsAppInteractiveVideoHeader(BaseModelConfiguration):
     type: Literal["video"] = Field(
         ..., description="The video associated with the header."
     )

@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.types.payment_order_status_ty
     PaymentOrderStatusType,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class PaymentOrderStatusOrder(BaseModelConfigurationResponse):
+class PaymentOrderStatusOrder(BaseModelConfiguration):
     status: PaymentOrderStatusType = Field(
         ..., description="The new payment message status."
     )

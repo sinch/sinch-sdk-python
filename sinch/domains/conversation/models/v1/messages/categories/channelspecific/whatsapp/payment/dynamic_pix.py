@@ -3,11 +3,11 @@ from sinch.domains.conversation.models.v1.messages.types.pix_key_type import (
     PixKeyType,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class DynamicPix(BaseModelConfigurationResponse):
+class DynamicPix(BaseModelConfiguration):
     code: StrictStr = Field(
         ..., description="The dynamic Pix code to be used by the buyer to pay."
     )

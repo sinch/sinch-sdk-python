@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.types import (
     MessagesSourceType,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationRequest,
+    BaseModelConfiguration,
 )
 
 
-class MessageIdRequest(BaseModelConfigurationRequest):
+class MessageIdRequest(BaseModelConfiguration):
     message_id: str = Field(..., description="The unique ID of the message.")
     messages_source: Optional[MessagesSourceType] = Field(
         default=None,

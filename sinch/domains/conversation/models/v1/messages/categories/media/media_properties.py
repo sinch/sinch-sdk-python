@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class MediaProperties(BaseModelConfigurationResponse):
+class MediaProperties(BaseModelConfiguration):
     thumbnail_url: Optional[StrictStr] = Field(
         default=None,
         description="An optional parameter. Will be used where it is natively supported.",

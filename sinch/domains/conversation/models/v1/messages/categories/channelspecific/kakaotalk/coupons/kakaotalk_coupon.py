@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class KakaoTalkCoupon(BaseModelConfigurationResponse):
+class KakaoTalkCoupon(BaseModelConfiguration):
     description: Optional[StrictStr] = Field(
         default=None, description="Coupon description"
     )

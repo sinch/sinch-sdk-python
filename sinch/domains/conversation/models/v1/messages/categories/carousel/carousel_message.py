@@ -3,15 +3,15 @@ from pydantic import Field, conlist
 from sinch.domains.conversation.models.v1.messages.categories.card.card_message import (
     CardMessage,
 )
-from sinch.domains.conversation.models.v1.messages.response.types.choice_option import (
+from sinch.domains.conversation.models.v1.messages.categories.choice.choice_option import (
     ChoiceOption,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class CarouselMessage(BaseModelConfigurationResponse):
+class CarouselMessage(BaseModelConfiguration):
     cards: conlist(CardMessage) = Field(
         default=..., description="A list of up to 10 cards."
     )

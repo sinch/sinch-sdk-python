@@ -1,10 +1,10 @@
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ReplyTo(BaseModelConfigurationResponse):
+class ReplyTo(BaseModelConfiguration):
     message_id: StrictStr = Field(
         default=...,
         description="Required. The Id of the message that this is a response to",

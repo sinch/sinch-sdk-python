@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.list.list_message 
     ListMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ListMessageField(BaseModelConfigurationResponse):
+class ListMessageField(BaseModelConfiguration):
     list_message: Optional[ListMessage] = None

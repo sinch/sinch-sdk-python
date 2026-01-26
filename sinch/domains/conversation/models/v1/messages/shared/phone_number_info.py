@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class PhoneNumberInfo(BaseModelConfigurationResponse):
+class PhoneNumberInfo(BaseModelConfiguration):
     phone_number: StrictStr = Field(
         default=..., description="Phone number with country code included."
     )

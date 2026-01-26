@@ -1,8 +1,8 @@
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class WhatsAppInteractiveHeaderMedia(BaseModelConfigurationResponse):
+class WhatsAppInteractiveHeaderMedia(BaseModelConfiguration):
     link: StrictStr = Field(..., description="URL for the media.")

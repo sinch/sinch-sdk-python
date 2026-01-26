@@ -1,11 +1,11 @@
 from typing import Optional, Union
 from pydantic import Field, StrictFloat, StrictInt, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ProductItem(BaseModelConfigurationResponse):
+class ProductItem(BaseModelConfiguration):
     id: StrictStr = Field(
         default=..., description="Required parameter. The ID for the product."
     )

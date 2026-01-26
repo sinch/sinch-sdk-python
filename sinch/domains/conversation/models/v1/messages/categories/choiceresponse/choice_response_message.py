@@ -1,10 +1,10 @@
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ChoiceResponseMessage(BaseModelConfigurationResponse):
+class ChoiceResponseMessage(BaseModelConfiguration):
     message_id: StrictStr = Field(
         ..., description="The message id containing the choice."
     )

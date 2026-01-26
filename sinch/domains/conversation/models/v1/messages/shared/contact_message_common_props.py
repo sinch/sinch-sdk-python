@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.common.reply_to im
     ReplyTo,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ContactMessageCommonProps(BaseModelConfigurationResponse):
+class ContactMessageCommonProps(BaseModelConfiguration):
     reply_to: Optional[ReplyTo] = None

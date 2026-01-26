@@ -17,9 +17,6 @@ from sinch.domains.conversation.models.v1.messages.shared.message_response_commo
 from sinch.domains.conversation.models.v1.messages.shared.coordinates import (
     Coordinates,
 )
-from sinch.domains.conversation.models.v1.messages.shared.list_section import (
-    ListSection,
-)
 from sinch.domains.conversation.models.v1.messages.shared.product_item import (
     ProductItem,
 )
@@ -34,7 +31,6 @@ __all__ = [
     "ContactMessageCommonProps",
     "MessageResponseCommonProps",
     "Coordinates",
-    "ListSection",
     "OmniMessageOverride",
     "ProductItem",
     "Reason",

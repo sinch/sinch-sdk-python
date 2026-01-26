@@ -1,10 +1,10 @@
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class CallMessage(BaseModelConfigurationResponse):
+class CallMessage(BaseModelConfiguration):
     phone_number: StrictStr = Field(
         default=..., description="Phone number in E.164 with leading +."
     )

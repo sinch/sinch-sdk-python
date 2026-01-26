@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.template import (
     TemplateReferenceOmniChannel,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class TemplateReferenceField(BaseModelConfigurationResponse):
+class TemplateReferenceField(BaseModelConfiguration):
     template_reference: Optional[TemplateReferenceOmniChannel] = None

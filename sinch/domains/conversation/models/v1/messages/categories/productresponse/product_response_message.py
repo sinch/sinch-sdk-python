@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.shared.product_item import (
     ProductItem,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ProductResponseMessage(BaseModelConfigurationResponse):
+class ProductResponseMessage(BaseModelConfiguration):
     products: Optional[conlist(ProductItem)] = Field(
         default=None, description="The selected products."
     )

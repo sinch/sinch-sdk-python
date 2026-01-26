@@ -1,11 +1,11 @@
 from typing import Literal
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class WhatsAppInteractiveTextHeader(BaseModelConfigurationResponse):
+class WhatsAppInteractiveTextHeader(BaseModelConfiguration):
     type: Literal["text"] = Field(..., description="The text of the header.")
     text: StrictStr = Field(
         ...,

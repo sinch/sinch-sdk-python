@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.location.location_
     LocationMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class LocationMessageField(BaseModelConfigurationResponse):
+class LocationMessageField(BaseModelConfiguration):
     location_message: Optional[LocationMessage] = None

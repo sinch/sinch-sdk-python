@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.carousel.carousel_
     CarouselMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class CarouselMessageField(BaseModelConfigurationResponse):
+class CarouselMessageField(BaseModelConfiguration):
     carousel_message: Optional[CarouselMessage] = None

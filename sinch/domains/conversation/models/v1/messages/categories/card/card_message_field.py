@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.card.card_message 
     CardMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class CardMessageField(BaseModelConfigurationResponse):
+class CardMessageField(BaseModelConfiguration):
     card_message: Optional[CardMessage] = None

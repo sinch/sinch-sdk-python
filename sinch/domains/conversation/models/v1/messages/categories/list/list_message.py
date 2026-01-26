@@ -10,11 +10,11 @@ from sinch.domains.conversation.models.v1.messages.categories.list.list_message_
     ListMessageProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ListMessage(BaseModelConfigurationResponse):
+class ListMessage(BaseModelConfiguration):
     title: StrictStr = Field(
         default=...,
         description="A title for the message that is displayed near the products or choices.",

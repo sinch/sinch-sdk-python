@@ -11,11 +11,11 @@ from sinch.domains.conversation.models.v1.messages.types.processing_mode_type im
     ProcessingModeType,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class MessageResponseCommonProps(BaseModelConfigurationResponse):
+class MessageResponseCommonProps(BaseModelConfiguration):
     accept_time: Optional[datetime] = Field(
         default=None,
         description="The time Conversation API processed the message.",

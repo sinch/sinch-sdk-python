@@ -1,11 +1,11 @@
 from typing import Union
 from pydantic import Field, StrictFloat, StrictInt
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class Coordinates(BaseModelConfigurationResponse):
+class Coordinates(BaseModelConfiguration):
     latitude: Union[StrictFloat, StrictInt] = Field(
         default=..., description="The latitude."
     )

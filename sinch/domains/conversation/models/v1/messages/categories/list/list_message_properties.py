@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ListMessageProperties(BaseModelConfigurationResponse):
+class ListMessageProperties(BaseModelConfiguration):
     catalog_id: Optional[StrictStr] = Field(
         default=None,
         description="Required if sending a product list message. The ID of the catalog to which the products belong.",

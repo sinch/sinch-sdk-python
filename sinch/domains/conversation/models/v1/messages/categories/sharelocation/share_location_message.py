@@ -1,10 +1,10 @@
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ShareLocationMessage(BaseModelConfigurationResponse):
+class ShareLocationMessage(BaseModelConfiguration):
     title: StrictStr = Field(
         ...,
         description="The title is shown close to the button that leads to open a map to share a location.",

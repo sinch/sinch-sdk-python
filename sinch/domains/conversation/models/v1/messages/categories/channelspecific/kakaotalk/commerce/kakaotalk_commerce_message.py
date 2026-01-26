@@ -13,11 +13,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
     KakaoTalkCommerceImage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class KakaoTalkCommerceMessage(BaseModelConfigurationResponse):
+class KakaoTalkCommerceMessage(BaseModelConfiguration):
     buttons: conlist(KakaoTalkButton) = Field(..., description="Buttons list")
     additional_content: Optional[StrictStr] = Field(
         default=None, description="Additional information", max_length=34

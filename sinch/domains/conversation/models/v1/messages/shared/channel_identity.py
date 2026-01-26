@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.types.conversation_channel_ty
     ConversationChannelType,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ChannelIdentity(BaseModelConfigurationResponse):
+class ChannelIdentity(BaseModelConfiguration):
     app_id: Optional[StrictStr] = Field(
         default=None,
         description="Required if using a channel that uses app-scoped channel identities. Currently, FB Messenger, Instagram, LINE, and WeChat use app-scoped channel identities, which means contacts will have different channel identities on different Conversation API apps. These can be thought of as virtual identities that are app-specific and, therefore, the app_id must be included in the API call.",

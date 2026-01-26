@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class AddressInfo(BaseModelConfigurationResponse):
+class AddressInfo(BaseModelConfiguration):
     city: Optional[StrictStr] = Field(default=None, description="City Name")
     country: Optional[StrictStr] = Field(
         default=None, description="Country Name"

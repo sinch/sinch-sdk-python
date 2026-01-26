@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.media.media_proper
     MediaProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class MediaMessageField(BaseModelConfigurationResponse):
+class MediaMessageField(BaseModelConfiguration):
     media_message: Optional[MediaProperties] = None

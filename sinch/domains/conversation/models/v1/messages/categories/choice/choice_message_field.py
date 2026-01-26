@@ -3,9 +3,9 @@ from sinch.domains.conversation.models.v1.messages.categories.choice.choice_mess
     ChoiceMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ChoiceMessageField(BaseModelConfigurationResponse):
+class ChoiceMessageField(BaseModelConfiguration):
     choice_message: Optional[ChoiceMessage] = None

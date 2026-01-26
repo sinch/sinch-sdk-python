@@ -1,10 +1,10 @@
 from typing import Optional
 from pydantic import Field, conlist
-from sinch.domains.conversation.models.v1.messages.response.types.choice_option import (
+from sinch.domains.conversation.models.v1.messages.categories.choice.choice_option import (
     ChoiceOption,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 from sinch.domains.conversation.models.v1.messages.categories.text import (
     TextMessage,
@@ -14,7 +14,7 @@ from sinch.domains.conversation.models.v1.messages.categories.card.message_prope
 )
 
 
-class ChoiceMessage(BaseModelConfigurationResponse):
+class ChoiceMessage(BaseModelConfiguration):
     choices: conlist(ChoiceOption) = Field(
         default=..., description="The number of choices is limited to 10."
     )

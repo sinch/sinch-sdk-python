@@ -13,11 +13,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     PaymentOrder,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class PaymentOrderDetailsContent(BaseModelConfigurationResponse):
+class PaymentOrderDetailsContent(BaseModelConfiguration):
     type: PaymentOrderType = Field(
         ...,
         description="The country/currency associated with the payment message.",

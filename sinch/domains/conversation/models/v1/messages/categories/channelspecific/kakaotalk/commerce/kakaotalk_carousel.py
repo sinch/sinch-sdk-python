@@ -6,11 +6,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
     KakaoTalkCommerceMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class KakaoTalkCarousel(BaseModelConfigurationResponse):
+class KakaoTalkCarousel(BaseModelConfiguration):
     head: Optional[KakaoTalkCarouselHead] = Field(
         default=None, description="Carousel introduction"
     )
