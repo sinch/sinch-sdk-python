@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfiguration,
@@ -5,10 +7,10 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 
 
 class SendMessageResponse(BaseModelConfiguration):
-    """
-    Response from sending a message.
-    """
-
+    accepted_time: Optional[datetime] = Field(
+        default=None,
+        description="Timestamp when the Conversation API accepted the message for delivery to the referenced contact.",
+    )
     message_id: StrictStr = Field(
         ...,
         description="The ID of the sent message.",

@@ -1,3 +1,4 @@
+from datetime import date
 from typing import List, TypedDict
 from typing_extensions import NotRequired
 
@@ -48,4 +49,4 @@ class ContactInfoMessageDict(TypedDict):
     email_addresses: NotRequired[List[EmailInfoDict]]
     organization: NotRequired[OrganizationInfoDict]
     urls: NotRequired[List[UrlInfoDict]]
-    birthday: NotRequired[str]
+    birthday: NotRequired[date]

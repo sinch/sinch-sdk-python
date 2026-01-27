@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import Field, StrictStr, field_serializer
+from pydantic import Field, StrictInt, StrictStr, field_serializer
 from sinch.domains.conversation.models.v1.messages.internal.request.recipient import (
     Recipient,
 )
@@ -40,7 +40,7 @@ class SendMessageRequest(BaseModelConfiguration):
         ...,
         description="The message content to send.",
     )
-    ttl: Optional[Union[StrictStr, int]] = Field(
+    ttl: Optional[Union[StrictStr, StrictInt]] = Field(
         default=None,
         description="The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.",
     )
@@ -88,15 +88,17 @@ class SendMessageRequest(BaseModelConfiguration):
     )
 
     @field_serializer("ttl")
-    def serialize_ttl(self, value: Optional[Union[str, int]]) -> Optional[str]:
+    def serialize_ttl(
+        self, value: Optional[Union[StrictStr, StrictInt]]
+    ) -> Optional[str]:
         """
         Serialize ttl field to the format expected by the API (string with 's' suffix).
         Converts int to string with 's' suffix, or ensures string has 's' suffix.
         """
         if value is None:
             return None
-        if isinstance(value, (int, float)):
-            return f"{int(value)}s"
+        if isinstance(value, int):
+            return f"{value}s"
         if isinstance(value, str) and not value.endswith("s"):
             return f"{value}s"
         return value
