@@ -25,7 +25,6 @@ from sinch.domains.conversation.models.v1.messages.types import (
     LocationMessageDict,
     MediaPropertiesDict,
     TemplateMessageDict,
-    RecipientDict,
     ChannelRecipientIdentityDict,
     SendMessageRequestBodyDict,
 )
@@ -230,8 +229,11 @@ class Messages(BaseConversation):
     def send(
         self,
         app_id: str,
-        recipient: Union[RecipientDict, dict],
         message: Union[SendMessageRequestBodyDict, dict],
+        contact_id: Optional[str] = None,
+        recipient_identities: Optional[
+            List[ChannelRecipientIdentityDict]
+        ] = None,
         ttl: Optional[Union[str, int]] = None,
         callback_url: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
@@ -255,10 +257,12 @@ class Messages(BaseConversation):
 
         :param app_id: The ID of the Conversation API app sending the message.
         :type app_id: str
-        :param recipient: The recipient of the message. Can be a Recipient object or a dict (identified_by/contact_id).
-        :type recipient: Union[RecipientDict, dict]
         :param message: The message content to send. Can be a SendMessageRequestBodyDict or a dict.
         :type message: Union[SendMessageRequestBodyDict, dict]
+        :param contact_id: The contact ID of the recipient. Either contact_id or recipient_identities must be provided.
+        :type contact_id: Optional[str]
+        :param recipient_identities: List of channel identities for the recipient. Either contact_id or recipient_identities must be provided.
+        :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
         :param callback_url: Overwrites the default callback url for delivery receipts for this message.
@@ -289,7 +293,10 @@ class Messages(BaseConversation):
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        recipient = coerce_recipient(recipient)
+        recipient_dict = build_recipient_dict(
+            contact_id=contact_id, recipient_identities=recipient_identities
+        )
+        recipient = coerce_recipient(recipient_dict)
         # Coerce message to SendMessageRequestBody if it's a dict
         if isinstance(message, dict):
             message = SendMessageRequestBody(**message)
