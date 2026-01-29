@@ -8,11 +8,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     WhatsAppInteractiveFooter,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class WhatsAppCommonProps(BaseModelConfigurationResponse):
+class WhatsAppCommonProps(BaseModelConfiguration):
     header: Optional[WhatsAppInteractiveHeader] = Field(
         default=None, description="The header of the interactive message."
     )

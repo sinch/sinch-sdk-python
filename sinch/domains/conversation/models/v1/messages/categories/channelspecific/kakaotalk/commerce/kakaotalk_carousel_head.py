@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class KakaoTalkCarouselHead(BaseModelConfigurationResponse):
+class KakaoTalkCarouselHead(BaseModelConfiguration):
     header: StrictStr = Field(
         ..., description="Carousel introduction title", max_length=20
     )

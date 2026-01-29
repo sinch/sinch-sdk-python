@@ -30,12 +30,11 @@ from sinch.domains.sms.models.v1.internal.replace_batch_request import (
     ReplaceMediaRequest,
 )
 from sinch.domains.sms.models.v1.shared import (
-    MediaBody,
     TextRequest,
     BinaryRequest,
     MediaRequest,
 )
-from sinch.domains.sms.models.v1.types import DeliveryReportType
+from sinch.domains.sms.models.v1.types import DeliveryReportType, MediaBodyDict
 from sinch.domains.sms.api.v1.internal import (
     CancelBatchMessageEndpoint,
     DryRunEndpoint,
@@ -303,7 +302,7 @@ class Batches(BaseSms):
         self,
         to: List[str],
         from_: str,
-        body: MediaBody,
+        body: MediaBodyDict,
         per_recipient: Optional[bool] = None,
         number_of_recipients: Optional[int] = None,
         parameters: Optional[Dict[str, Dict[str, str]]] = None,
@@ -325,7 +324,7 @@ class Batches(BaseSms):
         :param from_: The sender phone number. (required)
         :type from_: str
         :param body: The message body. (required)
-        :type body: MediaBody
+        :type body: MediaBodyDict
         :param per_recipient: Whether to include per recipient details in the response (optional)
         :type per_recipient: Optional[bool]
         :param number_of_recipients: Max number of recipients to include per recipient details for in the response (optional)
@@ -642,7 +641,7 @@ class Batches(BaseSms):
         batch_id: str,
         to: List[str],
         from_: str,
-        body: MediaBody,
+        body: MediaBodyDict,
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
@@ -664,7 +663,7 @@ class Batches(BaseSms):
         :param from_: The sender phone number. (required)
         :type from_: str
         :param body: The message body. (required)
-        :type body: MediaBody
+        :type body: MediaBodyDict
         :param delivery_report: The delivery report type. (optional)
         :type delivery_report: Optional[DeliveryReportType]
         :param send_at: The time to send the message at. (optional)
@@ -910,7 +909,7 @@ class Batches(BaseSms):
         self,
         to: List[str],
         from_: str,
-        body: MediaBody,
+        body: MediaBodyDict,
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
@@ -936,7 +935,7 @@ class Batches(BaseSms):
         :param from_: The sender phone number. (required)
         :type from_: str
         :param body: The message body. (required)
-        :type body: MediaBody
+        :type body: MediaBodyDict
         :param delivery_report: The delivery report type. (optional)
         :type delivery_report: Optional[DeliveryReportType]
         :param send_at: The time to send the message at. (optional)
@@ -1218,7 +1217,7 @@ class Batches(BaseSms):
         from_: Optional[str] = None,
         to_add: Optional[List[str]] = None,
         to_remove: Optional[List[str]] = None,
-        body: Optional[MediaBody] = None,
+        body: Optional[MediaBodyDict] = None,
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
@@ -1241,7 +1240,7 @@ class Batches(BaseSms):
         :param to_remove: The list of phone numbers to remove from the batch. (optional)
         :type to_remove: Optional[List[str]]
         :param body: The message body. (optional)
-        :type body: Optional[MediaBody]
+        :type body: Optional[MediaBodyDict]
         :param delivery_report: The delivery report type. (optional)
         :type delivery_report: Optional[DeliveryReportType]
         :param send_at: The time to send the message at. (optional)

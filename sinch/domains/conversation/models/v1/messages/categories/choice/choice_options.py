@@ -16,14 +16,14 @@ from sinch.domains.conversation.models.v1.messages.categories.sharelocation.shar
     ShareLocationMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 from sinch.domains.conversation.models.v1.messages.categories.text import (
     TextMessage,
 )
 
 
-class ChoiceMessageWithPostback(BaseModelConfigurationResponse):
+class ChoiceMessageWithPostback(BaseModelConfiguration):
     postback_data: Optional[Any] = Field(
         default=None,
         description="An optional field. This data will be returned in the ChoiceResponseMessage. The default is message_id_{text, title}.",

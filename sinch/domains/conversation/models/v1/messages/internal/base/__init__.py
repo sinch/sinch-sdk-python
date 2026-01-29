@@ -1,9 +1,7 @@
 from sinch.domains.conversation.models.v1.messages.internal.base.base_model_configuration import (
-    BaseModelConfigurationRequest,
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 __all__ = [
-    "BaseModelConfigurationRequest",
-    "BaseModelConfigurationResponse",
+    "BaseModelConfiguration",
 ]

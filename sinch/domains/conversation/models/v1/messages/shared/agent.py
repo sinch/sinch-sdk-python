@@ -2,11 +2,11 @@ from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.types import AgentType
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class Agent(BaseModelConfigurationResponse):
+class Agent(BaseModelConfiguration):
     display_name: Optional[StrictStr] = Field(
         default=None, description="Agent's display name"
     )

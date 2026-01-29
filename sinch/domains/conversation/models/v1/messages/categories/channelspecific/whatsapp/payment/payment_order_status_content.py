@@ -3,11 +3,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     PaymentOrderStatusOrder,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class PaymentOrderStatusContent(BaseModelConfigurationResponse):
+class PaymentOrderStatusContent(BaseModelConfiguration):
     reference_id: StrictStr = Field(
         ..., description="Unique ID used to query the current payment status."
     )

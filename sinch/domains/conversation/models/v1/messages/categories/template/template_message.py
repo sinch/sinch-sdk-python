@@ -5,11 +5,11 @@ from sinch.domains.conversation.models.v1.messages.categories.template import (
     TemplateReferenceOmniChannel,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class TemplateMessage(BaseModelConfigurationResponse):
+class TemplateMessage(BaseModelConfiguration):
     channel_template: Optional[Dict[str, TemplateReferenceChannelSpecific]] = (
         Field(
             default=None,

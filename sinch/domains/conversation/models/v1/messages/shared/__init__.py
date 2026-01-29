@@ -11,14 +11,11 @@ from sinch.domains.conversation.models.v1.messages.shared.choice_item import (
 from sinch.domains.conversation.models.v1.messages.shared.contact_message_common_props import (
     ContactMessageCommonProps,
 )
-from sinch.domains.conversation.models.v1.messages.shared.message_response_common_props import (
-    MessageResponseCommonProps,
+from sinch.domains.conversation.models.v1.messages.shared.message_common_props import (
+    MessageCommonProps,
 )
 from sinch.domains.conversation.models.v1.messages.shared.coordinates import (
     Coordinates,
-)
-from sinch.domains.conversation.models.v1.messages.shared.list_section import (
-    ListSection,
 )
 from sinch.domains.conversation.models.v1.messages.shared.product_item import (
     ProductItem,
@@ -32,9 +29,8 @@ __all__ = [
     "ChannelIdentity",
     "ChoiceItem",
     "ContactMessageCommonProps",
-    "MessageResponseCommonProps",
+    "MessageCommonProps",
     "Coordinates",
-    "ListSection",
     "OmniMessageOverride",
     "ProductItem",
     "Reason",

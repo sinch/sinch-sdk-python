@@ -69,12 +69,18 @@ def step_validate_update_message_response(context):
 
 @when('I send a request to send a message to a contact')
 def step_send_message(context):
-    pass
+    context.message_response = context.messages.send_text_message(
+        app_id='01W4FFL35P4NC4K35CONVAPP001',
+        text='Hello',
+        contact_id='01W4FFL35P4NC4K35CONTACT001'
+    )
 
 
 @then('the response contains the id of the message')
 def step_validate_send_message_response(context):
-    pass
+    assert context.message_response is not None, 'Message response should not be None'
+    assert hasattr(context.message_response, 'message_id'), 'Message response should have message_id attribute'
+    assert context.message_response.message_id == '01W4FFL35P4NC4K35MESSAGE001', f'Expected message_id to be "01W4FFL35P4NC4K35MESSAGE001", got "{context.message_response.message_id}"'
 
 
 @when('I send a request to list the existing messages')

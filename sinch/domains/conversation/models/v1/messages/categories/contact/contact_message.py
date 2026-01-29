@@ -28,12 +28,12 @@ from sinch.domains.conversation.models.v1.messages.shared.contact_message_common
     ContactMessageCommonProps,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
 class ChannelSpecificContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
+    ContactMessageCommonProps, BaseModelConfiguration
 ):
     channel_specific_message: ChannelSpecificContactMessageMessage = Field(
         ...,
@@ -42,42 +42,38 @@ class ChannelSpecificContactMessage(
 
 
 class ChoiceResponseContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
+    ContactMessageCommonProps, BaseModelConfiguration
 ):
     choice_response_message: Optional[ChoiceResponseMessage] = None
 
 
 class FallbackContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
+    ContactMessageCommonProps, BaseModelConfiguration
 ):
     fallback_message: Optional[FallbackMessage] = None
 
 
 class LocationContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
+    ContactMessageCommonProps, BaseModelConfiguration
 ):
     location_message: Optional[LocationMessage] = None
 
 
 class MediaCardContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
+    ContactMessageCommonProps, BaseModelConfiguration
 ):
     media_card_message: Optional[MediaCardMessage] = None
 
 
-class MediaContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
-):
+class MediaContactMessage(ContactMessageCommonProps, BaseModelConfiguration):
     media_message: Optional[MediaProperties] = None
 
 
 class ProductResponseContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
+    ContactMessageCommonProps, BaseModelConfiguration
 ):
     product_response_message: Optional[ProductResponseMessage] = None
 
 
-class TextContactMessage(
-    ContactMessageCommonProps, BaseModelConfigurationResponse
-):
+class TextContactMessage(ContactMessageCommonProps, BaseModelConfiguration):
     text_message: Optional[TextMessage] = None

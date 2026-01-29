@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.shared.coordinates import (
     Coordinates,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class LocationMessage(BaseModelConfigurationResponse):
+class LocationMessage(BaseModelConfiguration):
     coordinates: Coordinates = Field(...)
     label: Optional[StrictStr] = Field(
         default=None, description="Label or name for the position."

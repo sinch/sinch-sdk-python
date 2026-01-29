@@ -2,7 +2,7 @@ from typing import Optional
 from datetime import date
 from pydantic import Field, conlist
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 from sinch.domains.conversation.models.v1.messages.shared.name_info import (
     NameInfo,
@@ -24,7 +24,7 @@ from sinch.domains.conversation.models.v1.messages.shared.url_info import (
 )
 
 
-class ContactInfoMessage(BaseModelConfigurationResponse):
+class ContactInfoMessage(BaseModelConfiguration):
     name: NameInfo = Field(..., description="Name information of the contact.")
     phone_numbers: conlist(PhoneNumberInfo) = Field(
         description="Phone numbers of the contact (at least one required).",

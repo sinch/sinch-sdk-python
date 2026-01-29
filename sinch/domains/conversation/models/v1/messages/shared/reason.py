@@ -7,11 +7,11 @@ from sinch.domains.conversation.models.v1.messages.types.reason_sub_code_type im
     ReasonSubCodeType,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class Reason(BaseModelConfigurationResponse):
+class Reason(BaseModelConfiguration):
     code: Optional[ReasonCodeType] = None
     description: Optional[StrictStr] = Field(
         default=None, description="A textual description of the reason."

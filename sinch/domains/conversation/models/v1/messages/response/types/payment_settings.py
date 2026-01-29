@@ -10,11 +10,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     Boleto,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class PaymentSettings(BaseModelConfigurationResponse):
+class PaymentSettings(BaseModelConfiguration):
     dynamic_pix: Optional[DynamicPix] = Field(
         default=None, description="The dynamic Pix payment settings."
     )

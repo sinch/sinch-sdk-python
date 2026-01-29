@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class NameInfo(BaseModelConfigurationResponse):
+class NameInfo(BaseModelConfiguration):
     full_name: StrictStr = Field(
         default=..., description="Full name of the contact"
     )

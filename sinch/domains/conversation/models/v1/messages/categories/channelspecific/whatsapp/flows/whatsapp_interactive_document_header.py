@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     WhatsAppInteractiveHeaderMedia,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class WhatsAppInteractiveDocumentHeader(BaseModelConfigurationResponse):
+class WhatsAppInteractiveDocumentHeader(BaseModelConfiguration):
     type: Literal["document"] = Field(
         ..., description="The document associated with the header."
     )

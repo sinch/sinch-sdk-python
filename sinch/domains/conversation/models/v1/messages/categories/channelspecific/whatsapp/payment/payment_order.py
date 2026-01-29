@@ -5,11 +5,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     OrderItem,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class PaymentOrder(BaseModelConfigurationResponse):
+class PaymentOrder(BaseModelConfiguration):
     items: conlist(OrderItem) = Field(
         ..., description="The items list for this order."
     )

@@ -6,18 +6,18 @@ from sinch.domains.conversation.models.v1.messages.types.card_height_type import
 from sinch.domains.conversation.models.v1.messages.categories.media import (
     MediaProperties,
 )
-from sinch.domains.conversation.models.v1.messages.response.types.choice_option import (
+from sinch.domains.conversation.models.v1.messages.categories.choice.choice_option import (
     ChoiceOption,
 )
 from sinch.domains.conversation.models.v1.messages.categories.card.message_properties import (
     MessageProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class CardMessage(BaseModelConfigurationResponse):
+class CardMessage(BaseModelConfiguration):
     choices: Optional[conlist(ChoiceOption)] = Field(
         default=None,
         description="You may include choices in your Card Message. The number of choices is limited to 10.",

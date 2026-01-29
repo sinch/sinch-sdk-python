@@ -4,11 +4,11 @@ from sinch.domains.conversation.models.v1.messages.categories.media.media_proper
     MediaProperties,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 
 
-class ChoiceItem(BaseModelConfigurationResponse):
+class ChoiceItem(BaseModelConfiguration):
     title: StrictStr = Field(
         default=...,
         description="Required parameter. Title for the choice item.",

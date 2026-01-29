@@ -5,14 +5,14 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ch
 )
 from sinch.domains.conversation.models.v1.messages.shared import Agent
 from sinch.domains.conversation.models.v1.messages.internal.base import (
-    BaseModelConfigurationResponse,
+    BaseModelConfiguration,
 )
 from sinch.domains.conversation.models.v1.messages.shared.override.omni_message_override import (
     OmniMessageOverride,
 )
 
 
-class AppMessageCommonProps(BaseModelConfigurationResponse):
+class AppMessageCommonProps(BaseModelConfiguration):
     explicit_channel_message: Optional[Dict[str, StrictStr]] = Field(
         default=None,
         description="Allows you to specify a channel and define a corresponding channel specific message payload that will override the standard Conversation API message types. The key in the map must point to a valid conversation channel as defined in the enum `ConversationChannel`. The message content must be provided in string format. You may use the [transcoding endpoint](https://developers.sinch.com/docs/conversation/api-reference/conversation/tag/Transcoding/) to help create your message. For more information about how to construct an explicit channel message for a particular channel, see that [channel's corresponding documentation](https://developers.sinch.com/docs/conversation/channel-support/) (for example, using explicit channel messages with [the WhatsApp channel](https://developers.sinch.com/docs/conversation/channel-support/whatsapp/message-support/#explicit-channel-messages)).",
