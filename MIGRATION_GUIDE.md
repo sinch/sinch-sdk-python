@@ -93,6 +93,39 @@ sinch_client = SinchClient(
 sinch_client.configuration.conversation_region = "eu"
 ```
 
+### [`Conversation`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/conversation)
+
+#### Replacement models
+
+##### Messages (send, get, delete, list)
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.message.requests.SendConversationMessageRequest` | `send()`: pass `app_id`, `message` (dict or [`SendMessageRequestBodyDict`](sinch/domains/conversation/models/v1/messages/types/send_message_request_body_dict.py)), and either `contact_id` or `recipient_identities`. Internally uses [`SendMessageRequest`](sinch/domains/conversation/models/v1/messages/internal/request/send_message_request.py), [`SendMessageRequestBody`](sinch/domains/conversation/models/v1/messages/internal/request/send_message_request_body.py). For typed payloads use `send_text_message()`, `send_card_message()`, etc.
+| `sinch.domains.conversation.models.message.responses.SendConversationMessageResponse` | [`SendMessageResponse`](sinch/domains/conversation/models/v1/messages/response/types/send_message_response.py) (`message_id`, optional `accepted_time` as `datetime`) |
+| `sinch.domains.conversation.models.message.requests.GetConversationMessageRequest` | `get(message_id, messages_source=None, **kwargs)`. Internally uses [`MessageIdRequest`](sinch/domains/conversation/models/v1/messages/internal/request/message_id_request.py). |
+| `sinch.domains.conversation.models.message.responses.GetConversationMessageResponse` | [`ConversationMessageResponse`](sinch/domains/conversation/models/v1/messages/response/types/__init__.py) (Union of app/contact message response types) |
+| `sinch.domains.conversation.models.message.requests.DeleteConversationMessageRequest` | `delete(message_id, messages_source=None, **kwargs)`. Internally uses [`MessageIdRequest`](sinch/domains/conversation/models/v1/messages/internal/request/message_id_request.py). |
+| `sinch.domains.conversation.models.message.responses.DeleteConversationMessageResponse` | `None` (method returns `None`) |
+| `sinch.domains.conversation.models.message.requests.ListConversationMessagesRequest` | `list()` with individual parameters: `conversation_id`, `contact_id`, `app_id`, `page_size`, `page_token`, `view`, `messages_source`, `only_recipient_originated` (signature aligned with V1 where available) |
+| `sinch.domains.conversation.models.message.responses.ListConversationMessagesResponse` | Response type for `list()` (messages list, next_page_token) |
+
+#### Replacement APIs
+
+The Conversation domain API access remains `sinch_client.conversation`; message operations are under `sinch_client.conversation.messages`. Recipient is specified with exactly one of `contact_id` or `recipient_identities` (list of `{channel, identity}`).
+
+##### Messages API
+
+| Old method | New method in `conversation.messages` |
+|------------|----------------------------------------|
+| `send()` with `SendConversationMessageRequest` | Use convenience methods: `send_text_message()`, `send_card_message()`, `send_carousel_message()`, `send_choice_message()`, `send_contact_info_message()`, `send_list_message()`, `send_location_message()`, `send_media_message()`, `send_template_message()`<br>Or `send()` with `app_id`, `message` (dict or `SendMessageRequestBodyDict`), and either `contact_id` or `recipient_identities` |
+| `get()` with `GetConversationMessageRequest` | `get()` with `message_id: str` parameter |
+| `delete()` with `DeleteConversationMessageRequest` | `delete()` with `message_id: str` parameter |
+| `list()` with `ListConversationMessagesRequest` | In Progress |
+| — |  **New in V2:** `update()` with `message_id`, `metadata`, and optional `messages_source`|
+
+<br>
+
 ### [`SMS`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/sms)
 
 #### Replacement models
