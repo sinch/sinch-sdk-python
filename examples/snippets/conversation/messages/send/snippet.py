@@ -22,16 +22,17 @@ sinch_client = SinchClient(
 app_id = "CONVERSATION_APP_ID"
 # The phone number of the recipient in E.164 format (e.g. +46701234567)
 recipient_identities = [
-    {
-        "channel": "SMS",
-        "identity": "RECIPIENT_PHONE_NUMBER"
-    }
+    {"channel": "RCS", "identity": "RECIPIENT_PHONE_NUMBER"}
 ]
 
-response = sinch_client.conversation.messages.send_text_message(
+response = sinch_client.conversation.messages.send(
     app_id=app_id,
-    text="[Python SDK: Conversation] Sample text message",
+    message={
+        "text_message": {
+            "text": "[Python SDK: Conversation Message] Sample text message"
+        }
+    },
     recipient_identities=recipient_identities
 )
 
-print(f"Successfully sent text message.\n{response}")
+print(f"Successfully sent message.\n{response}")

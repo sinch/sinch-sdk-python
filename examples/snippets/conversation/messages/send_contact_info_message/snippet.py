@@ -18,20 +18,24 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
-# The ID of the Conversation App to send the message from
 app_id = "CONVERSATION_APP_ID"
 # The phone number of the recipient in E.164 format (e.g. +46701234567)
 recipient_identities = [
     {
-        "channel": "SMS",
+        "channel": "RCS",
         "identity": "RECIPIENT_PHONE_NUMBER"
     }
 ]
 
-response = sinch_client.conversation.messages.send_text_message(
+contact_info_message = {
+    "name": {"full_name": "John Doe"},
+    "phone_numbers": [{"phone_number": "+1234567890"}],
+}
+
+response = sinch_client.conversation.messages.send_contact_info_message(
     app_id=app_id,
-    text="[Python SDK: Conversation] Sample text message",
+    contact_info_message=contact_info_message,
     recipient_identities=recipient_identities
 )
 
-print(f"Successfully sent text message.\n{response}")
+print(f"Successfully sent contact info message.\n{response}")

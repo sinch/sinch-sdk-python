@@ -18,20 +18,34 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
-# The ID of the Conversation App to send the message from
 app_id = "CONVERSATION_APP_ID"
 # The phone number of the recipient in E.164 format (e.g. +46701234567)
 recipient_identities = [
     {
-        "channel": "SMS",
+        "channel": "RCS",
         "identity": "RECIPIENT_PHONE_NUMBER"
     }
 ]
 
-response = sinch_client.conversation.messages.send_text_message(
+carousel_message = {
+    "cards": [
+        {
+            "title": "Card 1",
+            "description": "First card description",
+            "choices": [{"text_message": {"text": "Option 1"}}],
+        },
+        {
+            "title": "Card 2",
+            "description": "Second card description",
+            "choices": [{"url_message": {"title": "Link", "url": "https://example.com"}}],
+        },
+    ],
+}
+
+response = sinch_client.conversation.messages.send_carousel_message(
     app_id=app_id,
-    text="[Python SDK: Conversation] Sample text message",
+    carousel_message=carousel_message,
     recipient_identities=recipient_identities
 )
 
-print(f"Successfully sent text message.\n{response}")
+print(f"Successfully sent carousel message.\n{response}")
