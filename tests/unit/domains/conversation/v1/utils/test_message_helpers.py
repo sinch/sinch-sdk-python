@@ -55,56 +55,57 @@ class TestBuildRecipientDict:
 
 class TestCoerceRecipient:
 
-    @pytest.mark.parametrize(
-        "recipient_input,expected_contact_id,expected_id_by_len,expected_first_identity,same_instance",
-        [
-            (Recipient(contact_id="contact-123"), "contact-123", None, None, True),
-            ({"contact_id": "contact-456"}, "contact-456", None, None, False),
-            (
-                {"channel_identities": [{"channel": "RCS", "identity": "+46701234567"}]},
-                None,
-                1,
-                "+46701234567",
-                False,
-            ),
-            (
-                {
-                    "identified_by": {
-                        "channel_identities": [
-                            {"channel": "RCS", "identity": "+46701234567"},
-                        ]
-                    }
-                },
-                None,
-                1,
-                "+46701234567",
-                False,
-            ),
-        ],
-    )
-    def test_coerce_recipient_expects_input_converted_to_recipient(
-        self,
-        recipient_input,
-        expected_contact_id,
-        expected_id_by_len,
-        expected_first_identity,
-        same_instance,
-    ):
-        """Test that Recipient or dict input is coerced to Recipient with expected fields."""
+    def test_coerce_recipient_expects_recipient_instance_returned_unchanged(self):
+        """Passing a Recipient returns the same instance with contact_id preserved."""
+        recipient_input = Recipient(contact_id="contact-123")
         result = coerce_recipient(recipient_input)
         assert isinstance(result, Recipient)
-        if same_instance:
-            assert result is recipient_input
-        if expected_contact_id is not None:
-            assert result.contact_id == expected_contact_id
-        if expected_id_by_len is not None:
-            assert result.identified_by is not None
-            assert len(result.identified_by.channel_identities) == expected_id_by_len
-        if expected_first_identity is not None:
-            assert (
-                result.identified_by.channel_identities[0].identity
-                == expected_first_identity
-            )
+        assert result is recipient_input
+        assert result.contact_id == "contact-123"
+
+    def test_coerce_recipient_expects_dict_with_contact_id_converted_to_recipient(
+        self,
+    ):
+        """Passing a dict with contact_id returns a new Recipient with that contact_id."""
+        recipient_input = {"contact_id": "contact-456"}
+        result = coerce_recipient(recipient_input)
+        assert isinstance(result, Recipient)
+        assert result is not recipient_input
+        assert result.contact_id == "contact-456"
+
+    def test_coerce_recipient_expects_dict_with_channel_identities_converted_to_recipient(
+        self,
+    ):
+        """Passing a dict with channel_identities returns Recipient with identified_by."""
+        recipient_input = {
+            "channel_identities": [{"channel": "RCS", "identity": "+46701234567"}]
+        }
+        result = coerce_recipient(recipient_input)
+        assert isinstance(result, Recipient)
+        assert result.identified_by is not None
+        assert len(result.identified_by.channel_identities) == 1
+        assert (
+            result.identified_by.channel_identities[0].identity == "+46701234567"
+        )
+
+    def test_coerce_recipient_expects_dict_with_identified_by_converted_to_recipient(
+        self,
+    ):
+        """Passing a dict with identified_by.channel_identities returns Recipient."""
+        recipient_input = {
+            "identified_by": {
+                "channel_identities": [
+                    {"channel": "RCS", "identity": "+46701234567"},
+                ]
+            }
+        }
+        result = coerce_recipient(recipient_input)
+        assert isinstance(result, Recipient)
+        assert result.identified_by is not None
+        assert len(result.identified_by.channel_identities) == 1
+        assert (
+            result.identified_by.channel_identities[0].identity == "+46701234567"
+        )
 
 
 class TestSplitSendKwargs:

@@ -72,7 +72,7 @@ def test_send_message_request_expects_validation_error_for_missing_app_id():
 
     error_message = str(excinfo.value)
 
-    assert "Field required" in error_message or "field required" in error_message
+    assert "field required" in error_message.casefold()
     assert "app_id" in error_message
 
 
@@ -90,5 +90,5 @@ def test_send_message_request_expects_validation_error_for_missing_recipient():
 
     error_message = str(excinfo.value)
 
-    assert "Field required" in error_message or "field required" in error_message
+    assert "field required" in error_message.casefold()
     assert "recipient" in error_message
