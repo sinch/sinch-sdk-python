@@ -22,7 +22,10 @@ sinch_client = SinchClient(
 app_id = "CONVERSATION_APP_ID"
 # The phone number of the recipient in E.164 format (e.g. +46701234567)
 recipient_identities = [
-    {"channel": "RCS", "identity": "RECIPIENT_PHONE_NUMBER"}
+    {
+        "channel": "RCS",
+        "identity": "RECIPIENT_PHONE_NUMBER"
+    }
 ]
 
 response = sinch_client.conversation.messages.send(

@@ -62,6 +62,28 @@ def test_messages_delete_expects_correct_request(
     mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
 
 
+def test_messages_delete_with_messages_source_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """Test that delete with messages_source sends the correct request."""
+    mock_sinch_client_conversation.configuration.transport.request.return_value = (
+        None
+    )
+    spy_endpoint = mocker.spy(DeleteMessageEndpoint, "__init__")
+
+    conversation = Conversation(mock_sinch_client_conversation)
+    message_id = "01FC66621DL205119Z8PMV1QPQ"
+    conversation.messages.delete(
+        message_id=message_id,
+        messages_source="DISPATCH_SOURCE",
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    assert kwargs["request_data"].message_id == message_id
+    assert kwargs["request_data"].messages_source == "DISPATCH_SOURCE"
+
+
 def test_messages_get_expects_correct_request(
     mock_sinch_client_conversation, mock_conversation_message_response, mocker
 ):
@@ -139,6 +161,31 @@ def test_messages_send_expects_correct_request(
     assert kwargs["request_data"].message.text_message.text == "Hello"
     assert isinstance(response, SendMessageResponse)
     assert response.message_id == "01FC66621SND04119Z8PMV1QPQ"
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
+
+
+def test_messages_send_with_contact_id_expects_correct_request(
+    mock_sinch_client_conversation, mock_send_message_response, mocker
+):
+    """Test that send with contact_id builds recipient correctly."""
+    mock_sinch_client_conversation.configuration.transport.request.return_value = (
+        mock_send_message_response
+    )
+    spy_endpoint = mocker.spy(SendMessageEndpoint, "__init__")
+
+    conversation = Conversation(mock_sinch_client_conversation)
+    response = conversation.messages.send(
+        app_id="APP_ID",
+        message={"text_message": {"text": "Hi"}},
+        contact_id="CONTACT_123",
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    assert isinstance(kwargs["request_data"], SendMessageRequest)
+    assert kwargs["request_data"].app_id == "APP_ID"
+    assert kwargs["request_data"].recipient.contact_id == "CONTACT_123"
+    assert isinstance(response, SendMessageResponse)
     mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
 
 
@@ -233,31 +280,6 @@ def test_messages_send_choice_message_expects_correct_request(
     mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
 
 
-def test_messages_send_with_contact_id_expects_correct_request(
-    mock_sinch_client_conversation, mock_send_message_response, mocker
-):
-    """Test that send with contact_id builds recipient correctly."""
-    mock_sinch_client_conversation.configuration.transport.request.return_value = (
-        mock_send_message_response
-    )
-    spy_endpoint = mocker.spy(SendMessageEndpoint, "__init__")
-
-    conversation = Conversation(mock_sinch_client_conversation)
-    response = conversation.messages.send(
-        app_id="APP_ID",
-        message={"text_message": {"text": "Hi"}},
-        contact_id="CONTACT_123",
-    )
-
-    spy_endpoint.assert_called_once()
-    _, kwargs = spy_endpoint.call_args
-    assert isinstance(kwargs["request_data"], SendMessageRequest)
-    assert kwargs["request_data"].app_id == "APP_ID"
-    assert kwargs["request_data"].recipient.contact_id == "CONTACT_123"
-    assert isinstance(response, SendMessageResponse)
-    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
-
-
 def test_messages_send_media_message_expects_correct_request(
     mock_sinch_client_conversation, mock_send_message_response, mocker
 ):
@@ -282,25 +304,3 @@ def test_messages_send_media_message_expects_correct_request(
     assert kwargs["request_data"].message.media_message.url == "https://example.com/image.jpg"
     assert isinstance(response, SendMessageResponse)
     mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
-
-
-def test_messages_delete_with_messages_source_expects_correct_request(
-    mock_sinch_client_conversation, mocker
-):
-    """Test that delete with messages_source sends the correct request."""
-    mock_sinch_client_conversation.configuration.transport.request.return_value = (
-        None
-    )
-    spy_endpoint = mocker.spy(DeleteMessageEndpoint, "__init__")
-
-    conversation = Conversation(mock_sinch_client_conversation)
-    message_id = "01FC66621DL205119Z8PMV1QPQ"
-    conversation.messages.delete(
-        message_id=message_id,
-        messages_source="DISPATCH_SOURCE",
-    )
-
-    spy_endpoint.assert_called_once()
-    _, kwargs = spy_endpoint.call_args
-    assert kwargs["request_data"].message_id == message_id
-    assert kwargs["request_data"].messages_source == "DISPATCH_SOURCE"

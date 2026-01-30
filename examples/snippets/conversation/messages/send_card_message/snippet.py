@@ -18,6 +18,7 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
+# The ID of the Conversation App to send the message from
 app_id = "CONVERSATION_APP_ID"
 # The phone number of the recipient in E.164 format (e.g. +46701234567)
 recipient_identities = [
@@ -30,6 +31,10 @@ recipient_identities = [
 card_message = {
     "title": "Card title",
     "description": "Optional card description",
+    "choices": [
+        {"text_message": {"text": "Yes"}, "postback_data": "yes"},
+        {"text_message": {"text": "No"}, "postback_data": "no"},
+    ]
 }
 
 response = sinch_client.conversation.messages.send_card_message(
