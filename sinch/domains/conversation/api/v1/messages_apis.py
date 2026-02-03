@@ -1,6 +1,8 @@
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
-
+from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.conversation.models.v1.messages.internal.request import (
+    ListMessagesRequest,
     MessageIdRequest,
     UpdateMessageMetadataRequest,
     SendMessageRequest,
@@ -11,12 +13,13 @@ from sinch.domains.conversation.models.v1.messages.response.types import (
     SendMessageResponse,
 )
 from sinch.domains.conversation.models.v1.messages.types import (
-    MessagesSourceType,
     ConversationChannelType,
-    ProcessingStrategyType,
-    MetadataUpdateStrategyType,
-    MessageQueueType,
+    ConversationMessagesViewType,
     MessageContentType,
+    MessageQueueType,
+    MessagesSourceType,
+    MetadataUpdateStrategyType,
+    ProcessingStrategyType,
     CardMessageDict,
     CarouselMessageDict,
     ChoiceMessageDict,
@@ -58,6 +61,7 @@ from sinch.domains.conversation.models.v1.messages.categories.template import (
 from sinch.domains.conversation.api.v1.internal import (
     DeleteMessageEndpoint,
     GetMessageEndpoint,
+    ListMessagesEndpoint,
     UpdateMessageMetadataEndpoint,
     SendMessageEndpoint,
 )
@@ -130,6 +134,80 @@ class Messages(BaseConversation):
             message_id=message_id, messages_source=messages_source, **kwargs
         )
         return self._request(GetMessageEndpoint, request_data)
+
+    def list(
+        self,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        conversation_id: Optional[str] = None,
+        contact_id: Optional[str] = None,
+        app_id: Optional[str] = None,
+        channel_identity: Optional[str] = None,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
+        view: Optional[ConversationMessagesViewType] = None,
+        messages_source: Optional[MessagesSourceType] = None,
+        only_recipient_originated: Optional[bool] = None,
+        channel: Optional[ConversationChannelType] = None,
+        **kwargs,
+    ) -> Paginator[ConversationMessageResponse]:
+        """
+        List messages sent or received via particular Processing Modes.
+        The messages are ordered by their accept_time property in descending order.
+
+        :param page_size: Maximum number of messages to fetch. Defaults to 10, maximum is 1000.
+        :type page_size: Optional[int]
+        :param page_token: Next page token previously returned if any.
+        :type page_token: Optional[str]
+        :param conversation_id: Filter messages by conversation ID.
+        :type conversation_id: Optional[str]
+        :param contact_id: Filter messages by contact ID.
+        :type contact_id: Optional[str]
+        :param app_id: Filter messages by app ID.
+        :type app_id: Optional[str]
+        :param channel_identity: Channel identity of the contact.
+        :type channel_identity: Optional[str]
+        :param start_time: Filter messages with accept_time after this timestamp.
+        :type start_time: Optional[datetime]
+        :param end_time: Filter messages with accept_time before this timestamp.
+        :type end_time: Optional[datetime]
+        :param view: Messages view type. WITH_METADATA or WITHOUT_METADATA.
+        :type view: Optional[ConversationMessagesViewType]
+        :param messages_source: Specifies the message source for the request.
+        :type messages_source: Optional[MessagesSourceType]
+        :param only_recipient_originated: Only fetch recipient-originated messages.
+        :type only_recipient_originated: Optional[bool]
+        :param channel: Only fetch messages from the specified channel.
+        :type channel: Optional[ConversationChannelType]
+        :param **kwargs: Additional parameters for the request.
+        :type **kwargs: dict
+
+        :returns: TokenBasedPaginator with ConversationMessageResponse items
+        :rtype: Paginator[ConversationMessageResponse]
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return TokenBasedPaginator(
+            sinch=self._sinch,
+            endpoint=ListMessagesEndpoint(
+                project_id=self._sinch.configuration.project_id,
+                request_data=ListMessagesRequest(
+                    page_size=page_size,
+                    page_token=page_token,
+                    conversation_id=conversation_id,
+                    contact_id=contact_id,
+                    app_id=app_id,
+                    channel_identity=channel_identity,
+                    start_time=start_time,
+                    end_time=end_time,
+                    view=view,
+                    messages_source=messages_source,
+                    only_recipient_originated=only_recipient_originated,
+                    channel=channel,
+                    **kwargs,
+                ),
+            ),
+        )
 
     def update(
         self,

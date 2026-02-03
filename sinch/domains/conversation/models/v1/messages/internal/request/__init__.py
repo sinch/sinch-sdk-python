@@ -1,3 +1,6 @@
+from sinch.domains.conversation.models.v1.messages.internal.request.list_messages_request import (
+    ListMessagesRequest,
+)
 from sinch.domains.conversation.models.v1.messages.internal.request.message_id_request import (
     MessageIdRequest,
 )
@@ -17,6 +20,7 @@ from sinch.domains.conversation.models.v1.messages.internal.request.send_message
 )
 
 __all__ = [
+    "ListMessagesRequest",
     "MessageIdRequest",
     "UpdateMessageMetadataRequest",
     "Recipient",

@@ -5,13 +5,19 @@ from unittest.mock import MagicMock
 import pytest
 from sinch.domains.conversation.conversation import Conversation
 from sinch.domains.conversation.api.v1 import Messages
+from sinch.core.pagination import TokenBasedPaginator
 from sinch.domains.conversation.api.v1.internal import (
     DeleteMessageEndpoint,
     GetMessageEndpoint,
+    ListMessagesEndpoint,
     SendMessageEndpoint,
     UpdateMessageMetadataEndpoint,
 )
+from sinch.domains.conversation.models.v1.messages.internal import (
+    ListMessagesResponse,
+)
 from sinch.domains.conversation.models.v1.messages.internal.request import (
+    ListMessagesRequest,
     MessageIdRequest,
     UpdateMessageMetadataRequest,
     SendMessageRequest,
@@ -82,6 +88,36 @@ def test_messages_delete_with_messages_source_expects_correct_request(
     _, kwargs = spy_endpoint.call_args
     assert kwargs["request_data"].message_id == message_id
     assert kwargs["request_data"].messages_source == "DISPATCH_SOURCE"
+
+
+def test_messages_list_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """
+    Test that the Messages.list() method sends the correct request
+    and handles the response properly.
+    """
+    mock_response = ListMessagesResponse(messages=[], next_page_token=None)
+    mock_sinch_client_conversation.configuration.transport.request.return_value = (
+        mock_response
+    )
+
+    # Spy on the ListMessagesEndpoint to capture calls
+    spy_endpoint = mocker.spy(ListMessagesEndpoint, "__init__")
+
+    conversation = Conversation(mock_sinch_client_conversation)
+    response = conversation.messages.list(page_size=10)
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert kwargs["request_data"] == ListMessagesRequest(page_size=10)
+
+    assert isinstance(response, TokenBasedPaginator)
+    assert hasattr(response, "has_next_page")
+    assert response.result == mock_response
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
 
 
 def test_messages_get_expects_correct_request(
