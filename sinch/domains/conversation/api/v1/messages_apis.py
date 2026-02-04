@@ -149,6 +149,7 @@ class Messages(BaseConversation):
         messages_source: Optional[MessagesSourceType] = None,
         only_recipient_originated: Optional[bool] = None,
         channel: Optional[ConversationChannelType] = None,
+        direction: Optional[ConversationDirectionType] = None,
         **kwargs,
     ) -> Paginator[ConversationMessageResponse]:
         """
@@ -179,6 +180,8 @@ class Messages(BaseConversation):
         :type only_recipient_originated: Optional[bool]
         :param channel: Only fetch messages from the specified channel.
         :type channel: Optional[ConversationChannelType]
+        :param direction: Only fetch messages with the specified direction. TO_APP or TO_CONTACT.
+        :type direction: Optional[ConversationDirectionType]
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
@@ -204,6 +207,7 @@ class Messages(BaseConversation):
                     messages_source=messages_source,
                     only_recipient_originated=only_recipient_originated,
                     channel=channel,
+                    direction=direction,
                     **kwargs,
                 ),
             ),
