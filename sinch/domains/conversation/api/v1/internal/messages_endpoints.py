@@ -46,18 +46,19 @@ class ListMessagesEndpoint(MessageEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     QUERY_PARAM_FIELDS = {
-        "conversation_id",
-        "contact_id",
         "app_id",
+        "channel",
         "channel_identity",
-        "start_time",
+        "contact_id",
+        "conversation_id",
+        "direction",
         "end_time",
-        "page_size",
-        "page_token",
-        "view",
         "messages_source",
         "only_recipient_originated",
-        "channel",
+        "page_size",
+        "page_token",
+        "start_time",
+        "view",
     }
 
     def __init__(self, project_id: str, request_data: ListMessagesRequest):
