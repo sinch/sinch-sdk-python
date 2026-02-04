@@ -14,6 +14,7 @@ from sinch.domains.conversation.models.v1.messages.response.types import (
 )
 from sinch.domains.conversation.models.v1.messages.types import (
     ConversationChannelType,
+    ConversationDirectionType,
     ConversationMessagesViewType,
     MessageContentType,
     MessageQueueType,
