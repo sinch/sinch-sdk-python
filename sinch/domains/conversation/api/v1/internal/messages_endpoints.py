@@ -2,9 +2,13 @@ import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.conversation.models.v1.messages.internal.request import (
+    ListMessagesRequest,
     MessageIdRequest,
     UpdateMessageMetadataRequest,
     SendMessageRequest,
+)
+from sinch.domains.conversation.models.v1.messages.internal import (
+    ListMessagesResponse,
 )
 from sinch.domains.conversation.models.v1.messages.response.types import (
     ConversationMessageResponse,
@@ -34,6 +38,44 @@ class MessageEndpoint(ConversationEndpoint):
             exclude=exclude_set,
         )
         return query_params
+
+
+class ListMessagesEndpoint(MessageEndpoint):
+    ENDPOINT_URL = "{origin}/v1/projects/{project_id}/messages"
+    HTTP_METHOD = HTTPMethods.GET.value
+    HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
+
+    QUERY_PARAM_FIELDS = {
+        "app_id",
+        "channel",
+        "channel_identity",
+        "contact_id",
+        "conversation_id",
+        "direction",
+        "end_time",
+        "messages_source",
+        "only_recipient_originated",
+        "page_size",
+        "page_token",
+        "start_time",
+        "view",
+    }
+
+    def __init__(self, project_id: str, request_data: ListMessagesRequest):
+        super(ListMessagesEndpoint, self).__init__(project_id, request_data)
+        self.project_id = project_id
+        self.request_data = request_data
+
+    def handle_response(self, response: HTTPResponse) -> ListMessagesResponse:
+        try:
+            super(ListMessagesEndpoint, self).handle_response(response)
+        except ConversationException as e:
+            raise ConversationException(
+                message=e.args[0],
+                response=e.http_response,
+                is_from_server=e.is_from_server,
+            )
+        return self.process_response_model(response.body, ListMessagesResponse)
 
 
 class DeleteMessageEndpoint(MessageEndpoint):

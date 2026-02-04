@@ -7,6 +7,9 @@ from sinch.domains.conversation.models.v1.messages.types.channel_specific_messag
 from sinch.domains.conversation.models.v1.messages.types.conversation_channel_type import (
     ConversationChannelType,
 )
+from sinch.domains.conversation.models.v1.messages.types.conversation_messages_view_type import (
+    ConversationMessagesViewType,
+)
 from sinch.domains.conversation.models.v1.messages.types.conversation_direction_type import (
     ConversationDirectionType,
 )
@@ -87,6 +90,7 @@ from sinch.domains.conversation.models.v1.messages.types.send_message_request_bo
 __all__ = [
     "AgentType",
     "ConversationChannelType",
+    "ConversationMessagesViewType",
     "ConversationDirectionType",
     "ProcessingModeType",
     "CardHeightType",
