@@ -6,6 +6,7 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 )
 from sinch.domains.conversation.models.v1.messages.types import (
     ConversationChannelType,
+    ConversationDirectionType,
     ConversationMessagesViewType,
     MessagesSourceType,
 )
@@ -61,4 +62,8 @@ class ListMessagesRequest(BaseModelConfiguration):
     channel: Optional[ConversationChannelType] = Field(
         default=None,
         description="Only fetch messages from the specified channel.",
+    )
+    direction: Optional[ConversationDirectionType] = Field(
+        default=None,
+        description="Only fetch messages with the specified direction. TO_APP or TO_CONTACT.",
     )
