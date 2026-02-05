@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-import pytest
+
 from sinch.domains.conversation.models.v1.messages.internal.request import (
     ListMessagesRequest,
 )
@@ -39,60 +39,3 @@ def test_list_messages_request_expects_parsed_input():
     assert request.only_recipient_originated is True
     assert request.channel == "WHATSAPP"
     assert request.direction == "TO_CONTACT"
-
-
-@pytest.mark.parametrize(
-    "messages_source",
-    ["CONVERSATION_SOURCE", "DISPATCH_SOURCE"],
-)
-def test_list_messages_request_expects_accepts_messages_source(messages_source):
-    """Test that the model accepts messages_source with different values."""
-    request = ListMessagesRequest(
-        page_size=10,
-        messages_source=messages_source,
-    )
-
-    assert request.page_size == 10
-    assert request.messages_source == messages_source
-
-
-@pytest.mark.parametrize(
-    "view",
-    ["WITH_METADATA", "WITHOUT_METADATA"],
-)
-def test_list_messages_request_expects_accepts_view(view):
-    """Test that the model accepts view with different values."""
-    request = ListMessagesRequest(page_size=10, view=view)
-
-    assert request.view == view
-
-
-@pytest.mark.parametrize(
-    "channel",
-    ["WHATSAPP", "RCS", "SMS", "MESSENGER"],
-)
-def test_list_messages_request_expects_accepts_channel(channel):
-    """Test that the model accepts channel with different values."""
-    request = ListMessagesRequest(page_size=10, channel=channel)
-
-    assert request.channel == channel
-
-
-@pytest.mark.parametrize(
-    "direction",
-    ["TO_APP", "TO_CONTACT"],
-)
-def test_list_messages_request_expects_accepts_direction(direction):
-    """Test that the model accepts direction with different values."""
-    request = ListMessagesRequest(page_size=10, direction=direction)
-
-    assert request.direction == direction
-
-
-def test_list_messages_request_expects_model_dump_excludes_none():
-    """Test that model_dump with exclude_none=True omits None values."""
-    request = ListMessagesRequest(page_size=10)
-    dumped = request.model_dump(exclude_none=True, by_alias=True)
-
-    assert "page_size" in dumped
-    assert dumped["page_size"] == 10

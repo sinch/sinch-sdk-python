@@ -42,7 +42,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_conversation)
     )
 
 
-def test_build_query_params_expects_empty_when_only_page_size():
+def test_build_query_params_expects_excludes_unset_fields():
     """Test that query params only include non-None fields."""
     request_data = ListMessagesRequest(page_size=10)
     endpoint = ListMessagesEndpoint("test_project_id", request_data)

@@ -19,7 +19,7 @@ sinch_client = SinchClient(
 )
 
 # The ID of the Conversation App to list messages from
-app_id ="CONVERSATION_APP_ID"
+app_id = "CONVERSATION_APP_ID"
 
 messages = sinch_client.conversation.messages.list(
     app_id=app_id,
