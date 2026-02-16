@@ -25,7 +25,7 @@ sms_configuration: SmsConfigurationDict = {
 
 response = sinch_client.numbers.rent_any(
     region_code="US",
-    type_="LOCAL",
+    number_type="LOCAL",
     capabilities=["SMS", "VOICE"],
     sms_configuration=sms_configuration
 )

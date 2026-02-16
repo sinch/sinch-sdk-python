@@ -35,7 +35,21 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
+        pip install -e .
         pip install -r requirements-dev.txt
+
+    - name: Compile all examples
+      run: |
+        for file in $(find examples -name "*.py"); do
+          echo "Compiling $file..."
+          python -m py_compile "$file" || exit 1
+        done
+        echo "All examples compiled successfully."
+
+    - name: Check snippet coverage
+      run: |
+        pip install python-dotenv
+        python scripts/check_snippet_coverage.py
 
     - name: Lint and format check with Ruff
       run: |
@@ -98,3 +112,5 @@ jobs:
         python -m behave tests/e2e/sms/features
         python -m behave tests/e2e/conversation/features
         python -m behave tests/e2e/number-lookup/features
+    
+    
