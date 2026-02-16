@@ -1,5 +1,5 @@
 """
-Validate that snippets have valid syntax, working imports, and correct SDK method names.
+Validate that snippets have valid syntax, working imports, and reference existing SDK methods by executing them until the first outbound API call.
 """
 import argparse
 import os
