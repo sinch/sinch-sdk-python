@@ -1,0 +1,30 @@
+from flask import request, Response
+from webhooks.conversation_api.server_business_logic import handle_conversation_event
+
+
+class ConversationController:
+    def __init__(self, sinch_client, webhooks_secret):
+        self.sinch_client = sinch_client
+        self.webhooks_secret = webhooks_secret
+        self.logger = self.sinch_client.configuration.logger
+
+    def conversation_event(self):
+        headers = dict(request.headers)
+        body_str = request.raw_body.decode("utf-8") if request.raw_body else ""
+
+        webhooks_service = self.sinch_client.conversation.webhooks(self.webhooks_secret)
+
+        # Set to True to enforce signature validation (recommended in production)
+        ensure_valid_signature = False
+        if ensure_valid_signature:
+            valid = webhooks_service.validate_authentication_header(
+                headers=headers,
+                json_payload=body_str,
+            )
+            if not valid:
+                return Response(status=401)
+
+        event = webhooks_service.parse_event(body_str)
+        handle_conversation_event(event=event, logger=self.logger)
+
+        return Response(status=200)

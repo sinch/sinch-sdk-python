@@ -6,6 +6,7 @@ to process incoming webhooks from Sinch services.
 The webhook handlers are organized by service:
 - **SMS**: Handlers for SMS webhook events (`sms_api/`)
 - **Numbers**: Handlers for Numbers API webhook events (`numbers_api/`)
+- **Conversation**: Handlers for Conversation API webhook events (`conversation_api/`)
 
 This directory contains both the webhook handlers and the server application (`server.py`) that uses them.
 
@@ -39,6 +40,10 @@ This directory contains both the webhook handlers and the server application (`s
    ```
    SMS_WEBHOOKS_SECRET=Your Sinch SMS Webhook Secret
    ```
+     - Conversation controller: Set the webhook secret you configured when creating the webhook (see [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks)):
+   ```
+   CONVERSATION_WEBHOOKS_SECRET=Your Conversation Webhook Secret
+   ```
 
 ## Usage
 
@@ -69,10 +74,11 @@ The server will start on the port specified in your `.env` file (default: 3001).
 
 The server exposes the following endpoints:
 
-| Service      | Endpoint           |
-|--------------|--------------------|
-| Numbers      | /NumbersEvent      |
-| SMS          | /SmsEvent          |
+| Service      | Endpoint             |
+|--------------|----------------------|
+| Numbers      | /NumbersEvent        |
+| SMS          | /SmsEvent            |
+| Conversation | /ConversationEvent   |
 
 ## Using ngrok to expose your local server
 
@@ -93,10 +99,12 @@ Forwarding                    https://adbd-79-148-170-158.ngrok-free.app -> http
 Use the `https` forwarding URL in your callback configuration. For example:
  - Numbers: https://adbd-79-148-170-158.ngrok-free.app/NumbersEvent
  - SMS: https://adbd-79-148-170-158.ngrok-free.app/SmsEvent
+ - Conversation: https://adbd-79-148-170-158.ngrok-free.app/ConversationEvent
 
 Use this value to configure the callback URLs:
 - **Numbers**: Set the `callback_url` parameter when renting or updating a number via the SDK (e.g., `available_numbers_apis` rent/update flow: [rent](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/available_numbers_apis.py#L69), [update](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/available_numbers_apis.py#L89)); you can also update active numbers via `active_numbers_apis` ([example](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/active_numbers_apis.py#L64)).
-- **SMS**: Set the `callback_url` parameter when configuring your SMS service plan via the SDK (see `batches_apis` examples: [send/dry-run callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L147), [update/replace callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L491)); you can also set it directly via the SMS API.
+- **SMS**: Set the `callback_url` parameter when configuring your SMS service plan via the SDK (see `batches_apis` examples: [send/dry-run callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L146), [update/replace callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L491)); you can also set it directly via the SMS API.
+- **Conversation**: Set the `callback_url` parameter when sending a message via the SDK (see `messages_apis` example: [send_text_message](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/conversation/api/v1/messages_apis.py#L420)).
 
 You can also set these callback URLs in the Sinch dashboard; the API parameters above override the default values configured there.
 
