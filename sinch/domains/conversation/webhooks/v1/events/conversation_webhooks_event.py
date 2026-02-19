@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Literal, Optional, Union
+from typing import Any, Optional, Union
 from pydantic import Field, StrictStr
 
 from sinch.domains.conversation.webhooks.v1.internal import WebhookEvent
@@ -21,10 +21,6 @@ from sinch.domains.conversation.models.v1.messages.types.processing_mode_type im
 class ConversationWebhookEventBase(WebhookEvent):
     """Base fields present on every Conversation API webhook payload."""
 
-    trigger: Optional[StrictStr] = Field(
-        default=None,
-        description="The webhook trigger type (e.g. MESSAGE_INBOUND, MESSAGE_DELIVERY, MESSAGE_SUBMIT).",
-    )
     app_id: Optional[StrictStr] = Field(
         default=None,
         description="Id of the subscribed app.",
@@ -95,11 +91,7 @@ class MessageDeliveryReport(WebhookEvent):
 class MessageDeliveryReceiptEvent(ConversationWebhookEventBase):
     """Webhook event for MESSAGE_DELIVERY (delivery receipt for app messages)."""
 
-    trigger: Literal["MESSAGE_DELIVERY"] = Field(
-        ...,
-        description="Webhook trigger type.",
-    )
-    message_delivery_report: Optional[MessageDeliveryReport] = Field(
+    message_delivery_report: MessageDeliveryReport = Field(
         default=None,
         description="The delivery report payload.",
     )
@@ -117,12 +109,7 @@ class InboundMessage(MessageCommonProps, WebhookEvent):
 class MessageInboundEvent(ConversationWebhookEventBase):
     """Webhook event for MESSAGE_INBOUND (inbound message from user)."""
 
-    trigger: Literal["MESSAGE_INBOUND"] = Field(
-        ...,
-        description="Webhook trigger type.",
-    )
-    message: Optional[InboundMessage] = Field(
-        default=None,
+    message: InboundMessage = Field(
         description="The inbound message payload.",
     )
 
@@ -163,12 +150,7 @@ class MessageSubmitNotification(WebhookEvent):
 class MessageSubmitEvent(ConversationWebhookEventBase):
     """Webhook event for MESSAGE_SUBMIT (message submission notification)."""
 
-    trigger: Literal["MESSAGE_SUBMIT"] = Field(
-        ...,
-        description="Webhook trigger type.",
-    )
-    message_submit_notification: Optional[MessageSubmitNotification] = Field(
-        default=None,
+    message_submit_notification: MessageSubmitNotification = Field(
         description="The message submit notification payload.",
     )
 

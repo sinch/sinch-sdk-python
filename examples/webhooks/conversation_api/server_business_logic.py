@@ -27,9 +27,6 @@ def handle_conversation_event(event: ConversationWebhookEventBase, logger):
 def _handle_message_inbound(event: MessageInboundEvent, logger):
     """Handle MESSAGE_INBOUND: log inbound message."""
     logger.info("## MESSAGE_INBOUND")
-    if not event.message:
-        logger.warning("MESSAGE_INBOUND event has no message")
-        return
     msg = event.message
     contact_msg = msg.contact_message
     channel_identity = msg.channel_identity
@@ -57,9 +54,6 @@ def _handle_message_delivery(event: MessageDeliveryReceiptEvent, logger):
     """Handle MESSAGE_DELIVERY: log delivery status and failure reason if failed."""
     logger.info("## MESSAGE_DELIVERY")
     report = event.message_delivery_report
-    if not report:
-        logger.warning("MESSAGE_DELIVERY event has no message_delivery_report")
-        return
     status = report.status
     logger.info("Message delivery status: '%s'", status)
     if status == "FAILED" and report.reason:
@@ -74,18 +68,15 @@ def _handle_message_delivery(event: MessageDeliveryReceiptEvent, logger):
 def _handle_message_submit(event: MessageSubmitEvent, logger):
     """Handle MESSAGE_SUBMIT: log that the message was submitted to the channel."""
     logger.info("## MESSAGE_SUBMIT")
-    notif = event.message_submit_notification
-    if not notif:
-        logger.warning("MESSAGE_SUBMIT event has no message_submit_notification")
-        return
-    channel_identity = notif.channel_identity
+    submit_notification = event.message_submit_notification
+    channel_identity = submit_notification.channel_identity
     channel = channel_identity.channel if channel_identity else "?"
     identity = channel_identity.identity if channel_identity else "?"
     logger.info(
         "The following message has been submitted on the channel '%s' (identity: %s) to the contact ID '%s'",
         channel,
         identity,
-        notif.contact_id,
+        submit_notification.contact_id,
     )
-    if notif.submitted_message:
-        logger.debug("Submitted message: %s", notif.submitted_message)
+    if submit_notification.submitted_message:
+        logger.debug("Submitted message: %s", submit_notification.submitted_message)

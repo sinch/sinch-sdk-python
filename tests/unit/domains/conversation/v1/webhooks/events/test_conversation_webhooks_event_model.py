@@ -10,7 +10,6 @@ from sinch.domains.conversation.webhooks.v1.events import (
     MessageDeliveryReport,
     MessageInboundEvent,
     MessageSubmitEvent,
-    MessageSubmitNotification,
 )
 
 
@@ -38,14 +37,12 @@ def test_message_delivery_report_expects_parsed(message_delivery_report_data):
 
 def test_message_delivery_receipt_event_expects_parsed(message_delivery_report_data):
     payload = {
-        "trigger": "MESSAGE_DELIVERY",
         "app_id": "app1",
         "project_id": "proj1",
         "accepted_time": "2020-11-17T15:09:11.659Z",
         "message_delivery_report": message_delivery_report_data,
     }
     event = MessageDeliveryReceiptEvent(**payload)
-    assert event.trigger == "MESSAGE_DELIVERY"
     assert event.app_id == "app1"
     assert event.message_delivery_report is not None
     assert event.message_delivery_report.message_id == "01EQBC1A3BEK731GY4YXEN0C2R"
@@ -53,7 +50,6 @@ def test_message_delivery_receipt_event_expects_parsed(message_delivery_report_d
 
 def test_message_inbound_event_expects_parsed():
     payload = {
-        "trigger": "MESSAGE_INBOUND",
         "app_id": "app1",
         "message": {
             "contact_id": "contact1",
@@ -62,7 +58,6 @@ def test_message_inbound_event_expects_parsed():
         },
     }
     event = MessageInboundEvent(**payload)
-    assert event.trigger == "MESSAGE_INBOUND"
     assert event.message is not None
     assert event.message.contact_id == "contact1"
     assert event.message.contact_message.text_message.text == "Hello"
@@ -70,7 +65,6 @@ def test_message_inbound_event_expects_parsed():
 
 def test_message_submit_event_expects_parsed():
     payload = {
-        "trigger": "MESSAGE_SUBMIT",
         "app_id": "app1",
         "message_submit_notification": {
             "contact_id": "contact1",
@@ -78,25 +72,14 @@ def test_message_submit_event_expects_parsed():
         },
     }
     event = MessageSubmitEvent(**payload)
-    assert event.trigger == "MESSAGE_SUBMIT"
     assert event.message_submit_notification is not None
     assert event.message_submit_notification.contact_id == "contact1"
 
 
 def test_conversation_webhook_event_base_optional_fields():
-    payload = {"trigger": "UNKNOWN", "app_id": "app1"}
+    payload = {"app_id": "app1"}
     event = ConversationWebhookEventBase(**payload)
-    assert event.trigger == "UNKNOWN"
     assert event.app_id == "app1"
     assert event.project_id is None
     assert event.accepted_time is None
     assert event.event_time is None
-
-
-def test_message_delivery_receipt_event_wrong_trigger_expects_validation_error(message_delivery_report_data):
-    payload = {
-        "trigger": "MESSAGE_INBOUND",
-        "message_delivery_report": message_delivery_report_data,
-    }
-    with pytest.raises(ValidationError):
-        MessageDeliveryReceiptEvent(**payload)

@@ -30,7 +30,7 @@ def conversation_webhooks(webhook_secret):
 def sample_body():
     return (
         '{"app_id":"01EB37HMH1M6SV18BSNS3G135H","accepted_time":"2020-11-17T15:09:11.659Z",'
-        '"project_id":"c36f3d3d-1513-2edd-ae42-11995557ff61","trigger":"MESSAGE_DELIVERY",'
+        '"project_id":"c36f3d3d-1513-2edd-ae42-11995557ff61",'
         '"message_delivery_report":{"message_id":"01EQBC1A3BEK731GY4YXEN0C2R",'
         '"conversation_id":"01EPYATA64TMNZ1FV02JKF12JF","status":"QUEUED_ON_CHANNEL",'
         '"contact_id":"01EXA07N79THJ20WSN6AS30TMW"}}'
@@ -67,7 +67,6 @@ def test_validate_signature_invalid_signature_expects_false(conversation_webhook
 
 def test_parse_event_message_delivery_expects_message_delivery_receipt_event(conversation_webhooks):
     payload = {
-        "trigger": "MESSAGE_DELIVERY",
         "app_id": "01EB37HMH1M6SV18BSNS3G135H",
         "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
         "accepted_time": "2020-11-17T15:09:11.659Z",
@@ -81,7 +80,6 @@ def test_parse_event_message_delivery_expects_message_delivery_receipt_event(con
     }
     event = conversation_webhooks.parse_event(payload)
     assert isinstance(event, MessageDeliveryReceiptEvent)
-    assert event.trigger == "MESSAGE_DELIVERY"
     assert event.message_delivery_report is not None
     assert event.message_delivery_report.message_id == "01EQBC1A3BEK731GY4YXEN0C2R"
     assert event.message_delivery_report.status == "QUEUED_ON_CHANNEL"
@@ -90,7 +88,6 @@ def test_parse_event_message_delivery_expects_message_delivery_receipt_event(con
 
 def test_parse_event_message_inbound_expects_message_inbound_event(conversation_webhooks):
     payload = {
-        "trigger": "MESSAGE_INBOUND",
         "app_id": "01EB37HMH1M6SV18BSNS3G135H",
         "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
         "accepted_time": "2020-11-17T15:09:11.659Z",
@@ -102,7 +99,6 @@ def test_parse_event_message_inbound_expects_message_inbound_event(conversation_
     }
     event = conversation_webhooks.parse_event(payload)
     assert isinstance(event, MessageInboundEvent)
-    assert event.trigger == "MESSAGE_INBOUND"
     assert event.message is not None
     assert event.message.contact_id == "01EXA07N79THJ20WSN6AS30TMW"
     assert event.message.contact_message is not None
@@ -112,7 +108,6 @@ def test_parse_event_message_inbound_expects_message_inbound_event(conversation_
 
 def test_parse_event_message_submit_expects_message_submit_event(conversation_webhooks):
     payload = {
-        "trigger": "MESSAGE_SUBMIT",
         "app_id": "01EB37HMH1M6SV18BSNS3G135H",
         "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
         "accepted_time": "2020-11-17T15:09:11.659Z",
@@ -124,25 +119,12 @@ def test_parse_event_message_submit_expects_message_submit_event(conversation_we
     }
     event = conversation_webhooks.parse_event(payload)
     assert isinstance(event, MessageSubmitEvent)
-    assert event.trigger == "MESSAGE_SUBMIT"
     assert event.message_submit_notification is not None
     assert event.message_submit_notification.contact_id == "01EXA07N79THJ20WSN6AS30TMW"
 
 
-def test_parse_event_unknown_trigger_expects_base_event(conversation_webhooks):
-    payload = {
-        "trigger": "CONTACT_CREATE",
-        "app_id": "01EB37HMH1M6SV18BSNS3G135H",
-        "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
-    }
-    event = conversation_webhooks.parse_event(payload)
-    assert isinstance(event, ConversationWebhookEventBase)
-    assert event.trigger == "CONTACT_CREATE"
-    assert not isinstance(event, (MessageDeliveryReceiptEvent, MessageInboundEvent, MessageSubmitEvent))
-
-
 def test_parse_event_json_string_expects_parsed(conversation_webhooks):
-    payload_str = '{"trigger":"MESSAGE_DELIVERY","app_id":"app1","message_delivery_report":{"status":"SUCCESS"}}'
+    payload_str = '{"app_id":"app1","message_delivery_report":{"status":"SUCCESS"}}'
     event = conversation_webhooks.parse_event(payload_str)
     assert isinstance(event, MessageDeliveryReceiptEvent)
     assert event.app_id == "app1"
@@ -152,20 +134,3 @@ def test_parse_event_json_string_expects_parsed(conversation_webhooks):
 def test_parse_event_invalid_json_expects_value_error(conversation_webhooks):
     with pytest.raises(ValueError, match="Failed to decode JSON"):
         conversation_webhooks.parse_event("not json")
-
-
-def test_parse_event_without_trigger_uses_discriminant(conversation_webhooks):
-    """Payloads without 'trigger' are parsed by which key is present (OpenAPI oneOf)."""
-    payload = {
-        "app_id": "app1",
-        "project_id": "proj1",
-        "accepted_time": "2020-11-17T15:09:11.659Z",
-        "message_delivery_report": {
-            "message_id": "msg1",
-            "status": "DELIVERED",
-        },
-    }
-    event = conversation_webhooks.parse_event(payload)
-    assert isinstance(event, MessageDeliveryReceiptEvent)
-    assert event.trigger == "MESSAGE_DELIVERY"
-    assert event.message_delivery_report.message_id == "msg1"

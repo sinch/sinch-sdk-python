@@ -191,7 +191,6 @@ def step_describes_message_delivery_event_type(context):
         f"Expected MessageDeliveryReceiptEvent, got {type(event)}"
     )
     assert event.message_delivery_report is not None, "message_delivery_report must be present"
-    assert event.trigger == "MESSAGE_DELIVERY", f"Expected trigger 'MESSAGE_DELIVERY', got {event.trigger!r}"
 
 
 @then("the Conversation event describes a FAILED message delivery status and its reason")
@@ -222,7 +221,6 @@ def step_describes_message_inbound_event_type(context):
         f"Expected MessageInboundEvent, got {type(event)}"
     )
     assert event.message is not None, "message must be present"
-    assert event.trigger == "MESSAGE_INBOUND", f"Expected trigger 'MESSAGE_INBOUND', got {event.trigger!r}"
 
 
 # --- MESSAGE_INBOUND_SMART_CONVERSATION_REDACTION ---
@@ -258,7 +256,6 @@ def step_check_message_submit_media(context):
         f"Expected MessageSubmitEvent, got {type(message_submit_event)}"
     )
     assert message_submit_event.message_submit_notification is not None
-    assert message_submit_event.trigger == "MESSAGE_SUBMIT"
     submitted = message_submit_event.message_submit_notification.submitted_message
     assert _submitted_has(submitted, "media_message"), (
         "Expected submitted_message.media_message to be present"
@@ -278,7 +275,6 @@ def step_check_message_submit_text(context):
         f"Expected MessageSubmitEvent, got {type(message_submit_event)}"
     )
     assert message_submit_event.message_submit_notification is not None
-    assert message_submit_event.trigger == "MESSAGE_SUBMIT"
     submitted = message_submit_event.message_submit_notification.submitted_message
     assert _submitted_has(submitted, "text_message"), (
         "Expected submitted_message.text_message to be present"

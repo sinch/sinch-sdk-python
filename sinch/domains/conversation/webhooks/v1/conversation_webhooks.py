@@ -97,23 +97,12 @@ class ConversationWebhooks:
                 event_body[key] = normalize_iso_timestamp(event_body[key])
 
         # Type is determined by which key is present (message_delivery_report, message,
-        # message_submit_notification). Inject trigger so callers can use event.trigger.
-        trigger = event_body.get("trigger")
-        if not trigger and "message_delivery_report" in event_body:
-            trigger = "MESSAGE_DELIVERY"
-        if not trigger and "message" in event_body:
-            trigger = "MESSAGE_INBOUND"
-        if not trigger and "message_submit_notification" in event_body:
-            trigger = "MESSAGE_SUBMIT"
-
-        if trigger == "MESSAGE_DELIVERY":
-            event_body = {**event_body, "trigger": "MESSAGE_DELIVERY"}
+        # message_submit_notification).
+        if "message_delivery_report" in event_body:
             return MessageDeliveryReceiptEvent(**event_body)
-        if trigger == "MESSAGE_INBOUND":
-            event_body = {**event_body, "trigger": "MESSAGE_INBOUND"}
+        if "message" in event_body:
             return MessageInboundEvent(**event_body)
-        if trigger == "MESSAGE_SUBMIT":
-            event_body = {**event_body, "trigger": "MESSAGE_SUBMIT"}
+        if "message_submit_notification" in event_body:
             return MessageSubmitEvent(**event_body)
 
         return ConversationWebhookEventBase(**event_body)
