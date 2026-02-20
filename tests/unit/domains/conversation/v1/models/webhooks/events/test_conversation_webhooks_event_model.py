@@ -1,10 +1,7 @@
 """Unit tests for Conversation webhook event models."""
-from datetime import datetime, timezone
-
 import pytest
-from pydantic import ValidationError
 
-from sinch.domains.conversation.webhooks.v1.events import (
+from sinch.domains.conversation.models.v1.webhooks import (
     ConversationWebhookEventBase,
     MessageDeliveryReceiptEvent,
     MessageDeliveryReport,

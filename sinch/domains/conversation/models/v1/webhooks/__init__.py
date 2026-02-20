@@ -1,9 +1,10 @@
-from sinch.domains.conversation.webhooks.v1.events.conversation_webhooks_event import (
-    ConversationWebhookEventBase,
+from sinch.domains.conversation.models.v1.webhooks.events import (
     ConversationWebhookEvent,
+    ConversationWebhookEventBase,
     InboundMessage,
     MessageDeliveryReceiptEvent,
     MessageDeliveryReport,
+    MessageDeliveryStatusType,
     MessageInboundEvent,
     MessageSubmitEvent,
     MessageSubmitNotification,
@@ -15,6 +16,7 @@ __all__ = [
     "InboundMessage",
     "MessageDeliveryReceiptEvent",
     "MessageDeliveryReport",
+    "MessageDeliveryStatusType",
     "MessageInboundEvent",
     "MessageSubmitEvent",
     "MessageSubmitNotification",

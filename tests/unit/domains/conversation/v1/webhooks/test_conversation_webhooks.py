@@ -3,13 +3,8 @@ from datetime import datetime, timezone
 
 import pytest
 
-from sinch.domains.authentication.webhooks.v1.authentication_validation import (
-    compute_signed_data,
-    calculate_webhook_signature,
-)
 from sinch.domains.conversation.webhooks.v1 import ConversationWebhooks
-from sinch.domains.conversation.webhooks.v1.events import (
-    ConversationWebhookEventBase,
+from sinch.domains.conversation.models.v1.webhooks import (
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
@@ -37,32 +32,30 @@ def sample_body():
     )
 
 
-def _make_signed_headers(body: str, secret: str, nonce: str = "01FJA8B4A7BM43YGWSG9GBV067", timestamp: str = "1634579353"):
-    signed_data = compute_signed_data(body, nonce, timestamp)
-    sig = calculate_webhook_signature(signed_data, secret)
-    return {
-        "x-sinch-webhook-signature": sig,
-        "x-sinch-webhook-signature-nonce": nonce,
-        "x-sinch-webhook-signature-timestamp": timestamp,
-    }
+VALID_SIGNATURE_HEADERS = {
+    "x-sinch-webhook-signature": "Yc+3R1pIS78xLASybulhs8BsSo9BPB3Pr92QCUoczfk=",
+    "x-sinch-webhook-signature-nonce": "01FJA8B4A7BM43YGWSG9GBV067",
+    "x-sinch-webhook-signature-timestamp": "1634579353",
+}
 
 
-def test_validate_signature_valid_expects_true(conversation_webhooks, sample_body, webhook_secret):
-    headers = _make_signed_headers(sample_body, webhook_secret)
-    assert conversation_webhooks.validate_signature(sample_body, headers) is True
+def test_validate_authentication_header_valid_expects_true(conversation_webhooks, sample_body):
+    assert conversation_webhooks.validate_authentication_header(
+        VALID_SIGNATURE_HEADERS, sample_body
+    ) is True
 
 
-def test_validate_signature_missing_headers_expects_false(conversation_webhooks, sample_body):
-    assert conversation_webhooks.validate_signature(sample_body, {}) is False
+def test_validate_authentication_header_missing_headers_expects_false(conversation_webhooks, sample_body):
+    assert conversation_webhooks.validate_authentication_header({}, sample_body) is False
 
 
-def test_validate_signature_invalid_signature_expects_false(conversation_webhooks, sample_body):
+def test_validate_authentication_header_invalid_signature_expects_false(conversation_webhooks, sample_body):
     headers = {
         "x-sinch-webhook-signature": "invalid",
         "x-sinch-webhook-signature-nonce": "01FJA8B4A7BM43YGWSG9GBV067",
         "x-sinch-webhook-signature-timestamp": "1634579353",
     }
-    assert conversation_webhooks.validate_signature(sample_body, headers) is False
+    assert conversation_webhooks.validate_authentication_header(headers, sample_body) is False
 
 
 def test_parse_event_message_delivery_expects_message_delivery_receipt_event(conversation_webhooks):
@@ -124,11 +117,11 @@ def test_parse_event_message_submit_expects_message_submit_event(conversation_we
 
 
 def test_parse_event_json_string_expects_parsed(conversation_webhooks):
-    payload_str = '{"app_id":"app1","message_delivery_report":{"status":"SUCCESS"}}'
+    payload_str = '{"app_id":"app1","message_delivery_report":{"status":"DELIVERED"}}'
     event = conversation_webhooks.parse_event(payload_str)
     assert isinstance(event, MessageDeliveryReceiptEvent)
     assert event.app_id == "app1"
-    assert event.message_delivery_report.status == "SUCCESS"
+    assert event.message_delivery_report.status == "DELIVERED"
 
 
 def test_parse_event_invalid_json_expects_value_error(conversation_webhooks):

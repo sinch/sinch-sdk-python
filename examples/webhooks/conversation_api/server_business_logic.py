@@ -1,4 +1,4 @@
-from sinch.domains.conversation.webhooks.v1.events import (
+from sinch.domains.conversation.models.v1.webhooks import (
     ConversationWebhookEventBase,
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
@@ -20,7 +20,6 @@ def handle_conversation_event(event: ConversationWebhookEventBase, logger):
     elif isinstance(event, MessageSubmitEvent):
         _handle_message_submit(event, logger)
     else:
-        logger.info("Conversation webhook: unknown or unhandled trigger %s", getattr(event, "trigger", None))
         logger.debug("Event: %s", event.model_dump_json(indent=2) if hasattr(event, "model_dump_json") else event)
 
 

@@ -1,14 +1,9 @@
 import json
 import requests
 from behave import given, when, then
+from tests.e2e.helpers import store_webhook_response
 
 SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
-
-
-def parse_event(context, response):
-    context.headers = response.headers
-    context.raw_event = response.text
-    return json.loads(context.raw_event)
 
 
 @given('the Numbers Webhooks handler is available')
@@ -20,14 +15,15 @@ def step_webhook_handler_is_available(context):
 def step_send_trigger_event(context, status, event_type):
     endpoint = 'succeeded' if status == 'success' else 'failed'
     response = requests.get(f'http://localhost:3013/webhooks/numbers/provisioning_to_voice_platform/{endpoint}')
-    event_json = parse_event(context, response)
+    store_webhook_response(context, response)
+    event_json = json.loads(context.raw_event)
     context.event = context.numbers_webhook.parse_event(event_json)
 
 
 @then('the header of the "{status}" for "{event_type}" event contains a valid signature')
 def step_check_valid_signature(context, status, event_type):
     assert context.numbers_webhook.validate_authentication_header(
-        context.headers, context.raw_event
+        context.webhook_headers, context.raw_event
     ), 'Signature validation failed'
 
 

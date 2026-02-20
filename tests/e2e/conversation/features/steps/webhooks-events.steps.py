@@ -1,19 +1,19 @@
 import requests
 from behave import given, when, then
 from sinch.domains.conversation.webhooks.v1 import ConversationWebhooks
-from sinch.domains.conversation.webhooks.v1.events import (
+from sinch.domains.conversation.models.v1.webhooks import (
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
 )
+from tests.e2e.helpers import has_key_or_attr, store_webhook_response
 
 
 APP_SECRET = "CactusKnight_SurfsWaves"
 
 
 def process_event(context, response):
-    context.formatted_headers = dict(response.headers)
-    context.raw_event = response.text
+    store_webhook_response(context, response)
     context.event = context.conversation_webhooks.parse_event(context.raw_event)
 
 
@@ -24,26 +24,22 @@ def _fetch_and_process(context, path_suffix):
     process_event(context, response)
 
 
-def _has_fetched_event(context):
-    return getattr(context, "raw_event", None) is not None
-
-
-def _submitted_has(submitted, key):
-    if submitted is None:
-        return False
-    if isinstance(submitted, dict):
-        return key in submitted and submitted[key] is not None
-    return getattr(submitted, key, None) is not None
-
-
 @given("the Conversation Webhooks handler is available")
 def step_conversation_webhooks_available(context):
+    context.sinch.configuration.auth_origin = "http://localhost:3014"
+    context.sinch.configuration.conversation_origin = "http://localhost:3014"
     context.conversation_webhooks = ConversationWebhooks(APP_SECRET)
 
 
 # --- CAPABILITY ---
 @when('I send a request to trigger a "CAPABILITY" event')
 def step_trigger_capability(context):
+    pass
+
+
+# TODO: Refactor to parameterized step to avoid duplication.
+@then('the header of the Conversation event "CAPABILITY" contains a valid signature')
+def step_signature_valid_capability(context):
     pass
 
 
@@ -58,6 +54,11 @@ def step_trigger_contact_create(context):
     pass
 
 
+@then('the header of the Conversation event "CONTACT_CREATE" contains a valid signature')
+def step_signature_valid_contact_create(context):
+    pass
+
+
 @then('the Conversation event describes a "CONTACT_CREATE" event type')
 def step_describes_contact_create_event_type(context):
     pass
@@ -66,6 +67,11 @@ def step_describes_contact_create_event_type(context):
 # --- CONTACT_DELETE ---
 @when('I send a request to trigger a "CONTACT_DELETE" event')
 def step_trigger_contact_delete(context):
+    pass
+
+
+@then('the header of the Conversation event "CONTACT_DELETE" contains a valid signature')
+def step_signature_valid_contact_delete(context):
     pass
 
 
@@ -80,6 +86,11 @@ def step_trigger_contact_merge(context):
     pass
 
 
+@then('the header of the Conversation event "CONTACT_MERGE" contains a valid signature')
+def step_signature_valid_contact_merge(context):
+    pass
+
+
 @then('the Conversation event describes a "CONTACT_MERGE" event type')
 def step_describes_contact_merge_event_type(context):
     pass
@@ -88,6 +99,11 @@ def step_describes_contact_merge_event_type(context):
 # --- CONTACT_UPDATE ---
 @when('I send a request to trigger a "CONTACT_UPDATE" event')
 def step_trigger_contact_update(context):
+    pass
+
+
+@then('the header of the Conversation event "CONTACT_UPDATE" contains a valid signature')
+def step_signature_valid_contact_update(context):
     pass
 
 
@@ -102,6 +118,11 @@ def step_trigger_conversation_delete(context):
     pass
 
 
+@then('the header of the Conversation event "CONVERSATION_DELETE" contains a valid signature')
+def step_signature_valid_conversation_delete(context):
+    pass
+
+
 @then('the Conversation event describes a "CONVERSATION_DELETE" event type')
 def step_describes_conversation_delete_event_type(context):
     pass
@@ -110,6 +131,11 @@ def step_describes_conversation_delete_event_type(context):
 # --- CONVERSATION_START ---
 @when('I send a request to trigger a "CONVERSATION_START" event')
 def step_trigger_conversation_start(context):
+    pass
+
+
+@then('the header of the Conversation event "CONVERSATION_START" contains a valid signature')
+def step_signature_valid_conversation_start(context):
     pass
 
 
@@ -124,6 +150,11 @@ def step_trigger_conversation_stop(context):
     pass
 
 
+@then('the header of the Conversation event "CONVERSATION_STOP" contains a valid signature')
+def step_signature_valid_conversation_stop(context):
+    pass
+
+
 @then('the Conversation event describes a "CONVERSATION_STOP" event type')
 def step_describes_conversation_stop_event_type(context):
     pass
@@ -132,16 +163,14 @@ def step_describes_conversation_stop_event_type(context):
 # --- EVENT_DELIVERY (FAILED) ---
 @when('I send a request to trigger a "EVENT_DELIVERY" event with a "FAILED" status')
 def step_trigger_event_delivery_failed(context):
-    pass
+    _fetch_and_process(context, "event-delivery-report/failed")
 
 
-@then('the header of the Conversation event {event_type} with a {status} status contains a valid signature')
-def step_signature_valid_with_status(context, event_type, status):
-    if not _has_fetched_event(context):
-        return
+@then('the header of the Conversation event "EVENT_DELIVERY" with a "FAILED" status contains a valid signature')
+def step_signature_valid_event_delivery_failed(context):
     assert context.conversation_webhooks.validate_authentication_header(
-        context.formatted_headers, context.raw_event
-    ), f"Signature validation failed for event {event_type} with status {status}"
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event EVENT_DELIVERY with status FAILED"
 
 
 @then('the Conversation event describes a "EVENT_DELIVERY" event type')
@@ -157,7 +186,14 @@ def step_check_failed_event_delivery_reason(context):
 # --- EVENT_DELIVERY (DELIVERED) ---
 @when('I send a request to trigger a "EVENT_DELIVERY" event with a "DELIVERED" status')
 def step_trigger_event_delivery_delivered(context):
-    pass
+    _fetch_and_process(context, "event-delivery-report/succeeded")
+
+
+@then('the header of the Conversation event "EVENT_DELIVERY" with a "DELIVERED" status contains a valid signature')
+def step_signature_valid_event_delivery_delivered(context):
+    assert context.conversation_webhooks.validate_authentication_header(
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event EVENT_DELIVERY with status DELIVERED"
 
 
 # --- EVENT_INBOUND ---
@@ -166,26 +202,31 @@ def step_trigger_event_inbound(context):
     pass
 
 
+@then('the header of the Conversation event "EVENT_INBOUND" contains a valid signature')
+def step_signature_valid_event_inbound(context):
+    pass
+
+
 @then('the Conversation event describes a "EVENT_INBOUND" event type')
 def step_describes_event_inbound_event_type(context):
     pass
 
 
-# --- MESSAGE_DELIVERY (FAILED / QUEUED_ON_CHANNEL) ---
+# --- MESSAGE_DELIVERY (FAILED) ---
 @when('I send a request to trigger a "MESSAGE_DELIVERY" event with a "FAILED" status')
 def step_trigger_message_delivery_failed(context):
     _fetch_and_process(context, "message-delivery-report/failed")
 
 
-@when('I send a request to trigger a "MESSAGE_DELIVERY" event with a "QUEUED_ON_CHANNEL" status')
-def step_trigger_message_delivery_queued(context):
-    _fetch_and_process(context, "message-delivery-report/succeeded")
+@then('the header of the Conversation event "MESSAGE_DELIVERY" with a "FAILED" status contains a valid signature')
+def step_signature_valid_message_delivery_failed(context):
+    assert context.conversation_webhooks.validate_authentication_header(
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event MESSAGE_DELIVERY with status FAILED"
 
 
 @then('the Conversation event describes a "MESSAGE_DELIVERY" event type')
 def step_describes_message_delivery_event_type(context):
-    if not _has_fetched_event(context):
-        return
     event = context.event
     assert isinstance(event, MessageDeliveryReceiptEvent), (
         f"Expected MessageDeliveryReceiptEvent, got {type(event)}"
@@ -206,16 +247,34 @@ def step_check_failed_message_delivery_reason(context):
     )
 
 
+# --- MESSAGE_DELIVERY (QUEUED_ON_CHANNEL) ---
+@when('I send a request to trigger a "MESSAGE_DELIVERY" event with a "QUEUED_ON_CHANNEL" status')
+def step_trigger_message_delivery_queued(context):
+    _fetch_and_process(context, "message-delivery-report/succeeded")
+
+
+@then('the header of the Conversation event "MESSAGE_DELIVERY" with a "QUEUED_ON_CHANNEL" status contains a valid signature')
+def step_signature_valid_message_delivery_queued(context):
+    assert context.conversation_webhooks.validate_authentication_header(
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event MESSAGE_DELIVERY with status QUEUED_ON_CHANNEL"
+
+
 # --- MESSAGE_INBOUND ---
 @when('I send a request to trigger a "MESSAGE_INBOUND" event')
 def step_trigger_message_inbound(context):
     _fetch_and_process(context, "message-inbound")
 
 
+@then('the header of the Conversation event "MESSAGE_INBOUND" contains a valid signature')
+def step_signature_valid_message_inbound(context):
+    assert context.conversation_webhooks.validate_authentication_header(
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event MESSAGE_INBOUND"
+
+
 @then('the Conversation event describes a "MESSAGE_INBOUND" event type')
 def step_describes_message_inbound_event_type(context):
-    if not _has_fetched_event(context):
-        return
     event = context.event
     assert isinstance(event, MessageInboundEvent), (
         f"Expected MessageInboundEvent, got {type(event)}"
@@ -226,6 +285,11 @@ def step_describes_message_inbound_event_type(context):
 # --- MESSAGE_INBOUND_SMART_CONVERSATION_REDACTION ---
 @when('I send a request to trigger a "MESSAGE_INBOUND_SMART_CONVERSATION_REDACTION" event')
 def step_trigger_message_inbound_smart_conversation_redaction(context):
+    pass
+
+
+@then('the header of the Conversation event "MESSAGE_INBOUND_SMART_CONVERSATION_REDACTION" contains a valid signature')
+def step_signature_valid_message_inbound_smart_conversation_redaction(context):
     pass
 
 
@@ -240,13 +304,11 @@ def step_trigger_message_submit_media(context):
     _fetch_and_process(context, "message-submit/media")
 
 
-@then('the header of the Conversation event {event_type} for a {message_type} message contains a valid signature')
-def step_signature_valid_message_type(context, event_type, message_type):
-    if not _has_fetched_event(context):
-        return
+@then('the header of the Conversation event "MESSAGE_SUBMIT" for a "media" message contains a valid signature')
+def step_signature_valid_message_submit_media(context):
     assert context.conversation_webhooks.validate_authentication_header(
-        context.formatted_headers, context.raw_event
-    ), f"Signature validation failed for event {event_type} for {message_type} message"
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event MESSAGE_SUBMIT for media message"
 
 
 @then('the Conversation event describes a "MESSAGE_SUBMIT" event type for a "media" message')
@@ -257,7 +319,7 @@ def step_check_message_submit_media(context):
     )
     assert message_submit_event.message_submit_notification is not None
     submitted = message_submit_event.message_submit_notification.submitted_message
-    assert _submitted_has(submitted, "media_message"), (
+    assert has_key_or_attr(submitted, "media_message"), (
         "Expected submitted_message.media_message to be present"
     )
 
@@ -268,6 +330,13 @@ def step_trigger_message_submit_text(context):
     _fetch_and_process(context, "message-submit/text")
 
 
+@then('the header of the Conversation event "MESSAGE_SUBMIT" for a "text" message contains a valid signature')
+def step_signature_valid_message_submit_text(context):
+    assert context.conversation_webhooks.validate_authentication_header(
+        context.webhook_headers, context.raw_event
+    ), "Signature validation failed for event MESSAGE_SUBMIT for text message"
+
+
 @then('the Conversation event describes a "MESSAGE_SUBMIT" event type for a "text" message')
 def step_check_message_submit_text(context):
     message_submit_event = context.event
@@ -276,7 +345,7 @@ def step_check_message_submit_text(context):
     )
     assert message_submit_event.message_submit_notification is not None
     submitted = message_submit_event.message_submit_notification.submitted_message
-    assert _submitted_has(submitted, "text_message"), (
+    assert has_key_or_attr(submitted, "text_message"), (
         "Expected submitted_message.text_message to be present"
     )
 
@@ -284,6 +353,11 @@ def step_check_message_submit_text(context):
 # --- SMART_CONVERSATIONS (media) ---
 @when('I send a request to trigger a "SMART_CONVERSATIONS" event for a "media" message')
 def step_trigger_smart_conversations_media(context):
+    pass
+
+
+@then('the header of the Conversation event "SMART_CONVERSATIONS" for a "media" message contains a valid signature')
+def step_signature_valid_smart_conversations_media(context):
     pass
 
 
@@ -298,15 +372,11 @@ def step_trigger_smart_conversations_text(context):
     pass
 
 
-@then('the Conversation event describes a "SMART_CONVERSATIONS" event type for a "text" message')
-def step_check_smart_conversations_text(context):
+@then('the header of the Conversation event "SMART_CONVERSATIONS" for a "text" message contains a valid signature')
+def step_signature_valid_smart_conversations_text(context):
     pass
 
 
-@then('the header of the Conversation event {event_type} contains a valid signature')
-def step_signature_valid(context, event_type):
-    if not _has_fetched_event(context):
-        return
-    assert context.conversation_webhooks.validate_authentication_header(
-        context.formatted_headers, context.raw_event
-    ), f"Signature validation failed for event {event_type}"
+@then('the Conversation event describes a "SMART_CONVERSATIONS" event type for a "text" message')
+def step_check_smart_conversations_text(context):
+    pass

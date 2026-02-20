@@ -1,3 +1,5 @@
+import logging
+import re
 from typing import Any, Dict, Union, Optional
 from sinch.domains.authentication.webhooks.v1.authentication_validation import (
     validate_webhook_signature_with_nonce,
@@ -6,12 +8,39 @@ from sinch.domains.authentication.webhooks.v1.webhook_utils import (
     parse_json,
     normalize_iso_timestamp,
 )
-from sinch.domains.conversation.webhooks.v1.events import (
+from sinch.domains.conversation.models.v1.webhooks import (
     ConversationWebhookEventBase,
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
 )
+
+
+logger = logging.getLogger(__name__)
+
+
+def _charset_from_content_type(headers: Dict[str, str]) -> str:
+    """Extract charset from Content-Type header; default to utf-8."""
+    ct = (
+        (headers or {}).get("content-type")
+        or (headers or {}).get("Content-Type")
+        or ""
+    )
+    match = re.search(r"charset\s*=\s*([^\s;]+)", ct, re.I)
+    return match.group(1).strip("'\"").lower() if match else "utf-8"
+
+
+def _decode_payload(
+    payload: Union[str, bytes], headers: Optional[Dict[str, str]] = None
+) -> str:
+    """Decode payload to str using Content-Type charset when payload is bytes."""
+    if isinstance(payload, str):
+        return payload
+    charset = _charset_from_content_type(headers or {}) if headers else "utf-8"
+    try:
+        return payload.decode(charset)
+    except (LookupError, UnicodeDecodeError):
+        return payload.decode("utf-8")
 
 
 ConversationWebhookCallback = Union[
@@ -33,7 +62,7 @@ class ConversationWebhooks:
         """
         self.webhook_secret = webhook_secret
 
-    def validate_signature(
+    def _validate_signature(
         self,
         payload: Union[str, bytes],
         headers: Dict[str, str],
@@ -58,21 +87,22 @@ class ConversationWebhooks:
         )
         if not secret:
             return False
-        if isinstance(payload, bytes):
-            payload = payload.decode("utf-8")
-        return validate_webhook_signature_with_nonce(secret, headers, payload)
+        payload_str = _decode_payload(payload, headers)
+        return validate_webhook_signature_with_nonce(
+            secret, headers, payload_str
+        )
 
     def validate_authentication_header(
         self, headers: Dict[str, str], json_payload: str
     ) -> bool:
         """
-        Validate the webhook signature (convenience alias for validate_signature).
+        Validate the webhook signature (convenience wrapper around internal validation).
 
         :param headers: Incoming request's headers.
         :param json_payload: Incoming request's raw body.
         :returns: True if the X-Sinch-Webhook-Signature header is valid.
         """
-        return self.validate_signature(json_payload, headers)
+        return self._validate_signature(json_payload, headers)
 
     def parse_event(
         self, event_body: Union[str, Dict[str, Any]]
@@ -105,4 +135,7 @@ class ConversationWebhooks:
         if "message_submit_notification" in event_body:
             return MessageSubmitEvent(**event_body)
 
+        logger.warning(
+            "Conversation webhook: unknown event type; returning base event."
+        )
         return ConversationWebhookEventBase(**event_body)
