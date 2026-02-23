@@ -35,8 +35,7 @@ def test_sinch_client_expects_all_attributes():
     assert hasattr(sinch_client, "sms")
     assert hasattr(sinch_client, "conversation")
     assert hasattr(sinch_client, "numbers")
-    assert hasattr(sinch_client, "verification")
-    assert hasattr(sinch_client, "voice")
+    assert hasattr(sinch_client, "number_lookup")
     assert hasattr(sinch_client, "configuration")
     assert isinstance(sinch_client.configuration, Configuration)
 

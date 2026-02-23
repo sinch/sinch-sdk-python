@@ -20,8 +20,6 @@ class Configuration:
         project_id: str = None,
         logger: Logger = None,
         logger_name: str = None,
-        application_key: str = None,
-        application_secret: str = None,
         service_plan_id: str = None,
         sms_api_token: str = None,
         sms_region: str = None,
@@ -30,8 +28,6 @@ class Configuration:
         self.key_id = key_id
         self.key_secret = key_secret
         self.project_id = project_id
-        self.application_key = application_key
-        self.application_secret = application_secret
         self.connection_timeout = connection_timeout
         self.sms_api_token = sms_api_token
         self.service_plan_id = service_plan_id
@@ -40,11 +36,7 @@ class Configuration:
         self._authentication_method = self._determine_authentication_method()
         self.auth_origin = "https://auth.sinch.com"
         self.numbers_origin = "https://numbers.api.sinch.com"
-        self.verification_origin = "https://verification.api.sinch.com"
-        self.voice_applications_origin = "https://callingapi.sinch.com"
         self.number_lookup_origin = "https://lookup.api.sinch.com"
-        self._voice_domain = "https://{}.api.sinch.com"
-        self._voice_region = None
         self._conversation_region = conversation_region
         self._conversation_domain = "https://{}.conversation.api.sinch.com"
         self._sms_region = sms_region
@@ -60,7 +52,6 @@ class Configuration:
         self._set_sms_origin()
         self._set_sms_origin_with_service_plan_id()
         self._set_templates_origin()
-        self._set_voice_origin()
 
         if logger_name:
             self.logger = logging.getLogger(logger_name)
@@ -194,25 +185,6 @@ class Configuration:
         _get_templates_domain,
         _set_templates_domain,
         doc="Conversation API Templates Domain"
-    )
-
-    def _set_voice_origin(self):
-        if not self._voice_region:
-            self.voice_origin = self._voice_domain.format("calling")
-        else:
-            self.voice_origin = self._voice_domain.format("calling-" + self._voice_region)
-
-    def _set_voice_region(self, region):
-        self._voice_region = region
-        self._set_voice_origin()
-
-    def _get_voice_region(self):
-        return self._voice_region
-
-    voice_region = property(
-        _get_voice_region,
-        _set_voice_region,
-        doc="Voice Region"
     )
 
     def _determine_authentication_method(self):

@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from platform import python_version
 from sinch.core.endpoint import HTTPEndpoint
-from sinch.core.signature import Signature
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.exceptions import ValidationException, SinchException
@@ -45,23 +44,6 @@ class HTTPTransport(ABC):
                 "Authorization": f"Bearer {token}",
                 "Content-Type": "application/json"
             })
-        elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SIGNED.value:
-            if not self.sinch.configuration.application_key or not self.sinch.configuration.application_secret:
-                raise ValidationException(
-                    message=(
-                        "application key and application secret are required by this API. "
-                        "Those credentials can be obtained from Sinch portal."
-                    ),
-                    is_from_server=False,
-                    response=None
-                )
-            signature = Signature(
-                self.sinch,
-                endpoint.HTTP_METHOD,
-                request_data.request_body,
-                endpoint.get_url_without_origin(self.sinch)
-            )
-            request_data.headers = signature.get_http_headers_with_signature()
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
             if not self.sinch.configuration.sms_api_token or not self.sinch.configuration.service_plan_id:
                 raise ValidationException(

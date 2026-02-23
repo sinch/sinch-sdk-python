@@ -38,8 +38,6 @@ You can install this package by typing:
 The Sinch client provides access to the following Sinch products:
 - Numbers API
 - SMS API
-- Verification API
-- Voice API
 - Conversation API (beta release)
 
 
@@ -52,19 +50,6 @@ The Sinch client provides access to the following Sinch products:
 To establish a connection with the Sinch backend, you must provide the appropriate credentials based on the API
 you intend to use. For security best practices, avoid hardcoding credentials.
 Instead, retrieve them from environment variables.
-
-#### Verification and Voice APIs
-
-To initialize the client for the **Verification** and **Voice** APIs, use the following credentials:
-
-```python
-from sinch import SinchClient
-
-sinch_client = SinchClient(
-    application_key="application_key",
-    application_secret="application_secret"
-)
-```
 
 #### SMS API
 For the SMS API in **Australia (AU)**, **Brazil (BR)**, **Canada (CA)**, **the United States (US)**, 

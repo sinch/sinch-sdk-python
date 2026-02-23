@@ -15,8 +15,6 @@ def test_configuration_happy_capy_expects_initialization(sinch_client_sync):
         project_id="CapybaraProjectX",
         logger=getLogger("CapyTrace"),
         connection_timeout=10,
-        application_key="AppybaraKey",
-        application_secret="SecretHabitatEntry",
         service_plan_id="CappyPremiumPlan",
         sms_api_token="HappyCappyToken",
         sms_region="us",
@@ -27,8 +25,6 @@ def test_configuration_happy_capy_expects_initialization(sinch_client_sync):
     assert client_configuration.key_secret == "CapybaraWhisper"
     assert client_configuration.project_id == "CapybaraProjectX"
     assert isinstance(client_configuration.logger, Logger)
-    assert client_configuration.application_key == "AppybaraKey"
-    assert client_configuration.application_secret == "SecretHabitatEntry"
     assert client_configuration.service_plan_id == "CappyPremiumPlan"
     assert client_configuration.sms_api_token == "HappyCappyToken"
     assert client_configuration.sms_region == "us"

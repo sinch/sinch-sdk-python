@@ -37,8 +37,6 @@ def mock_sinch():
     sinch.configuration.key_id = "test_key_id"
     sinch.configuration.key_secret = "test_key_secret"
     sinch.configuration.project_id = "test_project_id"
-    sinch.configuration.application_key = "test_app_key"
-    sinch.configuration.application_secret = "dGVzdF9hcHBfc2VjcmV0X2Jhc2U2NA=="
     sinch.configuration.sms_api_token = "test_sms_token"
     sinch.configuration.service_plan_id = "test_service_plan"
     return sinch
@@ -68,7 +66,6 @@ class TestHTTPTransport:
     @pytest.mark.parametrize("auth_type", [
         HTTPAuthentication.BASIC.value,
         HTTPAuthentication.OAUTH.value,
-        HTTPAuthentication.SIGNED.value,
         HTTPAuthentication.SMS_TOKEN.value
     ])
     def test_authenticate(self, mock_sinch, base_request, auth_type):
@@ -85,11 +82,6 @@ class TestHTTPTransport:
             assert result.headers["Authorization"] == "Bearer test_token"
             assert result.headers["Content-Type"] == "application/json"
 
-        elif auth_type == HTTPAuthentication.SIGNED.value:
-            result = transport.authenticate(endpoint, base_request)
-            assert "x-timestamp" in result.headers
-            assert "Authorization" in result.headers
-
         elif auth_type == HTTPAuthentication.SMS_TOKEN.value:
             result = transport.authenticate(endpoint, base_request)
             assert result.headers["Authorization"] == "Bearer test_sms_token"
@@ -98,7 +90,6 @@ class TestHTTPTransport:
     @pytest.mark.parametrize("auth_type,missing_creds", [
         (HTTPAuthentication.BASIC.value, {"key_id": None}),
         (HTTPAuthentication.OAUTH.value, {"key_secret": None}),
-        (HTTPAuthentication.SIGNED.value, {"application_key": None}),
         (HTTPAuthentication.SMS_TOKEN.value, {"sms_api_token": None})
     ])
     def test_authenticate_missing_credentials(self, mock_sinch, base_request, auth_type, missing_creds):
