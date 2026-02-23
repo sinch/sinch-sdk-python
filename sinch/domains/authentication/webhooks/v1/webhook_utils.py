@@ -1,7 +1,43 @@
 import json
 import re
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, Optional, Union
+
+
+def _content_type_from_headers(headers: Optional[Dict[str, str]]) -> str:
+    """Get Content-Type from headers dict (case-insensitive)."""
+    if not headers:
+        return ""
+    return headers.get("content-type") or headers.get("Content-Type") or ""
+
+
+def _charset_from_content_type(content_type: str) -> str:
+    """Extract charset from Content-Type header; default to utf-8 if missing."""
+    if not content_type:
+        return "utf-8"
+    match = re.search(r"charset\s*=\s*([^\s;]+)", content_type, re.I)
+    return match.group(1).strip("'\"").lower() if match else "utf-8"
+
+
+def decode_payload(
+    payload: Union[str, bytes], headers: Optional[Dict[str, str]] = None
+) -> str:
+    """
+    Decode request body to str using Content-Type charset when payload is bytes.
+
+    When payload is str, return as-is. When bytes, use charset from headers
+    (default utf-8);
+    """
+    if isinstance(payload, str):
+        return payload
+    if not payload:
+        return ""
+    content_type = _content_type_from_headers(headers)
+    charset = _charset_from_content_type(content_type)
+    try:
+        return payload.decode(charset)
+    except (LookupError, UnicodeDecodeError):
+        raise
 
 
 def parse_json(payload: str) -> Dict[str, Any]:

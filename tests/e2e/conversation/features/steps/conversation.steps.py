@@ -142,3 +142,33 @@ def step_validate_page_count(context, count):
     assert context.pages_iteration == expected_pages_count, (
         f'Expected {expected_pages_count} pages, got {context.pages_iteration}'
     )
+
+
+@when('I send a request to list the last messages sent to specified channel identities')
+def step_list_last_messages_channel_identities(context):
+    pass
+
+
+@then('the response contains "{count}" last messages sent to specified channel identities')
+def step_validate_last_messages_count(context, count):
+    pass
+
+
+@when('I send a request to list all the last messages sent to specified channel identities')
+def step_list_all_last_messages_channel_identities(context):
+    pass
+
+
+@then('the response list contains "{count}" last messages sent to specified channel identities')
+def step_validate_response_list_count(context, count):
+    pass
+
+
+@when('I iterate manually over the last messages sent to specified channel identities pages')
+def step_iterate_last_messages_pages(context):
+    pass
+
+
+@then('the result contains the data from "{count}" pages of last messages sent to specified channel identities')
+def step_validate_last_messages_page_count(context, count):
+    pass
