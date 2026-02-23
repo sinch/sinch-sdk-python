@@ -11,8 +11,8 @@ from sinch.domains.conversation.models.v1.messages.types.processing_mode_type im
     ProcessingModeType,
 )
 
-from sinch.domains.conversation.models.v1.webhooks.events.message_delivery_status_type import (
-    MessageDeliveryStatusType,
+from sinch.domains.conversation.models.v1.webhooks.events.delivery_status_type import (
+    DeliveryStatusType,
 )
 
 
@@ -27,7 +27,7 @@ class MessageDeliveryReport(WebhookEvent):
         default=None,
         description="The ID of the conversation.",
     )
-    status: Optional[MessageDeliveryStatusType] = Field(
+    status: Optional[DeliveryStatusType] = Field(
         default=None,
         description="Shows the status of the message or event delivery.",
     )

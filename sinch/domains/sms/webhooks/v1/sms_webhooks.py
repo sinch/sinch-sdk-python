@@ -5,6 +5,7 @@ from sinch.domains.authentication.webhooks.v1.authentication_validation import (
     validate_webhook_signature_with_nonce,
 )
 from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+    decode_payload,
     parse_json,
     normalize_iso_timestamp,
 )
@@ -34,26 +35,35 @@ class SmsWebhooks:
         self.app_secret = app_secret
 
     def validate_authentication_header(
-        self, headers: Dict[str, str], json_payload: str
+        self,
+        headers: Dict[str, str],
+        json_payload: Union[str, bytes],
     ) -> bool:
         """
         Validate the authorization header for a callback request.
 
         :param headers: Incoming request's headers
         :type headers: Dict[str, str]
-        :param json_payload: Incoming request's raw body
-        :type json_payload: str
+        :param json_payload: Incoming request's raw body (str or bytes)
+        :type json_payload: Union[str, bytes]
         :returns: True if the X-Sinch-Webhook-Signature header is valid
         :rtype: bool
         """
         if not self.app_secret:
             return False
+        payload_str = (
+            decode_payload(json_payload, headers)
+            if isinstance(json_payload, bytes)
+            else json_payload
+        )
         return validate_webhook_signature_with_nonce(
-            self.app_secret, headers, json_payload
+            self.app_secret, headers, payload_str
         )
 
     def parse_event(
-        self, event_body: Union[str, Dict[str, Any]]
+        self,
+        event_body: Union[str, bytes, Dict[str, Any]],
+        headers: Optional[Dict[str, str]] = None,
     ) -> SmsCallback:
         """
         Parse the event payload into an SMS callback object.
@@ -61,13 +71,17 @@ class SmsWebhooks:
         Handles datetime conversion for timestamp fields and routes to the
         appropriate event type based on the `type` field.
 
-        :param event_body: The event payload (JSON string or dict).
-        :type event_body: Union[str, Dict[str, Any]]
+        :param event_body: The event payload (JSON string, raw bytes, or dict).
+        :type event_body: Union[str, bytes, Dict[str, Any]]
+        :param headers: Request headers (used to decode charset when event_body is bytes).
+        :type headers: Optional[Dict[str, str]]
         :returns: A parsed SMS callback object.
         :rtype: SmsCallback
         :raises ValueError: If the event type is unknown or parsing fails.
         """
-        if isinstance(event_body, str):
+        if isinstance(event_body, bytes):
+            event_body = parse_json(decode_payload(event_body, headers))
+        elif isinstance(event_body, str):
             event_body = parse_json(event_body)
 
         event_type = event_body.get("type")
