@@ -3,14 +3,17 @@ from typing import Any, Dict, List, Optional, Union
 from sinch.core.pagination import Paginator, TokenBasedPaginator
 from sinch.domains.conversation.models.v1.messages.internal.request import (
     ListMessagesRequest,
+    ListLastMessagesByChannelIdentityRequest,
     MessageIdRequest,
     UpdateMessageMetadataRequest,
     SendMessageRequest,
     SendMessageRequestBody,
 )
+from sinch.domains.conversation.models.v1.messages.response import (
+    SendMessageResponse,
+)
 from sinch.domains.conversation.models.v1.messages.response.types import (
     ConversationMessageResponse,
-    SendMessageResponse,
 )
 from sinch.domains.conversation.models.v1.messages.types import (
     ConversationChannelType,
@@ -61,6 +64,7 @@ from sinch.domains.conversation.models.v1.messages.categories.template import (
 )
 from sinch.domains.conversation.api.v1.internal import (
     DeleteMessageEndpoint,
+    ListLastMessagesByChannelIdentityEndpoint,
     GetMessageEndpoint,
     ListMessagesEndpoint,
     UpdateMessageMetadataEndpoint,
@@ -207,6 +211,79 @@ class Messages(BaseConversation):
                     view=view,
                     messages_source=messages_source,
                     only_recipient_originated=only_recipient_originated,
+                    channel=channel,
+                    direction=direction,
+                    **kwargs,
+                ),
+            ),
+        )
+
+    def list_last_messages_by_channel_identity(
+        self,
+        channel_identities: Optional[List[str]] = None,
+        contact_ids: Optional[List[str]] = None,
+        app_id: Optional[str] = None,
+        messages_source: Optional[MessagesSourceType] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        view: Optional[ConversationMessagesViewType] = None,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
+        channel: Optional[ConversationChannelType] = None,
+        direction: Optional[ConversationDirectionType] = None,
+        **kwargs,
+    ) -> Paginator[ConversationMessageResponse]:
+        """
+        Retrieves the last message sent to specified channel identities.
+        In CONVERSATION_SOURCE mode, you can query either by channel_identities or by contact_ids.
+        Note: Use either contact_ids OR channel_identities per request, not both.
+        DISPATCH_SOURCE mode does not support contact_ids.
+
+        :param channel_identities: Optional. Filter messages by channel_identity.
+        :type channel_identities: Optional[List[str]]
+        :param contact_ids: Optional. Resource name (id) of the contact. CONVERSATION_SOURCE: list last messages by contact_id. DISPATCH_SOURCE: unsupported.
+        :type contact_ids: Optional[List[str]]
+        :param app_id: Optional. Resource name (id) of the app.
+        :type app_id: Optional[str]
+        :param messages_source: Specifies the message source for the request.
+        :type messages_source: Optional[MessagesSourceType]
+        :param page_size: Optional. Maximum number of messages to fetch. Defaults to 10, maximum is 1000.
+        :type page_size: Optional[int]
+        :param page_token: Optional. Next page token previously returned if any.
+        :type page_token: Optional[str]
+        :param view: Optional. Specifies the representation (WITH_METADATA or WITHOUT_METADATA). Default WITH_METADATA.
+        :type view: Optional[ConversationMessagesViewType]
+        :param start_time: Optional. Only fetch messages with accept_time after this date.
+        :type start_time: Optional[datetime]
+        :param end_time: Optional. Only fetch messages with accept_time before this date.
+        :type end_time: Optional[datetime]
+        :param channel: Optional. Only fetch messages from the specified channel.
+        :type channel: Optional[ConversationChannelType]
+        :param direction: Optional. Only fetch messages with the specified direction (TO_APP or TO_CONTACT).
+        :type direction: Optional[ConversationDirectionType]
+        # Code review: :param **kwargs is invalid Sphinx syntax; use kwargs or document as "Additional keyword arguments".
+        :param kwargs: Additional parameters for the request.
+        :type kwargs: dict
+
+        :returns: TokenBasedPaginator with ConversationMessageResponse items
+        :rtype: Paginator[ConversationMessageResponse]
+
+        For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
+        """
+        return TokenBasedPaginator(
+            sinch=self._sinch,
+            endpoint=ListLastMessagesByChannelIdentityEndpoint(
+                project_id=self._sinch.configuration.project_id,
+                request_data=ListLastMessagesByChannelIdentityRequest(
+                    channel_identities=channel_identities,
+                    contact_ids=contact_ids,
+                    app_id=app_id,
+                    messages_source=messages_source,
+                    page_size=page_size,
+                    page_token=page_token,
+                    view=view,
+                    start_time=start_time,
+                    end_time=end_time,
                     channel=channel,
                     direction=direction,
                     **kwargs,

@@ -22,7 +22,7 @@ from sinch.domains.conversation.models.v1.messages.internal.request import (
     UpdateMessageMetadataRequest,
     SendMessageRequest,
 )
-from sinch.domains.conversation.models.v1.messages.response.types import (
+from sinch.domains.conversation.models.v1.messages.response import (
     SendMessageResponse,
 )
 

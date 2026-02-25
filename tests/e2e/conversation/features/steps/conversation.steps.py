@@ -146,29 +146,65 @@ def step_validate_page_count(context, count):
 
 @when('I send a request to list the last messages sent to specified channel identities')
 def step_list_last_messages_channel_identities(context):
-    pass
+    context.list_response = context.messages.list_last_messages_by_channel_identity(
+        channel_identities=['12015555555', '12017777777', '7504610123456789'],
+        messages_source='CONVERSATION_SOURCE',
+        page_size=2,
+    )
 
 
 @then('the response contains "{count}" last messages sent to specified channel identities')
 def step_validate_last_messages_count(context, count):
-    pass
+    expected_count = int(count)
+    assert len(context.list_response.content()) == expected_count, (
+        f'Expected {expected_count} last messages, got {len(context.list_response.content())}'
+    )
 
 
 @when('I send a request to list all the last messages sent to specified channel identities')
 def step_list_all_last_messages_channel_identities(context):
-    pass
+    """List all last messages by channel identity using iterator"""
+    response = context.messages.list_last_messages_by_channel_identity(
+        channel_identities=['12015555555', '12017777777', '7504610123456789'],
+        messages_source='CONVERSATION_SOURCE',
+        page_size=2,
+    )
+    messages_list = []
+    for message in response.iterator():
+        messages_list.append(message)
+    context.messages_list = messages_list
 
 
 @then('the response list contains "{count}" last messages sent to specified channel identities')
 def step_validate_response_list_count(context, count):
-    pass
+    expected_count = int(count)
+    assert len(context.messages_list) == expected_count, (
+        f'Expected {expected_count} last messages, got {len(context.messages_list)}'
+    )
 
 
 @when('I iterate manually over the last messages sent to specified channel identities pages')
 def step_iterate_last_messages_pages(context):
-    pass
+    context.list_response = context.messages.list_last_messages_by_channel_identity(
+        channel_identities=['12015555555', '12017777777', '7504610123456789'],
+        messages_source='CONVERSATION_SOURCE',
+        page_size=2,
+    )
+    context.messages_list = []
+    context.pages_iteration = 0
+    reached_end_of_pages = False
+    while not reached_end_of_pages:
+        context.messages_list.extend(context.list_response.content())
+        context.pages_iteration += 1
+        if context.list_response.has_next_page:
+            context.list_response = context.list_response.next_page()
+        else:
+            reached_end_of_pages = True
 
 
 @then('the result contains the data from "{count}" pages of last messages sent to specified channel identities')
 def step_validate_last_messages_page_count(context, count):
-    pass
+    expected_pages_count = int(count)
+    assert context.pages_iteration == expected_pages_count, (
+        f'Expected {expected_pages_count} pages, got {context.pages_iteration}'
+    )

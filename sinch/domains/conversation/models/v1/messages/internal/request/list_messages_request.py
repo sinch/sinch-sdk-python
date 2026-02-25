@@ -33,7 +33,7 @@ class ListMessagesRequest(BaseModelConfiguration):
     )
     start_time: Optional[datetime] = Field(
         default=None,
-        description="Filter messages with accept_time after this timestamp.",
+        description="Filter messages with accept_time after this timestamp. Must be before end_time if that is specified.",
     )
     end_time: Optional[datetime] = Field(
         default=None,
@@ -41,11 +41,11 @@ class ListMessagesRequest(BaseModelConfiguration):
     )
     page_size: Optional[StrictInt] = Field(
         default=None,
-        description="Maximum number of messages to fetch. Defaults to 10, maximum is 1000.",
+        description="Maximum number of messages to fetch. Defaults to 10 and the maximum is 1000.",
     )
     page_token: Optional[StrictStr] = Field(
         default=None,
-        description="Next page token previously returned if any.",
+        description="Next page token previously returned if any. When specifying this token, use the same values for the other parameters from the request that originated the token, otherwise the paged results may be inconsistent.",
     )
     view: Optional[ConversationMessagesViewType] = Field(
         default=None,
@@ -65,5 +65,5 @@ class ListMessagesRequest(BaseModelConfiguration):
     )
     direction: Optional[ConversationDirectionType] = Field(
         default=None,
-        description="Only fetch messages with the specified direction. TO_APP or TO_CONTACT.",
+        description="Optional. Only fetch messages with the specified direction. If direction is not specified, it will list both TO_APP and TO_CONTACT messages.",
     )
