@@ -18,16 +18,16 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
-# The ID of the Conversation App to list messages from
-app_id = "CONVERSATION_APP_ID"
+# Channel identities to fetch the last message
+channel_identities = ["CHANNEL_IDENTITY_1", "CHANNEL_IDENTITY_2"]
 
-messages = sinch_client.conversation.messages.list(
-    app_id=app_id,
+messages = sinch_client.conversation.messages.list_last_messages_by_channel_identity(
+    channel_identities=channel_identities,
 )
 
 page_counter = 1
 while True:
-    print(f"Page {page_counter} List of Messages: {messages}")
+    print(f"Page {page_counter} Last messages: {messages}")
 
     if not messages.has_next_page:
         break

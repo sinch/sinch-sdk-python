@@ -1,13 +1,11 @@
 from typing import Optional
-from pydantic import Field, StrictStr, StrictInt
-from sinch.domains.conversation.models.v1.messages.types.payment_order_type import (
+from pydantic import Field, StrictStr, StrictInt, conlist
+from sinch.domains.conversation.models.v1.messages.types import (
     PaymentOrderType,
-)
-from sinch.domains.conversation.models.v1.messages.types.payment_order_goods_type import (
     PaymentOrderGoodsType,
 )
-from sinch.domains.conversation.models.v1.messages.response.types.payment_settings import (
-    PaymentSettings,
+from sinch.domains.conversation.models.v1.messages.response.types.whatsapp_payment_button import (
+    WhatsAppPaymentButton,
 )
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.payment import (
     PaymentOrder,
@@ -31,4 +29,7 @@ class PaymentOrderDetailsContent(BaseModelConfiguration):
         description="Integer representing the total amount of the transaction.",
     )
     order: PaymentOrder = Field(..., description="The payment order.")
-    payment_settings: Optional[PaymentSettings] = None
+    payment_buttons: Optional[conlist(WhatsAppPaymentButton)] = Field(
+        default=None,
+        description="Array of payment buttons (1 to 2 items).",
+    )

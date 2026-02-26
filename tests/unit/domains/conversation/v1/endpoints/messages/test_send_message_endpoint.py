@@ -11,7 +11,9 @@ from sinch.domains.conversation.models.v1.messages.internal.request.recipient im
     Recipient,
 )
 from sinch.domains.conversation.models.v1.messages.categories.text import TextMessage
-from sinch.domains.conversation.models.v1.messages.response.types import SendMessageResponse
+from sinch.domains.conversation.models.v1.messages.response import (
+    SendMessageResponse,
+)
 
 
 @pytest.fixture

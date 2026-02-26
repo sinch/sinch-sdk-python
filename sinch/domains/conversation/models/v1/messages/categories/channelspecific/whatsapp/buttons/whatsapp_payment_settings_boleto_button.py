@@ -1,10 +1,15 @@
+from typing import Literal
 from pydantic import Field, StrictStr
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfiguration,
 )
 
 
-class Boleto(BaseModelConfiguration):
+class WhatsAppPaymentSettingsBoletoButton(BaseModelConfiguration):
+    type: Literal["boleto"] = Field(
+        ...,
+        description="The Boleto button identifier",
+    )
     digitable_line: StrictStr = Field(
         ...,
         description="The Boleto digitable line which will be copied to the clipboard when the user taps the Boleto button.",

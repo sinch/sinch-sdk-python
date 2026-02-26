@@ -42,10 +42,10 @@ def __getattr__(name: str):
 
 __all__ = [
     "OrderItem",
-    "PaymentOrderStatusOrder",
     "PaymentOrder",
-    "PaymentOrderDetailsContent",
-    "PaymentOrderStatusContent",
     "PaymentOrderDetailsChannelSpecificMessage",
+    "PaymentOrderDetailsContent",
     "PaymentOrderStatusChannelSpecificMessage",
+    "PaymentOrderStatusContent",
+    "PaymentOrderStatusOrder",
 ]
