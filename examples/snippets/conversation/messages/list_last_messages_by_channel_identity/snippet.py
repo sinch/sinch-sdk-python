@@ -23,8 +23,6 @@ channel_identities = ["CHANNEL_IDENTITY_1", "CHANNEL_IDENTITY_2"]
 
 messages = sinch_client.conversation.messages.list_last_messages_by_channel_identity(
     channel_identities=channel_identities,
-    messages_source="CONVERSATION_SOURCE",
-    page_size=10,
 )
 
 page_counter = 1

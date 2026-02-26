@@ -23,7 +23,6 @@ app_id = "CONVERSATION_APP_ID"
 
 messages = sinch_client.conversation.messages.list(
     app_id=app_id,
-    page_size=10
 )
 
 page_counter = 1

@@ -1,10 +1,10 @@
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_button_boleto import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_boleto_button import (
     WhatsAppPaymentSettingsBoletoButton,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_button_payment_link import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_payment_link_button import (
     WhatsAppPaymentSettingsPaymentLinkButton,
 )
-from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_button_pix import (
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_pix_button import (
     WhatsAppPaymentSettingsPixButton,
 )
 
