@@ -27,12 +27,12 @@ see that the MO was received and processed.
    SINCH_PROJECT_ID=your_project_id
    SINCH_KEY_ID=your_key_id
    SINCH_KEY_SECRET=your_key_secret
-   SINCH_CONVERSATION_REGION=eu
    ```
 
-   - Conversation API app (existing app, already configured for SMS):
+   - Conversation API app (existing app, already configured for SMS). Set `SINCH_CONVERSATION_REGION` to the same region as the one your app was created in (e.g. `eu`):
    ```
    CONVERSATION_APP_ID=your_conversation_app_id
+   SINCH_CONVERSATION_REGION=
    ```
 
    - Webhook secret (the value you set when configuring the callback URL for this app).  
@@ -98,9 +98,3 @@ The webhook secret must match `CONVERSATION_WEBHOOKS_SECRET` in your `.env`.
 ### Sending an SMS to your Sinch number
 
 Send an SMS from your phone to the **Sinch number** linked to your Conversation API app. You should receive the echo reply on your phone.
-
-### Endpoint
-
-| Purpose      | Endpoint              |
-|--------------|------------------------|
-| Conversation | `POST /ConversationEvent` |

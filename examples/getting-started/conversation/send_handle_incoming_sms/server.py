@@ -23,12 +23,18 @@ config = load_config()
 port = int(config.get("SERVER_PORT") or "3001")
 app_id = config.get("CONVERSATION_APP_ID") or ""
 webhooks_secret = config.get("CONVERSATION_WEBHOOKS_SECRET") or ""
+conversation_region = config.get("SINCH_CONVERSATION_REGION") or ""
+if not conversation_region:
+    raise ValueError(
+        "SINCH_CONVERSATION_REGION is required in .env "
+        "Set it to the same region as the one your Conversation API app was created in (e.g. eu)."
+    )
 
 sinch_client = SinchClient(
     project_id=config.get("SINCH_PROJECT_ID", ""),
     key_id=config.get("SINCH_KEY_ID", ""),
     key_secret=config.get("SINCH_KEY_SECRET", ""),
-    conversation_region=config.get("SINCH_CONVERSATION_REGION", "eu"),
+    conversation_region=conversation_region,
 )
 logging.basicConfig()
 sinch_client.configuration.logger.setLevel(logging.INFO)
