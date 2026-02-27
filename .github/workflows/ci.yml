@@ -14,9 +14,6 @@ env:
   SERVICE_PLAN_ID: ${{ secrets.SERVICE_PLAN_ID }}
   SMS_ORIGIN: ${{ secrets.SMS_ORIGIN }}
   TEMPLATES_ORIGIN: ${{ secrets.TEMPLATES_ORIGIN }}
-  VERIFICATION_ORIGIN: ${{ secrets.VERIFICATION_ORIGIN }}
-  VOICE_CALL_ID: ${{ secrets.VOICE_CALL_ID }}
-  VOICE_ORIGIN: ${{ secrets.VOICE_ORIGIN }}
 
 jobs:
   build:
