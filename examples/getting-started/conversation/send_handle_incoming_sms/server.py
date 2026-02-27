@@ -23,10 +23,10 @@ config = load_config()
 port = int(config.get("SERVER_PORT") or "3001")
 app_id = config.get("CONVERSATION_APP_ID") or ""
 webhooks_secret = config.get("CONVERSATION_WEBHOOKS_SECRET") or ""
-conversation_region = config.get("SINCH_CONVERSATION_REGION") or ""
+conversation_region = (config.get("SINCH_CONVERSATION_REGION") or "").strip()
 if not conversation_region:
     raise ValueError(
-        "SINCH_CONVERSATION_REGION is required in .env "
+        "SINCH_CONVERSATION_REGION is required in .env to provide all parameters needed for Conversation API requests. "
         "Set it to the same region as the one your Conversation API app was created in (e.g. eu)."
     )
 
