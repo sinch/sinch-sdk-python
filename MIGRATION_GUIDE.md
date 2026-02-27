@@ -6,6 +6,8 @@ This release removes legacy SDK support.
 
 This guide lists all removed classes and interfaces from V1 and how to migrate to their V2 equivalents.
 
+> **Note:** Voice and Verification are not yet covered by the new V2 APIs. Support will be added in future releases.
+
 ## Client Initialization
 
 ### Overview

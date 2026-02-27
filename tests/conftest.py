@@ -45,9 +45,7 @@ def configure_origin(
     conversation_origin,
     templates_origin,
     auth_origin,
-    sms_origin,
-    verification_origin,
-    voice_origin
+    sms_origin
 ):
     if auth_origin:
         sinch_client.configuration.auth_origin = auth_origin
@@ -64,13 +62,6 @@ def configure_origin(
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
         sinch_client.configuration.sms_origin_with_service_plan_id = sms_origin
-
-    if verification_origin:
-        sinch_client.configuration.verification_origin = verification_origin
-
-    if voice_origin:
-        sinch_client.configuration.voice_origin = voice_origin
-        sinch_client.configuration.voice_applications_origin = voice_origin
 
     return sinch_client
 
@@ -111,16 +102,6 @@ def sms_origin():
 
 
 @pytest.fixture
-def verification_origin():
-    return os.getenv("VERIFICATION_ORIGIN")
-
-
-@pytest.fixture
-def voice_origin():
-    return os.getenv("VOICE_ORIGIN")
-
-
-@pytest.fixture
 def templates_origin():
     return os.getenv("TEMPLATES_ORIGIN")
 
@@ -128,16 +109,6 @@ def templates_origin():
 @pytest.fixture
 def disable_ssl():
     return os.getenv("DISABLE_SSL")
-
-
-@pytest.fixture
-def application_key():
-    return os.getenv("APPLICATION_KEY")
-
-
-@pytest.fixture
-def application_secret():
-    return os.getenv("APPLICATION_SECRET")
 
 
 @pytest.fixture
@@ -208,32 +179,24 @@ def third_int_based_pagination_response():
 def sinch_client_sync(
     key_id,
     key_secret,
-    application_key,
-    application_secret,
     numbers_origin,
     conversation_origin,
     templates_origin,
     auth_origin,
     sms_origin,
-    verification_origin,
-    voice_origin,
     project_id
 ):
     return configure_origin(
         SinchClient(
             key_id=key_id,
             key_secret=key_secret,
-            project_id=project_id,
-            application_key=application_key,
-            application_secret=application_secret
+            project_id=project_id
         ),
         numbers_origin,
         conversation_origin,
         templates_origin,
         auth_origin,
-        sms_origin,
-        verification_origin,
-        voice_origin
+        sms_origin
     )
 
 
