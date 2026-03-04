@@ -15,15 +15,12 @@ class ConversationController:
 
         webhooks_service = self.sinch_client.conversation.webhooks(self.webhooks_secret)
 
-        # Set to True to enforce signature validation (recommended in production)
-        ensure_valid_signature = False
-        if ensure_valid_signature:
-            valid = webhooks_service.validate_authentication_header(
-                headers=headers,
-                json_payload=raw_body,
-            )
-            if not valid:
-                return Response(status=401)
+        valid = webhooks_service.validate_authentication_header(
+            headers=headers,
+            json_payload=raw_body,
+        )
+        if not valid:
+            return Response(status=401)
 
         event = webhooks_service.parse_event(raw_body, headers)
         handle_conversation_event(
