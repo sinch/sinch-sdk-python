@@ -22,7 +22,6 @@ def load_config():
 config = load_config()
 port = int(config.get("SERVER_PORT") or "3001")
 app_id = config.get("CONVERSATION_APP_ID") or ""
-webhooks_secret = config.get("CONVERSATION_WEBHOOKS_SECRET") or ""
 conversation_region = (config.get("SINCH_CONVERSATION_REGION") or "").strip()
 if not conversation_region:
     raise ValueError(
@@ -40,7 +39,7 @@ logging.basicConfig()
 sinch_client.configuration.logger.setLevel(logging.INFO)
 
 conversation_controller = ConversationController(
-    sinch_client, webhooks_secret, app_id
+    sinch_client, app_id
 )
 
 
