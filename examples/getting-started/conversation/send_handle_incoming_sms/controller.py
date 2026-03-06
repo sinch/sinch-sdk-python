@@ -3,9 +3,8 @@ from server_business_logic import handle_conversation_event
 
 
 class ConversationController:
-    def __init__(self, sinch_client, app_id):
+    def __init__(self, sinch_client):
         self.sinch_client = sinch_client
-        self.app_id = app_id
         self.logger = self.sinch_client.configuration.logger
 
     def conversation_event(self):
@@ -18,7 +17,6 @@ class ConversationController:
             event=event,
             logger=self.logger,
             sinch_client=self.sinch_client,
-            app_id=self.app_id,
         )
 
         return Response(status=200)

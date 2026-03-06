@@ -29,9 +29,8 @@ see that the MO was received and processed.
    SINCH_KEY_SECRET=your_key_secret
    ```
 
-   - Conversation API app (existing app, already configured for SMS). Set `SINCH_CONVERSATION_REGION` to the same region as the one your app was created in (e.g. `eu`):
+   - Conversation API: set `SINCH_CONVERSATION_REGION` to the same region as the one your app was created in (e.g. `eu`).
    ```
-   CONVERSATION_APP_ID=your_conversation_app_id
    SINCH_CONVERSATION_REGION=
    ```
 

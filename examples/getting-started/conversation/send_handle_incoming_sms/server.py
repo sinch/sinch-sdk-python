@@ -21,7 +21,6 @@ def load_config():
 
 config = load_config()
 port = int(config.get("SERVER_PORT") or "3001")
-app_id = config.get("CONVERSATION_APP_ID") or ""
 conversation_region = (config.get("SINCH_CONVERSATION_REGION") or "").strip()
 if not conversation_region:
     raise ValueError(
@@ -38,9 +37,7 @@ sinch_client = SinchClient(
 logging.basicConfig()
 sinch_client.configuration.logger.setLevel(logging.INFO)
 
-conversation_controller = ConversationController(
-    sinch_client, app_id
-)
+conversation_controller = ConversationController(sinch_client)
 
 
 @app.before_request
@@ -56,6 +53,5 @@ app.add_url_rule(
 
 if __name__ == "__main__":
     print("Getting Started: MO SMS → MT reply (Conversation API, DISPATCH, channel identity)")
-    print(f"App ID: {app_id or '(set CONVERSATION_APP_ID in .env)'}")
     print(f"Listening on port {port}. Expose with: ngrok http {port}")
     app.run(port=port)

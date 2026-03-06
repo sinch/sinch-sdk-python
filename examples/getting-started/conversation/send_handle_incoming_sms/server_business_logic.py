@@ -6,11 +6,11 @@ Uses channel identity (SMS + phone number) only; app is in DISPATCH mode.
 from sinch.domains.conversation.models.v1.webhooks import MessageInboundEvent
 
 
-def handle_conversation_event(event, logger, sinch_client, app_id):
+def handle_conversation_event(event, logger, sinch_client):
     """Webhook entry: handle only MESSAGE_INBOUND; delegate to inbound handler."""
     if not isinstance(event, MessageInboundEvent):
         return
-    _handle_message_inbound(event, logger, sinch_client, app_id)
+    _handle_message_inbound(event, logger, sinch_client)
 
 
 def _get_mo_text(event: MessageInboundEvent) -> str:
@@ -22,7 +22,7 @@ def _get_mo_text(event: MessageInboundEvent) -> str:
     return "(no text content)"
 
 
-def _handle_message_inbound(event: MessageInboundEvent, logger, sinch_client, app_id):
+def _handle_message_inbound(event: MessageInboundEvent, logger, sinch_client):
     """Parse MO, then send MT echo to the same number via Conversation API."""
     msg = event.message
     channel_identity = msg.channel_identity
@@ -34,8 +34,9 @@ def _handle_message_inbound(event: MessageInboundEvent, logger, sinch_client, ap
     mo_text = _get_mo_text(event)
     logger.info("MO SMS from %s: %s", identity, mo_text)
 
+    app_id = event.app_id
     if not app_id:
-        logger.warning("CONVERSATION_APP_ID not set; skipping MT reply.")
+        logger.warning("Event has no app_id; skipping MT reply.")
         return
 
     reply_text = f"Your message said: {mo_text}"
