@@ -14,7 +14,7 @@ class Conversation:
         self._sinch = sinch
         self.messages = Messages(self._sinch)
 
-    def webhooks(self, callback_secret: str) -> ConversationWebhooks:
+    def webhooks(self, callback_secret: str = "") -> ConversationWebhooks:
         """
         Create a Conversation API webhooks handler with the given webhook secret.
 

@@ -29,16 +29,9 @@ see that the MO was received and processed.
    SINCH_KEY_SECRET=your_key_secret
    ```
 
-   - Conversation API app (existing app, already configured for SMS). Set `SINCH_CONVERSATION_REGION` to the same region as the one your app was created in (e.g. `eu`):
+   - Conversation API: set `SINCH_CONVERSATION_REGION` to the same region as the one your app was created in (e.g. `eu`).
    ```
-   CONVERSATION_APP_ID=your_conversation_app_id
    SINCH_CONVERSATION_REGION=
-   ```
-
-   - Webhook secret (the value you set when configuring the callback URL for this app).  
-   See [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks):
-   ```
-   CONVERSATION_WEBHOOKS_SECRET=your_webhook_secret
    ```
 
    - Server port (optional; default 3001):
@@ -92,8 +85,7 @@ Forwarding    https://abc123.ngrok-free.app -> http://localhost:3001
 Use the **HTTPS** URL when configuring the callback:  
 `https://<your-ngrok-host>/ConversationEvent`
 
-Configure this callback URL (and the webhook secret) in the Sinch dashboard for your Conversation API app.  
-The webhook secret must match `CONVERSATION_WEBHOOKS_SECRET` in your `.env`.
+Configure this callback URL in the Sinch dashboard for your Conversation API app.
 
 ### Sending an SMS to your Sinch number
 
