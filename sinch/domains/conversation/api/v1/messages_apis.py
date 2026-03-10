@@ -21,7 +21,7 @@ from sinch.domains.conversation.models.v1.messages.types import (
     ConversationMessagesViewType,
     MessageContentType,
     MessageQueueType,
-    MessagesSourceType,
+    MessageSourceType,
     MetadataUpdateStrategyType,
     ProcessingStrategyType,
     CardMessageDict,
@@ -82,7 +82,7 @@ class Messages(BaseConversation):
     def delete(
         self,
         message_id: str,
-        messages_source: Optional[MessagesSourceType] = None,
+        messages_source: Optional[MessageSourceType] = None,
         **kwargs,
     ) -> None:
         """
@@ -97,7 +97,7 @@ class Messages(BaseConversation):
             operations on messages in Dispatch Mode. Defaults to `CONVERSATION_SOURCE` when not specified. For more information,
             see [Processing Modes](https://developers.sinch.com/docs/conversation/processing-modes/).
             (optional)
-        :type messages_source: Optional[MessagesSource]
+        :type messages_source: Optional[MessageSourceType]
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
@@ -114,7 +114,7 @@ class Messages(BaseConversation):
     def get(
         self,
         message_id: str,
-        messages_source: Optional[MessagesSourceType] = None,
+        messages_source: Optional[MessageSourceType] = None,
         **kwargs,
     ) -> ConversationMessageResponse:
         """
@@ -126,7 +126,7 @@ class Messages(BaseConversation):
             operations on messages in Dispatch Mode. Defaults to `CONVERSATION_SOURCE` when not specified. For more information,
             see [Processing Modes](https://developers.sinch.com/docs/conversation/processing-modes/).
             (optional)
-        :type messages_source: Optional[MessagesSource]
+        :type messages_source: Optional[MessageSourceType]
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
@@ -151,7 +151,7 @@ class Messages(BaseConversation):
         start_time: Optional[datetime] = None,
         end_time: Optional[datetime] = None,
         view: Optional[ConversationMessagesViewType] = None,
-        messages_source: Optional[MessagesSourceType] = None,
+        messages_source: Optional[MessageSourceType] = None,
         only_recipient_originated: Optional[bool] = None,
         channel: Optional[ConversationChannelType] = None,
         direction: Optional[ConversationDirectionType] = None,
@@ -180,7 +180,7 @@ class Messages(BaseConversation):
         :param view: Messages view type. WITH_METADATA or WITHOUT_METADATA.
         :type view: Optional[ConversationMessagesViewType]
         :param messages_source: Specifies the message source for the request.
-        :type messages_source: Optional[MessagesSourceType]
+        :type messages_source: Optional[MessageSourceType]
         :param only_recipient_originated: Only fetch recipient-originated messages.
         :type only_recipient_originated: Optional[bool]
         :param channel: Only fetch messages from the specified channel.
@@ -223,7 +223,7 @@ class Messages(BaseConversation):
         channel_identities: Optional[List[str]] = None,
         contact_ids: Optional[List[str]] = None,
         app_id: Optional[str] = None,
-        messages_source: Optional[MessagesSourceType] = None,
+        messages_source: Optional[MessageSourceType] = None,
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         view: Optional[ConversationMessagesViewType] = None,
@@ -246,7 +246,7 @@ class Messages(BaseConversation):
         :param app_id: Optional. Resource name (id) of the app.
         :type app_id: Optional[str]
         :param messages_source: Specifies the message source for the request.
-        :type messages_source: Optional[MessagesSourceType]
+        :type messages_source: Optional[MessageSourceType]
         :param page_size: Optional. Maximum number of messages to fetch. Defaults to 10, maximum is 1000.
         :type page_size: Optional[int]
         :param page_token: Optional. Next page token previously returned if any.
@@ -295,7 +295,7 @@ class Messages(BaseConversation):
         self,
         message_id: str,
         metadata: str,
-        messages_source: Optional[MessagesSourceType] = None,
+        messages_source: Optional[MessageSourceType] = None,
         **kwargs,
     ) -> ConversationMessageResponse:
         """
@@ -309,7 +309,7 @@ class Messages(BaseConversation):
             operations on messages in Dispatch Mode. Defaults to `CONVERSATION_SOURCE` when not specified. For more information,
             see [Processing Modes](https://developers.sinch.com/docs/conversation/processing-modes/).
             (optional)
-        :type messages_source: Optional[MessagesSource]
+        :type messages_source: Optional[MessageSourceType]
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 

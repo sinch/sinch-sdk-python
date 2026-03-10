@@ -20,7 +20,7 @@ from sinch.domains.conversation.models.v1.messages.types.card_height_type import
     CardHeightType,
 )
 from sinch.domains.conversation.models.v1.messages.types.messages_source_type import (
-    MessagesSourceType,
+    MessageSourceType,
 )
 from sinch.domains.conversation.models.v1.messages.types.payment_order_goods_type import (
     PaymentOrderGoodsType,
@@ -106,7 +106,7 @@ __all__ = [
     "RecipientDict",
     "ChannelRecipientIdentityDict",
     "SendMessageRequestBodyDict",
-    "MessagesSourceType",
+    "MessageSourceType",
     "PaymentOrderGoodsType",
     "PaymentOrderStatusType",
     "PaymentOrderType",

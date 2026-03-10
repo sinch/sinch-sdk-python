@@ -9,6 +9,7 @@ ChannelSpecificMessageType = Union[
         "ORDER_STATUS",
         "COMMERCE",
         "CAROUSEL_COMMERCE",
+        "NOTIFICATION_MESSAGE_TEMPLATE",
     ],
     StrictStr,
 ]
