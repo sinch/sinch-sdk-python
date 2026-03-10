@@ -9,7 +9,10 @@ from sinch.domains.numbers.models.v1.utils.validators import (
 
 
 class UpdateNumberConfigurationRequest(BaseModelConfigurationRequest):
-    phone_number: StrictStr = Field(alias="phoneNumber")
+    phone_number: StrictStr = Field(
+        alias="phoneNumber",
+        description="Phone number in E.164 format with leading '+'. Example: '+12025550134'.",
+    )
     display_name: Optional[StrictStr] = Field(
         default=None, alias="displayName"
     )

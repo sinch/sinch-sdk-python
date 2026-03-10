@@ -5,4 +5,7 @@ from sinch.domains.numbers.models.v1.internal.base import (
 
 
 class NumberRequest(BaseModelConfigurationRequest):
-    phone_number: StrictStr = Field(alias="phoneNumber")
+    phone_number: StrictStr = Field(
+        alias="phoneNumber",
+        description="Phone number in E.164 format with leading '+'. Example: '+12025550134'.",
+    )
