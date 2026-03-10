@@ -8,7 +8,7 @@ from sinch.domains.conversation.models.v1.messages.types import (
     ConversationChannelType,
     ConversationDirectionType,
     ConversationMessagesViewType,
-    MessagesSourceType,
+    MessageSourceType,
 )
 
 
@@ -51,7 +51,7 @@ class ListMessagesRequest(BaseModelConfiguration):
         default=None,
         description="Messages view type. WITH_METADATA or WITHOUT_METADATA.",
     )
-    messages_source: Optional[MessagesSourceType] = Field(
+    messages_source: Optional[MessageSourceType] = Field(
         default=None,
         description="Specifies the message source for the request.",
     )

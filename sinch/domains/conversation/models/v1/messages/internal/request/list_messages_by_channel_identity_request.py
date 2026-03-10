@@ -8,7 +8,7 @@ from sinch.domains.conversation.models.v1.messages.types import (
     ConversationChannelType,
     ConversationDirectionType,
     ConversationMessagesViewType,
-    MessagesSourceType,
+    MessageSourceType,
 )
 
 
@@ -25,7 +25,7 @@ class ListLastMessagesByChannelIdentityRequest(BaseModelConfiguration):
         default=None,
         description="Optional. Resource name (id) of the app.",
     )
-    messages_source: Optional[MessagesSourceType] = Field(
+    messages_source: Optional[MessageSourceType] = Field(
         default=None,
         description="Specifies the message source for the request.",
     )

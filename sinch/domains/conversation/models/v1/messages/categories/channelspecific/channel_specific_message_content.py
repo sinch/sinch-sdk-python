@@ -6,6 +6,9 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce.kakaotalk_commerce_channel_specific_message import (
     KakaoTalkCommerceChannelSpecificMessage,
 )
+from sinch.domains.conversation.models.v1.messages.categories.channelspecific.line.line_notification_message_template_message import (
+    LineNotificationMessageTemplateMessage,
+)
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.flows.flow_channel_specific_message import (
     FlowChannelSpecificMessage,
 )
@@ -22,4 +25,5 @@ ChannelSpecificMessageContent = Union[
     PaymentOrderStatusChannelSpecificMessage,
     KakaoTalkCommerceChannelSpecificMessage,
     KakaoTalkCarouselCommerceChannelSpecificMessage,
+    LineNotificationMessageTemplateMessage,
 ]
