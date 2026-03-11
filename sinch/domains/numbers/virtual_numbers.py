@@ -69,7 +69,7 @@ class VirtualNumbers:
         """
         Search for all active virtual numbers associated with a certain project.
 
-        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, UK or SE.
+        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, GB or SE.
         :type region_code: str
 
         :param number_type: Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
@@ -165,10 +165,13 @@ class VirtualNumbers:
         :param display_name: The display name for the virtual number.
         :type display_name: Optional[str]
 
-        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as: ``service_plan_id`` (str), ``campaign_id`` (optional, required for US 10DLC).
+        :param sms_configuration: A dictionary defining the SMS configuration, including fields such as: ``service_plan_id`` (str), ``campaign_id`` (optional, required for US 10DLC).
         :type sms_configuration: Optional[SmsConfigurationDict]
 
-        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include: ``VoiceConfigurationRTCDict`` (RTC, ``app_id``), ``VoiceConfigurationESTDict`` (EST, ``trunk_id``), ``VoiceConfigurationFAXDict`` (FAX, ``service_id``).
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
+            - ``VoiceConfigurationRTCDict``: type ``'RTC'`` with an ``app_id`` field.
+            - ``VoiceConfigurationESTDict``: type ``'EST'`` with a ``trunk_id`` field.
+            - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
 
         :param callback_url: The callback URL for the virtual number.
@@ -190,7 +193,7 @@ class VirtualNumbers:
 
     def get(self, phone_number: str, **kwargs) -> ActiveNumber:
         """
-        List of configuration settings for your virtual number.
+        Get the configuration settings for your virtual number.
 
         :param phone_number: Phone number in E.164 format with leading '+'. Example: '+12025550134'.
         :type phone_number: str
@@ -286,9 +289,12 @@ class VirtualNumbers:
 
         :param phone_number: Phone number in E.164 format with leading '+'. Example: '+12025550134'.
         :type phone_number: str
-        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as: ``service_plan_id`` (str), ``campaign_id`` (optional, required for US 10DLC).
+        :param sms_configuration: A dictionary defining the SMS configuration, including fields such as: ``service_plan_id`` (str), ``campaign_id`` (optional, required for US 10DLC).
         :type sms_configuration: Optional[SmsConfigurationDict]
-        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include: ``VoiceConfigurationRTCDict`` (RTC), ``VoiceConfigurationESTDict`` (EST), ``VoiceConfigurationFAXDict`` (FAX).
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
+            - ``VoiceConfigurationRTCDict``: type ``'RTC'`` with an ``app_id`` field.
+            - ``VoiceConfigurationESTDict``: type ``'EST'`` with a ``trunk_id`` field.
+            - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
         :param callback_url: The callback URL to be called.
         :type callback_url: Optional[str]
@@ -362,7 +368,7 @@ class VirtualNumbers:
         Search for and activate an available Sinch virtual number all in one API call.
         Currently, the ``rent_any`` operation works only for US 10DLC numbers.
 
-        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, UK or SE.
+        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, GB or SE.
         :type region_code: str
 
         :param number_type: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``). Defaults to ``"MOBILE"``.
@@ -374,10 +380,13 @@ class VirtualNumbers:
         :param capabilities: Capabilities required for the number (e.g., ``["SMS", "VOICE"]``).
         :type capabilities: Optional[List[CapabilityType]]
 
-        :param sms_configuration: A dictionary defining the SMS configuration. Including fields such as: ``service_plan_id`` (str), ``campaign_id`` (optional, required for US 10DLC).
+        :param sms_configuration: A dictionary defining the SMS configuration, including fields such as: ``service_plan_id`` (str), ``campaign_id`` (optional, required for US 10DLC).
         :type sms_configuration: Optional[SmsConfigurationDict]
 
-        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include: ``VoiceConfigurationRTCDict`` (RTC), ``VoiceConfigurationESTDict`` (EST), ``VoiceConfigurationFAXDict`` (FAX).
+        :param voice_configuration: A dictionary defining the Voice configuration. Supported types include::
+            - ``VoiceConfigurationRTCDict``: type ``'RTC'`` with an ``app_id`` field.
+            - ``VoiceConfigurationESTDict``: type ``'EST'`` with a ``trunk_id`` field.
+            - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
 
         :param callback_url: The callback URL to receive notifications.
@@ -415,7 +424,7 @@ class VirtualNumbers:
         """
         Search for available virtual numbers for you to rent using a variety of parameters to filter results.
 
-        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, UK or SE.
+        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, GB or SE.
         :type region_code: str
 
         :param number_type: Type of number (e.g., ``"MOBILE"``, ``"LOCAL"``, ``"TOLL_FREE"``).
