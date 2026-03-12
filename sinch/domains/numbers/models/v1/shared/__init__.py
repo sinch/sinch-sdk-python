@@ -21,6 +21,9 @@ from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_rtc imp
 from sinch.domains.numbers.models.v1.shared.sms_configuration import (
     SmsConfiguration,
 )
+from sinch.domains.numbers.models.v1.shared.sms_configuration_base import (
+    SmsConfigurationBase,
+)
 from sinch.domains.numbers.models.v1.shared.voice_configuration_est import (
     VoiceConfigurationEST,
 )
@@ -41,6 +44,7 @@ __all__ = [
     "ScheduledVoiceProvisioningFAX",
     "ScheduledVoiceProvisioningRTC",
     "SmsConfiguration",
+    "SmsConfigurationBase",
     "VoiceConfigurationEST",
     "VoiceConfigurationRTC",
     "VoiceConfigurationFAX",

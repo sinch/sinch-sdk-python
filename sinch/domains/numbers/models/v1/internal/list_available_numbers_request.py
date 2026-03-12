@@ -11,7 +11,10 @@ from sinch.domains.numbers.models.v1.types import (
 
 
 class ListAvailableNumbersRequest(BaseModelConfigurationRequest):
-    region_code: StrictStr = Field(alias="regionCode")
+    region_code: StrictStr = Field(
+        alias="regionCode",
+        description="ISO 3166-1 alpha-2 country code. Example: US, GB or SE.",
+    )
     number_type: NumberType = Field(alias="type")
     page_size: Optional[StrictInt] = Field(default=None, alias="size")
     capabilities: Optional[conlist(CapabilityType)] = Field(default=None)

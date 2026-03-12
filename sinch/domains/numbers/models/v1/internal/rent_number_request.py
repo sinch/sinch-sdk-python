@@ -9,7 +9,10 @@ from sinch.domains.numbers.models.v1.internal.base import (
 
 
 class RentNumberRequest(BaseModelConfigurationRequest):
-    phone_number: StrictStr = Field(alias="phoneNumber")
+    phone_number: StrictStr = Field(
+        alias="phoneNumber",
+        description="Phone number in E.164 format with leading '+'. Example: '+12025550134'.",
+    )
     # Accepts only dictionary input, not Pydantic models
     sms_configuration: Optional[Dict] = Field(
         default=None, alias="smsConfiguration"
