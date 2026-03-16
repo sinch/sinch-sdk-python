@@ -102,6 +102,6 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
         2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc
     )
     assert number.expire_at == expected_expire_at
-    assert number.callback_url == "https://yourcallback/numbers"
+    assert number.event_destination_target == "https://yourcallback/numbers"
     assert parsed_response.next_page_token == "CgtwaG9uoLnNDQzajQSDCsxMzE1OTA0MzM1OQ=="
     assert parsed_response.total_size == 10

@@ -12,7 +12,7 @@ class NumbersController:
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        webhooks_service = self.sinch_client.numbers.webhooks(self.webhooks_secret)
+        webhooks_service = self.sinch_client.numbers.sinch_events(self.webhooks_secret)
 
         ensure_valid_authentication = False
         if ensure_valid_authentication:

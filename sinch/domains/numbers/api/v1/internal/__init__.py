@@ -13,14 +13,14 @@ from sinch.domains.numbers.api.v1.internal.available_numbers_endpoints import (
 from sinch.domains.numbers.api.v1.internal.available_regions_endpoints import (
     ListAvailableRegionsEndpoint,
 )
-from sinch.domains.numbers.api.v1.internal.callback_configuration_endpoints import (
-    GetCallbackConfigurationEndpoint,
-    UpdateCallbackConfigurationEndpoint,
+from sinch.domains.numbers.api.v1.internal.event_destination_endpoints import (
+    GetEventDestinationEndpoint,
+    UpdateEventDestinationEndpoint,
 )
 
 __all__ = [
     "AvailableNumbersEndpoint",
-    "GetCallbackConfigurationEndpoint",
+    "GetEventDestinationEndpoint",
     "GetNumberConfigurationEndpoint",
     "ListActiveNumbersEndpoint",
     "ListAvailableRegionsEndpoint",
@@ -28,6 +28,6 @@ __all__ = [
     "RentNumberEndpoint",
     "RentAnyNumberEndpoint",
     "SearchForNumberEndpoint",
-    "UpdateCallbackConfigurationEndpoint",
+    "UpdateEventDestinationEndpoint",
     "UpdateNumberConfigurationEndpoint",
 ]

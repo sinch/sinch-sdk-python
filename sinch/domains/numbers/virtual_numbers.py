@@ -3,7 +3,7 @@ from sinch.domains.numbers.api.v1 import (
     ActiveNumbers,
     AvailableNumbers,
     AvailableRegions,
-    CallbackConfiguration,
+    EventDestinations,
 )
 from sinch.core.pagination import Paginator
 from sinch.domains.numbers.models.v1.response import (
@@ -22,7 +22,7 @@ from sinch.domains.numbers.models.v1.types import (
     VoiceConfigurationESTDict,
     NumberPatternDict,
 )
-from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
+from sinch.domains.numbers.sinch_events.v1 import SinchEvents
 
 
 class VirtualNumbers:
@@ -36,21 +36,21 @@ class VirtualNumbers:
     def __init__(self, sinch):
         self._sinch = sinch
         self.regions = AvailableRegions(self._sinch)
-        self.callback_configuration = CallbackConfiguration(self._sinch)
+        self.event_destinations = EventDestinations(self._sinch)
 
         self._active = ActiveNumbers(self._sinch)
         self._available = AvailableNumbers(self._sinch)
 
-    def webhooks(self, callback_secret: str) -> NumbersWebhooks:
+    def sinch_events(self, callback_secret: str) -> SinchEvents:
         """
-        Create a Numbers webhooks handler with the specified callback secret.
+        Create a Numbers Sinch Events handler with the specified callback secret.
 
         :param callback_secret: Secret used for webhook validation.
         :type callback_secret: str
-        :returns: A configured webhooks handler
-        :rtype: NumbersWebhooks
+        :returns: A configured Sinch Events handler
+        :rtype: SinchEvents
         """
-        return NumbersWebhooks(callback_secret)
+        return SinchEvents(callback_secret)
 
     # ====== High-Level Convenience Methods ======
 
@@ -120,7 +120,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
         display_name: Optional[str] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -131,7 +131,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
         display_name: Optional[str] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -142,7 +142,7 @@ class VirtualNumbers:
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
         display_name: Optional[str] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -152,7 +152,7 @@ class VirtualNumbers:
         display_name: Optional[str] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         **kwargs,
     ) -> ActiveNumber:
         """
@@ -174,8 +174,8 @@ class VirtualNumbers:
             - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
 
-        :param callback_url: The callback URL for the virtual number.
-        :type callback_url: Optional[str]
+        :param event_destination_target: The event destination URL for the virtual number.
+        :type event_destination_target: Optional[str]
 
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
@@ -187,7 +187,7 @@ class VirtualNumbers:
             display_name=display_name,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             **kwargs,
         )
 
@@ -252,7 +252,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationESTDict,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -262,7 +262,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationFAXDict,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -272,7 +272,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: SmsConfigurationDict,
         voice_configuration: VoiceConfigurationRTCDict,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -281,7 +281,7 @@ class VirtualNumbers:
         phone_number: str,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         **kwargs,
     ) -> ActiveNumber:
         """
@@ -296,8 +296,8 @@ class VirtualNumbers:
             - ``VoiceConfigurationESTDict``: type ``'EST'`` with a ``trunk_id`` field.
             - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
-        :param callback_url: The callback URL to be called.
-        :type callback_url: Optional[str]
+        :param event_destination_target: The event destination URL to be called.
+        :type event_destination_target: Optional[str]
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
 
@@ -310,7 +310,7 @@ class VirtualNumbers:
             phone_number=phone_number,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             **kwargs,
         )
 
@@ -323,7 +323,7 @@ class VirtualNumbers:
         voice_configuration: VoiceConfigurationRTCDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[CapabilityType] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -336,7 +336,7 @@ class VirtualNumbers:
         voice_configuration: VoiceConfigurationFAXDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[List[CapabilityType]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -349,7 +349,7 @@ class VirtualNumbers:
         voice_configuration: VoiceConfigurationESTDict,
         number_pattern: NumberPatternDict,
         capabilities: Optional[List[CapabilityType]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
     ) -> ActiveNumber:
         pass
 
@@ -361,7 +361,7 @@ class VirtualNumbers:
         capabilities: Optional[List[CapabilityType]] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         **kwargs,
     ) -> ActiveNumber:
         """
@@ -389,8 +389,8 @@ class VirtualNumbers:
             - ``VoiceConfigurationFAXDict``: type ``'FAX'`` with a ``service_id`` field.
         :type voice_configuration: Optional[VoiceConfigurationDict]
 
-        :param callback_url: The callback URL to receive notifications.
-        :type callback_url: Optional[str]
+        :param event_destination_target: The event destination URL to receive notifications.
+        :type event_destination_target: Optional[str]
 
         :param kwargs: Additional parameters for the request.
         :type kwargs: dict
@@ -407,7 +407,7 @@ class VirtualNumbers:
             capabilities=capabilities,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             **kwargs,
         )
 

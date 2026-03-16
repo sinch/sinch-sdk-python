@@ -61,7 +61,7 @@ class ActiveNumbers(BaseNumbers):
         display_name: Optional[str] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         **kwargs,
     ) -> ActiveNumber:
         request_data = UpdateNumberConfigurationRequest(
@@ -69,7 +69,7 @@ class ActiveNumbers(BaseNumbers):
             display_name=display_name,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             **kwargs,
         )
         return self._request(UpdateNumberConfigurationEndpoint, request_data)

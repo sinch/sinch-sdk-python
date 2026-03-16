@@ -18,8 +18,8 @@ sinch_client = SinchClient(
 )
 
 hmac_secret = "NEW_HMAC_SECRET"
-response = sinch_client.numbers.callback_configuration.update(
+response = sinch_client.numbers.event_destinations.update(
     hmac_secret=hmac_secret
 )
 
-print("Updated callback configuration:\n", response)
+print("Updated event destination configuration:\n", response)

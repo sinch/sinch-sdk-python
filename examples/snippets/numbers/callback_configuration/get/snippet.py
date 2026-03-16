@@ -17,6 +17,6 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET"
 )
 
-response = sinch_client.numbers.callback_configuration.get()
+response = sinch_client.numbers.event_destinations.get()
 
-print("Callback Configuration:\n", response)
+print("Event Destination Configuration:\n", response)

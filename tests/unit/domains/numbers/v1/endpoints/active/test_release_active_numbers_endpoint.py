@@ -69,4 +69,4 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     expected_expire_at = (
         datetime(2025, 2, 28, 14, 4, 26, 190127, tzinfo=timezone.utc))
     assert parsed_response.expire_at == expected_expire_at
-    assert parsed_response.callback_url == "https://yourcallback/numbers"
+    assert parsed_response.event_destination_target == "https://yourcallback/numbers"

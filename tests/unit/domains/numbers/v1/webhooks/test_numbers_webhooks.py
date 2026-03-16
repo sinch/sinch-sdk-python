@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import pytest
-from sinch.domains.numbers.webhooks.v1 import NumbersWebhooks
-from sinch.domains.numbers.webhooks.v1.events import NumbersWebhooksEvent
+from sinch.domains.numbers.sinch_events.v1 import SinchEvents
+from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
 
 
 @pytest.fixture
@@ -16,7 +16,7 @@ def string_to_sign():
 
 @pytest.fixture
 def numbers_webhooks():
-    return NumbersWebhooks('my-callback-secret')
+    return SinchEvents('my-callback-secret')
 
 
 @pytest.fixture
@@ -67,7 +67,7 @@ def test_parse_event_expects_timestamp_as_utc(numbers_webhooks, test_name, times
 
 def test_parse_event_expects_parsed_response(numbers_webhooks, base_payload_parse_event):
     response = numbers_webhooks.parse_event(base_payload_parse_event)
-    assert isinstance(response, NumbersWebhooksEvent)
+    assert isinstance(response, NumberSinchEvent)
     assert response.event_id == "01jr7stexp0znky34pj07dwp41"
     assert response.project_id == "project-id"
     assert response.resource_id == "+1234567890"

@@ -19,7 +19,7 @@ def valid_request_data():
         capabilities=["SMS"],
         sms_configuration={"servicePlanId": "string", "campaignId": "string"},
         voice_configuration={"appId": "string"},
-        callback_url="https://www.your-callback-server.com/callback",
+        event_destination_target="https://www.your-callback-server.com/callback",
     )
 
 
@@ -140,4 +140,4 @@ def test_handle_response_expects_valid_mapping(valid_response_data):
     assert voice_config.scheduled_voice_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
     assert voice_config.scheduled_voice_provisioning.trunk_id == "string"
     assert voice_config.app_id == "string"
-    assert response.callback_url == "https://www.your-callback-server.com/callback"
+    assert response.event_destination_target == "https://www.your-callback-server.com/callback"

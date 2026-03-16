@@ -5,13 +5,13 @@ from sinch.domains.numbers.models.v1.response.available_number import (
 from sinch.domains.numbers.models.v1.response.available_region import (
     AvailableRegion,
 )
-from sinch.domains.numbers.models.v1.response.callback_configuration_response import (
-    CallbackConfigurationResponse,
+from sinch.domains.numbers.models.v1.response.event_destination_response import (
+    EventDestinationResponse,
 )
 
 __all__ = [
     "ActiveNumber",
     "AvailableNumber",
     "AvailableRegion",
-    "CallbackConfigurationResponse",
+    "EventDestinationResponse",
 ]
