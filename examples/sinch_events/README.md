@@ -1,4 +1,4 @@
-# Webhook Handlers for Sinch Python SDK
+# Sinch Events Handlers for Sinch Python SDK
 
 This directory contains a server application built with [Sinch Python SDK](https://github.com/sinch/sinch-sdk-python)
 to process incoming webhooks from Sinch services.
@@ -21,7 +21,7 @@ This directory contains both the webhook handlers and the server application (`s
 ## Configuration
 
 1. **Environment Variables**:  
-   Rename [.env.example](.env.example) to `.env` in this directory (`examples/webhooks/`), then add your credentials from the Sinch dashboard under the Access Keys section.
+   Rename [.env.example](.env.example) to `.env` in this directory (`examples/sinch_events/`), then add your credentials from the Sinch dashboard under the Access Keys section.
    
    - Server Port:  
    Define the port your server will listen to on (default: 3001):
@@ -49,9 +49,9 @@ This directory contains both the webhook handlers and the server application (`s
 
 ### Running the server application
 
-1. Navigate to the webhooks' directory:
+1. Navigate to the examples events directory:
 ```
-   cd examples/webhooks
+   cd examples/sinch_events
 ```
 
 2. Install the project dependencies:
