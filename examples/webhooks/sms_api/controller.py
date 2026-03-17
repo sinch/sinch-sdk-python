@@ -14,7 +14,7 @@ class SmsController:
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        webhooks_service = self.sinch_client.sms.webhooks(self.webhooks_secret)
+        webhooks_service = self.sinch_client.sms.sinch_events(self.webhooks_secret)
 
         # Signature headers may be absent unless your account manager enables them
         # (see README: Configuration -> Controller Settings -> SMS controller);

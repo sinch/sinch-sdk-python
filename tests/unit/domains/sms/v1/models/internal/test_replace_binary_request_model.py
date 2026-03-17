@@ -39,7 +39,7 @@ def test_replace_binary_request_expects_valid_inputs_and_all_fields(
         delivery_report="summary",
         send_at=send_at,
         expire_at=expire_at,
-        callback_url="https://capybara.com/callback",
+        event_destination_target="https://capybara.com/callback",
         client_reference="test-ref",
         feedback_enabled=True,
         from_ton=1,
@@ -49,7 +49,7 @@ def test_replace_binary_request_expects_valid_inputs_and_all_fields(
     assert request.delivery_report == "summary"
     assert request.send_at == send_at
     assert request.expire_at == expire_at
-    assert request.callback_url == "https://capybara.com/callback"
+    assert request.event_destination_target == "https://capybara.com/callback"
     assert request.client_reference == "test-ref"
     assert request.feedback_enabled is True
     assert request.from_ton == 1

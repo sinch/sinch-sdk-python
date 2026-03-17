@@ -49,7 +49,7 @@ def test_replace_media_request_expects_valid_inputs_and_all_fields(
         delivery_report="full",
         send_at=send_at,
         expire_at=expire_at,
-        callback_url="https://capybara.com/webhook",
+        event_destination_target="https://capybara.com/webhook",
         client_reference="capybara-media-batch-123",
         feedback_enabled=True,
         strict_validation=True,
@@ -62,7 +62,7 @@ def test_replace_media_request_expects_valid_inputs_and_all_fields(
     assert request.delivery_report == "full"
     assert request.send_at == send_at
     assert request.expire_at == expire_at
-    assert request.callback_url == "https://capybara.com/webhook"
+    assert request.event_destination_target == "https://capybara.com/webhook"
     assert request.client_reference == "capybara-media-batch-123"
     assert request.feedback_enabled is True
     assert request.strict_validation is True

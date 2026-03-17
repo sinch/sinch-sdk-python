@@ -1,8 +1,8 @@
 import requests
 from datetime import datetime, timezone
 from behave import given, when, then
-from sinch.domains.sms.webhooks.v1.sms_webhooks import SmsWebhooks
-from sinch.domains.sms.webhooks.v1.events import (
+from sinch.domains.sms.sinch_events.v1.sms_sinch_event import SmsSinchEvent
+from sinch.domains.sms.sinch_events.v1.events import (
     MOTextWebhookEvent,
 )
 from sinch.domains.sms.models.v1.response import (
@@ -16,7 +16,7 @@ SINCH_SMS_CALLBACK_SECRET = 'KayakingTheSwell'
 
 @given('the SMS Webhooks handler is available')
 def step_webhook_handler_is_available(context):
-    context.sms_webhook = SmsWebhooks(SINCH_SMS_CALLBACK_SECRET)
+    context.sms_webhook = SmsSinchEvent(SINCH_SMS_CALLBACK_SECRET)
 
 
 @when('I send a request to trigger an "incoming SMS" event')

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional, Union, Literal, Annotated
 from pydantic import Field, StrictStr, StrictInt, conlist
-from sinch.domains.sms.webhooks.v1.internal import WebhookEvent
+from sinch.domains.sms.sinch_events.v1.internal import WebhookEvent
 
 
 class MediaItem(WebhookEvent):

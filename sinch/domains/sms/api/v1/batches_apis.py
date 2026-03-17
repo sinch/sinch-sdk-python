@@ -143,7 +143,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         flash_message: Optional[bool] = None,
@@ -175,8 +175,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -209,7 +209,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             flash_message=flash_message,
@@ -232,7 +232,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         from_ton: Optional[int] = None,
@@ -261,8 +261,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -289,7 +289,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             from_ton=from_ton,
@@ -309,7 +309,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         strict_validation: Optional[bool] = None,
@@ -337,8 +337,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -363,7 +363,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             strict_validation=strict_validation,
@@ -487,7 +487,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         flash_message: Optional[bool] = None,
@@ -516,8 +516,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -550,7 +550,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             flash_message=flash_message,
@@ -573,7 +573,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         from_ton: Optional[int] = None,
@@ -600,8 +600,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -627,7 +627,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             from_ton=from_ton,
@@ -645,7 +645,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         strict_validation: Optional[bool] = None,
@@ -670,8 +670,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -696,7 +696,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             strict_validation=strict_validation,
@@ -751,7 +751,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         flash_message: Optional[bool] = None,
@@ -784,8 +784,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -817,7 +817,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             flash_message=flash_message,
@@ -839,7 +839,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         from_ton: Optional[int] = None,
@@ -870,8 +870,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -896,7 +896,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             from_ton=from_ton,
@@ -913,7 +913,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         strict_validation: Optional[bool] = None,
@@ -942,8 +942,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -967,7 +967,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             strict_validation=strict_validation,
@@ -1057,7 +1057,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         parameters: Optional[Dict[str, Dict[str, str]]] = None,
@@ -1087,8 +1087,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -1122,7 +1122,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             parameters=parameters,
@@ -1146,7 +1146,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         from_ton: Optional[int] = None,
@@ -1174,8 +1174,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -1202,7 +1202,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             from_ton=from_ton,
@@ -1221,7 +1221,7 @@ class Batches(BaseSms):
         delivery_report: Optional[DeliveryReportType] = None,
         send_at: Optional[datetime] = None,
         expire_at: Optional[datetime] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         client_reference: Optional[str] = None,
         feedback_enabled: Optional[bool] = None,
         parameters: Optional[Dict[str, Dict[str, str]]] = None,
@@ -1247,8 +1247,8 @@ class Batches(BaseSms):
         :type send_at: Optional[datetime]
         :param expire_at: The time to expire the message at. (optional)
         :type expire_at: Optional[datetime]
-        :param callback_url: The callback URL to receive the delivery report. (optional)
-        :type callback_url: Optional[str]
+        :param event_destination_target: The callback URL to receive the delivery report. (optional)
+        :type event_destination_target: Optional[str]
         :param client_reference: The client reference to identify the message. (optional)
         :type client_reference: Optional[str]
         :param feedback_enabled: Whether to enable feedback. (optional)
@@ -1274,7 +1274,7 @@ class Batches(BaseSms):
             delivery_report=delivery_report,
             send_at=send_at,
             expire_at=expire_at,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             client_reference=client_reference,
             feedback_enabled=feedback_enabled,
             parameters=parameters,

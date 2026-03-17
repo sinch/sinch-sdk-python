@@ -61,8 +61,10 @@ class BinaryResponse(BaseModelConfigurationResponse):
         default=None,
         description="If set, the date and time the message will expire. Formatted as [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601). For example: `YYYY-MM-DDThh:mm:ss.SSSZ`.",
     )
-    callback_url: Optional[StrictStr] = Field(
-        default=None, description="The callback URL provided in the request."
+    event_destination_target: Optional[StrictStr] = Field(
+        default=None,
+        alias="callback_url",
+        description="The callback URL provided in the request.",
     )
     client_reference: Optional[StrictStr] = Field(
         default=None,

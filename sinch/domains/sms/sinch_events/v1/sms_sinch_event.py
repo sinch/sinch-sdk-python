@@ -9,7 +9,7 @@ from sinch.domains.authentication.webhooks.v1.webhook_utils import (
     parse_json,
     normalize_iso_timestamp,
 )
-from sinch.domains.sms.webhooks.v1.events import (
+from sinch.domains.sms.sinch_events.v1.events import (
     IncomingSMSWebhookEvent,
     MOTextWebhookEvent,
     MOBinaryWebhookEvent,
@@ -30,7 +30,7 @@ SmsCallback = Union[
 ]
 
 
-class SmsWebhooks:
+class SmsSinchEvent:
     def __init__(self, app_secret: Optional[str] = None):
         self.app_secret = app_secret
 

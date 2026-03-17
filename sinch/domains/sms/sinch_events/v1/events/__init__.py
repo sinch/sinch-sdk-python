@@ -1,4 +1,4 @@
-from sinch.domains.sms.webhooks.v1.events.sms_webhooks_event import (
+from sinch.domains.sms.sinch_events.v1.events.sms_sinch_event import (
     IncomingSMSWebhookEvent,
     MOTextWebhookEvent,
     MOBinaryWebhookEvent,

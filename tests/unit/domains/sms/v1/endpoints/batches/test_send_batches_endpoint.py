@@ -92,6 +92,21 @@ def test_request_body_expects_text_request_data(text_request_data):
     assert body["body"] == "Your verification code is 123456"
 
 
+def test_request_body_uses_callback_url_alias_for_event_destination_target():
+    """Ensure event_destination_target is serialized as backend callback_url."""
+    request = TextRequest(
+        to=["+46701234567"],
+        from_="+46701111111",
+        body="Hello",
+        event_destination_target="https://example.com/callback",
+    )
+    endpoint = SendSMSEndpoint("test_project_id", request)
+    body = json.loads(endpoint.request_body())
+
+    assert body["callback_url"] == "https://example.com/callback"
+    assert "event_destination_target" not in body
+
+
 def test_request_body_expects_binary_request_data(binary_request_data):
     """Test that binary request body contains correct fields."""
     endpoint = SendSMSEndpoint("test_project_id", binary_request_data)

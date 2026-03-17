@@ -46,7 +46,7 @@ def test_update_media_request_expects_valid_inputs_and_all_fields(
         delivery_report="none",
         send_at=send_at,
         expire_at=expire_at,
-        callback_url="https://capybara.com/media-callback",
+        event_destination_target="https://capybara.com/media-callback",
         client_reference="media-update-789",
         feedback_enabled=True,
         strict_validation=True,
@@ -62,7 +62,7 @@ def test_update_media_request_expects_valid_inputs_and_all_fields(
     assert request.delivery_report == "none"
     assert request.send_at == send_at
     assert request.expire_at == expire_at
-    assert request.callback_url == "https://capybara.com/media-callback"
+    assert request.event_destination_target == "https://capybara.com/media-callback"
     assert request.client_reference == "media-update-789"
     assert request.feedback_enabled is True
     assert request.strict_validation is True
