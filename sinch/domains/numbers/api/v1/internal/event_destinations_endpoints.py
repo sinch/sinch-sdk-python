@@ -7,16 +7,16 @@ from sinch.domains.numbers.api.v1.exceptions import (
 )
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import (
-    UpdateCallbackConfigurationRequest,
+    UpdateEventDestinationRequest,
 )
 from sinch.domains.numbers.models.v1.response import (
-    CallbackConfigurationResponse,
+    EventDestinationResponse,
 )
 
 
-class GetCallbackConfigurationEndpoint(NumbersEndpoint):
+class GetEventDestinationEndpoint(NumbersEndpoint):
     """
-    Endpoint to get the callbacks configuration for a project.
+    Endpoint to get the event destination configuration for a project.
     """
 
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/callbackConfiguration"
@@ -24,7 +24,7 @@ class GetCallbackConfigurationEndpoint(NumbersEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data=None):
-        super(GetCallbackConfigurationEndpoint, self).__init__(
+        super(GetEventDestinationEndpoint, self).__init__(
             project_id, request_data
         )
         self.project_id = project_id
@@ -32,7 +32,7 @@ class GetCallbackConfigurationEndpoint(NumbersEndpoint):
 
     def build_url(self, sinch) -> str:
         if self.request_data:
-            super(GetCallbackConfigurationEndpoint, self).build_url(sinch)
+            super(GetEventDestinationEndpoint, self).build_url(sinch)
         return self.ENDPOINT_URL.format(
             origin=sinch.configuration.numbers_origin,
             project_id=self.project_id,
@@ -47,11 +47,9 @@ class GetCallbackConfigurationEndpoint(NumbersEndpoint):
 
     def handle_response(
         self, response: HTTPResponse
-    ) -> CallbackConfigurationResponse:
+    ) -> EventDestinationResponse:
         try:
-            super(GetCallbackConfigurationEndpoint, self).handle_response(
-                response
-            )
+            super(GetEventDestinationEndpoint, self).handle_response(response)
         except NumbersException as e:
             raise NumberNotFoundException(
                 message=e.args[0],
@@ -59,13 +57,13 @@ class GetCallbackConfigurationEndpoint(NumbersEndpoint):
                 is_from_server=e.is_from_server,
             )
         return self.process_response_model(
-            response.body, CallbackConfigurationResponse
+            response.body, EventDestinationResponse
         )
 
 
-class UpdateCallbackConfigurationEndpoint(NumbersEndpoint):
+class UpdateEventDestinationEndpoint(NumbersEndpoint):
     """
-    Endpoint to update the callbacks configuration for a project.
+    Endpoint to update the event destination configuration for a project.
     """
 
     ENDPOINT_URL = "{origin}/v1/projects/{project_id}/callbackConfiguration"
@@ -73,9 +71,9 @@ class UpdateCallbackConfigurationEndpoint(NumbersEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(
-        self, project_id: str, request_data: UpdateCallbackConfigurationRequest
+        self, project_id: str, request_data: UpdateEventDestinationRequest
     ):
-        super(UpdateCallbackConfigurationEndpoint, self).__init__(
+        super(UpdateEventDestinationEndpoint, self).__init__(
             project_id, request_data
         )
         self.project_id = project_id
@@ -89,9 +87,9 @@ class UpdateCallbackConfigurationEndpoint(NumbersEndpoint):
 
     def handle_response(
         self, response: HTTPResponse
-    ) -> CallbackConfigurationResponse:
+    ) -> EventDestinationResponse:
         try:
-            super(UpdateCallbackConfigurationEndpoint, self).handle_response(
+            super(UpdateEventDestinationEndpoint, self).handle_response(
                 response
             )
         except NumbersException as e:
@@ -101,5 +99,5 @@ class UpdateCallbackConfigurationEndpoint(NumbersEndpoint):
                 is_from_server=e.is_from_server,
             )
         return self.process_response_model(
-            response.body, CallbackConfigurationResponse
+            response.body, EventDestinationResponse
         )

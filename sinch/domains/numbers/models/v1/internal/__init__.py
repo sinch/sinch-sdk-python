@@ -28,8 +28,8 @@ from sinch.domains.numbers.models.v1.internal.rent_any_number_request import (
 from sinch.domains.numbers.models.v1.internal.sms_configuration_request import (
     SmsConfigurationRequest,
 )
-from sinch.domains.numbers.models.v1.internal.update_callback_configuration_request import (
-    UpdateCallbackConfigurationRequest,
+from sinch.domains.numbers.models.v1.internal.update_event_destination_request import (
+    UpdateEventDestinationRequest,
 )
 from sinch.domains.numbers.models.v1.internal.update_number_configuration_request import (
     UpdateNumberConfigurationRequest,
@@ -52,7 +52,7 @@ __all__ = [
     "RentAnyNumberRequest",
     "RentNumberRequest",
     "SmsConfigurationRequest",
-    "UpdateCallbackConfigurationRequest",
+    "UpdateEventDestinationRequest",
     "UpdateNumberConfigurationRequest",
     "VoiceConfigurationCustom",
     "VoiceConfigurationEST",

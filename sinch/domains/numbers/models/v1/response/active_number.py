@@ -43,6 +43,6 @@ class ActiveNumber(BaseModelConfigurationResponse):
     voice_configuration: Optional[VoiceConfiguration] = Field(
         default=None, alias="voiceConfiguration"
     )
-    callback_url: Optional[StrictStr] = Field(
+    event_destination_target: Optional[StrictStr] = Field(
         default=None, alias="callbackUrl"
     )

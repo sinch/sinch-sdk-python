@@ -41,7 +41,7 @@ def test_rent_any_number_request_expects_valid_data():
             "type": "RTC",
             "appId": "string"
         }
-    assert request.callback_url == "https://www.your-callback-server.com/callback"
+    assert request.event_destination_target == "https://www.your-callback-server.com/callback"
 
 
 def test_rent_any_number_request_expects_missing_optional_fields():
@@ -62,4 +62,4 @@ def test_rent_any_number_request_expects_missing_optional_fields():
     assert request.capabilities is None
     assert request.sms_configuration is None
     assert request.voice_configuration is None
-    assert request.callback_url is None
+    assert request.event_destination_target is None

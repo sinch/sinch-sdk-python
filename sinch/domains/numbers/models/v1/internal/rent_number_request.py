@@ -20,7 +20,7 @@ class RentNumberRequest(BaseModelConfigurationRequest):
     voice_configuration: Optional[Dict] = Field(
         default=None, alias="voiceConfiguration"
     )
-    callback_url: Optional[StrictStr] = Field(
+    event_destination_target: Optional[StrictStr] = Field(
         default=None, alias="callbackUrl"
     )
 

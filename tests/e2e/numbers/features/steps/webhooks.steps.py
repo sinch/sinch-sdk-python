@@ -8,7 +8,7 @@ SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
 
 @given('the Numbers Webhooks handler is available')
 def step_webhook_handler_is_available(context):
-    context.numbers_webhook = context.sinch.numbers.webhooks(SINCH_NUMBERS_CALLBACK_SECRET)
+    context.numbers_webhook = context.sinch.numbers.sinch_events(SINCH_NUMBERS_CALLBACK_SECRET)
 
 
 @when('I send a request to trigger the "{status}" for "{event_type}" event')
