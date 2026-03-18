@@ -1,30 +1,31 @@
 from flask import request, Response
-from webhooks.conversation_api.server_business_logic import handle_conversation_event
+from sinch_events.numbers_api.server_business_logic import handle_numbers_event
 
 
-class ConversationController:
+class NumbersController:
     def __init__(self, sinch_client, webhooks_secret):
         self.sinch_client = sinch_client
         self.webhooks_secret = webhooks_secret
         self.logger = self.sinch_client.configuration.logger
 
-    def conversation_event(self):
+    def numbers_event(self):
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        webhooks_service = self.sinch_client.conversation.webhooks(self.webhooks_secret)
+        webhooks_service = self.sinch_client.numbers.webhooks(self.webhooks_secret)
 
-        # Set to True to enforce signature validation (recommended in production)
-        ensure_valid_signature = False
-        if ensure_valid_signature:
-            valid = webhooks_service.validate_authentication_header(
+        ensure_valid_authentication = False
+        if ensure_valid_authentication:
+            valid_auth = webhooks_service.validate_authentication_header(
                 headers=headers,
                 json_payload=raw_body,
             )
-            if not valid:
+
+            if not valid_auth:
                 return Response(status=401)
 
         event = webhooks_service.parse_event(raw_body, headers)
-        handle_conversation_event(event=event, logger=self.logger)
+
+        handle_numbers_event(numbers_event=event, logger=self.logger)
 
         return Response(status=200)
