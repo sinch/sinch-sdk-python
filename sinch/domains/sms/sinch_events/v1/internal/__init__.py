@@ -1,5 +1,5 @@
-from sinch.domains.sms.sinch_events.v1.internal.webhook_event import (
-    WebhookEvent,
+from sinch.domains.sms.sinch_events.v1.internal.sinch_event import (
+    SinchEvent,
 )
 
-__all__ = ["WebhookEvent"]
+__all__ = ["SinchEvent"]

@@ -10,10 +10,10 @@ from sinch.domains.authentication.webhooks.v1.webhook_utils import (
     normalize_iso_timestamp,
 )
 from sinch.domains.sms.sinch_events.v1.events import (
-    IncomingSMSWebhookEvent,
-    MOTextWebhookEvent,
-    MOBinaryWebhookEvent,
-    MOMediaWebhookEvent,
+    IncomingSMSSinchEvent,
+    MOTextSinchEvent,
+    MOBinarySinchEvent,
+    MOMediaSinchEvent,
 )
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
@@ -24,9 +24,9 @@ from sinch.domains.sms.models.v1.response import (
 SmsCallback = Union[
     BatchDeliveryReport,
     RecipientDeliveryReport,
-    MOTextWebhookEvent,
-    MOBinaryWebhookEvent,
-    MOMediaWebhookEvent,
+    MOTextSinchEvent,
+    MOBinarySinchEvent,
+    MOMediaSinchEvent,
 ]
 
 
@@ -114,7 +114,7 @@ class SmsSinchEvent:
                     event_body["sent_at"]
                 )
 
-            adapter = TypeAdapter(IncomingSMSWebhookEvent)
+            adapter = TypeAdapter(IncomingSMSSinchEvent)
             return adapter.validate_python(event_body)
 
         raise ValueError(f"Unknown SMS event type: {event_type}")
