@@ -51,8 +51,3 @@ class EventDestinations(BaseNumbers):
             hmac_secret=hmac_secret, **kwargs
         )
         return self._request(UpdateEventDestinationEndpoint, request_data)
-
-
-# Backwards-compatible alias (singular form).
-# Keep until downstream users migrate to EventDestinations / event_destinations.
-EventDestination = EventDestinations

@@ -5,7 +5,7 @@ from sinch.domains.numbers.api.v1.available_numbers_apis import (
 from sinch.domains.numbers.api.v1.available_regions_apis import (
     AvailableRegions,
 )
-from sinch.domains.numbers.api.v1.event_destination_apis import (
+from sinch.domains.numbers.api.v1.event_destinations_apis import (
     EventDestinations,
 )
 

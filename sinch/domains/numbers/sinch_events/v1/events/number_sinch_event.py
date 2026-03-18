@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional, Union, Literal
 from pydantic import Field, StrictStr
-from sinch.domains.numbers.sinch_events.v1.internal import WebhookEvent
+from sinch.domains.numbers.sinch_events.v1.internal import SinchEvent
 
 
-class NumberSinchEvent(WebhookEvent):
+class NumberSinchEvent(SinchEvent):
     event_id: Optional[StrictStr] = Field(default=None, alias="eventId")
     timestamp: Optional[datetime] = Field(default=None)
     project_id: Optional[StrictStr] = Field(default=None, alias="projectId")

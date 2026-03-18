@@ -12,11 +12,13 @@ class NumbersController:
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        webhooks_service = self.sinch_client.numbers.sinch_events(self.webhooks_secret)
+        sinch_events_service = self.sinch_client.numbers.sinch_events(
+            self.webhooks_secret
+        )
 
         ensure_valid_authentication = False
         if ensure_valid_authentication:
-            valid_auth = webhooks_service.validate_authentication_header(
+            valid_auth = sinch_events_service.validate_authentication_header(
                 headers=headers,
                 json_payload=raw_body,
             )
@@ -24,7 +26,7 @@ class NumbersController:
             if not valid_auth:
                 return Response(status=401)
 
-        event = webhooks_service.parse_event(raw_body, headers)
+        event = sinch_events_service.parse_event(raw_body, headers)
 
         handle_numbers_event(numbers_event=event, logger=self.logger)
 

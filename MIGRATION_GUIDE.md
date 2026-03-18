@@ -230,11 +230,11 @@ sinch_client.numbers.event_destinations.update(hmac_secret="your_hmac_secret")
 | `numbers.available.rent_any(...)`, `numbers.available.activate(...)`, `numbers.available.check_availability(...)`, `numbers.available.list(...)` | `numbers.rent_any(...)`, `numbers.rent(...)`, `numbers.check_availability(...)`, `numbers.search_for_available_numbers(...)` |
 | `numbers.active.list(...)`, `numbers.active.get(...)`, `numbers.active.update(...)`, `numbers.active.release(...)` | `numbers.list(...)`, `numbers.get(...)`, `numbers.update(...)`, `numbers.release(...)` |
 
-#### Sinch Events (webhook payload models and package path)
+#### Sinch Events (Event Destinations payload models and package path)
 
 | Old | New |
 |-----|-----|
-| — (no webhook parsing) | `sinch.domains.numbers.sinch_events` (package path) |
+| — _(N/A)_ | `sinch.domains.numbers.sinch_events` (package path) |
 | — | `NumberSinchEvent` (class, payload model) |
 
 To obtain a Numbers Sinch Events handler: `sinch_client.numbers.sinch_events(callback_secret)` returns a `SinchEvents` instance; `handler.parse_event(request_body)` returns a `NumberSinchEvent`.
@@ -254,7 +254,6 @@ event = handler.parse_event(request_body)  # event is a NumberSinchEvent
 | **Methods that accept the parameter** | Only `numbers.available.rent_any(..., callback_url=...)` | `numbers.rent(...)`, `numbers.rent_any(...)`, and `numbers.update(...)` accept `event_destination_target` |
 | **Parameter name** | `callback_url` | `event_destination_target` |
 
-> **Note:** The JSON key sent to the API remains `callbackUrl`.
 
 ##### Replacement request/response attributes
 

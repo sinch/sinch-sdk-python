@@ -5,5 +5,5 @@ from sinch.domains.numbers.models.v1.internal.base import (
 
 # Base for NumberSinchEvent used for request modeling.
 # Not to be confused with a response as in BaseModelConfigurationResponse.
-class WebhookEvent(BaseModelConfigurationResponse):
+class SinchEvent(BaseModelConfigurationResponse):
     pass

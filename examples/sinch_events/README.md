@@ -30,7 +30,7 @@ This directory contains both the webhook handlers and the server application (`s
    ```
    
    - Controller Settings
-    - Numbers controller: Set the `numbers` webhook secret. You can retrieve it using the `/event_destination` endpoint (see SDK implementation: [event_destination_apis.py](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/event_destination_apis.py); for additional details, refer to the [Numbers API callbacks documentation](https://developers.sinch.com/docs/numbers/api-reference/numbers/tag/Numbers-Callbacks/)):
+    - Numbers controller: Set the `numbers` Sinch Event secret. You can retrieve it using the `/event_destination` endpoint (see SDK implementation: [event_destinations_apis.py](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/event_destinations_apis.py); for additional details, refer to the [Numbers API callbacks documentation](https://developers.sinch.com/docs/numbers/api-reference/numbers/tag/Numbers-Callbacks/)):
    ```
    NUMBERS_WEBHOOKS_SECRET=Your Sinch Numbers Webhook Secret
    ```

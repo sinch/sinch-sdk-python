@@ -13,7 +13,7 @@ from sinch.domains.numbers.api.v1.internal.available_numbers_endpoints import (
 from sinch.domains.numbers.api.v1.internal.available_regions_endpoints import (
     ListAvailableRegionsEndpoint,
 )
-from sinch.domains.numbers.api.v1.internal.event_destination_endpoints import (
+from sinch.domains.numbers.api.v1.internal.event_destinations_endpoints import (
     GetEventDestinationEndpoint,
     UpdateEventDestinationEndpoint,
 )
