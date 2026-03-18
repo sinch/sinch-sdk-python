@@ -190,3 +190,96 @@ Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and 
 | `list()` with `ListSMSDeliveryReportsRequest` | `list()` the parameters `start_date` and `end_date` now accepts both `str` and `datetime`  |
 | `get_for_batch()` with `GetSMSDeliveryReportForBatchRequest` | `get()` with `batch_id: str` and optional parameters: `report_type`, `status`, `code`, `client_reference` |
 | `get_for_number()` with `GetSMSDeliveryReportForNumberRequest` | `get_for_number()` with `batch_id: str` and `recipient: str` parameters |
+
+<br>
+
+### [`Numbers` (Virtual Numbers)](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/numbers)
+
+##### Replacement APIs / attributes
+
+| Old | New |
+|-----|-----|
+| `sinch_client.numbers.callbacks` (attribute) | `sinch_client.numbers.event_destinations` (attribute) |
+| `numbers.callbacks.get_configuration()` (method) | `numbers.event_destinations.get()` (method) |
+| `numbers.callbacks.update_configuration(hmac_secret)` (method) | `numbers.event_destinations.update(hmac_secret=hmac_secret)` (method) |
+
+##### Replacement models
+
+| Old class | New class |
+|-----------|-----------|
+| `UpdateNumbersCallbackConfigurationRequest` | `UpdateEventDestinationRequest` |
+| `GetNumbersCallbackConfigurationResponse` | `EventDestinationResponse` |
+| `UpdateNumbersCallbackConfigurationResponse` | `EventDestinationResponse` |
+
+**Example:**
+
+```python
+# Old
+config = sinch_client.numbers.callbacks.get_configuration()
+sinch_client.numbers.callbacks.update_configuration("your_hmac_secret")
+
+# New
+config = sinch_client.numbers.event_destinations.get()
+sinch_client.numbers.event_destinations.update(hmac_secret="your_hmac_secret")
+```
+
+##### Available and Active: method locations
+
+| Old method | New method |
+|------------|------------|
+| `numbers.available.rent_any(...)`, `numbers.available.activate(...)`, `numbers.available.check_availability(...)`, `numbers.available.list(...)` | `numbers.rent_any(...)`, `numbers.rent(...)`, `numbers.check_availability(...)`, `numbers.search_for_available_numbers(...)` |
+| `numbers.active.list(...)`, `numbers.active.get(...)`, `numbers.active.update(...)`, `numbers.active.release(...)` | `numbers.list(...)`, `numbers.get(...)`, `numbers.update(...)`, `numbers.release(...)` |
+
+#### Sinch Events (Event Destinations payload models and package path)
+
+| Old | New |
+|-----|-----|
+| — _(N/A)_ | `sinch.domains.numbers.sinch_events` (package path) |
+| — | `NumberSinchEvent` (class, payload model) |
+
+To obtain a Numbers Sinch Events handler: `sinch_client.numbers.sinch_events(callback_secret)` returns a `SinchEvents` instance; `handler.parse_event(request_body)` returns a `NumberSinchEvent`.
+
+
+```python
+# New
+from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
+handler = sinch_client.numbers.sinch_events("your_callback_secret")
+event = handler.parse_event(request_body)  # event is a NumberSinchEvent
+```
+
+#### Request and response fields: callback URL → event destination target
+
+| | Old | New |
+|---|-----|-----|
+| **Methods that accept the parameter** | Only `numbers.available.rent_any(..., callback_url=...)` | `numbers.rent(...)`, `numbers.rent_any(...)`, and `numbers.update(...)` accept `event_destination_target` |
+| **Parameter name** | `callback_url` | `event_destination_target` |
+
+
+##### Replacement request/response attributes
+
+| Old | New |
+|-----|-----|
+| `RentAnyNumberRequest.callback_url` | `RentNumberRequest.event_destination_target`, `RentAnyNumberRequest.event_destination_target`, `UpdateNumberConfigurationRequest.event_destination_target` |
+| `ActiveNumber` has no callback field | `ActiveNumber.event_destination_target` (response) |
+
+**Example:**
+
+```python
+# Old
+sinch_client.numbers.available.rent_any(
+    region_code="US",
+    type_="LOCAL",
+    sms_configuration={...},
+    voice_configuration={...},
+    callback_url="https://example.com/events",
+)
+
+# New
+sinch_client.numbers.rent_any(
+    region_code="US",
+    number_type="LOCAL",
+    sms_configuration={...},
+    voice_configuration={...},
+    event_destination_target="https://example.com/events",
+)
+```

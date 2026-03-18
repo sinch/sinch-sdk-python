@@ -66,14 +66,14 @@ class AvailableNumbers(BaseNumbers):
         phone_number: str,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         **kwargs,
     ) -> ActiveNumber:
         request_data = RentNumberRequest(
             phone_number=phone_number,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             **kwargs,
         )
         return self._request(RentNumberEndpoint, request_data)
@@ -86,7 +86,7 @@ class AvailableNumbers(BaseNumbers):
         capabilities: Optional[List[CapabilityType]] = None,
         sms_configuration: Optional[SmsConfigurationDict] = None,
         voice_configuration: Optional[VoiceConfigurationDict] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         **kwargs,
     ) -> ActiveNumber:
         request_data = RentAnyNumberRequest(
@@ -96,7 +96,7 @@ class AvailableNumbers(BaseNumbers):
             capabilities=capabilities,
             sms_configuration=sms_configuration,
             voice_configuration=voice_configuration,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             **kwargs,
         )
         return self._request(RentAnyNumberEndpoint, request_data)

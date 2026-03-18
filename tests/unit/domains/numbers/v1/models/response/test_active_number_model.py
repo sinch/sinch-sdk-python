@@ -98,7 +98,7 @@ def test_active_number_response_expects_all_fields_mapped_correctly(test_data):
     expected_expire_at = (
         datetime(2025, 2, 4, 13, 15, 31, 95000, tzinfo=timezone.utc))
     assert response.expire_at == expected_expire_at
-    assert response.callback_url == "https://www.your-callback-server.com/callback"
+    assert response.event_destination_target == "https://www.your-callback-server.com/callback"
 
     assert_sms_configuration(response.sms_configuration)
     assert_voice_configuration(response.voice_configuration)

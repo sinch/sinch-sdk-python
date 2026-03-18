@@ -1,6 +1,6 @@
 import pytest
 from pydantic import ValidationError
-from sinch.domains.numbers.models.v1.internal import UpdateCallbackConfigurationRequest
+from sinch.domains.numbers.models.v1.internal import UpdateEventDestinationRequest
 
 
 def test_update_numbers_callback_config_request_expects_parsed_input():
@@ -10,7 +10,7 @@ def test_update_numbers_callback_config_request_expects_parsed_input():
     data = {
         "hmacSecret": "test-secret-key"
     }
-    request = UpdateCallbackConfigurationRequest(**data)
+    request = UpdateEventDestinationRequest(**data)
     assert request.hmac_secret == "test-secret-key"
 
 
@@ -21,7 +21,7 @@ def test_update_numbers_callback_request_expects_validation_for_extra_type():
     data = {
         "extra": "Extra Value"
     }
-    request = UpdateCallbackConfigurationRequest(**data)
+    request = UpdateEventDestinationRequest(**data)
     assert request.extra == "Extra Value"
 
 
@@ -30,7 +30,7 @@ def test_update_numbers_callback_config_request_expects_optional_field_handled()
     Test that hmac_secret is optional and can be None.
     """
     data = {}
-    request = UpdateCallbackConfigurationRequest(**data)
+    request = UpdateEventDestinationRequest(**data)
     assert request.hmac_secret is None
 
 
@@ -42,4 +42,4 @@ def test_update_numbers_callback_config_request_expects_validation_error():
         "hmacSecret": 12345
     }
     with pytest.raises(ValidationError):
-        UpdateCallbackConfigurationRequest(**data)
+        UpdateEventDestinationRequest(**data)

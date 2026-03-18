@@ -17,9 +17,6 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET"
 )
 
-hmac_secret = "NEW_HMAC_SECRET"
-response = sinch_client.numbers.callback_configuration.update(
-    hmac_secret=hmac_secret
-)
+response = sinch_client.numbers.event_destinations.get()
 
-print("Updated callback configuration:\n", response)
+print("Event Destination Configuration:\n", response)

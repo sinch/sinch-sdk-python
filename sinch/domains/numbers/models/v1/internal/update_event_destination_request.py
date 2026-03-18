@@ -5,5 +5,5 @@ from sinch.domains.numbers.models.v1.internal.base import (
 )
 
 
-class UpdateCallbackConfigurationRequest(BaseModelConfigurationRequest):
+class UpdateEventDestinationRequest(BaseModelConfigurationRequest):
     hmac_secret: Optional[StrictStr] = Field(default=None, alias="hmacSecret")

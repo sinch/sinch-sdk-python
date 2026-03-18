@@ -103,7 +103,7 @@ def step_validate_rented_number(context):
         '2024-06-06T14:42:42.022227+00:00'
     ).astimezone(tz=timezone.utc)
     assert data.expire_at is None
-    assert data.callback_url == ''
+    assert data.event_destination_target == ''
     assert data.sms_configuration.service_plan_id == ''
     assert data.sms_configuration.campaign_id == ''
     assert data.sms_configuration.scheduled_provisioning.service_plan_id == 'SpaceMonkeySquadron'
@@ -218,7 +218,7 @@ def step_when_update_phone_number(context, phone_number):
             'type': 'FAX',
             'service_id': '01W4FFL35P4NC4K35FAXSERVICE'
         },
-        callback_url='https://my-callback-server.com/numbers'
+        event_destination_target='https://my-callback-server.com/numbers'
     )
 
 
@@ -247,7 +247,7 @@ def step_then_response_contains_updated_number(context):
     assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat(
         '2024-06-06T20:02:20.437509+00:00'
     ).astimezone(tz=timezone.utc)
-    assert data.callback_url == 'https://my-callback-server.com/numbers'
+    assert data.event_destination_target == 'https://my-callback-server.com/numbers'
 
 
 @when('I send a request to retrieve the phone number "{phone_number}"')

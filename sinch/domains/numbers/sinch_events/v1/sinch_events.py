@@ -7,10 +7,10 @@ from sinch.domains.authentication.webhooks.v1.webhook_utils import (
     parse_json,
     normalize_iso_timestamp,
 )
-from sinch.domains.numbers.webhooks.v1.events import NumbersWebhooksEvent
+from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
 
 
-class NumbersWebhooks:
+class SinchEvents:
     def __init__(self, callback_secret: str):
         self.callback_secret = callback_secret
 
@@ -42,9 +42,9 @@ class NumbersWebhooks:
         self,
         event_body: Union[str, bytes, Dict[str, Any]],
         headers: Optional[Dict[str, str]] = None,
-    ) -> NumbersWebhooksEvent:
+    ) -> NumberSinchEvent:
         """
-        Parses the event payload into a NumbersWebhooksEvent object.
+        Parses the event payload into a NumberSinchEvent object.
 
         Handles a known issue where the server omits timezone information from
         the ``timestamp`` field. If the timezone is missing, the method assumes
@@ -55,7 +55,7 @@ class NumbersWebhooks:
         :param headers: Request headers (used to decode charset when event_body is bytes).
         :type headers: Optional[Dict[str, str]]
         :returns: A parsed Pydantic object with a timezone-aware ``timestamp``.
-        :rtype: NumbersWebhooksEvent
+        :rtype: NumberSinchEvent
         """
         if isinstance(event_body, bytes):
             event_body = parse_json(decode_payload(event_body, headers))
@@ -65,6 +65,6 @@ class NumbersWebhooks:
         if timestamp:
             event_body["timestamp"] = normalize_iso_timestamp(timestamp)
         try:
-            return NumbersWebhooksEvent(**event_body)
+            return NumberSinchEvent(**event_body)
         except Exception as e:
             raise ValueError(f"Failed to parse event body: {e}")

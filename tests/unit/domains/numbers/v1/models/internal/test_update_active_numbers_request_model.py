@@ -31,7 +31,7 @@ def test_update_number_configuration_request_valid_expects_parsed_response():
             "type": "RTC",
             "appId": "YOUR_Voice_appId"
     }
-    assert request.callback_url == "https://www.your-callback-server.com/callback"
+    assert request.event_destination_target == "https://www.your-callback-server.com/callback"
 
 
 def test_update_number_configuration_request_missing_phone_number_expects_error():
@@ -71,4 +71,4 @@ def test_update_number_configuration_request_optional_fields():
     assert request.display_name is None
     assert request.sms_configuration is None
     assert request.voice_configuration is None
-    assert request.callback_url is None
+    assert request.event_destination_target is None
