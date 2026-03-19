@@ -108,6 +108,6 @@ Use this value to configure the Sinch Events URLs:
 
 You can also set these Sinch Events URLs in the Sinch dashboard; the API parameters above override the default values configured there.
 
-> **Note**: If you have set a Sinch Event secret (e.g., `SMS_WEBHOOKS_SECRET`), the Sinch Event URL must be configured in the Sinch dashboard
+> **Note**: If you have set a Sinch Event secret (e.g., `SMS_SINCH_EVENT_SECRET`), the Sinch Event URL must be configured in the Sinch dashboard
 > and cannot be overridden via API parameters. The Sinch Event secret is used to validate incoming webhook requests,
 > and the URL associated with it must be set in the dashboard.
