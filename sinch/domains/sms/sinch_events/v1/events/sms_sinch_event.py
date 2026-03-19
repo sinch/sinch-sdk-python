@@ -25,7 +25,7 @@ class MediaBody(SinchEvent):
     media: conlist(MediaItem) = Field(..., description="Array of media items")
 
 
-class BaseIncomingSMSWebhookEvent(SinchEvent):
+class BaseIncomingSMSSinchEvent(SinchEvent):
     from_: StrictStr = Field(
         ...,
         alias="from",
@@ -54,7 +54,7 @@ class BaseIncomingSMSWebhookEvent(SinchEvent):
     )
 
 
-class MOTextSinchEvent(BaseIncomingSMSWebhookEvent):
+class MOTextSinchEvent(BaseIncomingSMSSinchEvent):
     body: StrictStr = Field(
         ...,
         description="The incoming message body. Maximum 2000 characters.",
@@ -64,7 +64,7 @@ class MOTextSinchEvent(BaseIncomingSMSWebhookEvent):
     )
 
 
-class MOBinarySinchEvent(BaseIncomingSMSWebhookEvent):
+class MOBinarySinchEvent(BaseIncomingSMSSinchEvent):
     body: StrictStr = Field(
         ..., description="The incoming message body (Base64 encoded)."
     )
@@ -76,7 +76,7 @@ class MOBinarySinchEvent(BaseIncomingSMSWebhookEvent):
     )
 
 
-class MOMediaSinchEvent(BaseIncomingSMSWebhookEvent):
+class MOMediaSinchEvent(BaseIncomingSMSSinchEvent):
     body: MediaBody = Field(
         ...,
         description="The media message body containing subject, message, and media items.",
@@ -87,11 +87,11 @@ class MOMediaSinchEvent(BaseIncomingSMSWebhookEvent):
 
 
 # Union type for isinstance checks
-_IncomingSMSWebhookEventUnion = Union[
+_IncomingSMSSinchEventUnion = Union[
     MOTextSinchEvent, MOBinarySinchEvent, MOMediaSinchEvent
 ]
 
 # Discriminated union for validation
 IncomingSMSSinchEvent = Annotated[
-    _IncomingSMSWebhookEventUnion, Field(discriminator="type")
+    _IncomingSMSSinchEventUnion, Field(discriminator="type")
 ]

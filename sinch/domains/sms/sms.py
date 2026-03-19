@@ -17,13 +17,13 @@ class SMS:
         self.batches = Batches(self._sinch)
         self.delivery_reports = DeliveryReports(self._sinch)
 
-    def sinch_events(self, callback_secret: str) -> SmsSinchEvent:
+    def sinch_events(self, sinch_event_secret: str) -> SmsSinchEvent:
         """
-        Create an SMS Sinch Events handler with the specified callback secret.
+        Create an SMS Sinch Events handler with the specified Sinch Event secret.
 
-        :param callback_secret: Secret used for webhook validation.
-        :type callback_secret: str
+        :param sinch_event_secret: Secret used for Sinch Event validation.
+        :type sinch_event_secret: str
         :returns: A configured Sinch Events handler
         :rtype: SmsSinchEvent
         """
-        return SmsSinchEvent(callback_secret)
+        return SmsSinchEvent(sinch_event_secret)

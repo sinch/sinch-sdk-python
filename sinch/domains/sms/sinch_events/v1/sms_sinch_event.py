@@ -21,7 +21,7 @@ from sinch.domains.sms.models.v1.response import (
 )
 
 
-SmsCallback = Union[
+SmsSinchEventPayload = Union[
     BatchDeliveryReport,
     RecipientDeliveryReport,
     MOTextSinchEvent,
@@ -64,7 +64,7 @@ class SmsSinchEvent:
         self,
         event_body: Union[str, bytes, Dict[str, Any]],
         headers: Optional[Dict[str, str]] = None,
-    ) -> SmsCallback:
+    ) -> SmsSinchEventPayload:
         """
         Parse the event payload into an SMS callback object.
 
@@ -75,8 +75,8 @@ class SmsSinchEvent:
         :type event_body: Union[str, bytes, Dict[str, Any]]
         :param headers: Request headers (used to decode charset when event_body is bytes).
         :type headers: Optional[Dict[str, str]]
-        :returns: A parsed SMS callback object.
-        :rtype: SmsCallback
+        :returns: A parsed SMS Sinch Event payload object.
+        :rtype: SmsSinchEventPayload
         :raises ValueError: If the event type is unknown or parsing fails.
         """
         if isinstance(event_body, bytes):

@@ -34,7 +34,7 @@ This directory contains both the Event handlers and the server application (`ser
    ```
    NUMBERS_WEBHOOKS_SECRET=Your Sinch Numbers Webhook Secret
    ```
-     - SMS controller: To configure the `sms` webhooks secret, contact your account manager to enable authentication for SMS callbacks. For more details, refer to
+     - SMS controller: To configure the `sms` Sinch Event secret, contact your account manager to enable authentication for SMS callbacks. For more details, refer to
        [SMS API](https://developers.sinch.com/docs/sms/api-reference/sms/tag/Webhooks/#tag/Webhooks/section/Callbacks), 
 
    ```
@@ -108,6 +108,6 @@ Use this value to configure the Sinch Events URLs:
 
 You can also set these Sinch Events URLs in the Sinch dashboard; the API parameters above override the default values configured there.
 
-> **Note**: If you have set a webhook secret (e.g., `SMS_WEBHOOKS_SECRET`), the Sinch Event URL must be configured in the Sinch dashboard
-> and cannot be overridden via API parameters. The webhook secret is used to validate incoming webhook requests,
+> **Note**: If you have set a Sinch Event secret (e.g., `SMS_WEBHOOKS_SECRET`), the Sinch Event URL must be configured in the Sinch dashboard
+> and cannot be overridden via API parameters. The Sinch Event secret is used to validate incoming webhook requests,
 > and the URL associated with it must be set in the dashboard.

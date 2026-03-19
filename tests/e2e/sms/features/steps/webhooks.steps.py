@@ -11,25 +11,25 @@ from sinch.domains.sms.models.v1.response import (
 )
 from tests.e2e.helpers import store_webhook_response
 
-SINCH_SMS_CALLBACK_SECRET = 'KayakingTheSwell'
+SINCH_SMS_SINCH_EVENT_SECRET = 'KayakingTheSwell'
 
 
-@given('the SMS Webhooks handler is available')
+@given('the SMS Sinch Events handler is available')
 def step_webhook_handler_is_available(context):
-    context.sms_webhook = SmsSinchEvent(SINCH_SMS_CALLBACK_SECRET)
+    context.sms_sinch_event = SmsSinchEvent(SINCH_SMS_SINCH_EVENT_SECRET)
 
 
 @when('I send a request to trigger an "incoming SMS" event')
 def step_send_incoming_sms_event(context):
     response = requests.get('http://localhost:3017/webhooks/sms/incoming-sms')
     store_webhook_response(context, response)
-    context.event = context.sms_webhook.parse_event(context.raw_event)
+    context.event = context.sms_sinch_event.parse_event(context.raw_event)
 
 
 @then('the header of the event "{event_type}" contains a valid signature')
 @then('the header of the event "{event_type}" with the status "{status}" contains a valid signature')
 def step_check_valid_signature(context, event_type, status=None):
-    assert context.sms_webhook.validate_authentication_header(
+    assert context.sms_sinch_event.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), 'Signature validation failed'
 
@@ -51,7 +51,7 @@ def step_check_incoming_sms_event(context):
 def step_send_delivery_report_event(context):
     response = requests.get('http://localhost:3017/webhooks/sms/delivery-report-sms')
     store_webhook_response(context, response)
-    context.event = context.sms_webhook.parse_event(context.raw_event)
+    context.event = context.sms_sinch_event.parse_event(context.raw_event)
 
 
 @then('the SMS event describes an "SMS delivery report" event')
@@ -79,7 +79,7 @@ def step_send_recipient_delivery_report_event_delivered(context):
         'http://localhost:3017/webhooks/sms/recipient-delivery-report-sms-delivered'
     )
     store_webhook_response(context, response)
-    context.event = context.sms_webhook.parse_event(context.raw_event)
+    context.event = context.sms_sinch_event.parse_event(context.raw_event)
 
 
 @when('I send a request to trigger an "SMS recipient delivery report" event with the status "Aborted"')
@@ -88,7 +88,7 @@ def step_send_recipient_delivery_report_event_aborted(context):
         'http://localhost:3017/webhooks/sms/recipient-delivery-report-sms-aborted'
     )
     store_webhook_response(context, response)
-    context.event = context.sms_webhook.parse_event(context.raw_event)
+    context.event = context.sms_sinch_event.parse_event(context.raw_event)
 
 
 @then('the SMS event describes an SMS recipient delivery report event with the status "Delivered"')

@@ -5,16 +5,16 @@ from sinch_events.sms_api.server_business_logic import (
 
 
 class SmsController:
-    def __init__(self, sinch_client, webhooks_secret):
+    def __init__(self, sinch_client, sinch_event_secret):
         self.sinch_client = sinch_client
-        self.webhooks_secret = webhooks_secret
+        self.sinch_event_secret = sinch_event_secret
         self.logger = self.sinch_client.configuration.logger
 
     def sms_event(self):
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        sinch_events_service = self.sinch_client.sms.sinch_events(self.webhooks_secret)
+        sinch_events_service = self.sinch_client.sms.sinch_events(self.sinch_event_secret)
 
         # Signature headers may be absent unless your account manager enables them
         # (see README: Configuration -> Controller Settings -> SMS controller);
