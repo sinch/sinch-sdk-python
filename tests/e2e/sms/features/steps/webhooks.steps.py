@@ -14,7 +14,7 @@ from tests.e2e.helpers import store_webhook_response
 SINCH_SMS_SINCH_EVENT_SECRET = 'KayakingTheSwell'
 
 
-@given('the SMS Sinch Events handler is available')
+@given('the SMS Webhooks handler is available')
 def step_webhook_handler_is_available(context):
     context.sms_sinch_event = SmsSinchEvent(SINCH_SMS_SINCH_EVENT_SECRET)
 
