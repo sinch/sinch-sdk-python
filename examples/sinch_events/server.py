@@ -19,7 +19,7 @@ config = load_config()
 port = int(config.get('SERVER_PORT') or 3001)
 numbers_sinch_event_secret = config.get('NUMBERS_SINCH_EVENT_SECRET')
 sms_sinch_event_secret = config.get('SMS_SINCH_EVENT_SECRET')
-conversation_webhooks_secret = config.get('CONVERSATION_WEBHOOKS_SECRET')
+conversation_sinch_event_secret = config.get('CONVERSATION_SINCH_EVENT_SECRET')
 sinch_client = get_sinch_client(config)
 
 # Set up logging at the INFO level
@@ -28,7 +28,9 @@ sinch_client.configuration.logger.setLevel(logging.INFO)
 
 numbers_controller = NumbersController(sinch_client, numbers_sinch_event_secret)
 sms_controller = SmsController(sinch_client, sms_sinch_event_secret)
-conversation_controller = ConversationController(sinch_client, conversation_webhooks_secret or '')
+conversation_controller = ConversationController(
+    sinch_client, conversation_sinch_event_secret or ''
+)
 
 
 # Middleware to capture raw body

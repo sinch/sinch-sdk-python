@@ -3,16 +3,18 @@ from sinch_events.conversation_api.server_business_logic import handle_conversat
 
 
 class ConversationController:
-    def __init__(self, sinch_client, webhooks_secret):
+    def __init__(self, sinch_client, sinch_event_secret):
         self.sinch_client = sinch_client
-        self.webhooks_secret = webhooks_secret
+        self.sinch_event_secret = sinch_event_secret
         self.logger = self.sinch_client.configuration.logger
 
     def conversation_event(self):
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        webhooks_service = self.sinch_client.conversation.webhooks(self.webhooks_secret)
+        webhooks_service = self.sinch_client.conversation.webhooks(
+            self.sinch_event_secret
+        )
 
         # Set to True to enforce signature validation (recommended in production)
         ensure_valid_signature = False
