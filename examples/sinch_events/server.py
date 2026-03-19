@@ -18,7 +18,7 @@ app = Flask(__name__)
 config = load_config()
 port = int(config.get('SERVER_PORT') or 3001)
 numbers_webhooks_secret = config.get('NUMBERS_WEBHOOKS_SECRET')
-sms_sinch_event_secret = config.get('SMS_WEBHOOKS_SECRET')
+sms_sinch_event_secret = config.get('SMS_SINCH_EVENT_SECRET')
 conversation_webhooks_secret = config.get('CONVERSATION_WEBHOOKS_SECRET')
 sinch_client = get_sinch_client(config)
 
