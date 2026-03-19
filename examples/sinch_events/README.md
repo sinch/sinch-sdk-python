@@ -32,13 +32,13 @@ This directory contains both the Event handlers and the server application (`ser
    - Controller Settings
     - Numbers controller: Set the `numbers` Sinch Event secret. You can retrieve it using the `/event_destination` endpoint (see SDK implementation: [event_destinations_apis.py](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/event_destinations_apis.py); for additional details, refer to the [Numbers API callbacks documentation](https://developers.sinch.com/docs/numbers/api-reference/numbers/tag/Numbers-Callbacks/)):
    ```
-   NUMBERS_WEBHOOKS_SECRET=Your Sinch Numbers Webhook Secret
+   NUMBERS_SINCH_EVENT_SECRET=Your Sinch Numbers Sinch Event Secret
    ```
      - SMS controller: To configure the `sms` Sinch Event secret, contact your account manager to enable authentication for SMS callbacks. For more details, refer to
        [SMS API](https://developers.sinch.com/docs/sms/api-reference/sms/tag/Webhooks/#tag/Webhooks/section/Callbacks), 
 
    ```
-   SMS_WEBHOOKS_SECRET=Your Sinch SMS Webhook Secret
+   SMS_SINCH_EVENT_SECRET=Your Sinch SMS Sinch Event Secret
    ```
      - Conversation controller: Set the webhook secret you configured when creating the webhook (see [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks)):
    ```
