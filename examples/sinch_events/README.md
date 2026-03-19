@@ -1,14 +1,14 @@
-# Webhook Handlers for Sinch Python SDK
+# Sinch Events Handlers for Sinch Python SDK
 
 This directory contains a server application built with [Sinch Python SDK](https://github.com/sinch/sinch-sdk-python)
 to process incoming webhooks from Sinch services.
 
-The webhook handlers are organized by service:
-- **SMS**: Handlers for SMS webhook events (`sms_api/`)
-- **Numbers**: Handlers for Numbers API webhook events (`numbers_api/`)
-- **Conversation**: Handlers for Conversation API webhook events (`conversation_api/`)
+The Sinch Events Handlers are organized by service:
+- **SMS**: Handlers for SMS events (`sms_api/`)
+- **Numbers**: Handlers for Numbers API events (`numbers_api/`)
+- **Conversation**: Handlers for Conversation API events (`conversation_api/`)
 
-This directory contains both the webhook handlers and the server application (`server.py`) that uses them.
+This directory contains both the Event handlers and the server application (`server.py`) that uses them.
 
 ## Requirements
 
@@ -49,7 +49,7 @@ This directory contains both the webhook handlers and the server application (`s
 
 ### Running the server application
 
-1. Navigate to the webhooks' directory:
+1. Navigate to the examples events directory:
 ```
    cd examples/sinch_events
 ```
@@ -96,18 +96,18 @@ ngrok                                                                           
 ...
 Forwarding                    https://adbd-79-148-170-158.ngrok-free.app -> http://localhost:3001
 ```
-Use the `https` forwarding URL in your callback configuration. For example:
+Use the `https` forwarding URL in your event destination configuration. For example:
  - Numbers: https://adbd-79-148-170-158.ngrok-free.app/NumbersEvent
  - SMS: https://adbd-79-148-170-158.ngrok-free.app/SmsEvent
  - Conversation: https://adbd-79-148-170-158.ngrok-free.app/ConversationEvent
 
-Use this value to configure the callback URLs:
-- **Numbers**: Set the `callback_url` parameter when renting or updating a number via the SDK (e.g., `available_numbers_apis` rent/update flow: [rent](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/available_numbers_apis.py#L69), [update](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/available_numbers_apis.py#L89)); you can also update active numbers via `active_numbers_apis` ([example](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/active_numbers_apis.py#L64)).
-- **SMS**: Set the `callback_url` parameter when configuring your SMS service plan via the SDK (see `batches_apis` examples: [send/dry-run callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L146), [update/replace callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L491)); you can also set it directly via the SMS API.
+Use this value to configure the Sinch Events URLs:
+- **Numbers**: Set the `event_destination_target` parameter when renting or updating a number via the SDK (e.g., `available_numbers_apis` rent/update flow: [rent](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/available_numbers_apis.py#L69), [update](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/available_numbers_apis.py#L89)); you can also update active numbers via `active_numbers_apis` ([example](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/numbers/api/v1/active_numbers_apis.py#L64)).
+- **SMS**: Set the `event_destination_target` parameter when configuring your SMS service plan via the SDK (see `batches_apis` examples: [send/dry-run callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L146), [update/replace callbacks](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/sms/api/v1/batches_apis.py#L491)); you can also set it directly via the SMS API.
 - **Conversation**: Set the `callback_url` parameter when sending a message via the SDK (see `messages_apis` example: [send_text_message](https://github.com/sinch/sinch-sdk-python/blob/v2.0/sinch/domains/conversation/api/v1/messages_apis.py#L420)).
 
-You can also set these callback URLs in the Sinch dashboard; the API parameters above override the default values configured there.
+You can also set these Sinch Events URLs in the Sinch dashboard; the API parameters above override the default values configured there.
 
-> **Note**: If you have set a webhook secret (e.g., `SMS_WEBHOOKS_SECRET`), the webhook URL must be configured in the Sinch dashboard
+> **Note**: If you have set a webhook secret (e.g., `SMS_WEBHOOKS_SECRET`), the Sinch Event URL must be configured in the Sinch dashboard
 > and cannot be overridden via API parameters. The webhook secret is used to validate incoming webhook requests,
 > and the URL associated with it must be set in the dashboard.
