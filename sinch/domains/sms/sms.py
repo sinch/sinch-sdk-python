@@ -2,7 +2,7 @@ from sinch.domains.sms.api.v1 import (
     Batches,
     DeliveryReports,
 )
-from sinch.domains.sms.webhooks.v1.sms_webhooks import SmsWebhooks
+from sinch.domains.sms.sinch_events.v1.sms_sinch_event import SmsSinchEvent
 
 
 class SMS:
@@ -17,13 +17,13 @@ class SMS:
         self.batches = Batches(self._sinch)
         self.delivery_reports = DeliveryReports(self._sinch)
 
-    def webhooks(self, callback_secret: str) -> SmsWebhooks:
+    def sinch_events(self, sinch_event_secret: str) -> SmsSinchEvent:
         """
-        Create an SMS webhooks handler with the specified callback secret.
+        Create an SMS Sinch Events handler with the specified Sinch Event secret.
 
-        :param callback_secret: Secret used for webhook validation.
-        :type callback_secret: str
-        :returns: A configured webhooks handler
-        :rtype: SmsWebhooks
+        :param sinch_event_secret: Secret used for Sinch Event validation.
+        :type sinch_event_secret: str
+        :returns: A configured Sinch Events handler
+        :rtype: SmsSinchEvent
         """
-        return SmsWebhooks(callback_secret)
+        return SmsSinchEvent(sinch_event_secret)

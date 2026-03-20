@@ -1,10 +1,10 @@
 from datetime import datetime
 from typing import Optional, Union, Literal, Annotated
 from pydantic import Field, StrictStr, StrictInt, conlist
-from sinch.domains.sms.webhooks.v1.internal import WebhookEvent
+from sinch.domains.sms.sinch_events.v1.internal import SinchEvent
 
 
-class MediaItem(WebhookEvent):
+class MediaItem(SinchEvent):
     url: StrictStr = Field(..., description="URL to the media file")
     content_type: StrictStr = Field(
         ..., description="Content type of the media file"
@@ -15,7 +15,7 @@ class MediaItem(WebhookEvent):
     code: StrictInt = Field(..., description="Status code")
 
 
-class MediaBody(WebhookEvent):
+class MediaBody(SinchEvent):
     subject: Optional[StrictStr] = Field(
         default=None, description="The subject text"
     )
@@ -25,7 +25,7 @@ class MediaBody(WebhookEvent):
     media: conlist(MediaItem) = Field(..., description="Array of media items")
 
 
-class BaseIncomingSMSWebhookEvent(WebhookEvent):
+class BaseIncomingSMSSinchEvent(SinchEvent):
     from_: StrictStr = Field(
         ...,
         alias="from",
@@ -54,7 +54,7 @@ class BaseIncomingSMSWebhookEvent(WebhookEvent):
     )
 
 
-class MOTextWebhookEvent(BaseIncomingSMSWebhookEvent):
+class MOTextSinchEvent(BaseIncomingSMSSinchEvent):
     body: StrictStr = Field(
         ...,
         description="The incoming message body. Maximum 2000 characters.",
@@ -64,7 +64,7 @@ class MOTextWebhookEvent(BaseIncomingSMSWebhookEvent):
     )
 
 
-class MOBinaryWebhookEvent(BaseIncomingSMSWebhookEvent):
+class MOBinarySinchEvent(BaseIncomingSMSSinchEvent):
     body: StrictStr = Field(
         ..., description="The incoming message body (Base64 encoded)."
     )
@@ -76,7 +76,7 @@ class MOBinaryWebhookEvent(BaseIncomingSMSWebhookEvent):
     )
 
 
-class MOMediaWebhookEvent(BaseIncomingSMSWebhookEvent):
+class MOMediaSinchEvent(BaseIncomingSMSSinchEvent):
     body: MediaBody = Field(
         ...,
         description="The media message body containing subject, message, and media items.",
@@ -87,11 +87,11 @@ class MOMediaWebhookEvent(BaseIncomingSMSWebhookEvent):
 
 
 # Union type for isinstance checks
-_IncomingSMSWebhookEventUnion = Union[
-    MOTextWebhookEvent, MOBinaryWebhookEvent, MOMediaWebhookEvent
+_IncomingSMSSinchEventUnion = Union[
+    MOTextSinchEvent, MOBinarySinchEvent, MOMediaSinchEvent
 ]
 
 # Discriminated union for validation
-IncomingSMSWebhookEvent = Annotated[
-    _IncomingSMSWebhookEventUnion, Field(discriminator="type")
+IncomingSMSSinchEvent = Annotated[
+    _IncomingSMSSinchEventUnion, Field(discriminator="type")
 ]

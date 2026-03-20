@@ -51,8 +51,9 @@ class TextResponse(BaseModelConfigurationResponse):
         default=None,
         description="If set, the system will stop trying to deliver the message at this point. Must be after `send_at`. Default and max is 3 days after `send_at`. Formatted as [ISO-8601](https://en.wikipedia.org/wiki/ISO_8601): `YYYY-MM-DDThh:mm:ss.SSSZ`.",
     )
-    callback_url: Optional[StrictStr] = Field(
+    event_destination_target: Optional[StrictStr] = Field(
         default=None,
+        alias="callback_url",
         description="Override the default callback URL for this batch. Must be valid URL.",
     )
     client_reference: Optional[StrictStr] = Field(

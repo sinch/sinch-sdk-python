@@ -119,7 +119,7 @@ class TestDryRunTextRequest:
             delivery_report="summary",
             send_at=send_at,
             expire_at=expire_at,
-            callback_url="https://capybara.com/callback",
+            event_destination_target="https://capybara.com/callback",
             client_reference="test-ref",
             feedback_enabled=True,
             flash_message=False,
@@ -134,7 +134,7 @@ class TestDryRunTextRequest:
         assert request.delivery_report == "summary"
         assert request.send_at == send_at
         assert request.expire_at == expire_at
-        assert request.callback_url == "https://capybara.com/callback"
+        assert request.event_destination_target == "https://capybara.com/callback"
         assert request.client_reference == "test-ref"
         assert request.feedback_enabled is True
         assert request.flash_message is False
@@ -191,7 +191,7 @@ class TestDryRunBinaryRequest:
             delivery_report="full",
             send_at=send_at,
             expire_at=expire_at,
-            callback_url="https://capybara.com/callback",
+            event_destination_target="https://capybara.com/callback",
             client_reference="binary-ref",
             feedback_enabled=False,
             from_ton=0,
@@ -203,7 +203,7 @@ class TestDryRunBinaryRequest:
         assert request.delivery_report == "full"
         assert request.send_at == send_at
         assert request.expire_at == expire_at
-        assert request.callback_url == "https://capybara.com/callback"
+        assert request.event_destination_target == "https://capybara.com/callback"
         assert request.client_reference == "binary-ref"
         assert request.feedback_enabled is False
         assert request.from_ton == 0
@@ -256,7 +256,7 @@ class TestDryRunMediaRequest:
             delivery_report="summary",
             send_at=send_at,
             expire_at=expire_at,
-            callback_url="https://capybara.com/callback",
+            event_destination_target="https://capybara.com/callback",
             client_reference="media-ref",
             feedback_enabled=True,
         )
@@ -266,7 +266,7 @@ class TestDryRunMediaRequest:
         assert request.delivery_report == "summary"
         assert request.send_at == send_at
         assert request.expire_at == expire_at
-        assert request.callback_url == "https://capybara.com/callback"
+        assert request.event_destination_target == "https://capybara.com/callback"
         assert request.client_reference == "media-ref"
         assert request.feedback_enabled is True
 

@@ -32,8 +32,9 @@ class UpdateMediaRequest(BaseModelConfigurationRequest):
         default=None,
         description="If set, the system will stop trying to deliver the message at this point.  Constraints: Must be after `send_at`  Default: 3 days after `send_at` ",
     )
-    callback_url: Optional[StrictStr] = Field(
+    event_destination_target: Optional[StrictStr] = Field(
         default=None,
+        alias="callback_url",
         description="Override the default callback URL for this batch.  Constraints: Must be valid URL. ",
     )
     client_reference: Optional[StrictStr] = Field(

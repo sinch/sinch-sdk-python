@@ -5,7 +5,7 @@ from dotenv import dotenv_values
 
 def load_config() -> dict[str, str]:
     """
-    Load configuration from the .env file in the webhooks directory.
+    Load configuration from the .env file in the sinch_events directory.
 
     Returns:
         dict[str, str]: Dictionary containing configuration values
@@ -15,7 +15,7 @@ def load_config() -> dict[str, str]:
     env_file = current_dir / '.env'
 
     if not env_file.exists():
-        raise FileNotFoundError(f"Could not find .env file in webhooks directory: {env_file}")
+        raise FileNotFoundError(f"Could not find .env file in sinch_events directory: {env_file}")
 
     config_dict = dotenv_values(env_file)
 

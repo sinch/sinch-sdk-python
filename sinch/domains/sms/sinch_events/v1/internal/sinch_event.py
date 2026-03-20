@@ -3,5 +3,5 @@ from sinch.domains.sms.models.v1.internal.base import (
 )
 
 
-class WebhookEvent(BaseModelConfigurationResponse):
+class SinchEvent(BaseModelConfigurationResponse):
     pass

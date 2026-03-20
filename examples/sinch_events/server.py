@@ -2,33 +2,35 @@ import logging
 import sys
 from pathlib import Path
 
-# Add examples directory to Python path to allow importing webhooks
+# Add examples directory to Python path to allow importing sinch_events
 examples_dir = Path(__file__).resolve().parent.parent
 if str(examples_dir) not in sys.path:
     sys.path.insert(0, str(examples_dir))
 
 from flask import Flask, request
-from webhooks.numbers_api.controller import NumbersController
-from webhooks.sms_api.controller import SmsController
-from webhooks.conversation_api.controller import ConversationController
-from webhooks.sinch_client_helper import get_sinch_client, load_config
+from sinch_events.numbers_api.controller import NumbersController
+from sinch_events.sms_api.controller import SmsController
+from sinch_events.conversation_api.controller import ConversationController
+from sinch_events.sinch_client_helper import get_sinch_client, load_config
 
 app = Flask(__name__)
 
 config = load_config()
 port = int(config.get('SERVER_PORT') or 3001)
-numbers_webhooks_secret = config.get('NUMBERS_WEBHOOKS_SECRET')
-sms_webhooks_secret = config.get('SMS_WEBHOOKS_SECRET')
-conversation_webhooks_secret = config.get('CONVERSATION_WEBHOOKS_SECRET')
+numbers_sinch_event_secret = config.get('NUMBERS_SINCH_EVENT_SECRET')
+sms_sinch_event_secret = config.get('SMS_SINCH_EVENT_SECRET')
+conversation_sinch_event_secret = config.get('CONVERSATION_SINCH_EVENT_SECRET')
 sinch_client = get_sinch_client(config)
 
 # Set up logging at the INFO level
 logging.basicConfig()
 sinch_client.configuration.logger.setLevel(logging.INFO)
 
-numbers_controller = NumbersController(sinch_client, numbers_webhooks_secret)
-sms_controller = SmsController(sinch_client, sms_webhooks_secret)
-conversation_controller = ConversationController(sinch_client, conversation_webhooks_secret or '')
+numbers_controller = NumbersController(sinch_client, numbers_sinch_event_secret)
+sms_controller = SmsController(sinch_client, sms_sinch_event_secret)
+conversation_controller = ConversationController(
+    sinch_client, conversation_sinch_event_secret or ''
+)
 
 
 # Middleware to capture raw body

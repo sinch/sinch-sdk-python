@@ -9,11 +9,11 @@ from sinch.domains.authentication.webhooks.v1.webhook_utils import (
     parse_json,
     normalize_iso_timestamp,
 )
-from sinch.domains.sms.webhooks.v1.events import (
-    IncomingSMSWebhookEvent,
-    MOTextWebhookEvent,
-    MOBinaryWebhookEvent,
-    MOMediaWebhookEvent,
+from sinch.domains.sms.sinch_events.v1.events import (
+    IncomingSMSSinchEvent,
+    MOTextSinchEvent,
+    MOBinarySinchEvent,
+    MOMediaSinchEvent,
 )
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
@@ -21,16 +21,16 @@ from sinch.domains.sms.models.v1.response import (
 )
 
 
-SmsCallback = Union[
+SmsSinchEventPayload = Union[
     BatchDeliveryReport,
     RecipientDeliveryReport,
-    MOTextWebhookEvent,
-    MOBinaryWebhookEvent,
-    MOMediaWebhookEvent,
+    MOTextSinchEvent,
+    MOBinarySinchEvent,
+    MOMediaSinchEvent,
 ]
 
 
-class SmsWebhooks:
+class SmsSinchEvent:
     def __init__(self, app_secret: Optional[str] = None):
         self.app_secret = app_secret
 
@@ -64,7 +64,7 @@ class SmsWebhooks:
         self,
         event_body: Union[str, bytes, Dict[str, Any]],
         headers: Optional[Dict[str, str]] = None,
-    ) -> SmsCallback:
+    ) -> SmsSinchEventPayload:
         """
         Parse the event payload into an SMS callback object.
 
@@ -75,8 +75,8 @@ class SmsWebhooks:
         :type event_body: Union[str, bytes, Dict[str, Any]]
         :param headers: Request headers (used to decode charset when event_body is bytes).
         :type headers: Optional[Dict[str, str]]
-        :returns: A parsed SMS callback object.
-        :rtype: SmsCallback
+        :returns: A parsed SMS Sinch Event payload object.
+        :rtype: SmsSinchEventPayload
         :raises ValueError: If the event type is unknown or parsing fails.
         """
         if isinstance(event_body, bytes):
@@ -114,7 +114,7 @@ class SmsWebhooks:
                     event_body["sent_at"]
                 )
 
-            adapter = TypeAdapter(IncomingSMSWebhookEvent)
+            adapter = TypeAdapter(IncomingSMSSinchEvent)
             return adapter.validate_python(event_body)
 
         raise ValueError(f"Unknown SMS event type: {event_type}")

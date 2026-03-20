@@ -35,7 +35,7 @@ def test_update_text_request_expects_valid_inputs_and_all_fields(
         delivery_report="summary",
         send_at=send_at,
         expire_at=expire_at,
-        callback_url="https://capybara.com/webhook",
+        event_destination_target="https://capybara.com/webhook",
         client_reference="update-ref-123",
         feedback_enabled=True,
         flash_message=True,
@@ -54,7 +54,7 @@ def test_update_text_request_expects_valid_inputs_and_all_fields(
     assert request.delivery_report == "summary"
     assert request.send_at == send_at
     assert request.expire_at == expire_at
-    assert request.callback_url == "https://capybara.com/webhook"
+    assert request.event_destination_target == "https://capybara.com/webhook"
     assert request.client_reference == "update-ref-123"
     assert request.feedback_enabled is True
     assert request.flash_message is True
