@@ -1,10 +1,10 @@
-"""Unit tests for Conversation API webhooks (signature validation and parse_event)."""
+"""Unit tests for Conversation API Sinch Events (signature validation and parse_event)."""
 from datetime import datetime, timezone
 
 import pytest
 
-from sinch.domains.conversation.webhooks.v1 import ConversationWebhooks
-from sinch.domains.conversation.models.v1.webhooks import (
+from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
+from sinch.domains.conversation.models.v1.sinch_events import (
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
@@ -12,13 +12,13 @@ from sinch.domains.conversation.models.v1.webhooks import (
 
 
 @pytest.fixture
-def webhook_secret():
+def callback_secret():
     return "foo_secret1234"
 
 
 @pytest.fixture
-def conversation_webhooks(webhook_secret):
-    return ConversationWebhooks(webhook_secret)
+def conversation_sinch_event(callback_secret):
+    return ConversationSinchEvent(callback_secret)
 
 
 @pytest.fixture
@@ -39,26 +39,26 @@ VALID_SIGNATURE_HEADERS = {
 }
 
 
-def test_validate_authentication_header_valid_expects_true(conversation_webhooks, sample_body):
-    assert conversation_webhooks.validate_authentication_header(
+def test_validate_authentication_header_valid_expects_true(conversation_sinch_event, sample_body):
+    assert conversation_sinch_event.validate_authentication_header(
         VALID_SIGNATURE_HEADERS, sample_body
     ) is True
 
 
-def test_validate_authentication_header_missing_headers_expects_false(conversation_webhooks, sample_body):
-    assert conversation_webhooks.validate_authentication_header({}, sample_body) is False
+def test_validate_authentication_header_missing_headers_expects_false(conversation_sinch_event, sample_body):
+    assert conversation_sinch_event.validate_authentication_header({}, sample_body) is False
 
 
-def test_validate_authentication_header_invalid_signature_expects_false(conversation_webhooks, sample_body):
+def test_validate_authentication_header_invalid_signature_expects_false(conversation_sinch_event, sample_body):
     headers = {
         "x-sinch-webhook-signature": "invalid",
         "x-sinch-webhook-signature-nonce": "01FJA8B4A7BM43YGWSG9GBV067",
         "x-sinch-webhook-signature-timestamp": "1634579353",
     }
-    assert conversation_webhooks.validate_authentication_header(headers, sample_body) is False
+    assert conversation_sinch_event.validate_authentication_header(headers, sample_body) is False
 
 
-def test_parse_event_message_delivery_expects_message_delivery_receipt_event(conversation_webhooks):
+def test_parse_event_message_delivery_expects_message_delivery_receipt_event(conversation_sinch_event):
     payload = {
         "app_id": "01EB37HMH1M6SV18BSNS3G135H",
         "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
@@ -71,7 +71,7 @@ def test_parse_event_message_delivery_expects_message_delivery_receipt_event(con
             "contact_id": "01EXA07N79THJ20WSN6AS30TMW",
         },
     }
-    event = conversation_webhooks.parse_event(payload)
+    event = conversation_sinch_event.parse_event(payload)
     assert isinstance(event, MessageDeliveryReceiptEvent)
     assert event.message_delivery_report is not None
     assert event.message_delivery_report.message_id == "01EQBC1A3BEK731GY4YXEN0C2R"
@@ -79,7 +79,7 @@ def test_parse_event_message_delivery_expects_message_delivery_receipt_event(con
     assert event.accepted_time == datetime(2020, 11, 17, 15, 9, 11, 659000, tzinfo=timezone.utc)
 
 
-def test_parse_event_message_inbound_expects_message_inbound_event(conversation_webhooks):
+def test_parse_event_message_inbound_expects_message_inbound_event(conversation_sinch_event):
     payload = {
         "app_id": "01EB37HMH1M6SV18BSNS3G135H",
         "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
@@ -90,7 +90,7 @@ def test_parse_event_message_inbound_expects_message_inbound_event(conversation_
             "channel_identity": {"channel": "WHATSAPP", "identity": "1234567890"},
         },
     }
-    event = conversation_webhooks.parse_event(payload)
+    event = conversation_sinch_event.parse_event(payload)
     assert isinstance(event, MessageInboundEvent)
     assert event.message is not None
     assert event.message.contact_id == "01EXA07N79THJ20WSN6AS30TMW"
@@ -99,7 +99,7 @@ def test_parse_event_message_inbound_expects_message_inbound_event(conversation_
     assert event.message.contact_message.text_message.text == "Hello"
 
 
-def test_parse_event_message_submit_expects_message_submit_event(conversation_webhooks):
+def test_parse_event_message_submit_expects_message_submit_event(conversation_sinch_event):
     payload = {
         "app_id": "01EB37HMH1M6SV18BSNS3G135H",
         "project_id": "c36f3d3d-1513-2edd-ae42-11995557ff61",
@@ -110,20 +110,20 @@ def test_parse_event_message_submit_expects_message_submit_event(conversation_we
             "submitted_message": {"text_message": {"text": "Hi"}},
         },
     }
-    event = conversation_webhooks.parse_event(payload)
+    event = conversation_sinch_event.parse_event(payload)
     assert isinstance(event, MessageSubmitEvent)
     assert event.message_submit_notification is not None
     assert event.message_submit_notification.contact_id == "01EXA07N79THJ20WSN6AS30TMW"
 
 
-def test_parse_event_json_string_expects_parsed(conversation_webhooks):
+def test_parse_event_json_string_expects_parsed(conversation_sinch_event):
     payload_str = '{"app_id":"app1","message_delivery_report":{"status":"DELIVERED"}}'
-    event = conversation_webhooks.parse_event(payload_str)
+    event = conversation_sinch_event.parse_event(payload_str)
     assert isinstance(event, MessageDeliveryReceiptEvent)
     assert event.app_id == "app1"
     assert event.message_delivery_report.status == "DELIVERED"
 
 
-def test_parse_event_invalid_json_expects_value_error(conversation_webhooks):
+def test_parse_event_invalid_json_expects_value_error(conversation_sinch_event):
     with pytest.raises(ValueError, match="Failed to decode JSON"):
-        conversation_webhooks.parse_event("not json")
+        conversation_sinch_event.parse_event("not json")

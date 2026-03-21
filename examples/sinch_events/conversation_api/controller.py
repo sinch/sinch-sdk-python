@@ -12,21 +12,21 @@ class ConversationController:
         headers = dict(request.headers)
         raw_body = request.raw_body if request.raw_body else b""
 
-        webhooks_service = self.sinch_client.conversation.webhooks(
+        sinch_events_service = self.sinch_client.conversation.sinch_events(
             self.sinch_event_secret
         )
 
         # Set to True to enforce signature validation (recommended in production)
         ensure_valid_signature = False
         if ensure_valid_signature:
-            valid = webhooks_service.validate_authentication_header(
+            valid = sinch_events_service.validate_authentication_header(
                 headers=headers,
                 json_payload=raw_body,
             )
             if not valid:
                 return Response(status=401)
 
-        event = webhooks_service.parse_event(raw_body, headers)
+        event = sinch_events_service.parse_event(raw_body, headers)
         handle_conversation_event(event=event, logger=self.logger)
 
         return Response(status=200)

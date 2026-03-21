@@ -335,7 +335,7 @@ class Messages(BaseConversation):
         message: object,
         message_cls: type,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -372,7 +372,7 @@ class Messages(BaseConversation):
             recipient=recipient_model,
             message=send_message_request_body,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -395,7 +395,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -425,8 +425,8 @@ class Messages(BaseConversation):
         :type recipient_identities: Optional[List[ChannelRecipientIdentityDict]]
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -471,7 +471,7 @@ class Messages(BaseConversation):
             recipient=recipient,
             message=message,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -494,7 +494,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -524,8 +524,8 @@ class Messages(BaseConversation):
         :type text: str
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -560,7 +560,7 @@ class Messages(BaseConversation):
             message=TextMessage(text=text),
             message_cls=TextMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -582,7 +582,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -612,8 +612,8 @@ class Messages(BaseConversation):
         :type card_message: CardMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -648,7 +648,7 @@ class Messages(BaseConversation):
             message=card_message,
             message_cls=CardMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -670,7 +670,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -700,8 +700,8 @@ class Messages(BaseConversation):
         :type carousel_message: CarouselMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -736,7 +736,7 @@ class Messages(BaseConversation):
             message=carousel_message,
             message_cls=CarouselMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -758,7 +758,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -788,8 +788,8 @@ class Messages(BaseConversation):
         :type choice_message: ChoiceMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -824,7 +824,7 @@ class Messages(BaseConversation):
             message=choice_message,
             message_cls=ChoiceMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -846,7 +846,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -876,8 +876,8 @@ class Messages(BaseConversation):
         :type contact_info_message: ContactInfoMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -912,7 +912,7 @@ class Messages(BaseConversation):
             message=contact_info_message,
             message_cls=ContactInfoMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -934,7 +934,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -964,8 +964,8 @@ class Messages(BaseConversation):
         :type list_message: ListMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -1000,7 +1000,7 @@ class Messages(BaseConversation):
             message=list_message,
             message_cls=ListMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -1022,7 +1022,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -1052,8 +1052,8 @@ class Messages(BaseConversation):
         :type location_message: LocationMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -1088,7 +1088,7 @@ class Messages(BaseConversation):
             message=location_message,
             message_cls=LocationMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -1110,7 +1110,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -1140,8 +1140,8 @@ class Messages(BaseConversation):
         :type media_message: MediaPropertiesDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -1176,7 +1176,7 @@ class Messages(BaseConversation):
             message=media_message,
             message_cls=MediaProperties,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,
@@ -1198,7 +1198,7 @@ class Messages(BaseConversation):
             List[ChannelRecipientIdentityDict]
         ] = None,
         ttl: Optional[Union[str, int]] = None,
-        callback_url: Optional[str] = None,
+        event_destination_target: Optional[str] = None,
         channel_priority_order: Optional[List[ConversationChannelType]] = None,
         channel_properties: Optional[Dict[str, str]] = None,
         message_metadata: Optional[str] = None,
@@ -1228,8 +1228,8 @@ class Messages(BaseConversation):
         :type template_message: TemplateMessageDict
         :param ttl: The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.
         :type ttl: Optional[Union[str, int]]
-        :param callback_url: Overwrites the default callback url for delivery receipts for this message.
-        :type callback_url: Optional[str]
+        :param event_destination_target: Overwrites the default event destination target for delivery receipts for this message.
+        :type event_destination_target: Optional[str]
         :param channel_priority_order: Explicitly define the channels and order in which they are tried when sending the message.
         :type channel_priority_order: Optional[List[ConversationChannelType]]
         :param channel_properties: Channel-specific properties. The key in the map must point to a valid channel property key.
@@ -1264,7 +1264,7 @@ class Messages(BaseConversation):
             message=template_message,
             message_cls=TemplateMessage,
             ttl=ttl,
-            callback_url=callback_url,
+            event_destination_target=event_destination_target,
             channel_priority_order=channel_priority_order,
             channel_properties=channel_properties,
             message_metadata=message_metadata,

@@ -1,7 +1,7 @@
 from sinch.domains.conversation.api.v1 import (
     Messages,
 )
-from sinch.domains.conversation.webhooks.v1 import ConversationWebhooks
+from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
 
 
 class Conversation:
@@ -14,13 +14,15 @@ class Conversation:
         self._sinch = sinch
         self.messages = Messages(self._sinch)
 
-    def webhooks(self, callback_secret: str = "") -> ConversationWebhooks:
+    def sinch_events(
+        self, callback_secret: str = ""
+    ) -> ConversationSinchEvent:
         """
-        Create a Conversation API webhooks handler with the given webhook secret.
+        Create a Conversation API Sinch Events handler with the given callback secret.
 
-        :param callback_secret: Secret used for webhook signature validation.
+        :param callback_secret: Secret used for Sinch Event signature validation.
         :type callback_secret: str
-        :returns: A configured webhooks handler.
-        :rtype: ConversationWebhooks
+        :returns: A configured Sinch Events handler.
+        :rtype: ConversationSinchEvent
         """
-        return ConversationWebhooks(callback_secret)
+        return ConversationSinchEvent(callback_secret)

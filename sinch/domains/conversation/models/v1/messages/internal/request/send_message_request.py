@@ -44,9 +44,10 @@ class SendMessageRequest(BaseModelConfiguration):
         default=None,
         description="The timeout allotted for sending the message. Can be seconds (int) or a string like '10s'.",
     )
-    callback_url: Optional[StrictStr] = Field(
+    event_destination_target: Optional[StrictStr] = Field(
         default=None,
-        description="Overwrites the default callback url for delivery receipts for this message.",
+        alias="callback_url",
+        description="Overwrites the default event destination target for delivery receipts for this message.",
     )
     channel_priority_order: Optional[List[ConversationChannelType]] = Field(
         default=None,

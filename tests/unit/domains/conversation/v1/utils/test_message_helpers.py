@@ -120,9 +120,9 @@ class TestSplitSendKwargs:
                 {},
             ),
             (
-                {"ttl": 10, "callback_url": "https://example.com/callback"},
+                {"ttl": 10, "event_destination_target": "https://example.com/callback"},
                 {},
-                {"ttl": 10, "callback_url": "https://example.com/callback"},
+                {"ttl": 10, "event_destination_target": "https://example.com/callback"},
             ),
             (
                 {

@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import Field, StrictStr
 
-from sinch.domains.conversation.webhooks.v1.internal import WebhookEvent
+from sinch.domains.conversation.sinch_events.v1.internal import SinchEvent
 from sinch.domains.conversation.models.v1.messages.shared import (
     ChannelIdentity,
     Reason,
@@ -11,12 +11,12 @@ from sinch.domains.conversation.models.v1.messages.types.processing_mode_type im
     ProcessingModeType,
 )
 
-from sinch.domains.conversation.models.v1.webhooks.events.delivery_status_type import (
+from sinch.domains.conversation.models.v1.sinch_events.events.delivery_status_type import (
     DeliveryStatusType,
 )
 
 
-class MessageDeliveryReport(WebhookEvent):
+class MessageDeliveryReport(SinchEvent):
     """Delivery report for an app message (MESSAGE_DELIVERY trigger)."""
 
     message_id: Optional[StrictStr] = Field(

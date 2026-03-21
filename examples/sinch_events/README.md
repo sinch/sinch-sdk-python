@@ -40,7 +40,7 @@ This directory contains both the Event handlers and the server application (`ser
    ```
    SMS_SINCH_EVENT_SECRET=Your Sinch SMS Sinch Event Secret
    ```
-     - Conversation controller: Set the webhook secret you configured when creating the webhook (see [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks)):
+     - Conversation controller: Set the Sinch Event secret you configured for your Conversation app event destination (see [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks)):
    ```
    CONVERSATION_SINCH_EVENT_SECRET=Your Conversation Sinch Event Secret
    ```

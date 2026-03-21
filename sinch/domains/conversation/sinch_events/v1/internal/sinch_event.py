@@ -3,7 +3,7 @@ from sinch.domains.conversation.models.v1.messages.internal.base import (
 )
 
 
-class WebhookEvent(BaseModelConfiguration):
-    """Base model for Conversation API webhook events."""
+class SinchEvent(BaseModelConfiguration):
+    """Base model for Conversation API Sinch Event payloads."""
 
     pass

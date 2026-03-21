@@ -3,11 +3,11 @@ from typing import Optional
 
 from pydantic import Field, StrictStr
 
-from sinch.domains.conversation.webhooks.v1.internal import WebhookEvent
+from sinch.domains.conversation.sinch_events.v1.internal import SinchEvent
 
 
-class ConversationWebhookEventBase(WebhookEvent):
-    """Base fields present on every Conversation API webhook payload."""
+class ConversationSinchEventBase(SinchEvent):
+    """Base fields present on every Conversation API Sinch Event payload."""
 
     app_id: Optional[StrictStr] = Field(
         default=None,

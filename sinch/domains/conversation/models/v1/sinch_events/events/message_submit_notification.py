@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import Field, StrictStr
 
-from sinch.domains.conversation.webhooks.v1.internal import WebhookEvent
+from sinch.domains.conversation.sinch_events.v1.internal import SinchEvent
 from sinch.domains.conversation.models.v1.messages.shared import (
     ChannelIdentity,
 )
@@ -14,7 +14,7 @@ from sinch.domains.conversation.models.v1.messages.types.processing_mode_type im
 )
 
 
-class MessageSubmitNotification(WebhookEvent):
+class MessageSubmitNotification(SinchEvent):
     """Notification that an app message was submitted (MESSAGE_SUBMIT trigger)."""
 
     message_id: Optional[StrictStr] = Field(

@@ -1,16 +1,16 @@
-from sinch.domains.conversation.models.v1.webhooks import (
-    ConversationWebhookEventBase,
+from sinch.domains.conversation.models.v1.sinch_events import (
+    ConversationSinchEventBase,
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
 )
 
 
-def handle_conversation_event(event: ConversationWebhookEventBase, logger):
+def handle_conversation_event(event: ConversationSinchEventBase, logger):
     """
-    Dispatch a Conversation webhook event to the appropriate handler by trigger type.
+    Dispatch a Conversation Sinch Event to the appropriate handler by trigger type.
 
-    :param event: Parsed webhook event (MessageDeliveryReceiptEvent, MessageInboundEvent, etc.).
+    :param event: Parsed Sinch Event (MessageDeliveryReceiptEvent, MessageInboundEvent, etc.).
     :param logger: Logger instance for output.
     """
     if isinstance(event, MessageInboundEvent):

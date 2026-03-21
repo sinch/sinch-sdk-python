@@ -1,7 +1,7 @@
 import requests
 from behave import given, when, then
-from sinch.domains.conversation.webhooks.v1 import ConversationWebhooks
-from sinch.domains.conversation.models.v1.webhooks import (
+from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
+from sinch.domains.conversation.models.v1.sinch_events import (
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
@@ -14,7 +14,7 @@ APP_SECRET = "CactusKnight_SurfsWaves"
 
 def process_event(context, response):
     store_webhook_response(context, response)
-    context.event = context.conversation_webhooks.parse_event(context.raw_event)
+    context.event = context.conversation_sinch_events.parse_event(context.raw_event)
 
 
 def _fetch_and_process(context, path_suffix):
@@ -28,7 +28,7 @@ def _fetch_and_process(context, path_suffix):
 def step_conversation_webhooks_available(context):
     context.sinch.configuration.auth_origin = "http://localhost:3014"
     context.sinch.configuration.conversation_origin = "http://localhost:3014"
-    context.conversation_webhooks = ConversationWebhooks(APP_SECRET)
+    context.conversation_sinch_events = ConversationSinchEvent(APP_SECRET)
 
 
 # --- CAPABILITY ---
@@ -168,7 +168,7 @@ def step_trigger_event_delivery_failed(context):
 
 @then('the header of the Conversation event "EVENT_DELIVERY" with a "FAILED" status contains a valid signature')
 def step_signature_valid_event_delivery_failed(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event EVENT_DELIVERY with status FAILED"
 
@@ -191,7 +191,7 @@ def step_trigger_event_delivery_delivered(context):
 
 @then('the header of the Conversation event "EVENT_DELIVERY" with a "DELIVERED" status contains a valid signature')
 def step_signature_valid_event_delivery_delivered(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event EVENT_DELIVERY with status DELIVERED"
 
@@ -220,7 +220,7 @@ def step_trigger_message_delivery_failed(context):
 
 @then('the header of the Conversation event "MESSAGE_DELIVERY" with a "FAILED" status contains a valid signature')
 def step_signature_valid_message_delivery_failed(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event MESSAGE_DELIVERY with status FAILED"
 
@@ -255,7 +255,7 @@ def step_trigger_message_delivery_queued(context):
 
 @then('the header of the Conversation event "MESSAGE_DELIVERY" with a "QUEUED_ON_CHANNEL" status contains a valid signature')
 def step_signature_valid_message_delivery_queued(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event MESSAGE_DELIVERY with status QUEUED_ON_CHANNEL"
 
@@ -268,7 +268,7 @@ def step_trigger_message_inbound(context):
 
 @then('the header of the Conversation event "MESSAGE_INBOUND" contains a valid signature')
 def step_signature_valid_message_inbound(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event MESSAGE_INBOUND"
 
@@ -306,7 +306,7 @@ def step_trigger_message_submit_media(context):
 
 @then('the header of the Conversation event "MESSAGE_SUBMIT" for a "media" message contains a valid signature')
 def step_signature_valid_message_submit_media(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event MESSAGE_SUBMIT for media message"
 
@@ -332,7 +332,7 @@ def step_trigger_message_submit_text(context):
 
 @then('the header of the Conversation event "MESSAGE_SUBMIT" for a "text" message contains a valid signature')
 def step_signature_valid_message_submit_text(context):
-    assert context.conversation_webhooks.validate_authentication_header(
+    assert context.conversation_sinch_events.validate_authentication_header(
         context.webhook_headers, context.raw_event
     ), "Signature validation failed for event MESSAGE_SUBMIT for text message"
 
