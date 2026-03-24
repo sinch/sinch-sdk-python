@@ -139,3 +139,6 @@ poetry.lock
 .DS_Store
 
 qodana.yaml
+
+# AI stuff
+.claude
