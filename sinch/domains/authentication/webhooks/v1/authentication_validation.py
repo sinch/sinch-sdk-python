@@ -71,7 +71,7 @@ def validate_sinch_event_signature_with_nonce(
     body: str
 ) -> bool:
     """
-    Validate signature headers for webhook callbacks that use nonce and timestamp.
+    Validate signature headers for Sinch Event callbacks that use nonce and timestamp.
 
     :param callback_secret: Secret associated with the webhook.
     :type callback_secret: str
