@@ -65,7 +65,7 @@ def get_header(header_value: Optional[Union[str, List[str]]]) -> Optional[str]:
     return header_value
 
 
-def validate_webhook_signature_with_nonce(
+def validate_sinch_event_signature_with_nonce(
     callback_secret: str,
     headers: Dict[str, str],
     body: str
