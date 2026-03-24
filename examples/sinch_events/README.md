@@ -82,7 +82,7 @@ The server exposes the following endpoints:
 
 ## Using ngrok to expose your local server
 
-To test your webhook locally, you can tunnel requests to your local server using ngrok.
+To test your "Sinch Events" processing locally, you can tunnel requests to your local server using ngrok.
 
 *Note: The default port is `3001`, but this can be changed (see [Server port](#Configuration))*
 
