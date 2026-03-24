@@ -73,18 +73,18 @@ def validate_sinch_event_signature_with_nonce(
     """
     Validate signature headers for Sinch Event callbacks that use nonce and timestamp.
 
-    :param callback_secret: Secret associated with the webhook.
+    :param callback_secret: Secret associated with the Sinch Event destination.
     :type callback_secret: str
     :param headers: Incoming request's headers.
     :type headers: Dict[str, str]
     :param body: Incoming request's body.
     :type body: str
-    :returns: True if the X-Sinch-Webhook-Signature header is valid.
+    :returns: True if the ``X-Sinch-Webhook-Signature`` header and related nonce/timestamp headers are valid.
     :rtype: bool
     """
     if callback_secret is None:
         return False
-    
+
     normalized_headers = normalize_headers(headers)
     signature = get_header(normalized_headers.get('x-sinch-webhook-signature'))
     if signature is None:
@@ -92,7 +92,7 @@ def validate_sinch_event_signature_with_nonce(
 
     nonce = get_header(normalized_headers.get('x-sinch-webhook-signature-nonce'))
     timestamp = get_header(normalized_headers.get('x-sinch-webhook-signature-timestamp'))
-    
+
     if nonce is None or timestamp is None:
         return False
 
@@ -101,24 +101,24 @@ def validate_sinch_event_signature_with_nonce(
         body_as_string = json.dumps(body)
 
     signed_data = compute_signed_data(body_as_string, nonce, timestamp)
-    
-    expected_signature = calculate_webhook_signature(signed_data, callback_secret)
+
+    expected_signature = calculate_sinch_event_signature(signed_data, callback_secret)
     return hmac.compare_digest(signature, expected_signature)
 
 
 def compute_signed_data(body: str, nonce: str, timestamp: str) -> str:
     """
-    Compute signed data for webhook signature validation.
-    
+    Compute signed data for Sinch Event signature validation.
+
     Format: body.nonce.timestamp (with dots as separators)
     """
     return f'{body}.{nonce}.{timestamp}'
 
 
-def calculate_webhook_signature(signed_data: str, secret: str) -> str:
+def calculate_sinch_event_signature(signed_data: str, secret: str) -> str:
     """
-    Calculate webhook signature using HMAC-SHA256 with Base64 encoding.
-    
+    Calculate Sinch Event signature using HMAC-SHA256 with Base64 encoding.
+
     :param signed_data: The data to sign (body.nonce.timestamp)
     :type signed_data: str
     :param secret: The secret key for HMAC

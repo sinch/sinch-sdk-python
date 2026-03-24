@@ -1,10 +1,10 @@
 import json
 from typing import Any, Dict, Union, Optional
 from pydantic import TypeAdapter
-from sinch.domains.authentication.webhooks.v1.authentication_validation import (
-    validate_webhook_signature_with_nonce,
+from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
+    validate_sinch_event_signature_with_nonce,
 )
-from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     decode_payload,
     parse_json,
     normalize_iso_timestamp,
@@ -56,7 +56,7 @@ class SmsSinchEvent:
             if isinstance(json_payload, bytes)
             else json_payload
         )
-        return validate_webhook_signature_with_nonce(
+        return validate_sinch_event_signature_with_nonce(
             self.app_secret, headers, payload_str
         )
 

@@ -16,7 +16,7 @@ from sinch.domains.sms.models.v1.types.recipient_delivery_report_type import (
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
 )
-from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     normalize_iso_timestamp,
 )
 

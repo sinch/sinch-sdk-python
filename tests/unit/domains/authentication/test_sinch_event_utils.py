@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timezone
-from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     parse_json,
     normalize_iso_timestamp,
 )
