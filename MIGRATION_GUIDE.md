@@ -130,7 +130,7 @@ The Conversation domain API access remains `sinch_client.conversation`; message 
 
 | Old | New |
 |-----|-----|
-| `sinch_client.conversation.webhook` (REST: create, list, get, update, delete webhooks; models under `sinch.domains.conversation.models.webhook`, e.g. `CreateConversationWebhookRequest`, `SinchListWebhooksResponse`) | Event Destinations REST for Conversation when added to the V2 SDK (naming aligns with `EventDestination`, list responses use `event_destinations`, …). |
+| `sinch_client.conversation.webhook` (REST: create, list, get, update, delete webhooks; models under `sinch.domains.conversation.models.webhook`, e.g. `CreateConversationWebhookRequest`, `SinchListWebhooksResponse`) | **Not available in V2.** The Conversation client only exposes `messages` and `sinch_events`; More features are planned for future releases. To validate and parse inbound Sinch Events payloads, use `sinch_client.conversation.sinch_events(callback_secret)`—see **Sinch Events** below. |
 
 #### Sinch Events (Event Destinations payload models and package path)
 
@@ -140,7 +140,7 @@ The Conversation domain API access remains `sinch_client.conversation`; message 
 | — | [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) (handler: signature validation and `parse_event`) |
 | — | `ConversationSinchEventPayload`, `ConversationSinchEventBase`, and concrete event types (e.g. `MessageInboundEvent`, `MessageDeliveryReceiptEvent`, `MessageSubmitEvent`) |
 
-To obtain a Conversation Sinch Events handler: `sinch_client.conversation.sinch_events(callback_secret)` returns a [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) instance; `handler.parse_event(request_body)` returns a `ConversationSinchEventPayload` (or a concrete event type).
+To obtain a Conversation Sinch Events handler: `sinch_client.conversation.sinch_events(callback_secret)` returns a [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) instance; `handler.parse_event(request_body)` returns a `ConversationSinchEventPayload`.
 
 ```python
 # New
