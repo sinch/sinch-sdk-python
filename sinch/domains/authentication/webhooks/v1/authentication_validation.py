@@ -33,7 +33,7 @@ def validate_signature_header(
         return False
 
     expected_signature = compute_hmac_signature(body, callback_secret)
-    return signature == expected_signature
+    return hmac.compare_digest(signature, expected_signature)
 
 
 def normalize_headers(headers: Dict[str, str]) -> Dict[str, str]:
