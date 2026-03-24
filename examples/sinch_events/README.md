@@ -1,7 +1,7 @@
 # Sinch Events Handlers for Sinch Python SDK
 
 This directory contains a server application built with [Sinch Python SDK](https://github.com/sinch/sinch-sdk-python)
-to process incoming webhooks from Sinch services.
+to process incoming events from Sinch services.
 
 The Sinch Events Handlers are organized by service:
 - **SMS**: Handlers for SMS events (`sms_api/`)
