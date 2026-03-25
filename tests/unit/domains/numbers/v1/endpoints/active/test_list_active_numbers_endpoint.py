@@ -74,6 +74,21 @@ def test_build_query_params_expects_correct_mapping(endpoint):
     assert endpoint.build_query_params() == expected_params
 
 
+def test_build_query_params_omits_none_region_and_type():
+    """
+    Optional query params must not be sent when unset.
+    """
+    request_data = ListActiveNumbersRequest(
+        page_size=10,
+        capabilities=["SMS"],
+    )
+    endpoint = ListActiveNumbersEndpoint("test_project_id", request_data)
+    assert endpoint.build_query_params() == {
+        "pageSize": 10,
+        "capabilities": ["SMS"],
+    }
+
+
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """
     Check if response is handled and mapped to the appropriate fields correctly.

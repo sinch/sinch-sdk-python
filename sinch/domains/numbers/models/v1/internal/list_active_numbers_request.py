@@ -12,11 +12,12 @@ from sinch.domains.numbers.models.v1.types import (
 
 
 class ListActiveNumbersRequest(BaseModelConfigurationRequest):
-    region_code: StrictStr = Field(
+    region_code: Optional[StrictStr] = Field(
+        default=None,
         alias="regionCode",
         description="ISO 3166-1 alpha-2 country code. Example: US, GB or SE.",
     )
-    number_type: NumberType = Field(alias="type")
+    number_type: Optional[NumberType] = Field(default=None, alias="type")
     page_size: Optional[StrictInt] = Field(default=None, alias="pageSize")
     capabilities: Optional[conlist(CapabilityType)] = Field(default=None)
     number_search_pattern: Optional[NumberSearchPatternType] = Field(

@@ -27,8 +27,8 @@ from sinch.domains.numbers.models.v1.types import (
 class ActiveNumbers(BaseNumbers):
     def list(
         self,
-        region_code: str,
-        number_type: NumberType,
+        region_code: Optional[str] = None,
+        number_type: Optional[NumberType] = None,
         number_pattern: Optional[str] = None,
         number_search_pattern: Optional[NumberSearchPatternType] = None,
         capabilities: Optional[List[CapabilityType]] = None,
