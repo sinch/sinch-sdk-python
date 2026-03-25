@@ -256,7 +256,7 @@ class Configuration:
                 "SMS region is required. "
                 "Provide sms_region when initializing SinchClient "
                 "Example: SinchClient(project_id='...', key_id='...', key_secret='...', sms_region='eu')"
-                "or set it via sinch_client.configuration.sms_region. "
+                " or set it via sinch_client.configuration.sms_region. "
             )
 
         return origin
@@ -273,7 +273,7 @@ class Configuration:
                 "Conversation region is required. "
                 "Provide conversation_region when initializing SinchClient "
                 "Example: SinchClient(project_id='...', key_id='...', key_secret='...', conversation_region='eu')"
-                "or set it via sinch_client.configuration.conversation_region. "
+                " or set it via sinch_client.configuration.conversation_region. "
             )
 
         return self.conversation_origin
