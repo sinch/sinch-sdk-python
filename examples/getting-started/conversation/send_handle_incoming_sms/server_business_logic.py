@@ -34,14 +34,9 @@ def _handle_message_inbound(event: MessageInboundEvent, logger, sinch_client):
     mo_text = _get_mo_text(event)
     logger.info("MO SMS from %s: %s", identity, mo_text)
 
-    app_id = event.app_id
-    if not app_id:
-        logger.warning("Event has no app_id; skipping MT reply.")
-        return
-
     reply_text = f"Your message said: {mo_text}"
     response = sinch_client.conversation.messages.send_text_message(
-        app_id=app_id,
+        app_id=event.app_id,
         text=reply_text,
         recipient_identities=[{"channel": "SMS", "identity": identity}],
     )

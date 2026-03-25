@@ -48,6 +48,7 @@ def test_message_delivery_receipt_event_expects_parsed(message_delivery_report_d
 def test_message_inbound_event_expects_parsed():
     payload = {
         "app_id": "app1",
+        "project_id": "proj1",
         "message": {
             "contact_id": "contact1",
             "contact_message": {"text_message": {"text": "Hello"}},
@@ -63,6 +64,7 @@ def test_message_inbound_event_expects_parsed():
 def test_message_submit_event_expects_parsed():
     payload = {
         "app_id": "app1",
+        "project_id": "proj1",
         "message_submit_notification": {
             "contact_id": "contact1",
             "channel_identity": {"channel": "MESSENGER", "identity": "123"},
@@ -73,10 +75,10 @@ def test_message_submit_event_expects_parsed():
     assert event.message_submit_notification.contact_id == "contact1"
 
 
-def test_conversation_sinch_event_base_optional_fields():
-    payload = {"app_id": "app1"}
+def test_conversation_sinch_event_base_optional_timestamp_and_metadata_fields():
+    payload = {"app_id": "app1", "project_id": "proj1"}
     event = ConversationSinchEventBase(**payload)
     assert event.app_id == "app1"
-    assert event.project_id is None
+    assert event.project_id == "proj1"
     assert event.accepted_time is None
     assert event.event_time is None
