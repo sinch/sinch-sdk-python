@@ -1,8 +1,8 @@
 from typing import Any, Dict, Optional, Union
-from sinch.domains.authentication.webhooks.v1.authentication_validation import (
+from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_signature_header,
 )
-from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     decode_payload,
     parse_json,
     normalize_iso_timestamp,

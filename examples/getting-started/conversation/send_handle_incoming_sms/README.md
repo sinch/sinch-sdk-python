@@ -70,7 +70,7 @@ The server listens on the port set in your `.env` file (default: 3001).
 
 ### Exposing the server with ngrok
 
-To receive webhooks on your machine, expose the server with a tunnel (e.g. ngrok).
+To receive Conversation API Sinch Events on your machine, expose the server with a tunnel (e.g. ngrok).
 
 
 ```bash

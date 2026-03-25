@@ -1,8 +1,8 @@
-"""Unit tests for Conversation webhook event models."""
+"""Unit tests for Conversation Sinch Event models."""
 import pytest
 
-from sinch.domains.conversation.models.v1.webhooks import (
-    ConversationWebhookEventBase,
+from sinch.domains.conversation.models.v1.sinch_events import (
+    ConversationSinchEventBase,
     MessageDeliveryReceiptEvent,
     MessageDeliveryReport,
     MessageInboundEvent,
@@ -73,9 +73,9 @@ def test_message_submit_event_expects_parsed():
     assert event.message_submit_notification.contact_id == "contact1"
 
 
-def test_conversation_webhook_event_base_optional_fields():
+def test_conversation_sinch_event_base_optional_fields():
     payload = {"app_id": "app1"}
-    event = ConversationWebhookEventBase(**payload)
+    event = ConversationSinchEventBase(**payload)
     assert event.app_id == "app1"
     assert event.project_id is None
     assert event.accepted_time is None

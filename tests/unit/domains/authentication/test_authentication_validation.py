@@ -1,5 +1,7 @@
 import pytest
-from sinch.domains.authentication.webhooks.v1.authentication_validation import validate_signature_header
+from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
+    validate_signature_header,
+)
 
 
 @pytest.fixture

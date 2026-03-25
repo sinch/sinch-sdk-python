@@ -39,6 +39,21 @@ def test_send_message_request_expects_accepts_processing_strategy(processing_str
     assert request.processing_strategy == processing_strategy
 
 
+def test_send_message_request_serializes_event_destination_target_as_callback_url_for_api():
+    """
+    User-facing name is event_destination_target; JSON body uses callback_url.
+    """
+    request = SendMessageRequest(
+        app_id="my-app-id",
+        recipient=Recipient(contact_id="my-contact-id"),
+        message=SendMessageRequestBody(text_message=TextMessage(text="Hello")),
+        event_destination_target="https://example.com/callback",
+    )
+    payload = request.model_dump(mode="json", exclude_none=True, by_alias=True)
+    assert payload["callback_url"] == "https://example.com/callback"
+    assert "event_destination_target" not in payload
+
+
 @pytest.mark.parametrize("ttl_input,expected_serialized", [(10, "10s"), ("10s", "10s"), ("10", "10s"), (None, None)])
 def test_send_message_request_expects_ttl_serialized_to_backend(ttl_input, expected_serialized):
     """

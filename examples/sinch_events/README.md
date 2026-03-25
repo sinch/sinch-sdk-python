@@ -1,7 +1,7 @@
 # Sinch Events Handlers for Sinch Python SDK
 
 This directory contains a server application built with [Sinch Python SDK](https://github.com/sinch/sinch-sdk-python)
-to process incoming webhooks from Sinch services.
+to process incoming events from Sinch services.
 
 The Sinch Events Handlers are organized by service:
 - **SMS**: Handlers for SMS events (`sms_api/`)
@@ -40,7 +40,7 @@ This directory contains both the Event handlers and the server application (`ser
    ```
    SMS_SINCH_EVENT_SECRET=Your Sinch SMS Sinch Event Secret
    ```
-     - Conversation controller: Set the webhook secret you configured when creating the webhook (see [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks)):
+     - Conversation controller: Set the Sinch Event secret you configured for your Conversation app event destination (see [Conversation API callbacks](https://developers.sinch.com/docs/conversation/callbacks)):
    ```
    CONVERSATION_SINCH_EVENT_SECRET=Your Conversation Sinch Event Secret
    ```
@@ -82,7 +82,7 @@ The server exposes the following endpoints:
 
 ## Using ngrok to expose your local server
 
-To test your webhook locally, you can tunnel requests to your local server using ngrok.
+To test your "Sinch Events" processing locally, you can tunnel requests to your local server using ngrok.
 
 *Note: The default port is `3001`, but this can be changed (see [Server port](#Configuration))*
 
@@ -109,5 +109,5 @@ Use this value to configure the Sinch Events URLs:
 You can also set these Sinch Events URLs in the Sinch dashboard; the API parameters above override the default values configured there.
 
 > **Note**: If you have set a Sinch Event secret (e.g., `SMS_SINCH_EVENT_SECRET`), the Sinch Event URL must be configured in the Sinch dashboard
-> and cannot be overridden via API parameters. The Sinch Event secret is used to validate incoming webhook requests,
+> and cannot be overridden via API parameters. The Sinch Event secret is used to validate incoming Sinch Events requests,
 > and the URL associated with it must be set in the dashboard.

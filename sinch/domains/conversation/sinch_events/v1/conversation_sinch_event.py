@@ -1,15 +1,16 @@
 import logging
 from typing import Any, Dict, Union, Optional
-from sinch.domains.authentication.webhooks.v1.authentication_validation import (
-    validate_webhook_signature_with_nonce,
+from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
+    validate_sinch_event_signature_with_nonce,
 )
-from sinch.domains.authentication.webhooks.v1.webhook_utils import (
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     decode_payload,
     parse_json,
     normalize_iso_timestamp,
 )
-from sinch.domains.conversation.models.v1.webhooks import (
-    ConversationWebhookEventBase,
+from sinch.domains.conversation.models.v1.sinch_events import (
+    ConversationSinchEventBase,
+    ConversationSinchEventPayload,
     MessageDeliveryReceiptEvent,
     MessageInboundEvent,
     MessageSubmitEvent,
@@ -19,33 +20,25 @@ from sinch.domains.conversation.models.v1.webhooks import (
 logger = logging.getLogger(__name__)
 
 
-ConversationWebhookCallback = Union[
-    MessageDeliveryReceiptEvent,
-    MessageInboundEvent,
-    MessageSubmitEvent,
-    ConversationWebhookEventBase,
-]
-
-
-class ConversationWebhooks:
+class ConversationSinchEvent:
     """
-    Handler for Conversation API webhooks: validate signature and parse events.
+    Handler for Conversation API Sinch Events: validate signature and parse events.
     """
 
-    def __init__(self, webhook_secret: Optional[str] = None):
+    def __init__(self, callback_secret: Optional[str] = None):
         """
-        :param webhook_secret: Secret configured for the webhook (used for HMAC validation).
+        :param callback_secret: Secret configured for the event destination (used for HMAC validation).
         """
-        self.webhook_secret = webhook_secret
+        self.callback_secret = callback_secret
 
     def _validate_signature(
         self,
         payload: Union[str, bytes],
         headers: Dict[str, str],
-        webhook_secret: Optional[str] = None,
+        callback_secret: Optional[str] = None,
     ) -> bool:
         """
-        Validate the webhook signature using the request body and headers.
+        Validate the Sinch Event signature using the request body and headers.
 
         Uses x-sinch-webhook-signature, x-sinch-webhook-signature-nonce, and
         x-sinch-webhook-signature-timestamp. Returns True only if the signature
@@ -53,18 +46,18 @@ class ConversationWebhooks:
 
         :param payload: Raw request body (string or bytes).
         :param headers: Incoming request headers (key case is normalized to lower).
-        :param webhook_secret: Secret for this webhook; defaults to the secret passed to __init__.
+        :param callback_secret: Secret for this request; defaults to the secret passed to __init__.
         :returns: True if the signature is valid, False otherwise.
         """
         secret = (
-            webhook_secret
-            if webhook_secret is not None
-            else self.webhook_secret
+            callback_secret
+            if callback_secret is not None
+            else self.callback_secret
         )
         if not secret:
             return False
         payload_str = decode_payload(payload, headers)
-        return validate_webhook_signature_with_nonce(
+        return validate_sinch_event_signature_with_nonce(
             secret, headers, payload_str
         )
 
@@ -74,7 +67,7 @@ class ConversationWebhooks:
         json_payload: Union[str, bytes],
     ) -> bool:
         """
-        Validate the webhook signature (convenience wrapper around internal validation).
+        Validate the Sinch Event signature (convenience wrapper around internal validation).
 
         :param headers: Incoming request's headers.
         :param json_payload: Incoming request's raw body (str or bytes).
@@ -86,15 +79,15 @@ class ConversationWebhooks:
         self,
         event_body: Union[str, bytes, Dict[str, Any]],
         headers: Optional[Dict[str, str]] = None,
-    ) -> ConversationWebhookCallback:
+    ) -> ConversationSinchEventPayload:
         """
-        Parse the webhook payload into a typed event.
+        Parse the Sinch Event payload into a typed event.
 
         Parses by key: message_delivery_report → MessageDeliveryReceiptEvent,
         message → MessageInboundEvent, message_submit_notification → MessageSubmitEvent.
         Normalizes accepted_time and event_time. Injects trigger on the returned event.
 
-        :param event_body: JSON string, raw bytes, or dict of the webhook body.
+        :param event_body: JSON string, raw bytes, or dict of the event body.
         :param headers: Request headers (used to decode charset when event_body is bytes).
         :returns: Parsed event model.
         :raises ValueError: If JSON parsing fails or the payload is invalid.
@@ -119,6 +112,6 @@ class ConversationWebhooks:
             return MessageSubmitEvent(**event_body)
 
         logger.warning(
-            "Conversation webhook: unknown event type; returning base event."
+            "Conversation Sinch Event: unknown event type; returning base event."
         )
-        return ConversationWebhookEventBase(**event_body)
+        return ConversationSinchEventBase(**event_body)

@@ -11,8 +11,8 @@ class ConversationController:
         headers = dict(request.headers)
         raw_body = getattr(request, "raw_body", None) or b""
 
-        webhooks_service = self.sinch_client.conversation.webhooks()
-        event = webhooks_service.parse_event(raw_body, headers)
+        sinch_events_service = self.sinch_client.conversation.sinch_events()
+        event = sinch_events_service.parse_event(raw_body, headers)
         handle_conversation_event(
             event=event,
             logger=self.logger,

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "sinch-sdk-python-quickstart-server"
 version = "0.1.0"
-description = "Sinch SDK Python Quickstart Webhooks Server"
+description = "Sinch SDK Python Quickstart Sinch Events Server"
 readme = "README.md"
 package-mode = false
 

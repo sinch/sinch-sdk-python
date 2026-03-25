@@ -3,11 +3,11 @@ On inbound SMS (MO), send a reply (MT) to the same number: "Your message said: <
 Uses channel identity (SMS + phone number) only; app is in DISPATCH mode.
 """
 
-from sinch.domains.conversation.models.v1.webhooks import MessageInboundEvent
+from sinch.domains.conversation.models.v1.sinch_events import MessageInboundEvent
 
 
 def handle_conversation_event(event, logger, sinch_client):
-    """Webhook entry: handle only MESSAGE_INBOUND; delegate to inbound handler."""
+    """Sinch Event entry: handle only MESSAGE_INBOUND; delegate to inbound handler."""
     if not isinstance(event, MessageInboundEvent):
         return
     _handle_message_inbound(event, logger, sinch_client)

@@ -126,6 +126,38 @@ The Conversation domain API access remains `sinch_client.conversation`; message 
 | `list()` with `ListConversationMessagesRequest` | In Progress |
 | — |  **New in V2:** `update()` with `message_id`, `metadata`, and optional `messages_source`|
 
+##### Replacement APIs / attributes
+
+| Old | New |
+|-----|-----|
+| `sinch_client.conversation.webhook` (REST: create, list, get, update, delete webhooks; models under `sinch.domains.conversation.models.webhook`, e.g. `CreateConversationWebhookRequest`, `SinchListWebhooksResponse`) | **Not available in V2.** The Conversation client only exposes `messages` and `sinch_events`; More features are planned for future releases. To validate and parse inbound Sinch Events payloads, use `sinch_client.conversation.sinch_events(callback_secret)`—see **Sinch Events** below. |
+
+#### Sinch Events (Event Destinations payload models and package path)
+
+| Old | New |
+|-----|-----|
+| — _(N/A)_ | `sinch.domains.conversation.models.v1.sinch_events` (package path for inbound payload models) |
+| — | [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) (handler: signature validation and `parse_event`) |
+| — | `ConversationSinchEventPayload`, `ConversationSinchEventBase`, and concrete event types (e.g. `MessageInboundEvent`, `MessageDeliveryReceiptEvent`, `MessageSubmitEvent`) |
+
+To obtain a Conversation Sinch Events handler: `sinch_client.conversation.sinch_events(callback_secret)` returns a [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) instance; `handler.parse_event(request_body)` returns a `ConversationSinchEventPayload`.
+
+```python
+# New
+handler = sinch_client.conversation.sinch_events("your_callback_secret")
+event = handler.parse_event(request_body)
+```
+
+#### Request and response fields: callback URL → event destination target
+
+| | Old | New |
+|---|-----|-----|
+| **Messages (`send`)** | `sinch.domains.conversation.models.message.requests.SendConversationMessageRequest` field `callback_url` | [`SendMessageRequest`](sinch/domains/conversation/models/v1/messages/internal/request/send_message_request.py) field `event_destination_target` |
+| **Messages (methods)** | `ConversationMessage.send(..., callback_url=...)` | `sinch_client.conversation.messages.send()`, `send_text_message()`, and other `send_*_message()` methods with `event_destination_target=...` |
+| **Send event** | `sinch.domains.conversation.models.event.requests.SendConversationEventRequest` field `callback_url` | `event_destination_target` on the V2 send-event request model when that API is exposed |
+
+The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2, use the Python parameter / model field `event_destination_target`; it is serialized as `callback_url` on the wire (same pattern as other domains, e.g. SMS).
+
 <br>
 
 ### [`SMS`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/sms)
