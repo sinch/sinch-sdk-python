@@ -30,7 +30,7 @@ def invalid_data():
     }
 
 
-def test_numbers_webhooks_response_expects_parsed_data(valid_data):
+def test_number_sinch_event_response_expects_parsed_data(valid_data):
     """
     Expects all fields to map correctly from camelCase input
     and handle valid data appropriately.
@@ -51,7 +51,7 @@ def test_numbers_webhooks_response_expects_parsed_data(valid_data):
     assert response.extra_field == "extra_value"
 
 
-def test_numbers_webhooks_response_missing_optional_fields_expects_parsed_data():
+def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data():
     """
     Expects the model to handle missing optional fields.
     """
@@ -71,7 +71,7 @@ def test_numbers_webhooks_response_missing_optional_fields_expects_parsed_data()
     assert response.failure_code is None
 
 
-def test_numbers_webhooks_response_invalid_data_expects_validation_error(invalid_data):
+def test_number_sinch_event_response_invalid_data_expects_validation_error(invalid_data):
     """
     Expects the model to raise a validation error for invalid data.
     """

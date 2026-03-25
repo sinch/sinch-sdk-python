@@ -15,7 +15,7 @@ def string_to_sign():
 
 
 @pytest.fixture
-def numbers_webhooks():
+def sinch_events():
     return SinchEvents('my-callback-secret')
 
 
@@ -34,11 +34,11 @@ def base_payload_parse_event():
     }
 
 
-def test_valid_signature_header_expects_successful_validation(numbers_webhooks, string_to_sign):
+def test_valid_signature_header_expects_successful_validation(sinch_events, string_to_sign):
     headers = {
         "X-Sinch-Signature": "8e58baa351ffa5e0d7eaef3c739d0d7aa6093da3"
     }
-    response = numbers_webhooks.validate_authentication_header(headers, string_to_sign)
+    response = sinch_events.validate_authentication_header(headers, string_to_sign)
     assert response is True
 
 
@@ -56,17 +56,17 @@ def test_valid_signature_header_expects_successful_validation(numbers_webhooks, 
         )
     ]
 )
-def test_parse_event_expects_timestamp_as_utc(numbers_webhooks, test_name, timestamp_str):
+def test_parse_event_expects_timestamp_as_utc(sinch_events, test_name, timestamp_str):
     payload = {"timestamp": timestamp_str}
-    parsed = numbers_webhooks.parse_event(payload)
+    parsed = sinch_events.parse_event(payload)
     expected = datetime(
         2025, 4, 6, 8, 45, 27, 565347, tzinfo=timezone.utc
     )
     assert parsed.timestamp == expected
 
 
-def test_parse_event_expects_parsed_response(numbers_webhooks, base_payload_parse_event):
-    response = numbers_webhooks.parse_event(base_payload_parse_event)
+def test_parse_event_expects_parsed_response(sinch_events, base_payload_parse_event):
+    response = sinch_events.parse_event(base_payload_parse_event)
     assert isinstance(response, NumberSinchEvent)
     assert response.event_id == "01jr7stexp0znky34pj07dwp41"
     assert response.project_id == "project-id"
