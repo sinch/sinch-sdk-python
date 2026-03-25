@@ -56,8 +56,8 @@ class VirtualNumbers:
 
     def list(
         self,
-        region_code: str,
-        number_type: NumberType,
+        region_code: Optional[str] = None,
+        number_type: Optional[NumberType] = None,
         number_pattern: Optional[str] = None,
         number_search_pattern: Optional[NumberSearchPatternType] = None,
         capabilities: Optional[List[CapabilityType]] = None,
@@ -69,11 +69,11 @@ class VirtualNumbers:
         """
         Search for all active virtual numbers associated with a certain project.
 
-        :param region_code: ISO 3166-1 alpha-2 country code. Example: US, GB or SE.
-        :type region_code: str
+        :param region_code: Optional. ISO 3166-1 alpha-2 country code. Example: US, GB or SE.
+        :type region_code: Optional[str]
 
-        :param number_type: Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
-        :type number_type: NumberType
+        :param number_type: Optional. Type of number (e.g., "MOBILE", "LOCAL", "TOLL_FREE").
+        :type number_type: Optional[NumberType]
 
         :param number_pattern: Specific sequence of digits to search for.
         :type number_pattern: Optional[str]

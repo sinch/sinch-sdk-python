@@ -85,13 +85,12 @@ def test_list_available_numbers_request_expects_validation_error_for_missing_req
     data = {
         "number_type": "MOBILE",
         "size": 10,
-        "capabilities": ["SMS", "VOICE"]
+        "capabilities": ["SMS", "VOICE"],
     }
 
     with pytest.raises(ValidationError) as exc_info:
         ListAvailableNumbersRequest(**data)
 
-    # Assert the error mentions the missing region_code field
     assert "region_code" in str(exc_info.value) or "regionCode" in str(exc_info.value)
 
 

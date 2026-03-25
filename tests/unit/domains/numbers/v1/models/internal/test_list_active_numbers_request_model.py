@@ -1,5 +1,4 @@
 import pytest
-from pydantic import ValidationError
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersRequest
 
 
@@ -70,12 +69,3 @@ def test_list_available_numbers_request_expects_camel_case_input():
     request = ListActiveNumbersRequest(**data)
     assert request.region_code == "US"
     assert request.number_type == "MOBILE"
-
-
-def test_list_active_numbers_request_expects_validation_error_for_missing_field():
-    """
-    Test that missing required fields raise a ValidationError.
-    """
-    data = {}
-    with pytest.raises(ValidationError):
-        ListActiveNumbersRequest(**data)
