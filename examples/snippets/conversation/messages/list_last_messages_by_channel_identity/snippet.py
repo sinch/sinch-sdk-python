@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -18,7 +17,7 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
-# Channel identities to fetch the last message
+# The channel identities to fetch the last message for
 channel_identities = ["CHANNEL_IDENTITY_1", "CHANNEL_IDENTITY_2"]
 
 messages = sinch_client.conversation.messages.list_last_messages_by_channel_identity(

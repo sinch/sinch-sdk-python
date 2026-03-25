@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -20,10 +19,12 @@ sinch_client = SinchClient(
 
 # The ID of the message to update
 message_id = "MESSAGE_ID"
+# The metadata string to set on the message
+metadata = "MESSAGE_METADATA"
 
 response = sinch_client.conversation.messages.update(
     message_id=message_id,
-    metadata="metadata value set from Python SDK snippet"
+    metadata=metadata,
 )
 
 print(f"Updated message:\n{response}")

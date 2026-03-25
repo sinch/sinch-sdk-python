@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -18,16 +17,20 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET"
 )
 
-service_plan_id_to_associate_with_the_number = os.environ.get("SINCH_SERVICE_PLAN_ID") or "MY_SERVICE_PLAN_ID"
+# The service plan ID to associate with the phone number
+service_plan_id = os.environ.get("SINCH_SERVICE_PLAN_ID") or "MY_SERVICE_PLAN_ID"
 sms_configuration: SmsConfigurationDict = {
-    "service_plan_id": service_plan_id_to_associate_with_the_number
+    "service_plan_id": service_plan_id,
 }
+# The URL to receive the notifications about provisioning events
+event_destination_target = "CALLBACK_URL"
 
 response = sinch_client.numbers.rent_any(
     region_code="US",
     number_type="LOCAL",
     capabilities=["SMS", "VOICE"],
-    sms_configuration=sms_configuration
+    sms_configuration=sms_configuration,
+    event_destination_target=event_destination_target
 )
 
 print("Rented Number:\n", response)

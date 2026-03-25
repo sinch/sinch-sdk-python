@@ -57,5 +57,5 @@ All available code snippets are located in subdirectories, structured by feature
 To execute a specific snippet, navigate to the appropriate subdirectory and run:
 
 ```shell
-python run python snippet.py
+python snippet.py
 ```

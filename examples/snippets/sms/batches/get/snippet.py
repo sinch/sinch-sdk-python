@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -20,6 +19,7 @@ sinch_client = SinchClient(
 
 # The ID of the batch to retrieve
 batch_id = "BATCH_ID"
+
 response = sinch_client.sms.batches.get(batch_id=batch_id)
 
 print(f"Batch details:\n{response}")

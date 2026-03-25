@@ -9,8 +9,7 @@ package-mode = false
 python = "^3.9"
 python-dotenv = "^1.0.0"
 flask = "^3.0.0"
-# TODO: Uncomment once v2.0 is released
-# sinch = "^2.0.0"
+sinch = "^2.0.0"
 
 [build-system]
 requires = ["poetry-core"]

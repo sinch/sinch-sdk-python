@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -17,7 +16,9 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET"
 )
 
-hmac_secret = "NEW_HMAC_SECRET"
+# The HMAC secret for signing webhook requests to your event destination
+hmac_secret = "HMAC_SECRET"
+
 response = sinch_client.numbers.event_destinations.update(
     hmac_secret=hmac_secret
 )
