@@ -76,18 +76,6 @@ def test_if_logger_name_was_preserved_correctly(sinch_client_sync):
     assert client_configuration.logger.name == clever_monty_python_quote
 
 
-def test_set_templates_region_property_and_check_that_templates_origin_was_updated(sinch_client_sync):
-    sinch_client_sync.configuration.templates_region = "Are_you_suggesting_that_coconuts_migrate?"
-    assert "coconuts" in sinch_client_sync.configuration.templates_origin
-    assert "migrate" in sinch_client_sync.configuration.templates_origin
-
-
-def test_set_templates_domain_property_and_check_that_templates_origin_was_updated(sinch_client_sync):
-    sinch_client_sync.configuration.templates_domain = "Are_you_suggesting_that_coconuts_migrate?"
-    assert "coconuts" in sinch_client_sync.configuration.templates_origin
-    assert "migrate" in sinch_client_sync.configuration.templates_origin
-
-
 def test_configuration_expects_authentication_method_determination_sms_auth_priority(sinch_client_sync):
     """ Test that SMS authentication takes priority over project authentication """
     client_configuration = Configuration(

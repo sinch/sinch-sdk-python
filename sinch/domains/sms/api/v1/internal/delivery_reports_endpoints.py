@@ -32,7 +32,10 @@ class GetBatchDeliveryReportEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        return model_dump_for_query_params(self.request_data)
+        path_params = self._get_path_params_from_url()
+        return model_dump_for_query_params(
+            self.request_data, exclude=path_params
+        )
 
     def handle_response(self, response: HTTPResponse) -> BatchDeliveryReport:
         try:

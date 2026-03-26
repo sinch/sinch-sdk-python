@@ -1,3 +1,4 @@
+import re
 from abc import ABC
 from typing import Type
 from sinch.core.models.http_response import HTTPResponse
@@ -22,6 +23,23 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
             project_id=self.project_id,
             **vars(self.request_data),
         )
+
+    def _get_path_params_from_url(self) -> set:
+        """
+        Extracts path parameters from ENDPOINT_URL template.
+
+        Returns:
+            set: Set of path parameter names that should be excluded
+                 from request body and query params.
+        """
+        if not self.ENDPOINT_URL:
+            return set()
+
+        path_params = set(re.findall(r"\{(\w+)\}", self.ENDPOINT_URL))
+        path_params.discard("origin")
+        path_params.discard("project_id")
+
+        return path_params
 
     def build_query_params(self) -> dict:
         """
@@ -60,15 +78,23 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
             raise ValueError(f"Invalid response structure: {e}") from e
 
     def handle_response(self, response: HTTPResponse):
+        error_data = (response.body or {}).get("error", {})
+
         if response.status_code == 404:
-            error = NotFoundError(**response.body["error"])
+            try:
+                error = NotFoundError(**error_data)
+            except TypeError:
+                error = f"Not found: {error_data}"
             raise NumbersException(
                 message=error, response=response, is_from_server=True
             )
 
         if response.status_code >= 400:
+            message = error_data.get('message', '')
+            status = error_data.get('status', '')
+            error_message = f"{message}  {status}".strip() or f"Error {response.status_code}"
             raise NumbersException(
-                message=f"{response.body['error'].get('message')}  {response.body['error'].get('status')}",
+                message=error_message,
                 response=response,
                 is_from_server=True,
             )
