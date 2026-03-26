@@ -107,10 +107,13 @@ class ConversationEndpoint(HTTPEndpoint, ABC):
 
     def handle_response(self, response: HTTPResponse):
         if response.status_code >= 400:
-            error = (response.body or {}).get('error', {})
-            message = error.get('message', '')
-            status = error.get('status', '')
-            error_message = f"{message}  {status}".strip() or f"Error {response.status_code}"
+            error = (response.body or {}).get("error", {})
+            message = error.get("message", "")
+            status = error.get("status", "")
+            error_message = (
+                f"{message}  {status}".strip()
+                or f"Error {response.status_code}"
+            )
             raise ConversationException(
                 message=error_message,
                 response=response,

@@ -90,9 +90,12 @@ class NumbersEndpoint(HTTPEndpoint, ABC):
             )
 
         if response.status_code >= 400:
-            message = error_data.get('message', '')
-            status = error_data.get('status', '')
-            error_message = f"{message}  {status}".strip() or f"Error {response.status_code}"
+            message = error_data.get("message", "")
+            status = error_data.get("status", "")
+            error_message = (
+                f"{message}  {status}".strip()
+                or f"Error {response.status_code}"
+            )
             raise NumbersException(
                 message=error_message,
                 response=response,
