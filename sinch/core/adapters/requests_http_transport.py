@@ -9,7 +9,7 @@ class HTTPTransportRequests(HTTPTransport):
         super().__init__(sinch)
         self.http_session = requests.Session()
 
-    def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         request_data: HttpRequest = self.prepare_request(endpoint)
         request_data: HttpRequest = self.authenticate(endpoint, request_data)
 
@@ -34,11 +34,8 @@ class HTTPTransportRequests(HTTPTransport):
             f"and body: {response_body} from URL: {request_data.url}"
         )
 
-        return self.handle_response(
-            endpoint=endpoint,
-            http_response=HTTPResponse(
-                status_code=response.status_code,
-                body=response_body,
-                headers=response.headers
-            )
+        return HTTPResponse(
+            status_code=response.status_code,
+            body=response_body,
+            headers=response.headers
         )

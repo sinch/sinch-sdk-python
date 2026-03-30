@@ -8,6 +8,8 @@ This guide lists all removed classes and interfaces from V1 and how to migrate t
 
 > **Note:** Voice and Verification are not yet covered by the new V2 APIs. Support will be added in future releases.
 
+---
+
 ## Client Initialization
 
 ### Overview
@@ -62,6 +64,8 @@ token_client = SinchClient(
 sinch_client.configuration.sms_region = "eu"
 ```
 
+---
+
 ### Conversation Region
 
 **In V1:**
@@ -95,6 +99,8 @@ sinch_client = SinchClient(
 sinch_client.configuration.conversation_region = "eu"
 ```
 
+---
+
 ### [`Conversation`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/conversation)
 
 #### Replacement models
@@ -123,8 +129,8 @@ The Conversation domain API access remains `sinch_client.conversation`; message 
 | `send()` with `SendConversationMessageRequest` | Use convenience methods: `send_text_message()`, `send_card_message()`, `send_carousel_message()`, `send_choice_message()`, `send_contact_info_message()`, `send_list_message()`, `send_location_message()`, `send_media_message()`, `send_template_message()`<br>Or `send()` with `app_id`, `message` (dict or `SendMessageRequestBodyDict`), and either `contact_id` or `recipient_identities` |
 | `get()` with `GetConversationMessageRequest` | `get()` with `message_id: str` parameter |
 | `delete()` with `DeleteConversationMessageRequest` | `delete()` with `message_id: str` parameter |
-| `list()` with `ListConversationMessagesRequest` | In Progress |
-| — |  **New in V2:** `update()` with `message_id`, `metadata`, and optional `messages_source`|
+| `list()` with `ListConversationMessagesRequest` | `list()` with the same fields as keyword arguments (see models table above). V2 adds optional `channel_identity`, `start_time`, `end_time`, `channel`, `direction`. Returns **`Paginator[ConversationMessageResponse]`**: use `.content()` for messages on the current page, `.next_page()` to load the next page, or `.iterator()` to walk every message across all pages. |
+| — | **New in V2:** `update()` with `message_id`, `metadata`, and optional `messages_source` |
 
 ##### Replacement APIs / attributes
 
@@ -158,7 +164,7 @@ event = handler.parse_event(request_body)
 
 The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2, use the Python parameter / model field `event_destination_target`; it is serialized as `callback_url` on the wire (same pattern as other domains, e.g. SMS).
 
-<br>
+---
 
 ### [`SMS`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/sms)
 
@@ -200,6 +206,7 @@ The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2
 #### Replacement APIs
 
 The SMS domain API access remains the same: `sinch.sms.batches` and `sinch.sms.delivery_reports`. However, the underlying models and method signatures have changed.
+
 Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and will be available in future minor versions.
 
 ##### Batches API
@@ -213,17 +220,17 @@ Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and 
 | `update()` with `UpdateBatchRequest` | Use convenience methods: `update_sms()`, `update_binary()`, `update_mms()`<br>Or `update()` with `UpdateBatchMessageRequest` (Union of `UpdateTextRequestWithBatchId`, `UpdateBinaryRequestWithBatchId`, `UpdateMediaRequestWithBatchId`) |
 | `replace()` with `ReplaceBatchRequest` | Use convenience methods: `replace_sms()`, `replace_binary()`, `replace_mms()`<br>Or `replace()` with `ReplaceBatchRequest` (Union of `ReplaceTextRequest`, `ReplaceBinaryRequest`, `ReplaceMediaRequest`) |
 
-<br>
+---
 
 ##### Delivery Reports API
 
 | Old method | New method in `sms.delivery_reports` |
 |------------|-------------------------------------|
-| `list()` with `ListSMSDeliveryReportsRequest` | `list()` the parameters `start_date` and `end_date` now accepts both `str` and `datetime`  |
+| `list()` with `ListSMSDeliveryReportsRequest` | `list()` the parameters `start_date` and `end_date` now accepts both `str` and `datetime` |
 | `get_for_batch()` with `GetSMSDeliveryReportForBatchRequest` | `get()` with `batch_id: str` and optional parameters: `report_type`, `status`, `code`, `client_reference` |
 | `get_for_number()` with `GetSMSDeliveryReportForNumberRequest` | `get_for_number()` with `batch_id: str` and `recipient: str` parameters |
 
-<br>
+---
 
 ### [`Numbers` (Virtual Numbers)](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/numbers)
 
@@ -271,7 +278,6 @@ sinch_client.numbers.event_destinations.update(hmac_secret="your_hmac_secret")
 
 To obtain a Numbers Sinch Events handler: `sinch_client.numbers.sinch_events(callback_secret)` returns a `SinchEvents` instance; `handler.parse_event(request_body)` returns a `NumberSinchEvent`.
 
-
 ```python
 # New
 from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
@@ -285,7 +291,6 @@ event = handler.parse_event(request_body)  # event is a NumberSinchEvent
 |---|-----|-----|
 | **Methods that accept the parameter** | Only `numbers.available.rent_any(..., callback_url=...)` | `numbers.rent(...)`, `numbers.rent_any(...)`, and `numbers.update(...)` accept `event_destination_target` |
 | **Parameter name** | `callback_url` | `event_destination_target` |
-
 
 ##### Replacement request/response attributes
 

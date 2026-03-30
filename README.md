@@ -22,7 +22,7 @@ For more information on the Sinch APIs on which this SDK is based, refer to the 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Getting started](#getting-started)
-- [Logging]()
+- [Logging](#logging)
 
 ## Prerequisites
 
@@ -79,6 +79,10 @@ sinch_client = SinchClient(
 )
 ```
 
+### SMS and Conversation regions (V2)
+
+You must set `sms_region` before using the SMS API and `conversation_region` before using the Conversation API—either in the `SinchClient(...)` constructor or on `sinch_client.configuration` before the first call to that product. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for examples.
+
 ## Logging
 
 Logging configuration for this SDK utilizes following hierarchy:
@@ -86,34 +90,26 @@ Logging configuration for this SDK utilizes following hierarchy:
 2. If `logger_name` configurable was provided, SDK will use logger related to that name. For example: `myapp.sinch` will inherit configuration from the `myapp` logger.
 3. If `logger` (logger instance) configurable was provided, SDK will use that particular logger for all its logging operations.
 
-If all logging returned by this SDK needs to be disabled, usage of `NullHanlder` provided by the standard `logging` module is advised.  
+If all logging returned by this SDK needs to be disabled, usage of `NullHandler` provided by the standard `logging` module is advised.
 
 
  
 ## Sample apps
 
-Usage example of the `numbers` domain:
+Usage example of the Numbers API via [`VirtualNumbers`](sinch/domains/numbers/virtual_numbers.py) on the client (`sinch_client.numbers`)—`list()` returns your project’s active virtual numbers:
 
 ```python
-available_numbers = sinch_client.numbers.available.list(
+paginator = sinch_client.numbers.list(
     region_code="US",
-    number_type="LOCAL"
+    number_type="LOCAL",
 )
+for active_number in paginator.iterator():
+    print(active_number)
 ```
-Returned values are represented as Python `dataclasses`:
 
-```python
-ListAvailableNumbersResponse(
-    available_numbers=[
-        Number(
-            phone_number='+17862045855',
-            region_code='US',
-            type='LOCAL',
-            capability=['SMS', 'VOICE'],
-            setup_price={'currency_code': 'EUR', 'amount': '0.80'},
-            monthly_price={'currency_code': 'EUR', 'amount': '0.80'}
-            ...
-```
+Returned values are [Pydantic](https://docs.pydantic.dev/) model instances (for example [`ActiveNumber`](sinch/domains/numbers/models/v1/response/active_number.py)), including fields such as `phone_number`, `region_code`, `type`, and `capabilities`.
+
+More examples live under [examples/snippets](examples/snippets) on the `main` branch.
 
 ### Handling exceptions
 
@@ -125,9 +121,9 @@ Example for Numbers API:
 from sinch.domains.numbers.api.v1.exceptions import NumbersException
 
 try:
-    nums = sinch_client.numbers.available.list(
+    paginator = sinch_client.numbers.list(
         region_code="US",
-        number_type="LOCAL"
+        number_type="LOCAL",
     )
 except NumbersException as err:
     pass
@@ -163,4 +159,4 @@ The transport must be a synchronous implementation.
 
 ## License
 
-This project is licensed under the Apache License. See the [LICENSE](license.md) file for the license text.
+This project is licensed under the Apache License. See the [LICENSE](LICENSE) file for the license text.

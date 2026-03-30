@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -17,12 +16,14 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET"
 )
 
-phone_number_to_update = os.environ.get("SINCH_PHONE_NUMBER") or "MY_SINCH_PHONE_NUMBER"
-updated_display_name = "Updated DISPLAY_NAME"
+# The phone number to update in E.164 format
+phone_number = os.environ.get("SINCH_PHONE_NUMBER") or "MY_PHONE_NUMBER"
+# The display name to set for the number
+display_name = "Updated DISPLAY_NAME"
 
 response = sinch_client.numbers.update(
-    phone_number=phone_number_to_update,
-    display_name=updated_display_name
+    phone_number=phone_number,
+    display_name=display_name,
 )
 
 print("Updated Number:\n", response)

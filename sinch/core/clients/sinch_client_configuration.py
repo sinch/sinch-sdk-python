@@ -3,7 +3,6 @@ from logging import Logger
 
 from sinch.core.ports.http_transport import HTTPTransport
 from sinch.core.token_manager import TokenManager
-from sinch.core.enums import HTTPAuthentication
 
 
 class Configuration:
@@ -43,15 +42,12 @@ class Configuration:
         self._sms_region_with_service_plan_id = sms_region
         self._sms_domain = "https://zt.{}.sms.api.sinch.com"
         self._sms_domain_with_service_plan_id = "https://{}.sms.api.sinch.com"
-        self._templates_region = "eu"
-        self._templates_domain = ".template.api.sinch.com"
         self.token_manager = token_manager
         self.transport: HTTPTransport = transport
 
         self._set_conversation_origin()
         self._set_sms_origin()
         self._set_sms_origin_with_service_plan_id()
-        self._set_templates_origin()
 
         if logger_name:
             self.logger = logging.getLogger(logger_name)
@@ -158,35 +154,6 @@ class Configuration:
         doc="ConversationAPI Domain"
     )
 
-    def _set_templates_origin(self):
-        self.templates_origin = self._templates_region + self._templates_domain
-
-    def _set_templates_region(self, region):
-        self._templates_region = region
-        self._set_templates_origin()
-
-    def _get_templates_region(self):
-        return self._templates_region
-
-    templates_region = property(
-        _get_templates_region,
-        _set_templates_region,
-        doc="Conversation API Templates Region"
-    )
-
-    def _set_templates_domain(self, domain):
-        self._templates_domain = domain
-        self._set_templates_origin()
-
-    def _get_templates_domain(self):
-        return self._templates_domain
-
-    templates_domain = property(
-        _get_templates_domain,
-        _set_templates_domain,
-        doc="Conversation API Templates Domain"
-    )
-
     def _determine_authentication_method(self):
         """
         Determines the authentication method based on provided parameters.
@@ -256,7 +223,7 @@ class Configuration:
                 "SMS region is required. "
                 "Provide sms_region when initializing SinchClient "
                 "Example: SinchClient(project_id='...', key_id='...', key_secret='...', sms_region='eu')"
-                "or set it via sinch_client.configuration.sms_region. "
+                " or set it via sinch_client.configuration.sms_region. "
             )
 
         return origin
@@ -273,7 +240,7 @@ class Configuration:
                 "Conversation region is required. "
                 "Provide conversation_region when initializing SinchClient "
                 "Example: SinchClient(project_id='...', key_id='...', key_secret='...', conversation_region='eu')"
-                "or set it via sinch_client.configuration.conversation_region. "
+                " or set it via sinch_client.configuration.conversation_region. "
             )
 
         return self.conversation_origin

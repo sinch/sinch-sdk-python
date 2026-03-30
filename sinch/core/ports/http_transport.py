@@ -10,12 +10,59 @@ from sinch import __version__ as sdk_version
 
 
 class HTTPTransport(ABC):
+    """Base class for HTTP transports.
+
+    Subclasses implement ``send`` to perform the raw HTTP call.
+    The public ``request`` method adds cross-cutting concerns on top:
+    authentication, logging hooks, and automatic token refresh on 401.
+    """
+
     def __init__(self, sinch):
         self.sinch = sinch
 
+    # ------------------------------------------------------------------
+    # Subclass contract
+    # ------------------------------------------------------------------
+
     @abstractmethod
+    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+        """Execute a single HTTP round-trip and return the response.
+
+        Implementations must prepare the request, authenticate, perform the
+        HTTP call, deserialize the response, and return an ``HTTPResponse``.
+        They should **not** handle token refresh — that is done by
+        ``request``.
+        """
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
-        pass
+        """Send a request with automatic OAuth token refresh on 401.
+
+        If the server responds with 401 *and* the token is detected as
+        expired, the token is invalidated and **one** retry is attempted
+        with a fresh token.  A second consecutive 401 is handed straight
+        to the endpoint's error handler — no further retries.
+        """
+        http_response = self.send(endpoint)
+
+        if self._should_refresh_token(endpoint, http_response):
+            self.sinch.configuration.token_manager.handle_invalid_token(
+                http_response
+            )
+            if (
+                self.sinch.configuration.token_manager.token_state
+                == TokenState.EXPIRED
+            ):
+                http_response = self.send(endpoint)
+
+        return endpoint.handle_response(http_response)
+
+    # ------------------------------------------------------------------
+    # Internals
+    # ------------------------------------------------------------------
 
     def authenticate(self, endpoint, request_data):
         if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
@@ -83,10 +130,7 @@ class HTTPTransport(ABC):
                 response_body = response.json()
             except ValueError as err:
                 raise SinchException(
-                    message=(
-                        "Error while parsing json response.",
-                        err.msg
-                    ),
+                    message=f"Error while parsing json response. {err}",
                     is_from_server=True,
                     response=response
                 )
@@ -95,10 +139,11 @@ class HTTPTransport(ABC):
 
         return response_body
 
-    def handle_response(self, endpoint: HTTPEndpoint, http_response: HTTPResponse):
-        if http_response.status_code == 401 and endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
-            self.sinch.configuration.token_manager.handle_invalid_token(http_response)
-            if self.sinch.configuration.token_manager.token_state == TokenState.EXPIRED:
-                return self.request(endpoint=endpoint)
-
-        return endpoint.handle_response(http_response)
+    @staticmethod
+    def _should_refresh_token(endpoint, http_response):
+        """Return True when a 401 response should trigger a token refresh."""
+        return (
+            http_response.status_code == 401
+            and endpoint.HTTP_AUTHENTICATION
+            == HTTPAuthentication.OAUTH.value
+        )

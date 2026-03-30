@@ -124,8 +124,9 @@ class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
         self.request_data = request_data
 
     def request_body(self):
+        path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True
+            by_alias=True, exclude_none=True, exclude=path_params
         )
         return json.dumps(request_data)
 

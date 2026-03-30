@@ -43,7 +43,6 @@ def configure_origin(
     sinch_client,
     numbers_origin,
     conversation_origin,
-    templates_origin,
     auth_origin,
     sms_origin
 ):
@@ -55,9 +54,6 @@ def configure_origin(
 
     if conversation_origin:
         sinch_client.configuration.conversation_origin = conversation_origin
-
-    if templates_origin:
-        sinch_client.configuration.templates_origin = templates_origin
 
     if sms_origin:
         sinch_client.configuration.sms_origin = sms_origin
@@ -99,11 +95,6 @@ def auth_origin():
 @pytest.fixture
 def sms_origin():
     return os.getenv("SMS_ORIGIN")
-
-
-@pytest.fixture
-def templates_origin():
-    return os.getenv("TEMPLATES_ORIGIN")
 
 
 @pytest.fixture
@@ -181,7 +172,6 @@ def sinch_client_sync(
     key_secret,
     numbers_origin,
     conversation_origin,
-    templates_origin,
     auth_origin,
     sms_origin,
     project_id
@@ -194,7 +184,6 @@ def sinch_client_sync(
         ),
         numbers_origin,
         conversation_origin,
-        templates_origin,
         auth_origin,
         sms_origin
     )

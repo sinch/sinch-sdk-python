@@ -1,8 +1,7 @@
 """
 Sinch Python Snippet
 
-TODO: Update links when v2 is released.
-This snippet is available at https://github.com/sinch/sinch-sdk-python/blob/v2.0/docs/snippets/
+This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main/examples/snippets
 """
 
 import os
@@ -28,14 +27,17 @@ recipient_identities = [
     }
 ]
 
+# The conversation message payload to send
+message = {
+    "text_message": {
+        "text": "[Python SDK: Conversation Message] Sample text message",
+    },
+}
+
 response = sinch_client.conversation.messages.send(
     app_id=app_id,
-    message={
-        "text_message": {
-            "text": "[Python SDK: Conversation Message] Sample text message"
-        }
-    },
-    recipient_identities=recipient_identities
+    message=message,
+    recipient_identities=recipient_identities,
 )
 
 print(f"Successfully sent message.\n{response}")
