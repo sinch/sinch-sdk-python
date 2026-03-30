@@ -117,7 +117,10 @@ def test_parse_event_message_submit_expects_message_submit_event(conversation_si
 
 
 def test_parse_event_json_string_expects_parsed(conversation_sinch_event):
-    payload_str = '{"app_id":"app1","message_delivery_report":{"status":"DELIVERED"}}'
+    payload_str = (
+        '{"app_id":"app1","project_id":"proj1",'
+        '"message_delivery_report":{"status":"DELIVERED"}}'
+    )
     event = conversation_sinch_event.parse_event(payload_str)
     assert isinstance(event, MessageDeliveryReceiptEvent)
     assert event.app_id == "app1"
