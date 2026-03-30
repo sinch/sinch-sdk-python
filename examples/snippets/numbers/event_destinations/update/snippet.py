@@ -17,7 +17,7 @@ sinch_client = SinchClient(
 )
 
 # The HMAC secret for signing webhook requests to your event destination
-hmac_secret = "HMAC_SECRET"
+hmac_secret = "NEW_HMAC_SECRET"
 
 response = sinch_client.numbers.event_destinations.update(
     hmac_secret=hmac_secret

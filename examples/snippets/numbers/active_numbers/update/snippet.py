@@ -19,7 +19,7 @@ sinch_client = SinchClient(
 # The phone number to update in E.164 format
 phone_number = os.environ.get("SINCH_PHONE_NUMBER") or "MY_PHONE_NUMBER"
 # The display name to set for the number
-display_name = "DISPLAY_NAME"
+display_name = "Updated DISPLAY_NAME"
 
 response = sinch_client.numbers.update(
     phone_number=phone_number,

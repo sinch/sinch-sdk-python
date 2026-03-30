@@ -17,7 +17,7 @@ sinch_client = SinchClient(
 )
 
 # The phone number to release in E.164 format
-phone_number = os.environ.get("SINCH_PHONE_NUMBER") or "MY_PHONE_NUMBER"
+phone_number = os.environ.get("SINCH_PHONE_NUMBER") or "MY_SINCH_PHONE_NUMBER"
 
 released_number = sinch_client.numbers.release(
     phone_number=phone_number
