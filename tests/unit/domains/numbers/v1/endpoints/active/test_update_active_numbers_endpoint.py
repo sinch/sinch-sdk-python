@@ -51,7 +51,6 @@ def mock_response():
 @pytest.fixture
 def mock_response_body():
     expected_body = {
-        "phoneNumber": "+1234567890",
         "displayName": "Display Name",
         "smsConfiguration": {
             "servicePlanId": "Service Plan Id"

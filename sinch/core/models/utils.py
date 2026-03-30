@@ -29,22 +29,29 @@ def serialize_datetime_in_dict(value: Optional[Dict[str, Any]]) -> Optional[Dict
     return serialized
 
 
-def model_dump_for_query_params(model, exclude_none=True, by_alias=True):
+def model_dump_for_query_params(
+    model, exclude_none=True, by_alias=True, exclude=None
+):
     """
     Serializes a Pydantic model for use as query parameters.
     Converts list values to comma-separated strings for APIs that expect this format.
     Filters out empty values (empty strings and empty lists).
-    
+
     :param model: A Pydantic BaseModel instance
     :type model: BaseModel
     :param exclude_none: Whether to exclude None values (default: True)
     :type exclude_none: bool
     :param by_alias: Whether to use field aliases (default: True)
     :type by_alias: bool
+    :param exclude: Field names to omit (e.g. URL path params), passed to model_dump
+    :type exclude: set[str] | None
     :returns: Serialized model data with lists converted to comma-separated strings
     :rtype: dict
     """
-    data = model.model_dump(exclude_none=exclude_none, by_alias=by_alias)
+    dump_kwargs = {"exclude_none": exclude_none, "by_alias": by_alias}
+    if exclude is not None:
+        dump_kwargs["exclude"] = exclude
+    data = model.model_dump(**dump_kwargs)
     filtered_data = {}
     for key, value in data.items():
         # Filter out empty strings

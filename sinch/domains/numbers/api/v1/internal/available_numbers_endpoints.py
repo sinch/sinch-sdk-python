@@ -33,8 +33,9 @@ class RentNumberEndpoint(NumbersEndpoint):
 
     def request_body(self) -> str:
         # Convert the request data to a dictionary and remove None values
+        path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True
+            by_alias=True, exclude_none=True, exclude=path_params
         )
         return json.dumps(request_data)
 
