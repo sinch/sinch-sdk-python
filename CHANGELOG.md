@@ -18,13 +18,13 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ## v2.0.0 – 2026-03-31
 
-### Major breaking changes with major release
+### Breaking Changes
 
 - see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md#200)
 
 ### SDK
 
-- **[design]** Required explicit `sms_region` and `conversation_region` on `SinchClient` before using SMS and Conversation APIs (no silent US/EU defaults); runtime failure if unset (#49, #110).
+- **[design]** Requires explicit `sms_region` and `conversation_region` on `SinchClient` before using SMS and Conversation APIs (no silent US/EU defaults); runtime failure if unset (#49, #110).
 - **[design]** The v1 asynchronous client and httpx-based async stack were removed; only synchronous `SinchClient` is supported (#55).
 - **[feature]** Automatic pagination via a shared `Paginator` pattern for paged list APIs (#46, #54).
 - **[doc]** README and configuration tests clarify which credentials apply to each API (#48).
@@ -32,8 +32,8 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### Conversation
 
 - **[feature]** Messages API refresh: convenience send methods (`send_text_message()`, `send_card_message()`, `send_carousel_message()`, `send_choice_message()`, `send_contact_info_message()`, `send_list_message()`, `send_location_message()`, `send_media_message()`, `send_template_message()`), `list()` as a paginator, `update()`, `event_destination_target` (wires `callback_url`), and a `sinch_client.conversation.sinch_events(...)` helper for inbound event handling (#109–#120).
-- **[feature]** Conversation Webhooks (#122), redesigned into Sinch Events (#131, #132, #133).
-- **[deprecation notice]** Conversation webhook REST client surface removed; handle inbound traffic via Sinch Events (see migration guide) (#131, #132, #133).
+- **[feature]** Conversation Sinch Events (webhooks) support (#122, #131, #132, #133).
+- **[design]** Conversation webhook REST client removed; handle inbound traffic via Sinch Events (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)) (#131, #132, #133).
 
 ### Numbers
 
