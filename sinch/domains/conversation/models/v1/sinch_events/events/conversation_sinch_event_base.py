@@ -9,12 +9,10 @@ from sinch.domains.conversation.sinch_events.v1.internal import SinchEvent
 class ConversationSinchEventBase(SinchEvent):
     """Base fields present on every Conversation API Sinch Event payload."""
 
-    app_id: Optional[StrictStr] = Field(
-        default=None,
+    app_id: StrictStr = Field(
         description="Id of the subscribed app.",
     )
-    project_id: Optional[StrictStr] = Field(
-        default=None,
+    project_id: StrictStr = Field(
         description="The project ID of the app which has subscribed for the callback.",
     )
     accepted_time: Optional[datetime] = Field(
