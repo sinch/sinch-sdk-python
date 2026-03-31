@@ -1,10 +1,8 @@
 import logging
 from logging import Logger
-from typing import Union
 
 from sinch.core.ports.http_transport import HTTPTransport
-from sinch.core.token_manager import TokenManager, TokenManagerAsync
-from sinch.core.enums import HTTPAuthentication
+from sinch.core.token_manager import TokenManager
 
 
 class Configuration:
@@ -13,52 +11,43 @@ class Configuration:
     """
     def __init__(
         self,
-        key_id: str,
-        key_secret: str,
-        project_id: str,
         transport: HTTPTransport,
-        token_manager: Union[TokenManager, TokenManagerAsync],
+        token_manager: TokenManager,
+        connection_timeout=10,
+        key_id: str = None,
+        key_secret: str = None,
+        project_id: str = None,
         logger: Logger = None,
         logger_name: str = None,
-        disable_https=False,
-        connection_timeout=10,
-        application_key: str = None,
-        application_secret: str = None,
         service_plan_id: str = None,
-        sms_api_token: str = None
+        sms_api_token: str = None,
+        sms_region: str = None,
+        conversation_region: str = None,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
         self.project_id = project_id
-        self.application_key = application_key
-        self.application_secret = application_secret
         self.connection_timeout = connection_timeout
         self.sms_api_token = sms_api_token
         self.service_plan_id = service_plan_id
-        self.auth_origin = "auth.sinch.com"
-        self.numbers_origin = "numbers.api.sinch.com"
-        self.verification_origin = "verification.api.sinch.com"
-        self.voice_applications_origin = "callingapi.sinch.com"
-        self._voice_domain = "{}.api.sinch.com"
-        self._voice_region = None
-        self._conversation_region = "eu"
-        self._conversation_domain = ".conversation.api.sinch.com"
-        self._sms_region = "us"
-        self._sms_region_with_service_plan_id = "us"
-        self._sms_domain = "zt.{}.sms.api.sinch.com"
-        self._sms_domain_with_service_plan_id = "{}.sms.api.sinch.com"
-        self._sms_authentication = HTTPAuthentication.OAUTH.value
-        self._templates_region = "eu"
-        self._templates_domain = ".template.api.sinch.com"
+        
+        # Determine authentication method based on provided parameters
+        self._authentication_method = self._determine_authentication_method()
+        self.auth_origin = "https://auth.sinch.com"
+        self.numbers_origin = "https://numbers.api.sinch.com"
+        self.number_lookup_origin = "https://lookup.api.sinch.com"
+        self._conversation_region = conversation_region
+        self._conversation_domain = "https://{}.conversation.api.sinch.com"
+        self._sms_region = sms_region
+        self._sms_region_with_service_plan_id = sms_region
+        self._sms_domain = "https://zt.{}.sms.api.sinch.com"
+        self._sms_domain_with_service_plan_id = "https://{}.sms.api.sinch.com"
         self.token_manager = token_manager
-        self.disable_https = disable_https
         self.transport: HTTPTransport = transport
 
         self._set_conversation_origin()
         self._set_sms_origin()
         self._set_sms_origin_with_service_plan_id()
-        self._set_templates_origin()
-        self._set_voice_origin()
 
         if logger_name:
             self.logger = logging.getLogger(logger_name)
@@ -68,9 +57,12 @@ class Configuration:
             self.logger = logging.getLogger("Sinch")
 
     def _set_sms_origin_with_service_plan_id(self):
-        self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(
-            self._sms_region_with_service_plan_id
-        )
+        if self._sms_region_with_service_plan_id:
+            self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(
+                self._sms_region_with_service_plan_id
+            )
+        else:
+            self.sms_origin_with_service_plan_id = None
 
     def _set_sms_region_with_service_plan_id(self, region):
         self._sms_region_with_service_plan_id = region
@@ -99,7 +91,10 @@ class Configuration:
     )
 
     def _set_sms_origin(self):
-        self.sms_origin = self._sms_domain.format(self._sms_region)
+        if self._sms_region:
+            self.sms_origin = self._sms_domain.format(self._sms_region)
+        else:
+            self.sms_origin = None
 
     def _set_sms_region(self, region):
         self._sms_region = region
@@ -128,7 +123,10 @@ class Configuration:
     )
 
     def _set_conversation_origin(self):
-        self.conversation_origin = self._conversation_region + self._conversation_domain
+        if self._conversation_region:
+            self.conversation_origin = self._conversation_domain.format(self._conversation_region)
+        else:
+            self.conversation_origin = None
 
     def _set_conversation_region(self, region):
         self._conversation_region = region
@@ -156,50 +154,93 @@ class Configuration:
         doc="ConversationAPI Domain"
     )
 
-    def _set_templates_origin(self):
-        self.templates_origin = self._templates_region + self._templates_domain
-
-    def _set_templates_region(self, region):
-        self._templates_region = region
-        self._set_templates_origin()
-
-    def _get_templates_region(self):
-        return self._templates_region
-
-    templates_region = property(
-        _get_templates_region,
-        _set_templates_region,
-        doc="Conversation API Templates Region"
-    )
-
-    def _set_templates_domain(self, domain):
-        self._templates_domain = domain
-        self._set_templates_origin()
-
-    def _get_templates_domain(self):
-        return self._templates_domain
-
-    templates_domain = property(
-        _get_templates_domain,
-        _set_templates_domain,
-        doc="Conversation API Templates Domain"
-    )
-
-    def _set_voice_origin(self):
-        if not self._voice_region:
-            self.voice_origin = self._voice_domain.format("calling")
+    def _determine_authentication_method(self):
+        """
+        Determines the authentication method based on provided parameters.
+        Priority: SMS authentication (service_plan_id + sms_api_token) over project authentication (project_id).
+        """
+        if self.service_plan_id and self.sms_api_token:
+            return "sms_auth"
+        elif self.project_id:
+            return "project_auth"
         else:
-            self.voice_origin = self._voice_domain.format("calling-" + self._voice_region)
+            # No authentication parameters provided - will be validated later
+            return None
 
-    def _set_voice_region(self, region):
-        self._voice_region = region
-        self._set_voice_origin()
+    @property
+    def authentication_method(self):
+        """Returns the determined authentication method"""
+        return self._authentication_method
 
-    def _get_voice_region(self):
-        return self._voice_region
+    def validate_authentication_parameters(self):
+        """
+        Validates that sufficient authentication parameters are provided.
+        Recalculates the authentication method based on current credentials before validating.
+        This should be called before making actual API requests.
+        """
 
-    voice_region = property(
-        _get_voice_region,
-        _set_voice_region,
-        doc="Voice Region"
-    )
+        self._authentication_method = self._determine_authentication_method()
+        
+        # Check for incomplete SMS auth only if not using project auth
+        # This prevents false positives when both service_plan_id and project_id are provided
+        has_project_auth = self.project_id and self.key_id and self.key_secret
+        if self.service_plan_id and not self.sms_api_token and not has_project_auth:
+            raise ValueError(
+                "The sms_api_token is required when using service_plan_id"
+            )
+        if self._authentication_method is None or self._authentication_method == "project_auth":
+            # Default to project_auth and validate parameters
+            if not self.project_id:
+                raise ValueError(
+                    "The project_id is required"
+                )
+            if not self.key_id or not self.key_secret:
+                raise ValueError(
+                    "The key_id and key_secret are required"
+                )
+        elif self._authentication_method == "sms_auth":
+            if not self.service_plan_id or not self.sms_api_token:
+                raise ValueError(
+                    "The service_plan_id and sms_api_token are required"
+                )
+
+    def get_sms_origin_for_auth(self):
+        """
+        Returns the appropriate SMS origin based on the authentication method.
+        - SMS auth (service_plan_id + sms_api_token): uses sms_origin_with_service_plan_id
+        - Project auth (project_id): uses regular sms_origin
+
+        Raises:
+            ValueError: If the SMS origin is None (sms_region not set)
+        """
+        if self._authentication_method == "sms_auth":
+            origin = self.sms_origin_with_service_plan_id
+        else:
+            origin = self.sms_origin
+
+        if origin is None:
+            raise ValueError(
+                "SMS region is required. "
+                "Provide sms_region when initializing SinchClient "
+                "Example: SinchClient(project_id='...', key_id='...', key_secret='...', sms_region='eu')"
+                " or set it via sinch_client.configuration.sms_region. "
+            )
+
+        return origin
+
+    def get_conversation_origin(self):
+        """
+        Returns the conversation origin.
+
+        Raises:
+            ValueError: If the conversation region is None (conversation_region not set)
+        """
+        if self.conversation_origin is None:
+            raise ValueError(
+                "Conversation region is required. "
+                "Provide conversation_region when initializing SinchClient "
+                "Example: SinchClient(project_id='...', key_id='...', key_secret='...', conversation_region='eu')"
+                " or set it via sinch_client.configuration.conversation_region. "
+            )
+
+        return self.conversation_origin

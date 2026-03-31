@@ -1,5 +1,5 @@
 from sinch.core.exceptions import ValidationException
-from sinch.domains.numbers.exceptions import NumbersException
+from sinch.domains.numbers.api.v1.exceptions import NumbersException
 from sinch.domains.conversation.exceptions import ConversationException
 from sinch.domains.sms.exceptions import SMSException
 from sinch.domains.authentication.exceptions import AuthenticationException

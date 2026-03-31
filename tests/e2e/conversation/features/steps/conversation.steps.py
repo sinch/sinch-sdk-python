@@ -1,0 +1,210 @@
+from datetime import datetime, timezone
+from behave import given, when, then
+from sinch.domains.conversation.api.v1.messages_apis import Messages
+
+
+@given('the Conversation service "Messages" is available')
+def step_service_is_available(context):
+    assert hasattr(context, 'sinch') and context.sinch, 'Sinch client was not initialized'
+    assert isinstance(context.sinch.conversation.messages, Messages), 'Messages service is not available'
+    context.messages = context.sinch.conversation.messages
+
+
+@when('I send a request to delete a message')
+def step_delete_message(context):
+    context.delete_message_response = context.messages.delete(
+        message_id='01W4FFL35P4NC4K35MESSAGE001'
+    )
+
+
+@then('the delete message response contains no data')
+def step_validate_delete_message_response(context):
+    assert context.delete_message_response is None, 'Delete message response should be None'
+
+
+@when('I send a request to retrieve a message')
+def step_retrieve_message(context):
+    context.message = context.messages.get(
+        message_id='01W4FFL35P4NC4K35MESSAGE001'
+    )
+
+
+@then('the response contains the message details')
+def step_validate_message_details(context):
+    message = context.message
+    assert message is not None, 'Message should not be None'
+    assert message.id == '01W4FFL35P4NC4K35MESSAGE001', f'Expected message.id to be "01W4FFL35P4NC4K35MESSAGE001", got "{message.id}"'
+    assert message.direction == 'TO_CONTACT', f'Expected message.direction to be "TO_CONTACT", got "{message.direction}"'
+    assert message.conversation_id == '01W4FFL35P4NC4K35CONVERSATI', f'Expected message.conversation_id to be "01W4FFL35P4NC4K35CONVERSATI", got "{message.conversation_id}"'
+    assert message.contact_id == '01W4FFL35P4NC4K35CONTACT001', f'Expected message.contact_id to be "01W4FFL35P4NC4K35CONTACT001", got "{message.contact_id}"'
+    assert message.metadata == '', f'Expected message.metadata to be "", got "{message.metadata}"'
+    
+    expected_accept_time = datetime(2024, 6, 6, 12, 42, 42, tzinfo=timezone.utc)
+    assert message.accept_time == expected_accept_time, f'Expected message.accept_time to be {expected_accept_time}, got {message.accept_time}'
+    
+    assert message.processing_mode == 'CONVERSATION', f'Expected message.processing_mode to be "CONVERSATION", got "{message.processing_mode}"'
+    assert message.injected is False, f'Expected message.injected to be False, got {message.injected}'
+    
+    assert message.channel_identity is not None, 'Message channel_identity should not be None'
+    assert message.channel_identity.channel == 'SMS', f'Expected channel_identity.channel to be "SMS", got "{message.channel_identity.channel}"'
+    assert message.channel_identity.identity == '12015555555', f'Expected channel_identity.identity to be "12015555555", got "{message.channel_identity.identity}"'
+    assert message.channel_identity.app_id == '', f'Expected channel_identity.app_id to be "", got "{message.channel_identity.app_id}"'
+
+
+@when('I send a request to update a message')
+def step_update_message(context):
+    context.update_message_response = context.messages.update(
+        message_id='01W4FFL35P4NC4K35MESSAGE001',
+        metadata='Updated metadata'
+    )
+
+
+@then('the response contains the message details with updated metadata')
+def step_validate_update_message_response(context):
+    message = context.update_message_response
+    assert message is not None, 'Update message response should not be None'
+    assert message.id == '01W4FFL35P4NC4K35MESSAGE001', f'Expected message.id to be "01W4FFL35P4NC4K35MESSAGE001", got "{message.id}"'
+    assert message.metadata == 'Updated metadata', f'Expected message.metadata to be "Updated metadata", got "{message.metadata}"'
+
+
+@when('I send a request to send a message to a contact')
+def step_send_message(context):
+    context.message_response = context.messages.send_text_message(
+        app_id='01W4FFL35P4NC4K35CONVAPP001',
+        text='Hello',
+        contact_id='01W4FFL35P4NC4K35CONTACT001'
+    )
+
+
+@then('the response contains the id of the message')
+def step_validate_send_message_response(context):
+    assert context.message_response is not None, 'Message response should not be None'
+    assert hasattr(context.message_response, 'message_id'), 'Message response should have message_id attribute'
+    assert context.message_response.message_id == '01W4FFL35P4NC4K35MESSAGE001', f'Expected message_id to be "01W4FFL35P4NC4K35MESSAGE001", got "{context.message_response.message_id}"'
+
+
+@when('I send a request to list the existing messages')
+def step_list_messages(context):
+    context.list_response = context.messages.list(page_size=2)
+
+
+@then('the response contains "{count}" messages')
+def step_validate_message_count(context, count):
+    expected_messages_count = int(count)
+    assert len(context.list_response.content()) == expected_messages_count, (
+        f'Expected {expected_messages_count} messages, got {len(context.list_response.content())}'
+    )
+
+
+@when('I send a request to list all the messages')
+def step_list_all_messages(context):
+    """List all messages using iterator"""
+    response = context.messages.list(page_size=2)
+    messages_list = []
+
+    for message in response.iterator():
+        messages_list.append(message)
+
+    context.messages_list = messages_list
+
+
+@then('the messages list contains "{count}" messages')
+def step_validate_total_message_count(context, count):
+    expected_messages_count = int(count)
+    assert len(context.messages_list) == expected_messages_count, (
+        f'Expected {expected_messages_count} messages, got {len(context.messages_list)}'
+    )
+
+
+@when('I iterate manually over the messages pages')
+def step_iterate_messages_pages(context):
+    """Manually iterate over messages pages"""
+    context.list_response = context.messages.list(
+        page_size=2,
+    )
+
+    context.messages_list = []
+    context.pages_iteration = 0
+    reached_end_of_pages = False
+
+    while not reached_end_of_pages:
+        context.messages_list.extend(context.list_response.content())
+        context.pages_iteration += 1
+        if context.list_response.has_next_page:
+            context.list_response = context.list_response.next_page()
+        else:
+            reached_end_of_pages = True
+
+
+@then('the result contains the data from "{count}" pages')
+def step_validate_page_count(context, count):
+    expected_pages_count = int(count)
+    assert context.pages_iteration == expected_pages_count, (
+        f'Expected {expected_pages_count} pages, got {context.pages_iteration}'
+    )
+
+
+@when('I send a request to list the last messages sent to specified channel identities')
+def step_list_last_messages_channel_identities(context):
+    context.list_response = context.messages.list_last_messages_by_channel_identity(
+        channel_identities=['12015555555', '12017777777', '7504610123456789'],
+        messages_source='CONVERSATION_SOURCE',
+        page_size=2,
+    )
+
+
+@then('the response contains "{count}" last messages sent to specified channel identities')
+def step_validate_last_messages_count(context, count):
+    expected_count = int(count)
+    assert len(context.list_response.content()) == expected_count, (
+        f'Expected {expected_count} last messages, got {len(context.list_response.content())}'
+    )
+
+
+@when('I send a request to list all the last messages sent to specified channel identities')
+def step_list_all_last_messages_channel_identities(context):
+    """List all last messages by channel identity using iterator"""
+    response = context.messages.list_last_messages_by_channel_identity(
+        channel_identities=['12015555555', '12017777777', '7504610123456789'],
+        messages_source='CONVERSATION_SOURCE',
+        page_size=2,
+    )
+    messages_list = []
+    for message in response.iterator():
+        messages_list.append(message)
+    context.messages_list = messages_list
+
+
+@then('the response list contains "{count}" last messages sent to specified channel identities')
+def step_validate_response_list_count(context, count):
+    expected_count = int(count)
+    assert len(context.messages_list) == expected_count, (
+        f'Expected {expected_count} last messages, got {len(context.messages_list)}'
+    )
+
+
+@when('I iterate manually over the last messages sent to specified channel identities pages')
+def step_iterate_last_messages_pages(context):
+    context.list_response = context.messages.list_last_messages_by_channel_identity(
+        channel_identities=['12015555555', '12017777777', '7504610123456789'],
+        messages_source='CONVERSATION_SOURCE',
+        page_size=2,
+    )
+    context.messages_list = []
+    context.pages_iteration = 0
+    reached_end_of_pages = False
+    while not reached_end_of_pages:
+        context.messages_list.extend(context.list_response.content())
+        context.pages_iteration += 1
+        if context.list_response.has_next_page:
+            context.list_response = context.list_response.next_page()
+        else:
+            reached_end_of_pages = True
+
+
+@then('the result contains the data from "{count}" pages of last messages sent to specified channel identities')
+def step_validate_last_messages_page_count(context, count):
+    expected_pages_count = int(count)
+    assert context.pages_iteration == expected_pages_count, (
+        f'Expected {expected_pages_count} pages, got {context.pages_iteration}'
+    )

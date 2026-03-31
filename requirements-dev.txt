@@ -1,11 +1,14 @@
 # Testing
 pytest
-pytest-asyncio
+pytest-mock
 coverage
+behave
 
 # Code Quality
-flake8
+ruff
 
 # HTTP Libraries
-httpx
 requests
+
+# Data Validation
+pydantic >= 2.0.0

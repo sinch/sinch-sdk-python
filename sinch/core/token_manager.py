@@ -1,7 +1,7 @@
 from enum import Enum
 from abc import ABC, abstractmethod
-from sinch.domains.authentication.models.authentication import OAuthToken
-from sinch.domains.authentication.endpoints.oauth import OAuthEndpoint
+from sinch.domains.authentication.models.v1.authentication import OAuthToken
+from sinch.domains.authentication.endpoints.v1.oauth import OAuthEndpoint
 from sinch.core.exceptions import ValidationException
 
 
@@ -47,15 +47,5 @@ class TokenManager(TokenManagerBase):
             return self.token
 
         self.token = self.sinch.configuration.transport.request(OAuthEndpoint())
-        self.token_state = TokenState.VALID
-        return self.token
-
-
-class TokenManagerAsync(TokenManagerBase):
-    async def get_auth_token(self) -> OAuthToken:
-        if self.token:
-            return self.token
-
-        self.token = await self.sinch.configuration.transport.request(OAuthEndpoint())
         self.token_state = TokenState.VALID
         return self.token

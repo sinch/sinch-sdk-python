@@ -22,7 +22,7 @@ For more information on the Sinch APIs on which this SDK is based, refer to the 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Getting started](#getting-started)
-- [Logging]()
+- [Logging](#logging)
 
 ## Prerequisites
 
@@ -35,47 +35,53 @@ For more information on the Sinch APIs on which this SDK is based, refer to the 
 You can install this package by typing:
 `pip install sinch`
 
+## Products
+
+The Sinch client provides access to the following Sinch products:
+- Numbers API
+- SMS API
+- Conversation API (beta release)
+
+
 ## Getting started
+
 
 ### Client initialization
 
 
-To initialize communication with Sinch backed, credentials obtained from Sinch portal have to be provided to the main client class of this SDK.
-It's highly advised to not hardcode those credentials, but to fetch them from environment variables:
+To establish a connection with the Sinch backend, you must provide the appropriate credentials based on the API
+you intend to use. For security best practices, avoid hardcoding credentials.
+Instead, retrieve them from environment variables.
+
+#### SMS API
+For the SMS API in **Australia (AU)**, **Brazil (BR)**, **Canada (CA)**, **the United States (US)**, 
+and **the European Union (EU)**,  provide the following parameters:
 
 ```python
 from sinch import SinchClient
 
 sinch_client = SinchClient(
+    service_plan_id="service_plan_id",
+    sms_api_token="api_token"
+)
+```
+
+#### All Other Sinch APIs
+For all other Sinch APIs, including SMS in US and EU regions, use the following parameters:
+
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id="project_id",
     key_id="key_id",
-    key_secret="key_secret",
-    project_id="some_project",
-    application_key="application_key",
-    application_secret="application_secret"
+    key_secret="key_secret"
 )
 ```
 
-```python
-import os
-from sinch import SinchClient
+### SMS and Conversation regions (V2)
 
-sinch_client = SinchClient(
-    key_id=os.getenv("KEY_ID"),
-    key_secret=os.getenv("KEY_SECRET"),
-    project_id=os.getenv("PROJECT_ID"),
-    application_key=os.getenv("APPLICATION_KEY"),
-    application_secret=os.getenv("APPLICATION_SECRET")
-)
-```
-
-## Products
-
-Sinch client provides access to the following Sinch products:
-- Numbers
-- SMS
-- Verification
-- Voice API
-- Conversation API (beta release)
+You must set `sms_region` before using the SMS API and `conversation_region` before using the Conversation API—either in the `SinchClient(...)` constructor or on `sinch_client.configuration` before the first call to that product. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for examples.
 
 ## Logging
 
@@ -84,34 +90,26 @@ Logging configuration for this SDK utilizes following hierarchy:
 2. If `logger_name` configurable was provided, SDK will use logger related to that name. For example: `myapp.sinch` will inherit configuration from the `myapp` logger.
 3. If `logger` (logger instance) configurable was provided, SDK will use that particular logger for all its logging operations.
 
-If all logging returned by this SDK needs to be disabled, usage of `NullHanlder` provided by the standard `logging` module is advised.  
+If all logging returned by this SDK needs to be disabled, usage of `NullHandler` provided by the standard `logging` module is advised.
 
 
  
 ## Sample apps
 
-Usage example of the `numbers` domain:
+Usage example of the Numbers API via [`VirtualNumbers`](sinch/domains/numbers/virtual_numbers.py) on the client (`sinch_client.numbers`)—`list()` returns your project’s active virtual numbers:
 
 ```python
-available_numbers = sinch_client.numbers.available.list(
+paginator = sinch_client.numbers.list(
     region_code="US",
-    number_type="LOCAL"
+    number_type="LOCAL",
 )
+for active_number in paginator.iterator():
+    print(active_number)
 ```
-Returned values are represented as Python `dataclasses`:
 
-```python
-ListAvailableNumbersResponse(
-    available_numbers=[
-        Number(
-            phone_number='+17862045855',
-            region_code='US',
-            type='LOCAL',
-            capability=['SMS', 'VOICE'],
-            setup_price={'currency_code': 'EUR', 'amount': '0.80'},
-            monthly_price={'currency_code': 'EUR', 'amount': '0.80'}
-            ...
-```
+Returned values are [Pydantic](https://docs.pydantic.dev/) model instances (for example [`ActiveNumber`](sinch/domains/numbers/models/v1/response/active_number.py)), including fields such as `phone_number`, `region_code`, `type`, and `capabilities`.
+
+More examples live under [examples/snippets](examples/snippets) on the `main` branch.
 
 ### Handling exceptions
 
@@ -120,12 +118,12 @@ Each API throws a custom, API related exception for an unsuccessful backed call.
 Example for Numbers API:
 
 ```python
-from sinch.domains.numbers.exceptions import NumbersException
+from sinch.domains.numbers.api.v1.exceptions import NumbersException
 
 try:
-    nums = sinch_client.numbers.available.list(
+    paginator = sinch_client.numbers.list(
         region_code="US",
-        number_type="LOCAL"
+        number_type="LOCAL",
     )
 except NumbersException as err:
     pass
@@ -136,17 +134,15 @@ For handling all possible exceptions thrown by this SDK use `SinchException` (su
 
 ## Custom HTTP client implementation
 
-By default, two HTTP implementations are provided:
-- Synchronous using `requests` HTTP library
-- Asynchronous using `httpx` HTTP library
+By default, the HTTP implementation uses the `requests` library.
 
-For creating custom HTTP client code, use either `SinchClient` or `SinchClientAsync` client and inject your transport during initialisation:
+To use a custom HTTP client, inject your own transport during initialization:
 ```python
-sinch_client = SinchClientAsync(
-    key_id="Spanish",
-    key_secret="Inquisition",
+sinch_client = SinchClient(
+    key_id="key_id",
+    key_secret="key_secret",
     project_id="some_project",
-    transport=MyHTTPAsyncImplementation
+    transport=MyHTTPImplementation
 )
 ```
 
@@ -157,6 +153,10 @@ class HTTPTransport(ABC):
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         pass
 ```
+
+Note: Asynchronous HTTP clients are not supported.
+The transport must be a synchronous implementation.
+
 ## License
 
-This project is licensed under the Apache License. See the [LICENSE](license.md) file for the license text.
+This project is licensed under the Apache License. See the [LICENSE](LICENSE) file for the license text.
