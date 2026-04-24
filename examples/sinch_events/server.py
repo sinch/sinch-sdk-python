@@ -1,17 +1,10 @@
 import logging
-import sys
-from pathlib import Path
-
-# Add examples directory to Python path to allow importing sinch_events
-examples_dir = Path(__file__).resolve().parent.parent
-if str(examples_dir) not in sys.path:
-    sys.path.insert(0, str(examples_dir))
 
 from flask import Flask, request
-from sinch_events.numbers_api.controller import NumbersController
-from sinch_events.sms_api.controller import SmsController
-from sinch_events.conversation_api.controller import ConversationController
-from sinch_events.sinch_client_helper import get_sinch_client, load_config
+from numbers_api.controller import NumbersController
+from sms_api.controller import SmsController
+from conversation_api.controller import ConversationController
+from sinch_client_helper import get_sinch_client, load_config
 
 app = Flask(__name__)
 
