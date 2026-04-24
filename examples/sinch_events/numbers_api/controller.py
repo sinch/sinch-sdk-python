@@ -1,5 +1,5 @@
 from flask import request, Response
-from sinch_events.numbers_api.server_business_logic import handle_numbers_event
+from numbers_api.server_business_logic import handle_numbers_event
 
 
 class NumbersController:

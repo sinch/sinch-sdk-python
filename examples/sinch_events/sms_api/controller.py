@@ -1,5 +1,5 @@
 from flask import request, Response
-from sinch_events.sms_api.server_business_logic import (
+from sms_api.server_business_logic import (
     handle_sms_event,
 )
 

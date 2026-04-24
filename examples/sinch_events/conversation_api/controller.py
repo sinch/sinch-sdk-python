@@ -1,5 +1,5 @@
 from flask import request, Response
-from sinch_events.conversation_api.server_business_logic import handle_conversation_event
+from conversation_api.server_business_logic import handle_conversation_event
 
 
 class ConversationController:
