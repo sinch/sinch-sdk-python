@@ -136,14 +136,14 @@ For handling all possible exceptions thrown by this SDK use `SinchException` (su
 
 By default, the HTTP implementation uses the `requests` library.
 
-To use a custom HTTP client, inject your own transport during initialization:
+To use a custom HTTP client, assign your transport to the client's configuration after initialization:
 ```python
 sinch_client = SinchClient(
     key_id="key_id",
     key_secret="key_secret",
     project_id="some_project",
-    transport=MyHTTPImplementation
 )
+sinch_client.configuration.transport = MyHTTPImplementation(sinch_client)
 ```
 
 Custom client has to obey types and methods described by `HTTPTransport` abstract base class:
