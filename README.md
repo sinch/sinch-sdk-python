@@ -48,26 +48,17 @@ The Sinch client provides access to the following Sinch products:
 
 ### Client initialization
 
-
 To establish a connection with the Sinch backend, you must provide the appropriate credentials based on the API
 you intend to use. For security best practices, avoid hardcoding credentials.
 Instead, retrieve them from environment variables.
 
-#### SMS API
-For the SMS API in **Australia (AU)**, **Brazil (BR)**, **Canada (CA)**, **the United States (US)**, 
-and **the European Union (EU)**,  provide the following parameters:
+#### Project auth
 
-```python
-from sinch import SinchClient
+The standard authentication method for all Sinch APIs.
+If you plan to use more than one API, or if you need access to the Conversation API, use this method.
 
-sinch_client = SinchClient(
-    service_plan_id="service_plan_id",
-    sms_api_token="api_token"
-)
-```
-
-#### All Other Sinch APIs
-For all other Sinch APIs, including SMS in US and EU regions, use the following parameters:
+When using the SMS API, also pass `sms_region`. When using the Conversation API, also pass `conversation_region`.
+Both are required for their respective APIs and have no default value.
 
 ```python
 from sinch import SinchClient
@@ -75,13 +66,28 @@ from sinch import SinchClient
 sinch_client = SinchClient(
     project_id="project_id",
     key_id="key_id",
-    key_secret="key_secret"
+    key_secret="key_secret",
+    sms_region="us",          # required if using the SMS API
+    conversation_region="eu", # required if using the Conversation API
 )
 ```
 
-### SMS and Conversation regions (V2)
+#### SMS token auth
 
-You must set `sms_region` before using the SMS API and `conversation_region` before using the Conversation API—either in the `SinchClient(...)` constructor or on `sinch_client.configuration` before the first call to that product. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for examples.
+An alternative authentication method exclusive to the SMS API.
+
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    service_plan_id="service_plan_id",
+    sms_api_token="api_token",
+    sms_region="us",
+)
+```
+
+> **Note:** `sms_region` and `conversation_region` no longer have defaults and **must** be set before
+> calling those APIs—omitting them will cause a runtime error. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for details.
 
 ## Logging
 
