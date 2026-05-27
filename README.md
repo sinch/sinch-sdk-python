@@ -66,6 +66,8 @@ Supported regions: `us`, `eu`, `br`.
 
 In your [Account dashboard](https://dashboard.sinch.com/settings/access-keys), you will find your `projectId` and access keys composed of pairs of `keyId` / `keySecret`.
 
+> **Note:** the `keySecret` is visible only when you create the Access Key. Store it safely and create a new Access Key if you have lost it.
+
 ```python
 from sinch import SinchClient
 
