@@ -64,6 +64,8 @@ The SMS API supports two authentication methods. `sms_region` is required for bo
 The SDK automatically exchanges your key ID and key secret for a short-lived OAuth2 token and refreshes it automatically on expiry.
 Supported regions: `us`, `eu`, `br`.
 
+In your [Account dashboard](https://dashboard.sinch.com/settings/access-keys), you will find your `projectId` and access keys composed of pairs of `keyId` / `keySecret`.
+
 ```python
 from sinch import SinchClient
 
@@ -79,6 +81,8 @@ sinch_client = SinchClient(
 
 Uses a static bearer token that never expires.
 Support all regions: `us`, `eu`, `br`, `ca`, `au`.
+
+In your [Service APIs dashboard](https://dashboard.sinch.com/sms/api/services), you will find your `servicePlanId` and `apiToken` (bearer token).
 
 ```python
 from sinch import SinchClient
