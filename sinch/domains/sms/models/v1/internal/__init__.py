@@ -19,14 +19,19 @@ from sinch.domains.sms.models.v1.internal.get_batch_delivery_report_request impo
 from sinch.domains.sms.models.v1.internal.list_delivery_reports_request import (
     ListDeliveryReportsRequest,
 )
+from sinch.domains.sms.models.v1.internal.list_groups_request import (
+    ListGroupsRequest,
+)
 
 __all__ = [
     "BatchIdRequest",
     "DeliveryFeedbackRequest",
+    "GroupRequest",
     "ListBatchesRequest",
     "ListDeliveryReportsResponse",
     "GetRecipientDeliveryReportRequest",
     "ListDeliveryReportsRequest",
+    "ListGroupsRequest",
     "GetBatchDeliveryReportRequest",
     "DryRunRequest",
     "ReplaceBatchRequest",
@@ -61,4 +66,10 @@ def __getattr__(name: str):
         )
 
         return UpdateBatchMessageRequest
+    if name == "GroupRequest":
+        from sinch.domains.sms.models.v1.internal.group_request import (
+            GroupRequest,
+        )
+
+        return GroupRequest
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
