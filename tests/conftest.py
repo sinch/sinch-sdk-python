@@ -155,6 +155,11 @@ def sms_pagination_request_data():
         page_size=2
     )
 
+@pytest.fixture
+def sms_pagination_request_data_with_page_and_page_size_none():
+    return ListDeliveryReportsRequest()
+
+
 
 @pytest.fixture
 def third_int_based_pagination_response():

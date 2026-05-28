@@ -4,6 +4,7 @@ from sinch.core.pagination import (
     SMSPaginator,
     TokenBasedPaginator
 )
+from sinch.domains.sms.models.v1.internal.list_delivery_reports_request import ListDeliveryReportsRequest
 
 
 # Helper function to initialize SMS paginator
@@ -12,7 +13,7 @@ def initialize_sms_paginator(endpoint_mock, request_data, responses):
     
     # Create a mock that returns different responses based on page number
     def mock_request(endpoint):
-        page = endpoint.request_data.page
+        page = endpoint.request_data.page or 0
         if page == 0:
             return responses[0]
         elif page == 1:
@@ -25,6 +26,47 @@ def initialize_sms_paginator(endpoint_mock, request_data, responses):
 
     return SMSPaginator(sinch=client, endpoint=endpoint_mock)
 
+def test_page_size_is_zero():
+    request_data = ListDeliveryReportsRequest(page=0)
+    response = Mock(count=0, page=0, page_size=2, content=[])
+    client = Mock()
+    client.configuration.transport.request.return_value = response
+    endpoint = Mock(request_data=request_data)
+
+    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+
+    assert paginator.has_next_page is False
+
+
+def test_page_size_is_none(
+    sms_pagination_request_data_with_page_and_page_size_none,
+    mock_sms_pagination_responses,
+    mock_int_pagination_expected_delivery_reports
+):
+    """Test that the has_next_page field is well calculated when page_size is None"""
+    sms_paginator = initialize_sms_paginator(
+        endpoint_mock=Mock(),
+        request_data=sms_pagination_request_data_with_page_and_page_size_none,
+        responses=mock_sms_pagination_responses
+    )
+    assert sms_paginator is not None
+
+    page_counter = 0
+    assert sms_paginator.result.page == page_counter
+
+    delivery_reports_list = []
+    reached_last_page = False
+    while not reached_last_page:
+        delivery_reports_list.extend([report.batch_id for report in sms_paginator.content()])
+        if sms_paginator.has_next_page:
+            sms_paginator = sms_paginator.next_page()
+            page_counter += 1
+            assert isinstance(sms_paginator, SMSPaginator)
+        else:
+            reached_last_page = True
+
+    assert page_counter == 1
+    assert delivery_reports_list == mock_int_pagination_expected_delivery_reports
 
 def test_page_sms_iterator_sync_using_manual_pagination(
     sms_pagination_request_data,

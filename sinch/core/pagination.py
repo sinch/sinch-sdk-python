@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Generic
+from typing import Generic, Iterator
 from sinch.core.types import BM
 
 
@@ -45,7 +45,7 @@ class Paginator(ABC, Generic[BM]):
 
     # TODO: Make iterator() method abstract in Parent class as we implement in the other domains:
     #  - Refactor pydantic models in other domains to have a content property.
-    def iterator(self):
+    def iterator(self) -> Iterator[BM]:
         pass
 
     @abstractmethod
@@ -99,7 +99,7 @@ class SMSPaginator(Paginator[BM]):
         """Calculates if there's a next page based on count, page, and page_size."""
         if hasattr(self.result, 'count') and hasattr(self.result, 'page'):
             # Use the requested page_size from the endpoint
-            request_page_size = self.endpoint.request_data.page_size or 1
+            request_page_size = self.endpoint.request_data.page_size or getattr(self.result, 'page_size', 0)
             if request_page_size > 0 and hasattr(self.result, 'page_size'):
                 # Calculate total pages needed using the request page_size
                 total_pages = (self.result.count + request_page_size - 1) // request_page_size
