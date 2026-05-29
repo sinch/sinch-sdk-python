@@ -4,7 +4,7 @@ from sinch.core.pagination import (
     SMSPaginator,
     TokenBasedPaginator
 )
-from sinch.domains.sms.models.v1.internal.list_delivery_reports_request import ListDeliveryReportsRequest
+from tests.conftest import SMSBasePaginationRequest
 
 
 # Helper function to initialize SMS paginator
@@ -27,8 +27,19 @@ def initialize_sms_paginator(endpoint_mock, request_data, responses):
     return SMSPaginator(sinch=client, endpoint=endpoint_mock)
 
 def test_page_size_is_zero():
-    request_data = ListDeliveryReportsRequest(page=0)
+    request_data = SMSBasePaginationRequest(page=0)
     response = Mock(count=0, page=0, page_size=0, content=[])
+    client = Mock()
+    client.configuration.transport.request.return_value = response
+    endpoint = Mock(request_data=request_data)
+
+    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+
+    assert paginator.has_next_page is False
+
+def test_response_without_page_size():
+    request_data = SMSBasePaginationRequest(page=0)
+    response = Mock(count=1, page=0, page_size=None, content=[Mock()])
     client = Mock()
     client.configuration.transport.request.return_value = response
     endpoint = Mock(request_data=request_data)
@@ -42,7 +53,7 @@ def test_partial_last_page_does_not_trigger_extra_call():
     """Regression: when the last page is partial (response.page_size smaller than
     the first response's page_size), the paginator must not request a further
     empty page after the last real one."""
-    request_data = ListDeliveryReportsRequest()
+    request_data = SMSBasePaginationRequest()
     responses_by_page = {
         None: Mock(content=[Mock()] * 30, count=49, page=0, page_size=30),
         1: Mock(content=[Mock()] * 19, count=49, page=1, page_size=19),
@@ -60,7 +71,7 @@ def test_partial_last_page_does_not_trigger_extra_call():
 
 def test_stop_on_first_page():
     """Regression: when the first page is already the last one, the paginator must not make an extra call."""
-    request_data = ListDeliveryReportsRequest()
+    request_data = SMSBasePaginationRequest()
     responses_by_page = {
         None: Mock(content=[Mock()] * 15, count=15, page=0, page_size=15),
     }
@@ -79,7 +90,7 @@ def test_stop_on_first_page():
 def test_explicit_page_size_with_mid_stream_start_stops_in_one_call():
     """When page_size is passed explicitly and (page+1)*page_size >= count, the
     paginator must stop without making an extra empty call."""
-    request_data = ListDeliveryReportsRequest(page=1, page_size=30)
+    request_data = SMSBasePaginationRequest(page=1, page_size=30)
     response = Mock(content=[Mock()] * 19, count=49, page=1, page_size=19)
     client = Mock()
     client.configuration.transport.request.return_value = response
@@ -96,7 +107,7 @@ def test_mid_stream_without_page_size_makes_one_extra_call():
     distinguish a partial last page from a full small page, so the paginator
     makes one extra (empty) request before stopping. This test documents the
     inevitable behavior so future changes don't accidentally break it."""
-    request_data = ListDeliveryReportsRequest(page=1)
+    request_data = SMSBasePaginationRequest(page=1)
     responses_by_page = {
         1: Mock(content=[Mock()] * 19, count=49, page=1, page_size=19),
         2: Mock(content=[], count=49, page=2, page_size=0),
