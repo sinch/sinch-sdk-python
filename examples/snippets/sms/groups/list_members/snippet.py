@@ -5,11 +5,11 @@ This snippet is available at https://github.com/sinch/sinch-sdk-python/tree/main
 """
 
 import os
+from typing import List
 
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.sms.api.v1.groups import GroupResponse
 
 load_dotenv()
 
@@ -20,8 +20,9 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-response: GroupResponse = sinch_client.sms.groups.create(
-    name="Test Group", members=["+1234567890", "+1987654321"]
-)
+# The ID of the group to list members for
+group_id = "GROUP_ID"
 
-print(f"Group created:\n{response}")
+members: List[str] = sinch_client.sms.groups.list_members(group_id=group_id)
+
+print(f"Group {group_id} members: {members}")

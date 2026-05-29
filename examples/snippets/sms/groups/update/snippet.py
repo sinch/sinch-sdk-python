@@ -20,8 +20,14 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-response: GroupResponse = sinch_client.sms.groups.create(
-    name="Test Group", members=["+1234567890", "+1987654321"]
+# The ID of the group to update
+group_id = "GROUP_ID"
+
+response: GroupResponse = sinch_client.sms.groups.update(
+    group_id=group_id,
+    add=["+1234567890"],
+    remove=["+1987654321"],
+    name="Renamed Group",
 )
 
-print(f"Group created:\n{response}")
+print(f"Group updated:\n{response}")

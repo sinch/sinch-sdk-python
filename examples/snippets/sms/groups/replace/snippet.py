@@ -20,8 +20,13 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-response: GroupResponse = sinch_client.sms.groups.create(
-    name="Test Group", members=["+1234567890", "+1987654321"]
+# The ID of the group to replace
+group_id = "GROUP_ID"
+
+response: GroupResponse = sinch_client.sms.groups.replace(
+    group_id=group_id,
+    name="Replaced Group",
+    members=["+1234567890", "+1987654321"],
 )
 
-print(f"Group created:\n{response}")
+print(f"Group replaced:\n{response}")
