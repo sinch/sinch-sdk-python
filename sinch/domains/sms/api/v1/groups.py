@@ -1,4 +1,3 @@
-
 from typing import List, Optional
 
 from sinch.core.pagination import Paginator, SMSPaginator
@@ -30,7 +29,6 @@ from sinch.domains.sms.models.v1.types.auto_update_dict import AutoUpdateDict
 
 
 class Groups(BaseSms):
-    
     def create(
         self,
         name: Optional[str] = None,
@@ -75,7 +73,7 @@ class Groups(BaseSms):
             **kwargs,
         )
         return self._request(CreateGroupEndpoint, request_data)
-    
+
     def list(
         self,
         page: Optional[int] = None,

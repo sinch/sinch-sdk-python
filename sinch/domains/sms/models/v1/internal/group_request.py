@@ -13,7 +13,7 @@ class GroupRequest(BaseModelConfigurationRequest):
         default=None,
         description="Name of group",
     )
-    members: Optional[conlist(StrictStr)] = Field( 
+    members: Optional[conlist(StrictStr)] = Field(
         description="Initial list of phone numbers in [E.164 format] for the group.",
     )
     child_groups: Optional[conlist(StrictStr)] = Field(

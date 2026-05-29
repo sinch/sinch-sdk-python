@@ -1,6 +1,3 @@
-
-
-
 import json
 from typing import List
 
@@ -35,7 +32,6 @@ class CreateGroupEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-
     def __init__(self, project_id: str, request_data: GroupRequest):
         super(CreateGroupEndpoint, self).__init__(project_id, request_data)
         self.project_id = project_id
@@ -58,7 +54,8 @@ class CreateGroupEndpoint(SmsEndpoint):
                 is_from_server=e.is_from_server,
             )
         return self.process_response_model(response.body, GroupResponse)
-    
+
+
 class ListGroupsEndpoint(SmsEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{project_id}/groups"
     HTTP_METHOD = HTTPMethods.GET.value
@@ -72,9 +69,7 @@ class ListGroupsEndpoint(SmsEndpoint):
     def build_query_params(self) -> dict:
         return model_dump_for_query_params(self.request_data)
 
-    def handle_response(
-        self, response: HTTPResponse
-    ) -> ListGroupsResponse:
+    def handle_response(self, response: HTTPResponse) -> ListGroupsResponse:
         try:
             super(ListGroupsEndpoint, self).handle_response(response)
         except SmsException as e:
@@ -83,9 +78,7 @@ class ListGroupsEndpoint(SmsEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self.process_response_model(
-            response.body, ListGroupsResponse
-        )
+        return self.process_response_model(response.body, ListGroupsResponse)
 
 
 class GetGroupEndpoint(SmsEndpoint):
@@ -123,7 +116,10 @@ class ReplaceGroupEndpoint(SmsEndpoint):
     def request_body(self):
         path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            mode="json", by_alias=True, exclude_none=True, exclude=path_params,
+            mode="json",
+            by_alias=True,
+            exclude_none=True,
+            exclude=path_params,
         )
         return json.dumps(request_data)
 
@@ -152,7 +148,10 @@ class UpdateGroupEndpoint(SmsEndpoint):
     def request_body(self):
         path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
-            mode="json", by_alias=True, exclude_none=True, exclude=path_params,
+            mode="json",
+            by_alias=True,
+            exclude_none=True,
+            exclude=path_params,
         )
         return json.dumps(request_data)
 
@@ -196,7 +195,9 @@ class ListGroupMembersEndpoint(SmsEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: GroupIdRequest):
-        super(ListGroupMembersEndpoint, self).__init__(project_id, request_data)
+        super(ListGroupMembersEndpoint, self).__init__(
+            project_id, request_data
+        )
         self.project_id = project_id
         self.request_data = request_data
 
