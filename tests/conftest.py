@@ -334,7 +334,7 @@ def mock_sms_pagination_responses():
         ],
              count=4, page=1, page_size=2),
         Mock(content=[],
-             count=4, page=2, page_size=2)
+             count=4, page=2, page_size=0)
     ]
 
 

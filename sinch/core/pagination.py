@@ -3,27 +3,6 @@ from typing import Generic, Iterator
 from sinch.core.types import BM
 
 
-class PageIterator:
-    def __init__(self, paginator, yield_first_page=False):
-        self.paginator = paginator
-        # If yielding the first page, set started to False
-        self.started = not yield_first_page
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if not self.started:
-            self.started = True
-            return self.paginator
-
-        if self.paginator.has_next_page:
-            self.paginator = self.paginator.next_page()
-            return self.paginator
-        else:
-            raise StopIteration
-
-
 class Paginator(ABC, Generic[BM]):
     """
     Pagination response object.
@@ -96,17 +75,25 @@ class SMSPaginator(Paginator[BM]):
             paginator = next_page_instance
 
     def _calculate_next_page(self):
-        """Calculates if there's a next page based on count, page, and page_size."""
-        if hasattr(self.result, 'count') and hasattr(self.result, 'page'):
-            # Use the requested page_size from the endpoint
-            request_page_size = self.endpoint.request_data.page_size or getattr(self.result, 'page_size', 0)
-            if request_page_size > 0 and hasattr(self.result, 'page_size'):
-                # Calculate total pages needed using the request page_size
-                total_pages = (self.result.count + request_page_size - 1) // request_page_size
-                # Check if current page is less than total pages - 1 (0-indexed)
-                self.has_next_page = self.result.page < (total_pages - 1)
-            else:
-                self.has_next_page = False
+        """Calculates if there's a next page based on count, page, and effective page_size."""
+        if not (hasattr(self.result, 'count') and hasattr(self.result, 'page')):
+            self.has_next_page = False
+            return
+        
+        if not self.content():
+            self.has_next_page = False
+            return
+
+        # Cache first response page_size when not provided in order to calculate next pages correctly
+        request_page_size = self.endpoint.request_data.page_size
+        if request_page_size is None:
+            if not hasattr(self, '_first_response_page_size'):
+                self._first_response_page_size = getattr(self.result, 'page_size', 0)
+            request_page_size = self._first_response_page_size
+
+        if request_page_size > 0 :
+            total_pages = (self.result.count + request_page_size - 1) // request_page_size
+            self.has_next_page = self.result.page < (total_pages - 1)
         else:
             self.has_next_page = False
 
