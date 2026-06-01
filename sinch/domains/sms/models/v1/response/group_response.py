@@ -1,6 +1,8 @@
-from typing import List, Optional
 from datetime import datetime
-from pydantic import Field, StrictInt, StrictStr
+from typing import Optional
+
+from pydantic import Field, StrictInt, StrictStr, conlist
+
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
 )
@@ -28,7 +30,7 @@ class GroupResponse(BaseModelConfigurationResponse):
         default=None,
         description="Timestamp for when the group was last updated. Format: YYYY-MM-DDThh:mm:ss.SSSZ",
     )
-    child_groups: Optional[List[StrictStr]] = Field(
+    child_groups: Optional[conlist(StrictStr)] = Field(
         default=None,
         description="MSISDNs of child groups will be included in this group. Elements must be group IDs.",
     )

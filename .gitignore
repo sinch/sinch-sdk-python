@@ -51,6 +51,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+lcov.info
 
 # E2E features
 *.feature

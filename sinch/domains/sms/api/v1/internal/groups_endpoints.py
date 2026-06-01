@@ -1,7 +1,7 @@
 import json
 from typing import List
 
-from pydantic import TypeAdapter
+from pydantic import StrictStr, TypeAdapter, conlist
 
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
@@ -38,7 +38,6 @@ class CreateGroupEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def request_body(self):
-        # Use mode='json' to serialize datetime objects to ISO-8601 strings
         request_data = self.request_data.model_dump(
             mode="json", by_alias=True, exclude_none=True
         )
@@ -210,4 +209,4 @@ class ListGroupMembersEndpoint(SmsEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return TypeAdapter(List[str]).validate_python(response.body)
+        return TypeAdapter(conlist(StrictStr)).validate_python(response.body)

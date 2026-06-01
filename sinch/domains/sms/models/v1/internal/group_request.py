@@ -14,6 +14,7 @@ class GroupRequest(BaseModelConfigurationRequest):
         description="Name of group",
     )
     members: Optional[conlist(StrictStr)] = Field(
+        default=None,
         description="Initial list of phone numbers in [E.164 format] for the group.",
     )
     child_groups: Optional[conlist(StrictStr)] = Field(
