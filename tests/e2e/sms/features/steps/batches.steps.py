@@ -1,44 +1,8 @@
 from datetime import datetime, timezone
-from behave import given, when, then
+from behave import when, then
 from sinch.domains.sms.models.v1.types import BatchResponse
 from sinch.domains.sms.models.v1.response.dry_run_response import DryRunResponse
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
-
-
-def _setup_sinch_client(context, use_service_plan_auth=False):
-    """Helper function to setup Sinch client"""
-    from sinch import SinchClient
-    
-    if use_service_plan_auth:
-        sinch = SinchClient(
-            service_plan_id='CappyPremiumPlan',
-            sms_api_token='HappyCappyToken',
-        )
-        sinch.configuration.sms_origin_with_service_plan_id = 'http://localhost:3017'
-    else:
-        sinch = SinchClient(
-            project_id='tinyfrog-jump-high-over-lilypadbasin',
-            key_id='keyId',
-            key_secret='keySecret',
-        )
-    
-    sinch.configuration.auth_origin = 'http://localhost:3011'
-    sinch.configuration.sms_origin = 'http://localhost:3017'
-    
-    context.sinch = sinch
-    context.sms = sinch.sms
-
-
-@given('the SMS service "Batches" is available')
-def step_sms_service_batches_available(context):
-    """Ensures the Sinch client is initialized"""
-    _setup_sinch_client(context, use_service_plan_auth=False)
-
-
-@given('the SMS service "Batches" is available and is configured for servicePlanId authentication')
-def step_sms_service_batches_available_with_service_plan(context):
-    """Ensures the Sinch client is initialized with service_plan_id authentication"""
-    _setup_sinch_client(context, use_service_plan_auth=True)
 
 
 @when('I send a request to send a text message')

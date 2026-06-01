@@ -149,7 +149,6 @@ class UpdateGroupEndpoint(SmsEndpoint):
         request_data = self.request_data.model_dump(
             mode="json",
             by_alias=True,
-            exclude_none=True,
             exclude=path_params,
         )
         return json.dumps(request_data)
