@@ -238,7 +238,7 @@ class Groups(BaseSms):
         )
         return self._request(UpdateGroupEndpoint, request_data)
 
-    def delete(self, group_id: str) -> None:
+    def delete(self, group_id: str, **kwargs) -> None:
         """
         This operation deletes the group with the provided group ID.
 
@@ -250,10 +250,10 @@ class Groups(BaseSms):
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
-        request_data = GroupIdRequest(group_id=group_id)
+        request_data = GroupIdRequest(group_id=group_id, **kwargs)
         return self._request(DeleteGroupEndpoint, request_data)
 
-    def list_members(self, group_id: str) -> List[str]:
+    def list_members(self, group_id: str, **kwargs) -> List[str]:
         """
         This operation retrieves the members of the group with the provided group ID.
 
@@ -265,5 +265,5 @@ class Groups(BaseSms):
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
-        request_data = GroupIdRequest(group_id=group_id)
+        request_data = GroupIdRequest(group_id=group_id, **kwargs)
         return self._request(ListGroupMembersEndpoint, request_data)
