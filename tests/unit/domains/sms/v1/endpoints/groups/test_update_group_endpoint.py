@@ -86,17 +86,17 @@ def test_handle_response_expects_sms_exception_on_error(endpoint, mock_error_res
     assert exc_info.value.http_response.status_code == 400
 
 
-def test_request_body_excludes_none_fields(endpoint):
-    """Test that None fields are excluded from the serialized request body."""
+def test_request_body_not_excludes_none_fields(endpoint):
+    """Test that None fields are not excluded from the serialized request body."""
     body = json.loads(endpoint.request_body())
 
     assert body["name"] == "Updated Group"
     assert "group_id" not in body
-    assert "add" not in body
-    assert "remove" not in body
-    assert "add_from_group" not in body
-    assert "remove_from_group" not in body
-    assert "auto_update" not in body
+    assert body["add"] is None
+    assert body["remove"] is None
+    assert body["add_from_group"] is None
+    assert body["remove_from_group"] is None
+    assert body["auto_update"] is None
 
 
 def test_request_body_expects_correct_serialization():
