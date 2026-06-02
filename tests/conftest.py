@@ -2,19 +2,14 @@
 import os
 from dataclasses import dataclass
 from unittest.mock import Mock, MagicMock
-from sinch.domains.sms.models.v1.internal import (
-    ListDeliveryReportsRequest,
-    ListDeliveryReportsResponse,
-)
 
 import pytest
-
+from typing import Optional
 from sinch import SinchClient
-from sinch.core.models.base_model import SinchRequestBaseModel
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.v1.authentication import OAuthToken
-from sinch.domains.numbers.models.v1.response import ActiveNumber
-
+from pydantic import BaseModel
+from pydantic import Field, StrictInt
 
 def parse_iso_datetime(iso_string):
     """
@@ -27,14 +22,14 @@ def parse_iso_datetime(iso_string):
     return datetime.fromisoformat(iso_string)
 
 
-@dataclass
-class IntBasedPaginationRequest(SinchRequestBaseModel):
-    page: int
-    page_size: int = 0
+class SMSBasePaginationRequest(BaseModel):
+    page: Optional[StrictInt] = Field(
+        default=None)
+    page_size: Optional[StrictInt] = Field(
+        default=None)
 
 
-@dataclass
-class TokenBasedPaginationRequest(SinchRequestBaseModel):
+class TokenBasedPaginationRequest(BaseModel):
     page_size: int
     page_token: str = None
 
@@ -150,20 +145,15 @@ def token_based_pagination_request_data():
 
 @pytest.fixture
 def sms_pagination_request_data():
-    return ListDeliveryReportsRequest(
+    return SMSBasePaginationRequest(
         page=0,
         page_size=2
     )
 
-
 @pytest.fixture
-def third_int_based_pagination_response():
-    return ListDeliveryReportsResponse(
-        count=4,
-        page=2,
-        page_size=2,
-        delivery_reports=[]
-    )
+def sms_pagination_request_data_with_page_and_page_size_none():
+    return SMSBasePaginationRequest()
+
 
 
 @pytest.fixture
@@ -266,14 +256,24 @@ def mock_sinch_client_conversation():
 @pytest.fixture
 def mock_pagination_active_number_responses():
     return [
-        Mock(content=[ActiveNumber(phone_number="+12345678901"),
-                      ActiveNumber(phone_number="+12345678902")],
-             next_page_token="token_1"),
-        Mock(content=[ActiveNumber(phone_number="+12345678903"),
-                      ActiveNumber(phone_number="+12345678904")],
-             next_page_token="token_2"),
-        Mock(content=[ActiveNumber(phone_number="+12345678905")],
-             next_page_token=None)
+        Mock(
+            content=[
+                Mock(phone_number="+12345678901"),
+                Mock(phone_number="+12345678902"),
+            ],
+            next_page_token="token_1",
+        ),
+        Mock(
+            content=[
+                Mock(phone_number="+12345678903"),
+                Mock(phone_number="+12345678904"),
+            ],
+            next_page_token="token_2",
+        ),
+        Mock(
+            content=[Mock(phone_number="+12345678905")],
+            next_page_token=None,
+        ),
     ]
 
 
@@ -286,50 +286,22 @@ def mock_pagination_expected_phone_numbers_response():
 
 @pytest.fixture
 def mock_sms_pagination_responses():
-    from datetime import datetime
-    from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
-    
     return [
-        Mock(content=[
-            RecipientDeliveryReport(
-                at=parse_iso_datetime("2025-10-19T16:45:31.935Z"),
-                batch_id="01K7YNS82JMYGAKAATHFP0QTB5",
-                code=400,
-                recipient="12346836075",
-                status="DELIVERED",
-                type="recipient_delivery_report_sms"
-            ),
-            RecipientDeliveryReport(
-                at=parse_iso_datetime("2025-10-19T16:40:26.855Z"),
-                batch_id="01K7YNFY30DS2KKVQZVBFANHMR",
-                code=400,
-                recipient="12346836075",
-                status="DELIVERED",
-                type="recipient_delivery_report_sms"
-            )
-        ],
-             count=4, page=0, page_size=2),
-        Mock(content=[
-            RecipientDeliveryReport(
-                at=parse_iso_datetime("2025-10-19T16:35:15.123Z"),
-                batch_id="01K7YNGZ45XW8KKPQRSTUVWXYZ",
-                code=401,
-                recipient="34683607595",
-                status="DISPATCHED",
-                type="recipient_delivery_report_sms"
-            ),
-            RecipientDeliveryReport(
-                at=parse_iso_datetime("2025-10-19T16:30:10.456Z"),
-                batch_id="01K7YNHM67YZ3LMNOPQRSTUVWX",
-                code=402,
-                recipient="34683607596",
-                status="FAILED",
-                type="recipient_delivery_report_sms"
-            )
-        ],
-             count=4, page=1, page_size=2),
-        Mock(content=[],
-             count=4, page=2, page_size=2)
+        Mock(
+            content=[
+                Mock(batch_id="01K7YNS82JMYGAKAATHFP0QTB5"),
+                Mock(batch_id="01K7YNFY30DS2KKVQZVBFANHMR"),
+            ],
+            count=4, page=0, page_size=2,
+        ),
+        Mock(
+            content=[
+                Mock(batch_id="01K7YNGZ45XW8KKPQRSTUVWXYZ"),
+                Mock(batch_id="01K7YNHM67YZ3LMNOPQRSTUVWX"),
+            ],
+            count=4, page=1, page_size=2,
+        ),
+        Mock(content=[], count=4, page=2, page_size=0),
     ]
 
 
