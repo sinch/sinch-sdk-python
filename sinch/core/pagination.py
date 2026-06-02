@@ -1,27 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Generic
+from typing import Generic, Iterator
 from sinch.core.types import BM
-
-
-class PageIterator:
-    def __init__(self, paginator, yield_first_page=False):
-        self.paginator = paginator
-        # If yielding the first page, set started to False
-        self.started = not yield_first_page
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if not self.started:
-            self.started = True
-            return self.paginator
-
-        if self.paginator.has_next_page:
-            self.paginator = self.paginator.next_page()
-            return self.paginator
-        else:
-            raise StopIteration
 
 
 class Paginator(ABC, Generic[BM]):
@@ -45,7 +24,7 @@ class Paginator(ABC, Generic[BM]):
 
     # TODO: Make iterator() method abstract in Parent class as we implement in the other domains:
     #  - Refactor pydantic models in other domains to have a content property.
-    def iterator(self):
+    def iterator(self) -> Iterator[BM]:
         pass
 
     @abstractmethod
@@ -96,19 +75,29 @@ class SMSPaginator(Paginator[BM]):
             paginator = next_page_instance
 
     def _calculate_next_page(self):
-        """Calculates if there's a next page based on count, page, and page_size."""
-        if hasattr(self.result, 'count') and hasattr(self.result, 'page'):
-            # Use the requested page_size from the endpoint
-            request_page_size = self.endpoint.request_data.page_size or 1
-            if request_page_size > 0 and hasattr(self.result, 'page_size'):
-                # Calculate total pages needed using the request page_size
-                total_pages = (self.result.count + request_page_size - 1) // request_page_size
-                # Check if current page is less than total pages - 1 (0-indexed)
-                self.has_next_page = self.result.page < (total_pages - 1)
-            else:
-                self.has_next_page = False
-        else:
+        """Calculates if there's a next page based on count, page, and effective page_size."""
+        count = getattr(self.result, 'count', None)
+        page = getattr(self.result, 'page', None)
+        page_size = getattr(self.result, 'page_size', None)
+
+        if count is None or page is None or page_size is None:
             self.has_next_page = False
+            return
+        
+        if not self.content():
+            self.has_next_page = False
+            return
+
+        # Cache first response page_size when not provided in order to calculate next pages correctly
+        request_page_size = self.endpoint.request_data.page_size
+        if request_page_size is None:
+            if not hasattr(self, '_first_response_page_size'):
+                self._first_response_page_size = page_size
+            request_page_size = self._first_response_page_size
+
+        total_pages = (count + request_page_size - 1) // request_page_size
+        self.has_next_page = page < (total_pages - 1)
+        
 
     @classmethod
     def _initialize(cls, sinch, endpoint):
