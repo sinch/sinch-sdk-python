@@ -21,9 +21,7 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-groups: Paginator[GroupResponse] = sinch_client.sms.groups.list(
-    name="Test Group", members=["+1234567890", "+1987654321"]
-)
+groups: Paginator[GroupResponse] = sinch_client.sms.groups.list()
 
 for group in groups:
     print(f"Group:\n{group}")
