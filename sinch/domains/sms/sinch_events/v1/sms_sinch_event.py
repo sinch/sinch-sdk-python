@@ -1,33 +1,24 @@
 import json
-from typing import Any, Dict, Union, Optional
+from typing import Any, Dict, Optional, Union
+
 from pydantic import TypeAdapter
+
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_sinch_event_signature_with_nonce,
 )
 from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     decode_payload,
-    parse_json,
     normalize_iso_timestamp,
-)
-from sinch.domains.sms.sinch_events.v1.events import (
-    IncomingSMSSinchEvent,
-    MOTextSinchEvent,
-    MOBinarySinchEvent,
-    MOMediaSinchEvent,
+    parse_json,
 )
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
     RecipientDeliveryReport,
 )
-
-
-SmsSinchEventPayload = Union[
-    BatchDeliveryReport,
-    RecipientDeliveryReport,
-    MOTextSinchEvent,
-    MOBinarySinchEvent,
-    MOMediaSinchEvent,
-]
+from sinch.domains.sms.sinch_events.v1.events.sms_sinch_event import (
+    IncomingSMSSinchEvent,
+    SmsSinchEventPayload,
+)
 
 
 class SmsSinchEvent:

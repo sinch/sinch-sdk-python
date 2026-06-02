@@ -51,6 +51,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+lcov.info
 
 # E2E features
 *.feature
@@ -141,7 +142,7 @@ poetry.lock
 # Pyenv
 .python-version
 
-#CLAUDE
+# Claude
 CLAUDE.local.md
 
 # .DS_Store files
