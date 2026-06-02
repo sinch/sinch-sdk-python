@@ -16,6 +16,14 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.0.1 – 2026-06-02
+
+### SMS
+
+- **[fix]** SMS paginator fix (#145).
+
+---
+
 ## v2.0.0 – 2026-03-31
 
 ### Breaking Changes
