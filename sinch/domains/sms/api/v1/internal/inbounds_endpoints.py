@@ -37,7 +37,7 @@ class GetInboundEndpoint(SmsEndpoint):
 
 
 class ListInboundsEndpoint(SmsEndpoint):
-    ENDPOINT_URL = "{origin}/xms/v1/{service_plan_id}/inbounds"
+    ENDPOINT_URL = "{origin}/xms/v1/{project_id}/inbounds"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 

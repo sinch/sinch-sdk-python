@@ -24,5 +24,5 @@ sinch_client = SinchClient(
 
 inbound_messages: Paginator[InboundMessage] = sinch_client.sms.inbound_messages.list(to=["+1234567890"])
 
-for message in inbound_messages:
+for message in inbound_messages.iterator():
     print(f"Inbound message:\n{message}")
