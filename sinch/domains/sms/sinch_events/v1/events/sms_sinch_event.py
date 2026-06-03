@@ -1,6 +1,4 @@
-from typing import Annotated, Union
-
-from pydantic import Field
+from typing import Union
 
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,

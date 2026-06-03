@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import Field, StrictInt, StrictStr, conlist
+from pydantic import StrictInt, StrictStr, conlist
 from sinch.domains.sms.models.v1.internal.base import BaseModelConfigurationRequest
 
 

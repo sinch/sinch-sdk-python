@@ -1,11 +1,8 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Optional
 
-from pydantic import Field, StrictStr, field_validator
+from pydantic import Field, StrictStr
 
-from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
-    normalize_iso_timestamp,
-)
 from sinch.domains.sms.models.v1.internal.base import (
     BaseModelConfigurationResponse,
 )
