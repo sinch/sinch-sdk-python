@@ -23,5 +23,5 @@ sinch_client = SinchClient(
 
 groups: Paginator[GroupResponse] = sinch_client.sms.groups.list()
 
-for group in groups:
+for group in groups.iterator():
     print(f"Group:\n{group}")
