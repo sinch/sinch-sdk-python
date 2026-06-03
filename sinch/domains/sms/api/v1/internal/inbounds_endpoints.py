@@ -28,9 +28,13 @@ class GetInboundEndpoint(SmsEndpoint):
         try:
             super(GetInboundEndpoint, self).handle_response(response)
         except SmsException as e:
-            raise SmsException(message=e.args[0], response=e.http_response,
-                                    is_from_server=e.is_from_server)
+            raise SmsException(
+                message=e.args[0],
+                response=e.http_response,
+                is_from_server=e.is_from_server,
+            )
         return self.process_response_model(response.body, InboundMessage)
+
 
 class ListInboundsEndpoint(SmsEndpoint):
     ENDPOINT_URL = "{origin}/xms/v1/{service_plan_id}/inbounds"
@@ -49,6 +53,9 @@ class ListInboundsEndpoint(SmsEndpoint):
         try:
             super(ListInboundsEndpoint, self).handle_response(response)
         except SmsException as e:
-            raise SmsException(message=e.args[0], response=e.http_response,
-                                    is_from_server=e.is_from_server)
+            raise SmsException(
+                message=e.args[0],
+                response=e.http_response,
+                is_from_server=e.is_from_server,
+            )
         return self.process_response_model(response.body, ListInboundsResponse)

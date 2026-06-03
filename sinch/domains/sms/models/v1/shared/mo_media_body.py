@@ -11,8 +11,10 @@ class MOMediaBody(BaseModelConfigurationResponse):
         default=None, description="The subject of the MMS media message."
     )
     message: Optional[StrictStr] = Field(
-        default=None, description="The text message content of the MMS media message."
+        default=None,
+        description="The text message content of the MMS media message.",
     )
     media: Optional[conlist(MOMediaItem)] = Field(
-        default=None, description="Collection of attachments in incoming message."
+        default=None,
+        description="Collection of attachments in incoming message.",
     )

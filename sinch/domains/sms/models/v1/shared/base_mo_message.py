@@ -35,4 +35,3 @@ class BaseMOMessage(BaseModelConfigurationResponse):
         default=None,
         description="When the message left the originating device. Only available if provided by operator. Formatted as ISO-8601: YYYY-MM-DDThh:mm:ss.SSSZ.",
     )
-

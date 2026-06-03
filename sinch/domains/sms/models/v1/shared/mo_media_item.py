@@ -6,7 +6,9 @@ from sinch.domains.sms.models.v1.internal.base import (
 
 
 class MOMediaItem(BaseModelConfigurationResponse):
-    url: Optional[StrictStr] = Field(default=None, description="URL to the media file.")
+    url: Optional[StrictStr] = Field(
+        default=None, description="URL to the media file."
+    )
     content_type: StrictStr = Field(
         ..., description="Content type of the media file."
     )
