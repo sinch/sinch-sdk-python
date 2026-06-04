@@ -201,7 +201,9 @@ class ListGroupMembersEndpoint(SmsEndpoint):
         self.project_id = project_id
         self.request_data = request_data
 
-    def handle_response(self, response: HTTPResponse) -> ListGroupMembersResponse:
+    def handle_response(
+        self, response: HTTPResponse
+    ) -> ListGroupMembersResponse:
         try:
             super(ListGroupMembersEndpoint, self).handle_response(response)
         except SmsException as e:
@@ -210,5 +212,7 @@ class ListGroupMembersEndpoint(SmsEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        members = TypeAdapter(conlist(StrictStr)).validate_python(response.body)
+        members = TypeAdapter(conlist(StrictStr)).validate_python(
+            response.body
+        )
         return ListGroupMembersResponse(members=members)
