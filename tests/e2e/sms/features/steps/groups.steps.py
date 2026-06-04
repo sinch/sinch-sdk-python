@@ -169,5 +169,5 @@ def step_list_sms_group_members(context):
 
 @then('the response contains the phone numbers of the SMS group')
 def step_validate_sms_group_members(context):
-    assert isinstance(context.response, list)
-    assert context.response == ['12018881111', '12018882222', '12018883333']
+    assert context.response.has_next_page is False
+    assert context.response.content() == ['12018881111', '12018882222', '12018883333']

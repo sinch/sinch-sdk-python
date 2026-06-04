@@ -11,6 +11,9 @@ from sinch.domains.sms.models.v1.response.list_batches_response import (
 from sinch.domains.sms.models.v1.response.list_groups_response import (
     ListGroupsResponse,
 )
+from sinch.domains.sms.models.v1.response.list_group_members_response import (
+    ListGroupMembersResponse,
+)
 from sinch.domains.sms.models.v1.response.recipient_delivery_report import (
     RecipientDeliveryReport,
 )
@@ -20,6 +23,7 @@ __all__ = [
     "DryRunResponse",
     "GroupResponse",
     "ListBatchesResponse",
+    "ListGroupMembersResponse",
     "ListGroupsResponse",
     "RecipientDeliveryReport",
 ]

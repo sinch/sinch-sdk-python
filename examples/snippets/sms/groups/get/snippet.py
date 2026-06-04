@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.sms.api.v1.groups import GroupResponse
 
 load_dotenv()
 
@@ -20,9 +19,10 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
+# The ID of the group to retrieve
 GROUP_ID = "GROUP_ID"
 
-response: GroupResponse = sinch_client.sms.groups.get(
+response = sinch_client.sms.groups.get(
     group_id=GROUP_ID
 )
 

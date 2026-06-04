@@ -9,8 +9,6 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.core.pagination import Paginator
-from sinch.domains.sms.api.v1.groups import GroupResponse
 
 load_dotenv()
 
@@ -21,7 +19,8 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-groups: Paginator[GroupResponse] = sinch_client.sms.groups.list()
+groups = sinch_client.sms.groups.list()
 
+print("Available groups:\n")
 for group in groups.iterator():
-    print(f"Group:\n{group}")
+    print(group)

@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.sms.api.v1.groups import GroupResponse
 
 load_dotenv()
 
@@ -20,8 +19,8 @@ sinch_client = SinchClient(
     sms_region=os.environ.get("SINCH_SMS_REGION") or "MY_SMS_REGION"
 )
 
-response: GroupResponse = sinch_client.sms.groups.create(
-    name="Test Group", members=["+1234567890", "+1987654321"]
+response = sinch_client.sms.groups.create(
+    name="Sinch Python SDK group", members=["+1234567890", "+1987654321"]
 )
 
 print(f"Group created:\n{response}")

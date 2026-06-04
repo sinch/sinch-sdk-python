@@ -23,6 +23,8 @@ sinch_client = SinchClient(
 # The ID of the group to list members for
 group_id = "GROUP_ID"
 
-members: List[str] = sinch_client.sms.groups.list_members(group_id=group_id)
+members = sinch_client.sms.groups.list_members(group_id=group_id)
 
-print(f"Group {group_id} members: {members}")
+print("Available members:\n")
+for member in members.iterator():
+    print(member)

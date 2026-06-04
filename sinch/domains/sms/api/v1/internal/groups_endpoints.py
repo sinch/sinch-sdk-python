@@ -22,6 +22,9 @@ from sinch.domains.sms.models.v1.internal.update_group_request import (
     UpdateGroupRequest,
 )
 from sinch.domains.sms.models.v1.response.group_response import GroupResponse
+from sinch.domains.sms.models.v1.response.list_group_members_response import (
+    ListGroupMembersResponse,
+)
 from sinch.domains.sms.models.v1.response.list_groups_response import (
     ListGroupsResponse,
 )
@@ -199,7 +202,7 @@ class ListGroupMembersEndpoint(SmsEndpoint):
         self.project_id = project_id
         self.request_data = request_data
 
-    def handle_response(self, response: HTTPResponse) -> List[str]:
+    def handle_response(self, response: HTTPResponse) -> ListGroupMembersResponse:
         try:
             super(ListGroupMembersEndpoint, self).handle_response(response)
         except SmsException as e:
@@ -208,4 +211,5 @@ class ListGroupMembersEndpoint(SmsEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return TypeAdapter(conlist(StrictStr)).validate_python(response.body)
+        members = TypeAdapter(conlist(StrictStr)).validate_python(response.body)
+        return ListGroupMembersResponse(members=members)

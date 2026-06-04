@@ -1,6 +1,6 @@
 import pytest
 from sinch.core.pagination import SMSPaginator
-from sinch.domains.sms.api.v1.groups import Groups
+from sinch.domains.sms.api.v1.groups_apis import Groups
 from sinch.domains.sms.api.v1.internal.groups_endpoints import CreateGroupEndpoint, DeleteGroupEndpoint, GetGroupEndpoint, ListGroupMembersEndpoint, ListGroupsEndpoint, ReplaceGroupEndpoint, UpdateGroupEndpoint
 from sinch.domains.sms.models.v1.response.group_response import GroupResponse
 from sinch.domains.sms.models.v1.response.list_groups_response import ListGroupsResponse
@@ -190,11 +190,11 @@ def test_groups_delete_correct_request(mock_sinch_client_sms, mocker):
 
 
 def test_groups_list_members_correct_request(mock_sinch_client_sms, mocker):
-    """Test that list_members sends the correct request and handles the response properly."""
-    mock_sinch_client_sms.configuration.transport.request.return_value = [
-        "+46701234567",
-        "+46709876543",
-    ]
+    """Test that list_members sends the correct request and returns an SMSPaginator."""
+    from sinch.domains.sms.models.v1.response.list_group_members_response import ListGroupMembersResponse
+
+    mock_members_response = ListGroupMembersResponse(members=["+46701234567", "+46709876543"])
+    mock_sinch_client_sms.configuration.transport.request.return_value = mock_members_response
 
     spy_endpoint = mocker.spy(ListGroupMembersEndpoint, "__init__")
 
@@ -207,5 +207,9 @@ def test_groups_list_members_correct_request(mock_sinch_client_sms, mocker):
     assert kwargs["project_id"] == "test_project_id"
     assert kwargs["request_data"].group_id == "01FC66621XXXXX119Z8PMV1QPQ"
 
-    assert response == ["+46701234567", "+46709876543"]
+    assert isinstance(response, SMSPaginator)
+    assert hasattr(response, "has_next_page")
+    assert response.has_next_page is False
+    assert response.result == mock_members_response
+    assert response.content() == ["+46701234567", "+46709876543"]
     mock_sinch_client_sms.configuration.transport.request.assert_called_once()

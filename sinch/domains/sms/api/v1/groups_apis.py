@@ -253,17 +253,22 @@ class Groups(BaseSms):
         request_data = GroupIdRequest(group_id=group_id, **kwargs)
         return self._request(DeleteGroupEndpoint, request_data)
 
-    def list_members(self, group_id: str, **kwargs) -> List[str]:
+    def list_members(self, group_id: str, **kwargs) -> Paginator[str]:
         """
         This operation retrieves the members of the group with the provided group ID.
 
         :param group_id: ID of the group whose members are being retrieved.
         :type group_id: str
 
-        :returns: List of phone numbers (MSISDNs) in E.164 format.
-        :rtype: List[str]
+        :returns: Paginator[str]
+        :rtype: Paginator[str]
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
         request_data = GroupIdRequest(group_id=group_id, **kwargs)
-        return self._request(ListGroupMembersEndpoint, request_data)
+        endpoint = ListGroupMembersEndpoint(
+            project_id=self._get_path_identifier(),
+            request_data=request_data,
+        )
+        endpoint.set_authentication_method(self._sinch)
+        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)

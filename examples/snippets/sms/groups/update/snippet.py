@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.sms.api.v1.groups import GroupResponse
+from sinch.domains.sms.api.v1.groups_apis import GroupResponse
 
 load_dotenv()
 

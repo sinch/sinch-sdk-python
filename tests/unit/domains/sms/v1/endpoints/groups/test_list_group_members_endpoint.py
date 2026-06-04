@@ -47,11 +47,14 @@ def test_build_url(endpoint, mock_sinch_client_sms):
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
-    """Check if response is handled and mapped to a list of MSISDNs correctly."""
+    """Check if response is handled and mapped to ListGroupMembersResponse correctly."""
+    from sinch.domains.sms.models.v1.response.list_group_members_response import ListGroupMembersResponse
+
     result = endpoint.handle_response(mock_response)
 
-    assert isinstance(result, list)
-    assert result == ["+46701234567", "+46709876543"]
+    assert isinstance(result, ListGroupMembersResponse)
+    assert result.members == ["+46701234567", "+46709876543"]
+    assert result.content == ["+46701234567", "+46709876543"]
 
 
 def test_handle_response_expects_sms_exception_on_error(endpoint, mock_error_response):

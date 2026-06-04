@@ -2,7 +2,7 @@ from sinch.domains.sms.api.v1 import (
     Batches,
     DeliveryReports,
 )
-from sinch.domains.sms.api.v1.groups import Groups
+from sinch.domains.sms.api.v1.groups_apis import Groups
 from sinch.domains.sms.sinch_events.v1.sms_sinch_event import SmsSinchEvent
 
 
