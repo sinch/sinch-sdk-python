@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 from pydantic import StrictStr, TypeAdapter, conlist
 
