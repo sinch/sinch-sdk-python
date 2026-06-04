@@ -142,7 +142,7 @@ poetry.lock
 # Pyenv
 .python-version
 
-# Claude
+#CLAUDE
 CLAUDE.local.md
 
 # .DS_Store files
