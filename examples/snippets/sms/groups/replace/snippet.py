@@ -24,6 +24,7 @@ sinch_client = SinchClient(
 group_id = "GROUP_ID"
 
 response: GroupResponse = sinch_client.sms.groups.replace(
+    group_id=group_id,
     members=["+1234567890", "+1987654321"],
 )
 
