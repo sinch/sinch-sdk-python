@@ -9,8 +9,6 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.core.pagination import Paginator
-from sinch.domains.sms.models.v1.types.inbound_message import InboundMessage
 
 load_dotenv()
 
@@ -22,7 +20,8 @@ sinch_client = SinchClient(
 )
 
 
-inbound_messages: Paginator[InboundMessage] = sinch_client.sms.inbound_messages.list(to=["+1234567890"])
+inbound_messages = sinch_client.sms.inbound_messages.list(to=["+1234567890"])
 
+print("List of inbound messages:\n")
 for message in inbound_messages.iterator():
-    print(f"Inbound message:\n{message}")
+    print(message)

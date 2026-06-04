@@ -1,5 +1,6 @@
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.utils import model_dump_for_query_params
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.api.v1.internal.base.sms_endpoint import SmsEndpoint
 from sinch.domains.sms.models.v1.internal.inbound_id_request import (
@@ -47,7 +48,7 @@ class ListInboundsEndpoint(SmsEndpoint):
         self.request_data = request_data
 
     def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
+        return model_dump_for_query_params(self.request_data)
 
     def handle_response(self, response: HTTPResponse) -> ListInboundsResponse:
         try:

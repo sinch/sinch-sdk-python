@@ -24,3 +24,8 @@ class ListInboundsResponse(BaseModelConfigurationResponse):
         default=None,
         description="The number of inbounds returned in this request.",
     )
+
+    @property
+    def content(self):
+        """Returns the content of the inbounds list."""
+        return self.inbounds or []
