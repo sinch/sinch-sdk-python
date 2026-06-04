@@ -21,6 +21,6 @@ sinch_client = SinchClient(
 
 groups = sinch_client.sms.groups.list()
 
-print("Available groups:\n")
+print("List of groups:\n")
 for group in groups.iterator():
     print(group)

@@ -25,6 +25,6 @@ group_id = "GROUP_ID"
 
 members = sinch_client.sms.groups.list_members(group_id=group_id)
 
-print("Available members:\n")
+print("List of members:\n")
 for member in members.iterator():
     print(member)
