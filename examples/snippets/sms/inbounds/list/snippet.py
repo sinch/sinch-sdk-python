@@ -20,7 +20,7 @@ sinch_client = SinchClient(
 )
 
 
-inbound_messages = sinch_client.sms.inbound_messages.list(to=["+1234567890"])
+inbound_messages = sinch_client.sms.inbound_messages.list()
 
 print("List of inbound messages:\n")
 for message in inbound_messages.iterator():
