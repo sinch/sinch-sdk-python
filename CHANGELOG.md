@@ -20,7 +20,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[dependency]** Set up minimum version for `requests` to `>=2.0.0` (#152).
+- **[dependency]** Set up minimum version for `requests` to `>=2.0.0` to prevent pulling in versions with known vulnerabilities (#152).
 
 ---
 
