@@ -207,7 +207,7 @@ The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2
 
 The SMS domain API access remains the same: `sinch.sms.batches` and `sinch.sms.delivery_reports`. However, the underlying models and method signatures have changed.
 
-Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and will be available in future minor versions.
+Note that `sinch.sms.inbounds` is not supported yet and will be available in a future minor version. `sinch.sms.groups` is now available — see [Groups API](#groups-api) below.
 
 ##### Batches API
 
@@ -229,6 +229,41 @@ Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and 
 | `list()` with `ListSMSDeliveryReportsRequest` | `list()` the parameters `start_date` and `end_date` now accepts both `str` and `datetime` |
 | `get_for_batch()` with `GetSMSDeliveryReportForBatchRequest` | `get()` with `batch_id: str` and optional parameters: `report_type`, `status`, `code`, `client_reference` |
 | `get_for_number()` with `GetSMSDeliveryReportForNumberRequest` | `get_for_number()` with `batch_id: str` and `recipient: str` parameters |
+
+##### Groups API
+
+> **Added in v2.1.0.** `sinch.sms.groups` is now fully supported.
+
+###### Replacement models
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.sms.models.groups.requests.CreateSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.GroupRequest`](sinch/domains/sms/models/v1/internal/group_request.py) |
+| `sinch.domains.sms.models.groups.requests.ListSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.ListGroupsRequest`](sinch/domains/sms/models/v1/internal/list_groups_request.py) |
+| `sinch.domains.sms.models.groups.requests.GetSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.GroupIdRequest`](sinch/domains/sms/models/v1/internal/group_id_request.py) |
+| `sinch.domains.sms.models.groups.requests.DeleteSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.GroupIdRequest`](sinch/domains/sms/models/v1/internal/group_id_request.py) |
+| `sinch.domains.sms.models.groups.requests.GetSMSGroupPhoneNumbersRequest` | [`sinch.domains.sms.models.v1.internal.GroupIdRequest`](sinch/domains/sms/models/v1/internal/group_id_request.py) |
+| `sinch.domains.sms.models.groups.requests.UpdateSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.UpdateGroupRequest`](sinch/domains/sms/models/v1/internal/update_group_request.py) |
+| `sinch.domains.sms.models.groups.requests.ReplaceSMSGroupPhoneNumbersRequest` | [`sinch.domains.sms.models.v1.internal.ReplaceGroupRequest`](sinch/domains/sms/models/v1/internal/replace_group_request.py) |
+| `sinch.domains.sms.models.groups.responses.CreateSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.GetSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.UpdateSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.ReplaceSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.SinchListSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.ListGroupsResponse`](sinch/domains/sms/models/v1/response/list_groups_response.py) |
+| `sinch.domains.sms.models.groups.responses.SinchGetSMSGroupPhoneNumbersResponse` | [`sinch.domains.sms.models.v1.response.ListGroupMembersResponse`](sinch/domains/sms/models/v1/response/list_group_members_response.py) |
+| `sinch.domains.sms.models.groups.responses.SinchDeleteSMSGroupResponse` | `None` (method returns `None`) |
+
+###### Replacement APIs
+
+| Old method | New method in `sms.groups` |
+|------------|---------------------------|
+| `create()` with `CreateSMSGroupRequest` | `create()` with individual parameters: `name`, `members`, `child_groups`, `auto_update` |
+| `list()` with `ListSMSGroupRequest` | `list()` with individual parameters: `page`, `page_size`. Returns **`Paginator[GroupResponse]`** |
+| `get()` with `GetSMSGroupRequest` | `get()` with `group_id: str` parameter |
+| `update()` with `UpdateSMSGroupRequest` | `update()` with `group_id: str` and optional parameters: `add`, `remove`, `name`, `add_from_group`, `remove_from_group`, `auto_update` |
+| `replace()` with `ReplaceSMSGroupPhoneNumbersRequest` | `replace()` with `group_id: str` and optional parameters: `name`, `members`, `child_groups`, `auto_update` |
+| `delete()` with `DeleteSMSGroupRequest` | `delete()` with `group_id: str` parameter |
+| `get_phone_numbers()` / phone number listing | `list_members()` with `group_id: str`. Returns **`Paginator[str]`** |
 
 ---
 

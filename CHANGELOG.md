@@ -16,6 +16,14 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.1.0 – 2026-06-05
+
+### SMS
+
+- **[feature]** SMS Groups API: `create`, `list`, `get`, `update`, `replace`, `delete`, and `list_members` operations, with full model, endpoint, and unit test coverage (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md#groups-api)).
+
+---
+
 ## v2.0.1 – 2026-06-02
 
 ### SMS
