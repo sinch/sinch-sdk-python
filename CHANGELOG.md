@@ -16,6 +16,14 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.1.0 – 
+
+### SDK
+
+- **[dependency]** Set up minimum version for `requests` to `>=2.0.0` (#152).
+
+---
+
 ## v2.0.1 – 2026-06-02
 
 ### SMS
