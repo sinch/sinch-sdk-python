@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.sms.api.v1.groups_apis import GroupResponse
 
 load_dotenv()
 
@@ -23,7 +22,7 @@ sinch_client = SinchClient(
 # The ID of the group to update
 group_id = "GROUP_ID"
 
-response: GroupResponse = sinch_client.sms.groups.update(
+response = sinch_client.sms.groups.update(
     group_id=group_id,
     add=["+1234567890"],
     remove=["+1987654321"],

@@ -9,7 +9,6 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.sms.api.v1.groups_apis import GroupResponse
 
 load_dotenv()
 
@@ -23,7 +22,7 @@ sinch_client = SinchClient(
 # The ID of the group to replace
 group_id = "GROUP_ID"
 
-response: GroupResponse = sinch_client.sms.groups.replace(
+response = sinch_client.sms.groups.replace(
     group_id=group_id,
     members=["+1234567890", "+1987654321"],
 )
