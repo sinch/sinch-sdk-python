@@ -18,8 +18,14 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ## v2.1.0 – 2026-06-05
 
+### SDK
+
+- **[dependency]** Set up minimum version for `requests` to `>=2.0.0` to prevent pulling in versions with known vulnerabilities (#152).
+
+
 ### SMS
 
+- **[feature]** SMS Groups API: `create`, `list`, `get`, `update`, `replace`, `delete`, and `list_members` operations, with full model, endpoint, and unit test coverage (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md#groups-api)).
 - **[feature]** SMS Inbounds API: `get` and `list` operations, with full model, endpoint, and unit test coverage (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md#210)).
 - **[design]** SMS Sinch Events inbound payload models unified with the Inbounds API: `MOTextSinchEvent`, `MOBinarySinchEvent`, `MOMediaSinchEvent`, `MediaBody`, and `MediaItem` removed from `sinch_events`; use `InboundMessage` (and its variants) from `sinch.domains.sms.models.v1.types` instead (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md#210)).
 

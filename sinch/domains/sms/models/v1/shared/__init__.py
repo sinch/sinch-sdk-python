@@ -1,3 +1,8 @@
+from sinch.domains.sms.models.v1.shared.auto_update import (
+    AddKeyword,
+    AutoUpdate,
+    RemoveKeyword,
+)
 from sinch.domains.sms.models.v1.shared.binary_request import BinaryRequest
 from sinch.domains.sms.models.v1.shared.binary_response import BinaryResponse
 from sinch.domains.sms.models.v1.shared.dry_run_per_recipient_details import (
@@ -21,6 +26,8 @@ from sinch.domains.sms.models.v1.shared.mo_media_body import MOMediaBody
 from sinch.domains.sms.models.v1.shared.mo_media_message import MOMediaMessage
 
 __all__ = [
+    "AddKeyword",
+    "AutoUpdate",
     "BinaryRequest",
     "BinaryResponse",
     "DryRunPerRecipientDetails",
@@ -28,6 +35,7 @@ __all__ = [
     "MediaRequest",
     "MediaResponse",
     "MessageDeliveryStatus",
+    "RemoveKeyword",
     "TextRequest",
     "TextResponse",
     "BaseMOMessage",

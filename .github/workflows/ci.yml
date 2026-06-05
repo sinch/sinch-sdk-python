@@ -85,6 +85,8 @@ jobs:
         cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
         cp sinch-sdk-mockserver/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
         cp sinch-sdk-mockserver/features/sms/delivery-reports.feature ./tests/e2e/sms/features/
+        cp sinch-sdk-mockserver/features/sms/groups.feature ./tests/e2e/sms/features/
+        cp sinch-sdk-mockserver/features/sms/groups_servicePlanId.feature ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/sms/delivery-reports_servicePlanId.feature ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/sms/batches.feature ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/sms/batches_servicePlanId.feature ./tests/e2e/sms/features/
