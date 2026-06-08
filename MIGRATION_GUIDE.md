@@ -205,7 +205,7 @@ The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2
 
 #### Replacement APIs
 
-The SMS domain API access remains the same: `sinch.sms.batches`, `sinch.sms.delivery_reports`, `sinch.sms.inbounds` and `sinch.sms.groups`. However, the underlying models and method signatures have changed.
+The SMS domain API access remains the same: `sinch.sms.batches`, `sinch.sms.delivery_reports`, `sinch.sms.inbounds` and `sinch.sms.groups`. However, the underlying models and method signatures have changed. See the sections below for the full list of changes: [Batches](#batches-api), [Delivery Reports](#delivery-reports-api), [Groups](#groups-api), [Inbounds](#inbounds-api).
 
 ##### Batches API
 
@@ -305,7 +305,8 @@ The inbound payload models in `sinch_events` have been unified with the Inbounds
 | `numbers.callbacks.get_configuration()` (method) | `numbers.event_destinations.get()` (method) |
 | `numbers.callbacks.update_configuration(hmac_secret)` (method) | `numbers.event_destinations.update(hmac_secret=hmac_secret)` (method) |
 
-##### Replacement models
+##### Replacement modelsRefer the link of what changed in models and methods.
+
 
 | Old class | New class |
 |-----------|-----------|
