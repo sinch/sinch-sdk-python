@@ -305,7 +305,7 @@ The inbound payload models in `sinch_events` have been unified with the Inbounds
 | `numbers.callbacks.get_configuration()` (method) | `numbers.event_destinations.get()` (method) |
 | `numbers.callbacks.update_configuration(hmac_secret)` (method) | `numbers.event_destinations.update(hmac_secret=hmac_secret)` (method) |
 
-##### Replacement modelsRefer the link of what changed in models and methods.
+##### Replacement models
 
 
 | Old class | New class |
