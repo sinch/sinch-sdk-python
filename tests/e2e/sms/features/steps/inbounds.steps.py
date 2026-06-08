@@ -6,7 +6,7 @@ from sinch.domains.sms.models.v1.shared import MOTextMessage
 @when('I send a request to retrieve an inbound message')
 def step_retrieve_inbound_message(context):
     """Retrieve a single inbound message by ID"""
-    context.response = context.sms.inbound_messages.get(
+    context.response = context.sms.inbounds.get(
         inbound_id='01W4FFL35P4NC4K35INBOUND01'
     )
 
@@ -28,7 +28,7 @@ def step_validate_inbound_message(context):
 @when('I send a request to list the inbound messages')
 def step_list_inbound_messages(context):
     """List a page of inbound messages"""
-    context.response = context.sms.inbound_messages.list(
+    context.response = context.sms.inbounds.list(
         page_size=2,
         to=['12017777777', '12018888888']
     )
@@ -45,7 +45,7 @@ def step_validate_inbound_messages_count(context, count):
 @when('I send a request to list all the inbound messages')
 def step_list_all_inbound_messages(context):
     """List all inbound messages using iterator"""
-    response = context.sms.inbound_messages.list(
+    response = context.sms.inbounds.list(
         page_size=2,
         to=['12017777777', '12018888888']
     )
@@ -68,7 +68,7 @@ def step_validate_inbound_messages_list_count(context, count):
 @when('I iterate manually over the inbound messages pages')
 def step_iterate_manually_inbound_messages(context):
     """Manually iterate over inbound messages pages"""
-    context.list_response = context.sms.inbound_messages.list(
+    context.list_response = context.sms.inbounds.list(
         page_size=2,
         to=['12017777777', '12018888888']
     )

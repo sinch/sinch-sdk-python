@@ -22,8 +22,6 @@ sinch_client = SinchClient(
 # The ID of the inbound message to retrieve
 inbound_id = "INBOUND_ID"
 
-response = sinch_client.sms.inbound_messages.get(
-    inbound_id=inbound_id
-)
+response = sinch_client.sms.inbounds.get(inbound_id=inbound_id)
 
 print(f"Inbound message:\n{response}")
