@@ -205,9 +205,7 @@ The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2
 
 #### Replacement APIs
 
-The SMS domain API access remains the same: `sinch.sms.batches` and `sinch.sms.delivery_reports`. However, the underlying models and method signatures have changed.
-
-Note that `sinch.sms.inbounds` is not supported yet and will be available in a future minor version. `sinch.sms.groups` is now available — see [Groups API](#groups-api) below.
+The SMS domain API access remains the same: `sinch.sms.batches`, `sinch.sms.delivery_reports`, `sinch.sms.inbounds` and `sinch.sms.groups`. However, the underlying models and method signatures have changed. See the sections below for the full list of changes: [Batches](#batches-api), [Delivery Reports](#delivery-reports-api), [Groups](#groups-api), [Inbounds](#inbounds-api).
 
 ##### Batches API
 
@@ -231,8 +229,6 @@ Note that `sinch.sms.inbounds` is not supported yet and will be available in a f
 | `get_for_number()` with `GetSMSDeliveryReportForNumberRequest` | `get_for_number()` with `batch_id: str` and `recipient: str` parameters |
 
 ##### Groups API
-
-> **Added in v2.1.0.** `sinch.sms.groups` is now fully supported.
 
 ###### Replacement models
 
@@ -265,6 +261,38 @@ Note that `sinch.sms.inbounds` is not supported yet and will be available in a f
 | `delete()` with `DeleteSMSGroupRequest` | `delete()` with `group_id: str` parameter |
 | `get_phone_numbers()` / phone number listing | `list_members()` with `group_id: str`. Returns **`Paginator[str]`** |
 
+##### Inbounds API
+
+###### Replacement models
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.sms.models.inbounds.requests.ListSMSInboundMessageRequest` | [`sinch.domains.sms.models.v1.internal.ListInboundsRequest`](sinch/domains/sms/models/v1/internal/list_inbounds_request.py) |
+| `sinch.domains.sms.models.inbounds.requests.GetSMSInboundMessageRequest` | [`sinch.domains.sms.models.v1.internal.InboundIdRequest`](sinch/domains/sms/models/v1/internal/inbound_id_request.py) |
+| `sinch.domains.sms.models.inbounds.responses.SinchListInboundMessagesResponse` | [`sinch.domains.sms.models.v1.internal.ListInboundsResponse`](sinch/domains/sms/models/v1/internal/list_inbounds_response.py) |
+| `sinch.domains.sms.models.inbounds.responses.GetInboundMessagesResponse` | [`sinch.domains.sms.models.v1.types.InboundMessage`](sinch/domains/sms/models/v1/types/inbound_message.py) (Union of `MOTextMessage`, `MOBinaryMessage`, `MOMediaMessage`) |
+
+###### Replacement APIs
+
+| Old method | New method in `sms.inbounds` |
+|------------|------------------------------|
+| `list()` with `ListSMSInboundMessageRequest` | `list()` with individual parameters: `page`, `page_size`, `to`, `start_date`, `end_date`, `client_reference`. Returns **`Paginator[InboundMessage]`** |
+| `get()` with `GetSMSInboundMessageRequest` | `get()` with `inbound_id: str` parameter |
+
+##### SMS Sinch Events
+
+The inbound payload models in `sinch_events` have been unified with the Inbounds API models. The following classes have been removed:
+
+| Removed class | Replacement |
+|---------------|-------------|
+| `sinch.domains.sms.sinch_events.v1.events.MOTextSinchEvent` | [`sinch.domains.sms.models.v1.shared.MOTextMessage`](sinch/domains/sms/models/v1/shared/mo_text_message.py) |
+| `sinch.domains.sms.sinch_events.v1.events.MOBinarySinchEvent` | [`sinch.domains.sms.models.v1.shared.MOBinaryMessage`](sinch/domains/sms/models/v1/shared/mo_binary_message.py) |
+| `sinch.domains.sms.sinch_events.v1.events.MOMediaSinchEvent` | [`sinch.domains.sms.models.v1.shared.MOMediaMessage`](sinch/domains/sms/models/v1/shared/mo_media_message.py) |
+| `sinch.domains.sms.sinch_events.v1.events.MediaBody` | Embedded in `MOMediaMessage` |
+| `sinch.domains.sms.sinch_events.v1.events.MediaItem` | Embedded in `MOMediaMessage` |
+
+`IncomingSMSSinchEvent` is now a type alias for [`InboundMessage`](sinch/domains/sms/models/v1/types/inbound_message.py) (discriminated union of `MOTextMessage`, `MOBinaryMessage`, `MOMediaMessage`). Code that previously type-checked against `MOTextSinchEvent` and siblings should switch to their `MO*Message` equivalents.
+
 ---
 
 ### [`Numbers` (Virtual Numbers)](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/numbers)
@@ -278,6 +306,7 @@ Note that `sinch.sms.inbounds` is not supported yet and will be available in a f
 | `numbers.callbacks.update_configuration(hmac_secret)` (method) | `numbers.event_destinations.update(hmac_secret=hmac_secret)` (method) |
 
 ##### Replacement models
+
 
 | Old class | New class |
 |-----------|-----------|

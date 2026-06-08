@@ -16,6 +16,14 @@ from sinch.domains.sms.models.v1.shared.message_delivery_status import (
 )
 from sinch.domains.sms.models.v1.shared.text_request import TextRequest
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
+from sinch.domains.sms.models.v1.shared.base_mo_message import BaseMOMessage
+from sinch.domains.sms.models.v1.shared.mo_text_message import MOTextMessage
+from sinch.domains.sms.models.v1.shared.mo_binary_message import (
+    MOBinaryMessage,
+)
+from sinch.domains.sms.models.v1.shared.mo_media_item import MOMediaItem
+from sinch.domains.sms.models.v1.shared.mo_media_body import MOMediaBody
+from sinch.domains.sms.models.v1.shared.mo_media_message import MOMediaMessage
 
 __all__ = [
     "AddKeyword",
@@ -30,4 +38,10 @@ __all__ = [
     "RemoveKeyword",
     "TextRequest",
     "TextResponse",
+    "BaseMOMessage",
+    "MOTextMessage",
+    "MOBinaryMessage",
+    "MOMediaItem",
+    "MOMediaBody",
+    "MOMediaMessage",
 ]
