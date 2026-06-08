@@ -12,3 +12,7 @@ requests
 
 # Data Validation
 pydantic >= 2.0.0
+
+# Documentation
+sphinx == 9.0.4
+sphinx-rtd-theme == 3.1.0
