@@ -64,7 +64,7 @@ jobs:
           echo "Triggering downstream GitLab pipeline to notify about new documentation package version..."
           VERSION="${{ steps.version.outputs.value }}"
           curl --fail --show-error --location --request POST \
-               --form "token=${{ secrets.GITLAB_NOTIFIY_REGISTRY_UPLOADED_DOC_TOKEN }}" \
+               --form "token=${{ secrets.GITLAB_NOTIFY_REGISTRY_UPLOADED_DOC_TOKEN }}" \
                --form "ref=main" \
                --form "variables[UPSTREAM_PACKAGE_NAME]=${{ env.SDK_NAME }}" \
                --form "variables[UPSTREAM_PACKAGE_VERSION]=${VERSION}" \
