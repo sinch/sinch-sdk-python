@@ -27,10 +27,11 @@ For more information on the SDK, refer to the dedicated [Python SDK documentatio
 - [Supported APIs](#supported-apis)
 - [Logging](#logging)
 - [Handling Exceptions](#handling-exceptions)
+- [Custom HTTP client implementation](#custom-http-client-implementation)
 - [Third-party dependencies](#third-party-dependencies)
 - [Examples](#examples)
 - [Changelog and Migration](#changelog--migration)
-- [Licence](#licence)
+- [License](#license)
 - [Contact](#contact)
 
 
@@ -42,24 +43,11 @@ For more information on the SDK, refer to the dedicated [Python SDK documentatio
 
 ## Installation
 
-You can install this package by typing:
+Run the following command to install the SDK:
 
 ```bash
 pip install sinch
 ```
-
-## Getting Started
-
-To start using the SDK, you need to initialize the main client class with your credentials from your Sinch dashboard. It's highly recommended to not hardcode these credentials and to load them from environment variables instead.
-
-
-
-## Products
-
-The Sinch client provides access to the following Sinch products:
-- Numbers API
-- SMS API
-- Conversation API (beta release)
 
 
 ## Getting started
@@ -67,8 +55,10 @@ The Sinch client provides access to the following Sinch products:
 
 ### Client initialization
 
-To establish a connection with the Sinch backend, you must provide credentials based on the API you intend to use.
-For security best practices, avoid hardcoding credentials — retrieve them from environment variables instead.
+To start using the SDK, you need to initialize the main client class with your credentials from your Sinch dashboard.
+It's highly recommended to not hardcode these credentials and to load them from environment variables instead.
+
+From this client, you have access to all the SDK services:
 
 ```python
 from sinch import SinchClient
@@ -80,22 +70,51 @@ sinch_client = SinchClient(
 )
 ```
 
-> **Note:** `sms_region` and `conversation_region` no longer have defaults and **must** be set before
-> calling those APIs—omitting them will cause a runtime error. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for details.
+### Authentication
 
 
-#### SMS API
+#### Project-level Authentication
+This is the recommended, default method and the one most Sinch APIs rely on. It uses your project-level [access key](https://dashboard.sinch.com/settings/access-keys). The SDK exchanges them for a short-lived OAuth2 access token and refreshes it automatically.
 
-The SMS API supports two authentication methods. `sms_region` is required for both and has no default.
 
-**Project auth (OAuth2)**
+```python
+import os
+from sinch import SinchClient
 
-The SDK automatically exchanges your key ID and key secret for a short-lived OAuth2 token and refreshes it automatically on expiry.
-Supported regions: `us`, `eu`, `br`.
+sinch_client = SinchClient(
+    project_id=os.environ["SINCH_PROJECT_ID"],
+    key_id=os.environ["SINCH_KEY_ID"],
+    key_secret=os.environ["SINCH_KEY_SECRET"],
+    # Set the region for the regionalized API(s)
+    conversation_region="eu",
+    sms_region="eu",
+)
+```
 
-In your [Account dashboard](https://dashboard.sinch.com/settings/access-keys), you will find your `projectId` and access keys composed of pairs of `keyId` / `keySecret`.
+**Region parameters**
 
-> **Note:** the `keySecret` is visible only when you create the Access Key. Store it safely and create a new Access Key if you have lost it.
+Some APIs are regionalized and require you to set their region explicitly. Since
+v2.0.0 these parameters have no default, and the SDK raises a runtime error if
+you call the API without setting them first (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)
+for the upgrade details):
+
+- `conversation_region` — required for the Conversation API.
+- `sms_region` — required for the SMS API (detailed under [SMS Authentication](#sms-authentication)).
+
+Pass them when you initialize `SinchClient` (as above). They can also be set
+afterwards on the `configuration` object, but this must be done before the
+first call to that API:
+
+> **Note:** if you use both the SMS and Conversation APIs, `sms_region` and
+> `conversation_region` must point to the same region. Mismatched regions
+> cause delivery failures.
+
+
+#### SMS authentication
+
+The SMS API supports two authentication schemes depending on your region:
+
+- **OAuth2 (US and EU)** — Uses the same project-level [access keys](https://dashboard.sinch.com/settings/access-keys) as above (`projectId`, `keyId`, `keySecret`).
 
 ```python
 from sinch import SinchClient
@@ -108,12 +127,8 @@ sinch_client = SinchClient(
 )
 ```
 
-**Service Plan ID auth (legacy)**
+- **Service plan (AU, BR, CA, US and EU)** — Uses a `servicePlanId` and `apiToken` from the [Service APIs dashboard](https://dashboard.sinch.com/sms/api/services).
 
-Uses a static bearer token that never expires.
-Support all regions: `us`, `eu`, `br`, `ca`, `au`.
-
-In your [Service APIs dashboard](https://dashboard.sinch.com/sms/api/services), you will find your `servicePlanId` and `apiToken` (bearer token).
 
 ```python
 from sinch import SinchClient
@@ -125,39 +140,52 @@ sinch_client = SinchClient(
 )
 ```
 
-#### Conversation API - Project auth (OAuth2)
+> **SMS authentication for new accounts**
+>
+> Accounts created after the SMS API end-of-sale (`15/04/26`) cannot use
+> project-level authentication the SMS API requests return `401 Unauthorized`.
+>
+> If you encounter this issue, consider the following options:
+>
+> 1. Use service-plan authentication (`servicePlanId` + `apiToken`)
+> 2. Use the Conversation API, which supports project-level authentication.
+> 3. Contact your account manager
 
-`conversation_region` is required and has no default. 
-Supported regions: `us`, `eu`, `br`.
 
-> **Why region matters:** The Conversation API stores and routes data within the selected region for regulatory compliance. Choose the region that matches your data residency requirements.
 
-```python
-from sinch import SinchClient
+### Your First Request
 
-sinch_client = SinchClient(
-    project_id="project_id",
-    key_id="key_id",
-    key_secret="key_secret",
-    conversation_region="eu"
-)
-```
-
-> **SMS integration note:** If you also use the SMS API, `sms_region` and `conversation_region` **must match**. Mismatched regions will cause delivery failures.
-
-#### Other APIs - Project auth (OAuth2)
-
-These APIs are not regionalized and use project-based auth.
+Once your client is configured, you can send your first message. The example below uses the Conversation API to send a simple text message over RCS. Replace CONVERSATION_APP_ID with your app ID and RECIPIENT_PHONE_NUMBER with the recipient's phone number:
 
 ```python
-from sinch import SinchClient
-
-sinch_client = SinchClient(
-    project_id="project_id",
-    key_id="key_id",
-    key_secret="key_secret",
+response = sinch_client.conversation.messages.send(
+    app_id="CONVERSATION_APP_ID",
+    message={
+        "text_message": {
+            "text": "[Python SDK: Conversation Message] Sample text message",
+        },
+    },
+    recipient_identities=[
+        {
+            "channel": "RCS",
+            "identity": "RECIPIENT_PHONE_NUMBER",
+        }
+    ],
 )
+
+print(f"Successfully sent message.\n{response}")
 ```
+
+## Supported APIs
+
+
+| API Category      | API Name               | Authentication |
+|-------------------|------------------------|----------------|
+| Messaging         | Conversation API       | OAuth2         |
+| Messaging         | SMS                    | OAuth2, APP    |
+| Numbers           | Numbers API            | OAuth2         |
+| Verification      | Number Lookup API      | OAuth2         |
+
 
 ## Logging
 
@@ -168,26 +196,7 @@ Logging configuration for this SDK utilizes following hierarchy:
 
 If all logging returned by this SDK needs to be disabled, usage of `NullHandler` provided by the standard `logging` module is advised.
 
-
- 
-## Sample apps
-
-Usage example of the Numbers API via [`VirtualNumbers`](sinch/domains/numbers/virtual_numbers.py) on the client (`sinch_client.numbers`)—`list()` returns your project’s active virtual numbers:
-
-```python
-paginator = sinch_client.numbers.list(
-    region_code="US",
-    number_type="LOCAL",
-)
-for active_number in paginator.iterator():
-    print(active_number)
-```
-
-Returned values are [Pydantic](https://docs.pydantic.dev/) model instances (for example [`ActiveNumber`](sinch/domains/numbers/models/v1/response/active_number.py)), including fields such as `phone_number`, `region_code`, `type`, and `capabilities`.
-
-More examples live under [examples/snippets](examples/snippets) on the `main` branch.
-
-### Handling exceptions
+## Handling exceptions
 
 Each API throws a custom, API related exception for an unsuccessful backed call.
 
@@ -206,7 +215,6 @@ except NumbersException as err:
 ```
 
 For handling all possible exceptions thrown by this SDK use `SinchException` (superclass of all Sinch exceptions) from `sinch.core.exceptions`.
-
 
 ## Custom HTTP client implementation
 
@@ -270,9 +278,35 @@ sinch_client.configuration.transport = MyHTTPImplementation(
 )
 ```
 
-Note: Asynchronous HTTP clients are not supported.
-The transport must be a synchronous implementation.
+> **Note:** Asynchronous HTTP clients are not supported. The transport must be
+> a synchronous implementation.
+
+
+## Third-party dependencies
+The SDK relies on the following third-party dependencies:
+- [requests](https://requests.readthedocs.io/): HTTP client used as the default transport for all API calls.
+- [pydantic](https://docs.pydantic.dev/): Data validation and serialization for request and response models.
+
+## Examples
+
+You can find:
+ - a Python example of each request in the [examples/snippets](./examples/snippets) folder.
+ - getting started guides for specific use cases in the [examples/getting-started](./examples/getting-started) folder.
+ - server-side event handling examples in the [examples/sinch_events](./examples/sinch_events) folder.
+
+## Changelog & Migration
+
+For information about the latest changes in the SDK, please refer to the [CHANGELOG](CHANGELOG.md) file
+and the [MIGRATION-GUIDE](MIGRATION-GUIDE.md) for instructions on how to update your code when upgrading to a new major version of the SDK.
 
 ## License
 
-This project is licensed under the Apache License. See the [LICENSE](LICENSE) file for the license text.
+This project is licensed under the Apache License. 
+
+See the [LICENSE](LICENSE) file for the license text.
+
+
+## Contact
+
+Developer Experience engineering team: [team-developer-experience@sinch.com](mailto:team-developer-experience@sinch.com)
+
