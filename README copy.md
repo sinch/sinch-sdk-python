@@ -80,8 +80,91 @@ sinch_client = SinchClient(
 )
 ```
 
-> **Note:** `sms_region` and `conversation_region` no longer have defaults and **must** be set before
-> calling those APIs—omitting them will cause a runtime error. See [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md) for details.
+### Authentication
+
+
+#### Project-level Authentication
+This is the recommended, default method and the one most Sinch APIs rely on. It uses your project-level [access key](https://dashboard.sinch.com/settings/access-keys). The SDK exchanges them for a short-lived OAuth2 access token and refreshes it automatically.
+
+
+```python
+import os
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id=os.environ["SINCH_PROJECT_ID"],
+    key_id=os.environ["SINCH_KEY_ID"],
+    key_secret=os.environ["SINCH_KEY_SECRET"],
+    # Set the region for the regionalized API(s)
+    conversation_region="eu",
+    sms_region="eu",
+)
+```
+
+**Region parameters**
+
+Some APIs are regionalized and require you to set their region explicitly. Since
+v2.0.0 these parameters have no default, and the SDK raises a runtime error if
+you call the API without setting them first (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)
+for the upgrade details):
+
+- `conversation_region` — required for the Conversation API.
+- `sms_region` — required for the SMS API (detailed under [SMS Authentication](#sms-authentication)).
+
+Pass them when you initialize `SinchClient` (as above). They can also be set
+afterwards on the `configuration` object, but this must be done **before** the
+first call to that API:
+
+> **Note:** if you use both the SMS and Conversation APIs, `sms_region` and
+> `conversation_region` must point to the same region. Mismatched regions
+> cause delivery failures.
+
+
+#### SMS authentication
+
+The SMS API supports two authentication schemes depending on your region:
+
+- **OAuth2 (US and EU)** — Uses the same project-level [access keys](https://dashboard.sinch.com/settings/access-keys) as above (`projectId`, `keyId`, `keySecret`).
+
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id="project_id",
+    key_id="key_id",
+    key_secret="key_secret",
+    sms_region="us"
+)
+```
+
+- **Service plan (AU, BR, CA, US and EU)** — Uses a `servicePlanId` and `apiToken` from the [Service APIs dashboard](https://dashboard.sinch.com/sms/api/services).
+
+
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    service_plan_id="service_plan_id",
+    sms_api_token="api_token",
+    sms_region="us"
+)
+```
+
+> **SMS authentication for new accounts**
+>
+> Accounts created after the SMS API end-of-sale (`<date>`) cannot use
+> project auth (OAuth2) for the SMS API requests return `401 Unauthorized`.
+>
+> If you hit this error, you have three options:
+>
+> 1. Use service-plan auth (`servicePlanId` + `apiToken`)
+> 2. Use the Conversation API, which supports OAuth2.
+> 3. Contact your account manager
+
+
+
+
+
 
 
 #### SMS API
