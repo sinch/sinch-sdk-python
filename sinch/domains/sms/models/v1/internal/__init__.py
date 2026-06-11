@@ -19,19 +19,26 @@ from sinch.domains.sms.models.v1.internal.get_batch_delivery_report_request impo
 from sinch.domains.sms.models.v1.internal.list_delivery_reports_request import (
     ListDeliveryReportsRequest,
 )
+from sinch.domains.sms.models.v1.internal.list_groups_request import (
+    ListGroupsRequest,
+)
 
 __all__ = [
     "BatchIdRequest",
     "DeliveryFeedbackRequest",
+    "GroupRequest",
     "ListBatchesRequest",
     "ListDeliveryReportsResponse",
     "GetRecipientDeliveryReportRequest",
     "ListDeliveryReportsRequest",
+    "ListGroupsRequest",
     "GetBatchDeliveryReportRequest",
     "DryRunRequest",
     "ReplaceBatchRequest",
+    "ReplaceGroupRequest",
     "SendSMSRequest",
     "UpdateBatchMessageRequest",
+    "UpdateGroupRequest",
 ]
 
 
@@ -49,6 +56,12 @@ def __getattr__(name: str):
         )
 
         return ReplaceBatchRequest
+    if name == "ReplaceGroupRequest":
+        from sinch.domains.sms.models.v1.internal.replace_group_request import (
+            ReplaceGroupRequest,
+        )
+
+        return ReplaceGroupRequest
     if name == "SendSMSRequest":
         from sinch.domains.sms.models.v1.internal.send_sms_request import (
             SendSMSRequest,
@@ -61,4 +74,16 @@ def __getattr__(name: str):
         )
 
         return UpdateBatchMessageRequest
+    if name == "UpdateGroupRequest":
+        from sinch.domains.sms.models.v1.internal.update_group_request import (
+            UpdateGroupRequest,
+        )
+
+        return UpdateGroupRequest
+    if name == "GroupRequest":
+        from sinch.domains.sms.models.v1.internal.group_request import (
+            GroupRequest,
+        )
+
+        return GroupRequest
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

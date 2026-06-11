@@ -1,6 +1,6 @@
 # Sinch Python SDK Migration Guide
 
-## 2.0.0
+## 2.1.0
 
 This release removes legacy SDK support.
 
@@ -205,9 +205,7 @@ The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2
 
 #### Replacement APIs
 
-The SMS domain API access remains the same: `sinch.sms.batches` and `sinch.sms.delivery_reports`. However, the underlying models and method signatures have changed.
-
-Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and will be available in future minor versions.
+The SMS domain API access remains the same: `sinch.sms.batches`, `sinch.sms.delivery_reports`, `sinch.sms.inbounds` and `sinch.sms.groups`. However, the underlying models and method signatures have changed. See the sections below for the full list of changes: [Batches](#batches-api), [Delivery Reports](#delivery-reports-api), [Groups](#groups-api), [Inbounds](#inbounds-api).
 
 ##### Batches API
 
@@ -230,6 +228,71 @@ Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and 
 | `get_for_batch()` with `GetSMSDeliveryReportForBatchRequest` | `get()` with `batch_id: str` and optional parameters: `report_type`, `status`, `code`, `client_reference` |
 | `get_for_number()` with `GetSMSDeliveryReportForNumberRequest` | `get_for_number()` with `batch_id: str` and `recipient: str` parameters |
 
+##### Groups API
+
+###### Replacement models
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.sms.models.groups.requests.CreateSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.GroupRequest`](sinch/domains/sms/models/v1/internal/group_request.py) |
+| `sinch.domains.sms.models.groups.requests.ListSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.ListGroupsRequest`](sinch/domains/sms/models/v1/internal/list_groups_request.py) |
+| `sinch.domains.sms.models.groups.requests.GetSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.GroupIdRequest`](sinch/domains/sms/models/v1/internal/group_id_request.py) |
+| `sinch.domains.sms.models.groups.requests.DeleteSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.GroupIdRequest`](sinch/domains/sms/models/v1/internal/group_id_request.py) |
+| `sinch.domains.sms.models.groups.requests.GetSMSGroupPhoneNumbersRequest` | [`sinch.domains.sms.models.v1.internal.GroupIdRequest`](sinch/domains/sms/models/v1/internal/group_id_request.py) |
+| `sinch.domains.sms.models.groups.requests.UpdateSMSGroupRequest` | [`sinch.domains.sms.models.v1.internal.UpdateGroupRequest`](sinch/domains/sms/models/v1/internal/update_group_request.py) |
+| `sinch.domains.sms.models.groups.requests.ReplaceSMSGroupPhoneNumbersRequest` | [`sinch.domains.sms.models.v1.internal.ReplaceGroupRequest`](sinch/domains/sms/models/v1/internal/replace_group_request.py) |
+| `sinch.domains.sms.models.groups.responses.CreateSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.GetSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.UpdateSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.ReplaceSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.GroupResponse`](sinch/domains/sms/models/v1/response/group_response.py) |
+| `sinch.domains.sms.models.groups.responses.SinchListSMSGroupResponse` | [`sinch.domains.sms.models.v1.response.ListGroupsResponse`](sinch/domains/sms/models/v1/response/list_groups_response.py) |
+| `sinch.domains.sms.models.groups.responses.SinchGetSMSGroupPhoneNumbersResponse` | [`sinch.domains.sms.models.v1.response.ListGroupMembersResponse`](sinch/domains/sms/models/v1/response/list_group_members_response.py) |
+| `sinch.domains.sms.models.groups.responses.SinchDeleteSMSGroupResponse` | `None` (method returns `None`) |
+
+###### Replacement APIs
+
+| Old method | New method in `sms.groups` |
+|------------|---------------------------|
+| `create()` with `CreateSMSGroupRequest` | `create()` with individual parameters: `name`, `members`, `child_groups`, `auto_update` |
+| `list()` with `ListSMSGroupRequest` | `list()` with individual parameters: `page`, `page_size`. Returns **`Paginator[GroupResponse]`** |
+| `get()` with `GetSMSGroupRequest` | `get()` with `group_id: str` parameter |
+| `update()` with `UpdateSMSGroupRequest` | `update()` with `group_id: str` and optional parameters: `add`, `remove`, `name`, `add_from_group`, `remove_from_group`, `auto_update` |
+| `replace()` with `ReplaceSMSGroupPhoneNumbersRequest` | `replace()` with `group_id: str` and optional parameters: `name`, `members`, `child_groups`, `auto_update` |
+| `delete()` with `DeleteSMSGroupRequest` | `delete()` with `group_id: str` parameter |
+| `get_phone_numbers()` / phone number listing | `list_members()` with `group_id: str`. Returns **`Paginator[str]`** |
+
+##### Inbounds API
+
+###### Replacement models
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.sms.models.inbounds.requests.ListSMSInboundMessageRequest` | [`sinch.domains.sms.models.v1.internal.ListInboundsRequest`](sinch/domains/sms/models/v1/internal/list_inbounds_request.py) |
+| `sinch.domains.sms.models.inbounds.requests.GetSMSInboundMessageRequest` | [`sinch.domains.sms.models.v1.internal.InboundIdRequest`](sinch/domains/sms/models/v1/internal/inbound_id_request.py) |
+| `sinch.domains.sms.models.inbounds.responses.SinchListInboundMessagesResponse` | [`sinch.domains.sms.models.v1.internal.ListInboundsResponse`](sinch/domains/sms/models/v1/internal/list_inbounds_response.py) |
+| `sinch.domains.sms.models.inbounds.responses.GetInboundMessagesResponse` | [`sinch.domains.sms.models.v1.types.InboundMessage`](sinch/domains/sms/models/v1/types/inbound_message.py) (Union of `MOTextMessage`, `MOBinaryMessage`, `MOMediaMessage`) |
+
+###### Replacement APIs
+
+| Old method | New method in `sms.inbounds` |
+|------------|------------------------------|
+| `list()` with `ListSMSInboundMessageRequest` | `list()` with individual parameters: `page`, `page_size`, `to`, `start_date`, `end_date`, `client_reference`. Returns **`Paginator[InboundMessage]`** |
+| `get()` with `GetSMSInboundMessageRequest` | `get()` with `inbound_id: str` parameter |
+
+##### SMS Sinch Events
+
+The inbound payload models in `sinch_events` have been unified with the Inbounds API models. The following classes have been removed:
+
+| Removed class | Replacement |
+|---------------|-------------|
+| `sinch.domains.sms.sinch_events.v1.events.MOTextSinchEvent` | [`sinch.domains.sms.models.v1.shared.MOTextMessage`](sinch/domains/sms/models/v1/shared/mo_text_message.py) |
+| `sinch.domains.sms.sinch_events.v1.events.MOBinarySinchEvent` | [`sinch.domains.sms.models.v1.shared.MOBinaryMessage`](sinch/domains/sms/models/v1/shared/mo_binary_message.py) |
+| `sinch.domains.sms.sinch_events.v1.events.MOMediaSinchEvent` | [`sinch.domains.sms.models.v1.shared.MOMediaMessage`](sinch/domains/sms/models/v1/shared/mo_media_message.py) |
+| `sinch.domains.sms.sinch_events.v1.events.MediaBody` | Embedded in `MOMediaMessage` |
+| `sinch.domains.sms.sinch_events.v1.events.MediaItem` | Embedded in `MOMediaMessage` |
+
+`IncomingSMSSinchEvent` is now a type alias for [`InboundMessage`](sinch/domains/sms/models/v1/types/inbound_message.py) (discriminated union of `MOTextMessage`, `MOBinaryMessage`, `MOMediaMessage`). Code that previously type-checked against `MOTextSinchEvent` and siblings should switch to their `MO*Message` equivalents.
+
 ---
 
 ### [`Numbers` (Virtual Numbers)](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/numbers)
@@ -243,6 +306,7 @@ Note that `sinch.sms.groups` and `sinch.sms.inbounds` are not supported yet and 
 | `numbers.callbacks.update_configuration(hmac_secret)` (method) | `numbers.event_destinations.update(hmac_secret=hmac_secret)` (method) |
 
 ##### Replacement models
+
 
 | Old class | New class |
 |-----------|-----------|
