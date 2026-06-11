@@ -39,8 +39,8 @@ class HTTPTransportRequests(HTTPTransport):
         response_body = self.deserialize_json_response(response)
 
         self.sinch.configuration.logger.debug(
-            f"Sync HTTP response {response.status_code} response with headers: {response.headers}"
-            f"and body: {response_body} from URL: {request_data.url}"
+            f"Sync HTTP response {response.status_code} with headers: {response.headers}"
+            f" and body: {response_body} from URL: {request_data.url}"
         )
 
         return HTTPResponse(

@@ -86,11 +86,11 @@ class TokenManager(TokenManagerBase):
         :returns: A valid OAuth token.
         :rtype: OAuthToken
         """
-        if self.token:
+        if self.token is not None:
             return self.token
         
         with self._lock:
-            if self.token:
+            if self.token is not None:
                 return self.token
             return self._fetch_new_token()
         

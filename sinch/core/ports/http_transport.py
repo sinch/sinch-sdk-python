@@ -45,7 +45,7 @@ class HTTPTransport(ABC):
         :rtype: HTTPResponse
         """
         request_data = self.prepare_request(endpoint)
-        self.authenticate(endpoint, request_data)
+        request_data = self.authenticate(endpoint, request_data)
         http_response = self.send(request_data)
 
         if self._should_refresh_token(endpoint, http_response):
