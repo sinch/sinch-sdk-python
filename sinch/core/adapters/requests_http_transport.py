@@ -1,8 +1,6 @@
 import requests
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.models.http_response import HTTPResponse
-from requests import Response
-
 
 class HTTPTransportRequests(HTTPTransport):
     """
