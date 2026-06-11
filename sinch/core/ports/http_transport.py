@@ -1,70 +1,74 @@
 from abc import ABC, abstractmethod
 from platform import python_version
+from typing import Optional
+
+from requests import Response
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.enums import HTTPAuthentication
-from sinch.core.token_manager import TokenState
 from sinch import __version__ as sdk_version
 
 
 class HTTPTransport(ABC):
-    """Base class for HTTP transports.
+    """
+    Base class for HTTP transports.
 
-    Subclasses implement ``send`` to perform the raw HTTP call.
-    The public ``request`` method adds cross-cutting concerns on top:
-    authentication, logging hooks, and automatic token refresh on 401.
+    Subclasses implement :meth:`send` to perform the raw HTTP call. The public
+    :meth:`request` method adds cross-cutting concerns on top: request
+    preparation, authentication, and automatic token refresh on 401.
     """
 
     def __init__(self, sinch):
         self.sinch = sinch
 
-    # ------------------------------------------------------------------
-    # Subclass contract
-    # ------------------------------------------------------------------
 
     @abstractmethod
-    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
-        """Execute a single HTTP round-trip and return the response.
-
-        Implementations must prepare the request, authenticate, perform the
-        HTTP call, deserialize the response, and return an ``HTTPResponse``.
-        They should **not** handle token refresh — that is done by
-        ``request``.
+    def send(self, request_data: HttpRequest) -> HTTPResponse:
         """
+        Performs a single HTTP round-trip for an already-prepared, authenticated request.
 
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
+        :param request_data: The prepared request to send.
+        :type request_data: HttpRequest
+        :returns: The HTTP response.
+        :rtype: HTTPResponse
+        """
 
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
-        """Send a request with automatic OAuth token refresh on 401.
-
-        If the server responds with 401 *and* the token is detected as
-        expired, the token is invalidated and **one** retry is attempted
-        with a fresh token.  A second consecutive 401 is handed straight
-        to the endpoint's error handler — no further retries.
         """
-        http_response = self.send(endpoint)
+        Sends a request, renewing the token and retrying once on an expired-token 401.
+
+        :param endpoint: The endpoint to call.
+        :type endpoint: HTTPEndpoint
+        :returns: The handled HTTP response.
+        :rtype: HTTPResponse
+        """
+        request_data = self.prepare_request(endpoint)
+        self.authenticate(endpoint, request_data)
+        http_response = self.send(request_data)
 
         if self._should_refresh_token(endpoint, http_response):
-            self.sinch.configuration.token_manager.handle_invalid_token(
-                http_response
-            )
-            if (
-                self.sinch.configuration.token_manager.token_state
-                == TokenState.EXPIRED
-            ):
-                http_response = self.send(endpoint)
+            used_token = self._get_bearer_token_from_request(request_data)
+            new_token = self.sinch.configuration.token_manager.refresh_auth_token(used_token)
+            self._set_bearer_token(request_data, new_token.access_token)
+            http_response = self.send(request_data)
 
         return endpoint.handle_response(http_response)
 
-    # ------------------------------------------------------------------
-    # Internals
-    # ------------------------------------------------------------------
 
-    def authenticate(self, endpoint, request_data):
+    def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
+        """
+        Stamps the credentials required by the endpoint's auth scheme onto the request.
+
+        :param endpoint: The endpoint being called, whose HTTP_AUTHENTICATION selects the scheme.
+        :type endpoint: HTTPEndpoint
+        :param request_data: The request to authenticate, mutated in place.
+        :type request_data: HttpRequest
+        :returns: The same request, with auth applied.
+        :rtype: HttpRequest
+        :raises ValidationException: If the credentials required by the scheme are missing.
+        """
         if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
             if (
                 not self.sinch.configuration.key_id
@@ -87,10 +91,7 @@ class HTTPTransport(ABC):
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
             token = self.sinch.authentication.get_auth_token().access_token
-            request_data.headers.update({
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
-            })
+            self._set_bearer_token(request_data, token)
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
             if not self.sinch.configuration.sms_api_token or not self.sinch.configuration.service_plan_id:
                 raise ValidationException(
@@ -101,14 +102,19 @@ class HTTPTransport(ABC):
                     is_from_server=False,
                     response=None
                 )
-            request_data.headers.update({
-                "Authorization": f"Bearer {self.sinch.configuration.sms_api_token}",
-                "Content-Type": "application/json"
-            })
+            self._set_bearer_token(request_data, self.sinch.configuration.sms_api_token)
 
         return request_data
 
     def prepare_request(self, endpoint: HTTPEndpoint) -> HttpRequest:
+        """
+        Builds the HttpRequest for an endpoint.
+
+        :param endpoint: The endpoint to build the request for.
+        :type endpoint: HTTPEndpoint
+        :returns: The prepared request.
+        :rtype: HttpRequest
+        """
         url_query_params = endpoint.build_query_params()
 
         return HttpRequest(
@@ -124,7 +130,16 @@ class HTTPTransport(ABC):
         )
 
     @staticmethod
-    def deserialize_json_response(response):
+    def deserialize_json_response(response: Response) -> dict:
+        """
+        Parses the JSON body of a response.
+
+        :param response: The raw HTTP response.
+        :type response: Response
+        :returns: The parsed body.
+        :rtype: dict
+        :raises SinchException: If the body is present but not valid JSON.
+        """
         if response.content:
             try:
                 response_body = response.json()
@@ -140,10 +155,48 @@ class HTTPTransport(ABC):
         return response_body
 
     @staticmethod
-    def _should_refresh_token(endpoint, http_response):
-        """Return True when a 401 response should trigger a token refresh."""
-        return (
-            http_response.status_code == 401
-            and endpoint.HTTP_AUTHENTICATION
-            == HTTPAuthentication.OAUTH.value
-        )
+    def _should_refresh_token(endpoint: HTTPEndpoint, http_response: HTTPResponse) -> bool:
+        """
+        Returns True for an OAuth endpoint that got a 401 with an expired-token header.
+
+        :param endpoint: The endpoint that was called.
+        :type endpoint: HTTPEndpoint
+        :param http_response: The response received.
+        :type http_response: HTTPResponse
+        :returns: Whether the token should be refreshed and the request retried.
+        :rtype: bool
+        """
+        if endpoint.HTTP_AUTHENTICATION != HTTPAuthentication.OAUTH.value:
+            return False
+        if http_response.status_code != 401:
+            return False
+        www_authenticate = http_response.headers.get("www-authenticate") or ""
+        return "expired" in www_authenticate
+
+    @staticmethod
+    def _get_bearer_token_from_request(request_data: HttpRequest) -> Optional[str]:
+        """
+        Extracts the bearer token from the request's Authorization header.
+
+        :param request_data: The request.
+        :type request_data: HttpRequest
+        :returns: The bearer token, or None if absent or not a bearer.
+        :rtype: Optional[str]
+        """
+        auth = request_data.headers.get("Authorization", "")
+        return auth.removeprefix("Bearer ") if auth.startswith("Bearer ") else None
+
+    @staticmethod
+    def _set_bearer_token(request_data: HttpRequest, token: str) -> None:
+        """
+        Stamps the bearer token onto the request's Authorization header.
+
+        :param request_data: The request.
+        :type request_data: HttpRequest
+        :param token: The bearer token.
+        :type token: str
+        """
+        request_data.headers.update({
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        })
