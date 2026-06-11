@@ -1,3 +1,5 @@
+import threading
+import time
 import pytest
 from unittest.mock import Mock
 
@@ -30,3 +32,63 @@ def test_get_auth_token_and_check_if_cached(sinch_client_sync, auth_token):
 
     assert isinstance(access_token, OAuthToken)
     assert token_manager.token is auth_token
+
+
+def test_get_auth_token_fetches_once_under_concurrency(auth_token):
+    num_threads = 20
+    barrier = threading.Barrier(num_threads)
+    sinch = Mock()
+
+    def slow_fetch(endpoint):
+        time.sleep(0.05)
+        return auth_token
+
+    sinch.configuration.transport.request.side_effect = slow_fetch
+
+    token_manager = TokenManager(sinch)
+
+    results = []
+
+    def worker():
+        barrier.wait()
+        results.append(token_manager.get_auth_token())
+
+    threads = [threading.Thread(target=worker) for _ in range(num_threads)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert sinch.configuration.transport.request.call_count == 1
+    assert all(result is auth_token for result in results)
+
+
+def test_refresh_auth_token_renews_once_under_concurrency(auth_token):
+    num_threads = 20
+    barrier = threading.Barrier(num_threads)
+    sinch = Mock()
+
+    def slow_fetch(endpoint):
+        time.sleep(0.05)
+        return auth_token
+
+    sinch.configuration.transport.request.side_effect = slow_fetch
+    token_manager = TokenManager(sinch)
+    token_manager.token = OAuthToken(
+        access_token="old", expires_in=1, scope="", token_type="bearer"
+    )
+
+    results = []
+
+    def worker():
+        barrier.wait()
+        results.append(token_manager.refresh_auth_token("old"))
+
+    threads = [threading.Thread(target=worker) for _ in range(num_threads)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert sinch.configuration.transport.request.call_count == 1
+    assert all(result is auth_token for result in results)
