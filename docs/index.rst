@@ -2,7 +2,7 @@ Sinch Python SDK
 ================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
    :caption: API Reference
 
-   api/modules
+   api/sinch
