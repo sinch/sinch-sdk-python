@@ -8,7 +8,7 @@ from sinch import __version__
 # -- Project information -------------------------------------------------------
 
 project = "Sinch Python SDK"
-copyright = "2024, Sinch Developer Experience Team"
+copyright = "2026, Sinch Developer Experience Team"
 author = "Sinch Developer Experience Team"
 release = __version__
 
