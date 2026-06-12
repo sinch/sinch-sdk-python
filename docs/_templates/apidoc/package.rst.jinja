@@ -24,8 +24,12 @@
 {% endif %}
 
 {%- if submodules %}
+{% if separatemodules %}
+{{ toctree(submodules) }}
+{% else %}
 {% for submodule in submodules %}
 {{ [submodule.split(".")[-1], "module"] | join(" ") | e | heading(2) }}
 {{ automodule(submodule, automodule_options) }}
 {% endfor %}
+{%- endif %}
 {%- endif %}

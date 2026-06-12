@@ -57,6 +57,10 @@ jobs:
         ruff check sinch/domains/conversation --statistics
         ruff format sinch/domains/conversation --check --diff
 
+    - name: Generate Documentation
+      run: |
+        make docs
+
     - name: Test with Pytest
       run: |
         coverage run --source=. -m pytest
