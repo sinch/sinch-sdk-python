@@ -45,6 +45,10 @@ jobs:
       run: |
         pip install python-dotenv
         python scripts/check_snippet_coverage.py
+    
+    - name: Generate Documentation
+      run: |
+        make docs
 
     - name: Lint and format check with Ruff
       run: |
