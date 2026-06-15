@@ -92,3 +92,19 @@ def test_refresh_auth_token_renews_once_under_concurrency(auth_token):
 
     assert sinch.configuration.transport.request.call_count == 1
     assert all(result is auth_token for result in results)
+
+
+def test_invalidate_expired_token_emits_deprecation_warning(sinch_client_sync):
+    token_manager = TokenManager(sinch_client_sync)
+
+    with pytest.warns(DeprecationWarning, match="invalidate_expired_token"):
+        token_manager.invalidate_expired_token()
+
+
+def test_handle_invalid_token_emits_deprecation_warning(sinch_client_sync):
+    token_manager = TokenManager(sinch_client_sync)
+    response = Mock()
+    response.headers = {}
+
+    with pytest.warns(DeprecationWarning, match="handle_invalid_token"):
+        token_manager.handle_invalid_token(response)

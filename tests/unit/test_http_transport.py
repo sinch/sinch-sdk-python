@@ -7,6 +7,7 @@ from sinch.core.models.http_request import HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
+from sinch.core.ports.http_transport import HTTPTransport
 from sinch.core.token_manager import TokenManager
 from sinch.domains.authentication.models.v1.authentication import OAuthToken
 
@@ -273,3 +274,69 @@ class TestTokenRefreshRetry:
 
         assert transport.http_session.request.call_count == 1
         token_manager.refresh_auth_token.assert_not_called()
+
+
+class _LegacyTransport(HTTPTransport):
+    """A pre-2.1 transport that overrides the deprecated ``send(endpoint)`` hook."""
+
+    def __init__(self, sinch, responses):
+        super().__init__(sinch)
+        self._responses = list(responses)
+        self.send_calls = 0
+
+    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+        self.send_calls += 1
+        return self._responses.pop(0)
+
+
+class _NoHookTransport(HTTPTransport):
+    """A transport that implements neither ``send`` nor ``send_request``."""
+    pass
+
+
+class TestLegacySend:
+    """Tests for the deprecated ``send(endpoint)`` override path (_legacy_request)."""
+
+    @staticmethod
+    def _expired_401():
+        return HTTPResponse(
+            status_code=401,
+            headers={"www-authenticate": 'Bearer error="expired"'},
+            body={"error": "token expired"},
+        )
+
+    @staticmethod
+    def _ok_200():
+        return HTTPResponse(status_code=200, headers={}, body={"ok": True})
+
+    def test_legacy_send_emits_deprecation_warning(self, mock_sinch):
+        with pytest.warns(DeprecationWarning, match="send"):
+            _LegacyTransport(mock_sinch, [self._ok_200()])
+
+    def test_legacy_request_retries_on_expired_token(self, mock_sinch):
+        token_manager = Mock()
+        token_manager.token = OAuthToken(
+            access_token="old", expires_in=3599, scope="", token_type="bearer"
+        )
+        token_manager.refresh_auth_token.return_value = OAuthToken(
+            access_token="new", expires_in=3599, scope="", token_type="bearer"
+        )
+        mock_sinch.configuration.token_manager = token_manager
+
+        with pytest.warns(DeprecationWarning):
+            transport = _LegacyTransport(mock_sinch, [self._expired_401(), self._ok_200()])
+        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
+
+        result = transport.request(endpoint)
+
+        assert result.status_code == 200
+
+        assert transport.send_calls == 2
+        token_manager.refresh_auth_token.assert_called_once_with("old")
+
+    def test_request_raises_when_send_request_not_implemented(self, mock_sinch):
+        transport = _NoHookTransport(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        with pytest.raises(NotImplementedError, match="send_request"):
+            transport.request(endpoint)

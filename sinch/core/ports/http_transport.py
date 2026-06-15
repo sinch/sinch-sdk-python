@@ -64,7 +64,7 @@ class HTTPTransport(ABC):
         :rtype: HTTPResponse
         """
         raise NotImplementedError(
-            "`send(endpoint)` is deprecated and not invoked internally. "
+            "`send(endpoint)` is deprecated. "
             "Implement `send_request(request_data)` instead."
         )
     
@@ -214,10 +214,11 @@ class HTTPTransport(ABC):
         :returns: The handled HTTP response.
         :rtype: HTTPResponse
         """
+        token_before = self.sinch.configuration.token_manager.token
         http_response = self.send(endpoint)
 
         if self._should_refresh_token(endpoint, http_response):
-            used_token = self.sinch.configuration.token_manager.get_auth_token().access_token
+            used_token = token_before.access_token if token_before else None
             self.sinch.configuration.token_manager.refresh_auth_token(used_token)
             http_response = self.send(endpoint)
 
