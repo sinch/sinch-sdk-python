@@ -142,14 +142,19 @@ class TokenManager(TokenManagerBase):
 
     def get_auth_token(self) -> OAuthToken:
         """
-        Returns the stored token, fetching one on first use. Uses double-checked locking
+        Returns the cached token, fetching one on first use.
+
+        Uses double-checked locking: the unlocked fast path returns the cached
+        token when present, and only the first caller (when no token is cached
+        yet) takes the lock to fetch and cache one, so concurrent callers do not
+        trigger duplicate token requests.
 
         :returns: A valid OAuth token.
         :rtype: OAuthToken
         """
         if self.token is not None:
             return self.token
-        
+
         with self._lock:
             if self.token is not None:
                 return self.token
