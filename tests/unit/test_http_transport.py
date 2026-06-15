@@ -151,7 +151,7 @@ class TestSend:
             return_value=_requests_response(200, body={"x": 1})
         )
 
-        result = transport.send(base_request)
+        result = transport.send_request(base_request)
 
         assert isinstance(result, HTTPResponse)
         assert result.status_code == 200
@@ -163,7 +163,7 @@ class TestSend:
             return_value=Mock(status_code=204, content=b"", headers={})
         )
 
-        result = transport.send(base_request)
+        result = transport.send_request(base_request)
 
         assert result.status_code == 204
         assert result.body == {}
@@ -175,7 +175,7 @@ class TestSend:
         transport.http_session.request = Mock(return_value=bad_response)
 
         with pytest.raises(SinchException):
-            transport.send(base_request)
+            transport.send_request(base_request)
 
 
 class TestTokenRefreshRetry:

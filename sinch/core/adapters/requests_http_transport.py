@@ -11,7 +11,7 @@ class HTTPTransportRequests(HTTPTransport):
         super().__init__(sinch)
         self.http_session = requests.Session()
 
-    def send(self, request_data: HttpRequest) -> HTTPResponse:
+    def send_request(self, request_data: HttpRequest) -> HTTPResponse:
         """
         Performs the HTTP call with requests and maps the result to an HTTPResponse.
 

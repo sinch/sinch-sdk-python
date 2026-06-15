@@ -1,4 +1,5 @@
-from abc import ABC, abstractmethod
+import warnings
+from abc import ABC
 from platform import python_version
 from typing import Optional
 
@@ -15,17 +16,28 @@ class HTTPTransport(ABC):
     """
     Base class for HTTP transports.
 
-    Subclasses implement :meth:`send` to perform the raw HTTP call. The public
+    Subclasses implement :meth:`send_request` to perform the raw HTTP call. The public
     :meth:`request` method adds cross-cutting concerns on top: request
     preparation, authentication, and automatic token refresh on 401.
+
+    .. deprecated:: 2.1
+        Overriding :meth:`send` (the old ``send(endpoint)`` hook) is still
+        honored but deprecated; implement :meth:`send_request` instead. The
+        ``send`` override path will be removed in 3.0.
     """
 
     def __init__(self, sinch):
         self.sinch = sinch
+        self._legacy_send = self._uses_legacy_send()
+        if self._legacy_send:
+            warnings.warn(
+                f"{type(self).__name__} overrides `send(endpoint)`, which is deprecated and "
+                "will be removed in 3.0. Implement `send_request(request_data)` instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
-
-    @abstractmethod
-    def send(self, request_data: HttpRequest) -> HTTPResponse:
+    def send_request(self, request_data: HttpRequest) -> HTTPResponse:
         """
         Performs a single HTTP round-trip for an already-prepared, authenticated request.
 
@@ -34,6 +46,36 @@ class HTTPTransport(ABC):
         :returns: The HTTP response.
         :rtype: HTTPResponse
         """
+        raise NotImplementedError(
+            "Transport subclasses must implement `send_request(request_data)`."
+        )
+    
+    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+        """
+        Prepares, authenticates and performs a single round-trip for an endpoint.
+
+        .. deprecated:: 2.1
+            This hook is deprecated. Implement :meth:`send_request` instead;
+            the ``send`` override path will be removed in 3.0.
+
+        :param endpoint: The endpoint to call.
+        :type endpoint: HTTPEndpoint
+        :returns: The HTTP response.
+        :rtype: HTTPResponse
+        """
+        raise NotImplementedError(
+            "`send(endpoint)` is deprecated and not invoked internally. "
+            "Implement `send_request(request_data)` instead."
+        )
+    
+    def _uses_legacy_send(self) -> bool:
+        """
+        Returns True when a subclass overrides the deprecated ``send`` hook but
+        not the new ``send_request`` hook.
+        """
+        cls = type(self)
+        return cls.send is not HTTPTransport.send and cls.send_request is HTTPTransport.send_request
+
 
     def request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
         """
@@ -44,15 +86,18 @@ class HTTPTransport(ABC):
         :returns: The handled HTTP response.
         :rtype: HTTPResponse
         """
+        if self._legacy_send:
+            return self._legacy_request(endpoint)
+
         request_data = self.prepare_request(endpoint)
         request_data = self.authenticate(endpoint, request_data)
-        http_response = self.send(request_data)
+        http_response = self.send_request(request_data)
 
         if self._should_refresh_token(endpoint, http_response):
             used_token = self._get_bearer_token_from_request(request_data)
             new_token = self.sinch.configuration.token_manager.refresh_auth_token(used_token)
             self._set_bearer_token(request_data, new_token.access_token)
-            http_response = self.send(request_data)
+            http_response = self.send_request(request_data)
 
         return endpoint.handle_response(http_response)
 
@@ -153,6 +198,30 @@ class HTTPTransport(ABC):
             response_body = {}
 
         return response_body
+    
+    def _legacy_request(self, endpoint: HTTPEndpoint) -> HTTPResponse:
+        """
+        Backward-compatible request loop for subclasses that override ``send``.
+
+        On an expired-token 401 the cached token is renewed through
+        :meth:`TokenManagerBase.refresh_auth_token`, which dedupes concurrent
+        renewals. The legacy ``send(endpoint)`` re-prepares and re-authenticates
+        on every call, so the second ``send`` picks up the refreshed token from
+        the cache automatically.
+
+        :param endpoint: The endpoint to call.
+        :type endpoint: HTTPEndpoint
+        :returns: The handled HTTP response.
+        :rtype: HTTPResponse
+        """
+        http_response = self.send(endpoint)
+
+        if self._should_refresh_token(endpoint, http_response):
+            used_token = self.sinch.configuration.token_manager.get_auth_token().access_token
+            self.sinch.configuration.token_manager.refresh_auth_token(used_token)
+            http_response = self.send(endpoint)
+
+        return endpoint.handle_response(http_response)
 
     @staticmethod
     def _should_refresh_token(endpoint: HTTPEndpoint, http_response: HTTPResponse) -> bool:
