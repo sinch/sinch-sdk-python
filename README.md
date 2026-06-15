@@ -204,7 +204,7 @@ class MyHTTPImplementation(HTTPTransport):
             proxy=f"http://{proxy_user}:{proxy_password}@{proxy_url}"
         )
 
-    def send(self, request_data: HttpRequest) -> HTTPResponse:
+    def send_request(self, request_data: HttpRequest) -> HTTPResponse:
 
         body = request_data.request_body
         response = self.http_client.request(
