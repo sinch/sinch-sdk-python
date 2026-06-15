@@ -144,7 +144,7 @@ class TokenManager(TokenManagerBase):
         """
         Returns a valid token, fetching and caching one if none is cached yet.
 
-        This is not a pure getter: on the first call it
+        This function is not a pure getter (not idempotent): on the first call it
         requests a token from the OAuth endpoint and stores it on the instance.
         Subsequent calls return the cached token. Caching is guarded by
         double-checked locking, so concurrent callers share a single token
