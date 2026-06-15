@@ -142,12 +142,13 @@ class TokenManager(TokenManagerBase):
 
     def get_auth_token(self) -> OAuthToken:
         """
-        Returns the cached token, fetching one on first use.
+        Returns a valid token, fetching and caching one if none is cached yet.
 
-        Uses double-checked locking: the unlocked fast path returns the cached
-        token when present, and only the first caller (when no token is cached
-        yet) takes the lock to fetch and cache one, so concurrent callers do not
-        trigger duplicate token requests.
+        This is not a pure getter: on the first call it
+        requests a token from the OAuth endpoint and stores it on the instance.
+        Subsequent calls return the cached token. Caching is guarded by
+        double-checked locking, so concurrent callers share a single token
+        request instead of each issuing their own.
 
         :returns: A valid OAuth token.
         :rtype: OAuthToken
