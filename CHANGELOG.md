@@ -21,6 +21,10 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### SDK
 
 - **[dependency]** Set up minimum version for `requests` to `>=2.0.0` to prevent pulling in versions with known vulnerabilities (#152).
+- **[fix]** Fixed a race condition in OAuth token creation and renewal under concurrent requests: `TokenManagerBase` now uses a lock with double-checked locking so the initial token is fetched exactly once, and a new `refresh_auth_token(used_token)` deduplicates concurrent renewals by only fetching when the stale token still matches the cached one (#156).
+- **[refactor]** `HTTPTransport` now prepares and authenticates requests in `request()`, so the new `send_request(request_data)` receives an already-prepared `HttpRequest` and acts as a pure I/O primitive, simplifying subclassing (#156).
+- **[deprecation notice]** `HTTPTransport.send(endpoint)` is deprecated in favour of `send_request(request_data)`; the legacy method still works for backward compatibility, but will be removed in 3.0 (#156).
+- **[deprecation notice]** `TokenManagerBase.invalidate_expired_token()` and `handle_invalid_token()` (and the `TokenState.EXPIRED` value) are deprecated and will be removed in 3.0, as token renewal now goes through `refresh_auth_token()` (#156).
 
 
 ### SMS
