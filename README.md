@@ -1,30 +1,21 @@
 # Sinch Python SDK
 
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-390/)
-[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
-[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
-[![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/release/python-3130/)
-[![Python 3.14](https://img.shields.io/badge/python-3.14-blue.svg)](https://www.python.org/downloads/release/python-3140/)
-
-[![Latest Release](https://img.shields.io/pypi/v/sinch?label=sinch&labelColor=FFC658)](https://pypi.org/project/sinch/)
-
-
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
+[![Python](https://img.shields.io/badge/python-blue.svg)](https://www.python.org/) [![Latest Release](https://img.shields.io/pypi/v/sinch?label=sinch&labelColor=FFC658)](https://pypi.org/project/sinch/) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE)
 
 
 Here you'll find documentation related to the Sinch Python SDK, including how to install it, initialize it, and start developing Python code using Sinch services.
 
 To use Sinch services, you'll need a Sinch account and access keys. You can sign up for an account and create access keys at [dashboard.sinch.com](https://dashboard.sinch.com).
 
-For more information on the SDK, refer to the dedicated [Python SDK documentation](https://developers.sinch.com/docs/sdks/python) section and for the Sinch APIs on which this SDK is based,official [developer documentation portal](https://developers.sinch.com).
+For more information on the SDK, refer to the dedicated [Python SDK documentation](https://developers.sinch.com/docs/sdks/python) section, and for the Sinch APIs on which this SDK is based, refer to the official [developer documentation portal](https://developers.sinch.com).
+
 
 ## Table of contents:
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Getting started](#getting-started)
 - [Supported APIs](#supported-apis)
+- [Getting started](#getting-started)
 - [Logging](#logging)
 - [Handling Exceptions](#handling-exceptions)
 - [Custom HTTP client implementation](#custom-http-client-implementation)
@@ -37,9 +28,12 @@ For more information on the SDK, refer to the dedicated [Python SDK documentatio
 
 ## Prerequisites
 
-- [Python](https://www.python.org/) in one of the supported versions - 3.9, 3.10, 3.11, 3.12, 3.13, 3.14
+- [Python](https://www.python.org/) in one of the supported versions - [3.9](https://www.python.org/downloads/release/python-390/), [3.10](https://www.python.org/downloads/release/python-3100/), [3.11](https://www.python.org/downloads/release/python-3110/), [3.12](https://www.python.org/downloads/release/python-3120/), [3.13](https://www.python.org/downloads/release/python-3130/), [3.14](https://www.python.org/downloads/release/python-3140/)
 - [pip](https://pip.pypa.io/en/stable/)
 - [Sinch account](https://dashboard.sinch.com/)
+
+> **Warning**:
+> This SDK is intended for server-side (backend) use only. Do not use it in front-end or client-side applications (web, mobile, or desktop), regardless of language or framework. Doing so can expose your Sinch credentials to end-users.
 
 ## Installation
 
@@ -50,112 +44,151 @@ pip install sinch
 ```
 
 
+## Supported APIs
+
+
+| API Category      | API Name                    |
+|-------------------|-----------------------------|
+| Messaging         | [Conversation API](#conversation-api) [[link]](https://developers.sinch.com/docs/conversation/)   |
+| Messaging         | [SMS](#sms-api) [[link]](https://developers.sinch.com/docs/sms/)                                   |
+| Numbers           | [Numbers API](#numbers-api) [[link]](https://developers.sinch.com/docs/numbers/)                   |
+| Verification      | [Number Lookup API](#number-lookup-api) [[link]](https://developers.sinch.com/docs/number-lookup/) |
+
+
 ## Getting started
 
 
 ### Client initialization
 
-To start using the SDK, you need to initialize the main client class with your credentials from your Sinch dashboard.
-It's highly recommended to not hardcode these credentials and to load them from environment variables instead.
-
-From this client, you have access to all the SDK services:
-
-```python
-from sinch import SinchClient
-
-sinch_client = SinchClient(
-    project_id="project_id",
-    key_id="key_id",
-    key_secret="key_secret",
-)
-```
-
-### Authentication
-
-
-#### Project-level Authentication
-This is the recommended, default method and the one most Sinch APIs rely on. It uses your project-level [access key](https://dashboard.sinch.com/settings/access-keys). The SDK exchanges them for a short-lived OAuth2 access token and refreshes it automatically.
-
+To start using the SDK, initialize the main client class. This client gives you access to all the SDK services:
 
 ```python
 import os
 from sinch import SinchClient
 
+# Warning: project authentication, check if the API used supports it or has additional parameters
 sinch_client = SinchClient(
     project_id=os.environ["SINCH_PROJECT_ID"],
     key_id=os.environ["SINCH_KEY_ID"],
     key_secret=os.environ["SINCH_KEY_SECRET"],
-    # Set the region for the regionalized API(s)
+)
+```
+
+Get `project_id`, `key_id` and `key_secret` from the [Access keys](https://dashboard.sinch.com/settings/access-keys) page in your Sinch dashboard (`key_secret` is shown only once, at creation time). It's highly recommended to not hardcode these credentials: load them from environment variables for local development, and from a secret manager in production.
+
+This snippet is the common starting point for every API. Some APIs have a different initialization or need extra parameters (for example, a region), see the section for each API.
+
+### Conversation API
+
+The Conversation API is regionalized. To use this API, the `conversation_region` parameter is required:
+
+```python
+sinch_client = SinchClient(
+    project_id=os.environ["SINCH_PROJECT_ID"],
+    key_id=os.environ["SINCH_KEY_ID"],
+    key_secret=os.environ["SINCH_KEY_SECRET"],
     conversation_region="eu",
-    sms_region="eu",
 )
 ```
 
-**Region parameters**
+#### Sinch Events
 
-Some APIs are regionalized and require you to set their region explicitly. Since
-v2.0.0 these parameters have no default, and the SDK raises a runtime error if
-you call the API without setting them first (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)
-for the upgrade details):
-
-- `conversation_region` — required for the Conversation API.
-- `sms_region` — required for the SMS API (detailed under [SMS Authentication](#sms-authentication)).
-
-Pass them when you initialize `SinchClient` (as above). They can also be set
-afterwards on the `configuration` object, but this must be done before the
-first call to that API:
-
-> **Note:** if you use both the SMS and Conversation APIs, `sms_region` and
-> `conversation_region` must point to the same region. Mismatched regions
-> cause delivery failures.
-
-
-#### SMS authentication
-
-The SMS API supports two authentication schemes depending on your region:
-
-- **OAuth2 (US and EU)** — Uses the same project-level [access keys](https://dashboard.sinch.com/settings/access-keys) as above (`projectId`, `keyId`, `keySecret`).
+The Conversation API delivers asynchronous Sinch Events to the Event Destination URL you configure for your app in the [Conversation dashboard](https://dashboard.sinch.com/convapi/apps). `validate_authentication_header` confirms a request comes from Sinch and `parse_event` turns its payload into a typed event object; `headers` and `raw_body` are the incoming request's headers and raw body:
 
 ```python
-from sinch import SinchClient
-
-sinch_client = SinchClient(
-    project_id="project_id",
-    key_id="key_id",
-    key_secret="key_secret",
-    sms_region="us"
-)
+sinch_events = sinch_client.conversation.sinch_events(SINCH_EVENT_SECRET)
+is_valid = sinch_events.validate_authentication_header(headers=headers, json_payload=raw_body)
+event = sinch_events.parse_event(raw_body, headers)
 ```
 
-- **Service plan (AU, BR, CA, US and EU)** — Uses a `servicePlanId` and `apiToken` from the [Service APIs dashboard](https://dashboard.sinch.com/sms/api/services).
+`SINCH_EVENT_SECRET` is optional and set per app in the [Conversation dashboard](https://dashboard.sinch.com/convapi/apps). `parse_event` works without validating the request, but then its origin can't be verified, so calling `validate_authentication_header` (which returns `True`/`False`) is recommended in production.
 
+You can find a complete example in [examples/sinch_events/conversation_api](./examples/sinch_events/conversation_api).
+
+### SMS API
+
+> **Warning:** the SMS API is end-of-sale. For new integrations, prefer the [Conversation API](#conversation-api).
+
+The SMS API is regionalized: set `sms_region` to the region where your SMS account is hosted. The accepted values are `us`, `eu`, `au`, `br` and `ca`, and the region also determines which credentials you can use:
+
+- **Project access keys** — available only in the `us` and `eu` regions. Use the same `project_id`, `key_id` and `key_secret` as the common client, plus `sms_region`:
 
 ```python
-from sinch import SinchClient
-
 sinch_client = SinchClient(
-    service_plan_id="service_plan_id",
-    sms_api_token="api_token",
-    sms_region="us"
+    project_id=os.environ["SINCH_PROJECT_ID"],
+    key_id=os.environ["SINCH_KEY_ID"],
+    key_secret=os.environ["SINCH_KEY_SECRET"],
+    sms_region="us",
 )
 ```
 
-> **SMS authentication for new accounts**
+> **SMS authentication for new projects**
 >
-> Accounts created after the SMS API end-of-sale (`15/04/26`) cannot use
-> project-level authentication the SMS API requests return `401 Unauthorized`.
+> Projects created after the SMS API end-of-sale (`15/04/26`) cannot use
+> project access keys — the SMS API requests return `401 Unauthorized`.
 >
 > If you encounter this issue, consider the following options:
 >
-> 1. Use service-plan authentication (`servicePlanId` + `apiToken`)
-> 2. Use the Conversation API, which supports project-level authentication.
+> 1. Use service plan credentials (`service_plan_id` + `sms_api_token`)
+> 2. Use the Conversation API, which works with project access keys.
 > 3. Contact your account manager
+
+
+- **Service plan** — available in all regions (`us`, `eu`, `au`, `br`, `ca`). Use a `service_plan_id` and `sms_api_token`, both available on the [Service APIs dashboard](https://dashboard.sinch.com/sms/api/services):
+
+```python
+sinch_client = SinchClient(
+    service_plan_id=os.environ["SINCH_SERVICE_PLAN_ID"],
+    sms_api_token=os.environ["SINCH_SMS_API_TOKEN"],
+    sms_region="us",
+)
+```
+
+> **Note:** if you use both the SMS and the [Conversation API](#conversation-api)
+> from the same client, set `sms_region` and `conversation_region` to the same
+> region. Mismatched regions cause delivery failures.
+
+#### Sinch Events
+
+The SMS API delivers asynchronous Sinch Events to an Event Destination, whose URL is set per batch with the `event_destination_target` parameter on the send, update and replace operations (for example `sinch_client.sms.batches.send_sms`). `validate_authentication_header` confirms a request comes from Sinch and `parse_event` turns its payload into a typed event object; `headers` and `raw_body` are the incoming request's headers and raw body:
+
+```python
+sinch_events = sinch_client.sms.sinch_events(SINCH_EVENT_SECRET)
+is_valid = sinch_events.validate_authentication_header(headers=headers, json_payload=raw_body)
+event = sinch_events.parse_event(raw_body, headers)
+```
+
+Signature authentication for SMS events must be enabled for your account by your account manager; until then the signature headers are absent and `parse_event` can be used on its own. See the [SMS events documentation](https://developers.sinch.com/docs/sms/api-reference/sms/tag/Webhooks/#tag/Webhooks/section/Callbacks).
+
+You can find a complete example in [examples/sinch_events/sms_api](./examples/sinch_events/sms_api).
+
+### Numbers API
+
+The Numbers API needs no extra parameters, use the [common client](#client-initialization) based in project authentication shown above.
+
+#### Sinch Events
+
+The Numbers API delivers asynchronous Sinch Events to the Event Destination you configure through `sinch_client.numbers.event_destinations`. `validate_authentication_header` confirms a request comes from Sinch and `parse_event` turns its payload into a typed event object; `headers` and `raw_body` are the incoming request's headers and raw body:
+
+```python
+sinch_events = sinch_client.numbers.sinch_events(SINCH_EVENT_SECRET)
+is_valid = sinch_events.validate_authentication_header(headers=headers, json_payload=raw_body)
+event = sinch_events.parse_event(raw_body, headers)
+```
+
+`SINCH_EVENT_SECRET` is the value configured on the Event Destination. `parse_event` works without validating the request, but then its origin can't be verified, so calling `validate_authentication_header` is recommended in production.
+
+You can find a complete example in [examples/sinch_events/numbers_api](./examples/sinch_events/numbers_api).
+
+### Number Lookup API
+
+The Number Lookup API needs no extra parameters, use the [common client](#client-initialization) based in project authentication shown above.
 
 
 
 ### Your First Request
 
-Once your client is configured, you can send your first message. The example below uses the Conversation API to send a simple text message over RCS. Replace CONVERSATION_APP_ID with your app ID and RECIPIENT_PHONE_NUMBER with the recipient's phone number:
+Once your client is configured, you can send your first message. The example below uses the Conversation API to send a simple text message over SMS. Replace CONVERSATION_APP_ID with your app ID and RECIPIENT_PHONE_NUMBER with the recipient's phone number:
 
 ```python
 response = sinch_client.conversation.messages.send(
@@ -167,7 +200,7 @@ response = sinch_client.conversation.messages.send(
     },
     recipient_identities=[
         {
-            "channel": "RCS",
+            "channel": "SMS",
             "identity": "RECIPIENT_PHONE_NUMBER",
         }
     ],
@@ -175,17 +208,6 @@ response = sinch_client.conversation.messages.send(
 
 print(f"Successfully sent message.\n{response}")
 ```
-
-## Supported APIs
-
-
-| API Category      | API Name               | Authentication |
-|-------------------|------------------------|----------------|
-| Messaging         | Conversation API       | OAuth2         |
-| Messaging         | SMS                    | OAuth2, APP    |
-| Numbers           | Numbers API            | OAuth2         |
-| Verification      | Number Lookup API      | OAuth2         |
-
 
 ## Logging
 
@@ -297,7 +319,7 @@ You can find:
 ## Changelog & Migration
 
 For information about the latest changes in the SDK, please refer to the [CHANGELOG](CHANGELOG.md) file
-and the [MIGRATION-GUIDE](MIGRATION-GUIDE.md) for instructions on how to update your code when upgrading to a new major version of the SDK.
+and the [MIGRATION_GUIDE](MIGRATION_GUIDE.md) for instructions on how to update your code when upgrading to a new major version of the SDK.
 
 ## License
 
