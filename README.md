@@ -49,10 +49,10 @@ pip install sinch
 
 | API Category      | API Name                    |
 |-------------------|-----------------------------|
-| Messaging         | [Conversation API](#conversation-api) [[link]](https://developers.sinch.com/docs/conversation/)   |
-| Messaging         | [SMS](#sms-api) [[link]](https://developers.sinch.com/docs/sms/)                                   |
-| Numbers           | [Numbers API](#numbers-api) [[link]](https://developers.sinch.com/docs/numbers/)                   |
-| Verification      | [Number Lookup API](#number-lookup-api) [[link]](https://developers.sinch.com/docs/number-lookup/) |
+| Messaging         | [Conversation API](https://developers.sinch.com/docs/conversation/)   |
+| Messaging         | [SMS](https://developers.sinch.com/docs/sms/)                                   |
+| Numbers           | [Numbers API](https://developers.sinch.com/docs/numbers/)                   |
+| Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup/) |
 
 
 ## Getting started
