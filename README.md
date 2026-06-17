@@ -50,7 +50,7 @@ pip install sinch
 | API Category      | API Name                    |
 |-------------------|-----------------------------|
 | Messaging         | [Conversation API](https://developers.sinch.com/docs/conversation/)   |
-| Messaging         | [SMS](https://developers.sinch.com/docs/sms/)                                   |
+| Messaging         | [SMS API](https://developers.sinch.com/docs/sms/)                                   |
 | Numbers           | [Numbers API](https://developers.sinch.com/docs/numbers/)                   |
 | Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup/) |
 
@@ -66,7 +66,8 @@ To start using the SDK, initialize the main client class. This client gives you 
 import os
 from sinch import SinchClient
 
-# Warning: project authentication, check if the API used supports it or has additional parameters
+# Warning: not all APIs support project authentication. Check the section for each API before using this snippet.
+
 sinch_client = SinchClient(
     project_id=os.environ["SINCH_PROJECT_ID"],
     key_id=os.environ["SINCH_KEY_ID"],
