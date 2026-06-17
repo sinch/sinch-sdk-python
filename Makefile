@@ -16,7 +16,6 @@ docs:
 		"sinch/*/api/v1/base" "sinch/*/api/v1/base/*" \
 		"sinch/*/api/v1/utils" "sinch/*/api/v1/utils/*" \
 		"sinch/domains/authentication/endpoints" "sinch/domains/authentication/endpoints/*" \
-		"sinch/*/sinch_events/v1/authentication_validation.py" \
-		"sinch/*/sinch_events/v1/sinch_event_utils.py" \
+		"sinch/domains/authentication/sinch_events" "sinch/domains/authentication/sinch_events/*" \
 		"sinch/domains/numbers/models/v1/utils" "sinch/domains/numbers/models/v1/utils/*"
 	sphinx-build -b html docs docs/build/html
