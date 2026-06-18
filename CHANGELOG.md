@@ -20,7 +20,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[feature]** `HTTPTransport` now automatically retries rate-limited (`HTTP 429`) responses up to 3 times with backoff. When the server sends a `Retry-After` header it is honoured; otherwise an exponential backoff with full jitter is used. If all retries are exhausted the last response is returned to the caller (#158).
+- **[feature]** `HTTPTransport` now automatically retries rate-limited (`HTTP 429`) responses up to 3 times with backoff. When the server sends a `Retry-After` header it is honoured; otherwise an exponential backoff with full jitter is used. If all retries are exhausted the last response is returned to the caller (#159).
 - **[dependency]** Set up minimum version for `requests` to `>=2.0.0` to prevent pulling in versions with known vulnerabilities (#152).
 - **[fix]** Fixed a race condition in OAuth token creation and renewal under concurrent requests: `TokenManagerBase` now uses a lock with double-checked locking so the initial token is fetched exactly once, and a new `refresh_auth_token(used_token)` deduplicates concurrent renewals by only fetching when the stale token still matches the cached one (#156).
 - **[refactor]** `HTTPTransport` now prepares and authenticates requests in `request()`, so the new `send_request(request_data)` receives an already-prepared `HttpRequest` and acts as a pure I/O primitive, simplifying subclassing (#156).
