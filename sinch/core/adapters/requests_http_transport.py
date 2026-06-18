@@ -21,8 +21,9 @@ class HTTPTransportRequests(HTTPTransport):
         :rtype: HTTPResponse
         """
         self.sinch.configuration.logger.debug(
-            "Sync HTTP request %s call with headers: %s and body: %s to URL: %s",
-            request_data.http_method, request_data.headers, request_data.request_body, request_data.url
+            "Sync HTTP request %s %s",
+            request_data.http_method,
+            request_data.url
         )
         response = self.http_session.request(
             method=request_data.http_method,
@@ -37,8 +38,8 @@ class HTTPTransportRequests(HTTPTransport):
         response_body = self.deserialize_json_response(response)
 
         self.sinch.configuration.logger.debug(
-            "Sync HTTP response %s with headers: %s and body: %s from URL: %s",
-            response.status_code, response.headers, response_body, request_data.url
+            "Sync HTTP response %s",
+            response.status_code
         )
 
         return HTTPResponse(

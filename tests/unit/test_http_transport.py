@@ -1,4 +1,6 @@
 import json
+import random
+import time
 import pytest
 from unittest.mock import Mock
 from sinch.core.enums import HTTPAuthentication
@@ -90,6 +92,12 @@ def mock_sinch():
     sinch.configuration.sms_api_token = "test_sms_token"
     sinch.configuration.service_plan_id = "test_service_plan"
     return sinch
+
+
+@pytest.fixture
+def no_sleep(mocker):
+    mocker.patch.object(random, "uniform", return_value=0.0)
+    return mocker.patch.object(time, "sleep")
 
 
 @pytest.fixture
@@ -274,6 +282,127 @@ class TestTokenRefreshRetry:
 
         assert transport.http_session.request.call_count == 1
         token_manager.refresh_auth_token.assert_not_called()
+
+
+class TestRetryWithBackoff:
+    """Tests for the automatic retry-with-backoff on rate-limited (429) responses."""
+
+    @staticmethod
+    def _rate_limited(headers=None):
+        return _requests_response(429, body={"error": "rate limited"}, headers=headers)
+
+    def test_retries_on_429_then_succeeds(self, mock_sinch, no_sleep):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(side_effect=[
+            self._rate_limited(),
+            self._rate_limited(),
+            _requests_response(200, body={"ok": True}),
+        ])
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        result = transport.request(endpoint)
+
+        assert result.status_code == 200
+        assert transport.http_session.request.call_count == 3
+        assert no_sleep.call_count == 2
+
+    def test_gives_up_and_returns_last_response_after_max_retries(self, mock_sinch, no_sleep):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=self._rate_limited())
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        result = transport.request(endpoint)
+
+        assert result.status_code == 429
+        assert transport.http_session.request.call_count == HTTPTransport.MAX_RETRIES + 1
+        assert no_sleep.call_count == HTTPTransport.MAX_RETRIES
+
+    def test_no_retry_on_success(self, mock_sinch, no_sleep):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200, body={"ok": True}))
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        result = transport.request(endpoint)
+
+        assert result.status_code == 200
+        assert transport.http_session.request.call_count == 1
+        no_sleep.assert_not_called()
+
+    def test_no_retry_on_non_retryable_status(self, mock_sinch, no_sleep):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(400, body={"error": "bad"}))
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        result = transport.request(endpoint)
+
+        assert result.status_code == 400
+        assert transport.http_session.request.call_count == 1
+        no_sleep.assert_not_called()
+
+    def test_honors_retry_after_header(self, mock_sinch, no_sleep):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(side_effect=[
+            self._rate_limited(headers={"Retry-After": "7"}),
+            _requests_response(200, body={"ok": True}),
+        ])
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        transport.request(endpoint)
+
+        no_sleep.assert_called_once_with(7.0)
+
+
+class TestShouldRetry:
+    def test_retries_429_while_attempts_remain(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        response = HTTPResponse(status_code=429, headers={}, body={})
+
+        assert transport._should_retry(response, num_retries=0) is True
+
+    def test_stops_when_max_retries_reached(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        response = HTTPResponse(status_code=429, headers={}, body={})
+
+        assert transport._should_retry(response, num_retries=HTTPTransport.MAX_RETRIES) is False
+
+    def test_does_not_retry_non_retryable_status(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        response = HTTPResponse(status_code=200, headers={}, body={})
+
+        assert transport._should_retry(response, num_retries=0) is False
+
+
+class TestComputeBackoff:
+    def test_uses_retry_after_header_when_present(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        response = HTTPResponse(status_code=429, headers={"Retry-After": "5"}, body={})
+
+        backoff = transport._compute_backoff(response, num_retries=0)
+
+        assert 5.0 <= backoff < 5.25
+
+    def test_exponential_growth_when_no_header(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        response = HTTPResponse(status_code=429, headers={}, body={})
+
+        assert 0.0 <= transport._compute_backoff(response, num_retries=0) <= 1.0
+        assert 0.0 <= transport._compute_backoff(response, num_retries=1) <= 4.0
+        assert 0.0 <= transport._compute_backoff(response, num_retries=2) <= 16.0
+
+
+class TestParseRetryAfter:
+    @pytest.mark.parametrize("value,expected", [
+        ("5", 5.0),
+        ("0", 0.0),
+        ("-3", None),
+        ("abc", None),
+        ("", None),
+        (None, None),
+        ("Wed, 21 Oct 2015 07:28:00 GMT", 0.0),
+        ("Wed, 21 Oct 2015 07:28:00", 0.0),
+    ])
+    def test_parse_retry_after(self, value, expected):
+        assert HTTPTransport._parse_retry_after(value) == expected
 
 
 class _LegacyTransport(HTTPTransport):

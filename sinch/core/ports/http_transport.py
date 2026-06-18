@@ -5,7 +5,7 @@ from abc import ABC
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from platform import python_version
-from typing import Optional, Union, overload
+from typing import Optional, Union
 
 from requests import Response
 from sinch.core.endpoint import HTTPEndpoint
@@ -114,7 +114,7 @@ class HTTPTransport(ABC):
 
     def _send_with_retries(self, request_data: Union[HttpRequest, HTTPEndpoint]) -> HTTPResponse:
         """
-        Sends a request, retrying rate-limited (HTTP 429) responses up to
+        Sends a request, retrying rate-limited responses up to
         MAX_RETRIES times with backoff between attempts.
 
         :param request_data: The prepared request to send, or, on the legacy
@@ -133,7 +133,6 @@ class HTTPTransport(ABC):
             if self._should_retry(http_response, num_retries):
                 time.sleep(self._compute_backoff(http_response, num_retries))
                 num_retries += 1
-                continue
             else:
                 return http_response
 
@@ -176,7 +175,7 @@ class HTTPTransport(ABC):
     @staticmethod
     def _parse_retry_after(value: Optional[str]) -> Optional[float]:
         """
-        Parses a ``Retry-After`` header (delta-seconds or HTTP-date) into a
+        Parses the Retry-After header into a
         delay in seconds, or None if absent/unparseable.
 
         :param value: The raw header value.
@@ -196,8 +195,6 @@ class HTTPTransport(ABC):
         try:
             retry_at = parsedate_to_datetime(value)
         except (TypeError, ValueError):
-            return None
-        if retry_at is None:
             return None
         if retry_at.tzinfo is None:
             retry_at = retry_at.replace(tzinfo=timezone.utc)
