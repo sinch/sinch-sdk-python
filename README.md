@@ -50,9 +50,11 @@ pip install sinch
 | API Category      | API Name                    |
 |-------------------|-----------------------------|
 | Messaging         | [Conversation API](https://developers.sinch.com/docs/conversation/)   |
-| Messaging         | [SMS API](https://developers.sinch.com/docs/sms/)                                   |
+|                   | [SMS API](https://developers.sinch.com/docs/sms/)     |
 | Numbers           | [Numbers API](https://developers.sinch.com/docs/numbers/)                   |
 | Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup/) |
+
+> **Note:** The SMS API is end-of-sale. New integrations should use the [Conversation API](https://developers.sinch.com/docs/conversation/) instead, which supports SMS and many other channels.
 
 
 ## Getting started
