@@ -116,17 +116,12 @@ class HTTPTransport(ABC):
         self, endpoint: HTTPEndpoint, request_data: Optional[HttpRequest] = None
     ) -> HTTPResponse:
         """
-        Sends a request, retrying rate-limited responses up to
-        MAX_RETRIES times with backoff between attempts.
+        Sends a request, retrying rate-limited responses (up to MAX_RETRIES,
+        with backoff) for endpoints that opt in via :attr:`HTTPEndpoint.IS_RETRYABLE`.
 
-        Retries are only attempted for endpoints that opt in via
-        :attr:`HTTPEndpoint.IS_RETRYABLE`.
-
-        :param endpoint: The endpoint being called, whose ``is_retryable`` flag
-            gates whether retries are attempted.
+        :param endpoint: The endpoint being called.
         :type endpoint: HTTPEndpoint
-        :param request_data: The prepared request to send. ``None`` on the legacy
-            ``send`` path, where the endpoint is sent directly.
+        :param request_data: The prepared request, or ``None`` on the legacy ``send`` path.
         :type request_data: Optional[HttpRequest]
         :returns: The HTTP response from the last attempt.
         :rtype: HTTPResponse
