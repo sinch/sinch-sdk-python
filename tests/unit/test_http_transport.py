@@ -15,7 +15,7 @@ from sinch.domains.authentication.models.v1.authentication import OAuthToken
 
 
 # Mock classes and fixtures
-def _make_mock_endpoint(auth_type, error_on_4xx=False):
+def _make_mock_endpoint(auth_type, error_on_4xx=False, is_retryable=False):
     """Create a MockEndpoint that satisfies the abstract property contract."""
 
     class _Endpoint(HTTPEndpoint):
@@ -47,6 +47,7 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False):
                 )
             return response
 
+    _Endpoint.IS_RETRYABLE = is_retryable
     return _Endpoint()
 
 
@@ -298,7 +299,7 @@ class TestRetryWithBackoff:
             self._rate_limited(),
             _requests_response(200, body={"ok": True}),
         ])
-        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
 
         result = transport.request(endpoint)
 
@@ -309,7 +310,7 @@ class TestRetryWithBackoff:
     def test_gives_up_and_returns_last_response_after_max_retries(self, mock_sinch, no_sleep):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=self._rate_limited())
-        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
 
         result = transport.request(endpoint)
 
@@ -345,31 +346,52 @@ class TestRetryWithBackoff:
             self._rate_limited(headers={"Retry-After": "7"}),
             _requests_response(200, body={"ok": True}),
         ])
-        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
 
         transport.request(endpoint)
 
         no_sleep.assert_called_once_with(7.0)
 
+    def test_no_retry_when_endpoint_not_retryable(self, mock_sinch, no_sleep):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=self._rate_limited())
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=False)
+
+        result = transport.request(endpoint)
+
+        assert result.status_code == 429
+        assert transport.http_session.request.call_count == 1
+        no_sleep.assert_not_called()
+
 
 class TestShouldRetry:
     def test_retries_429_while_attempts_remain(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
         response = HTTPResponse(status_code=429, headers={}, body={})
 
-        assert transport._should_retry(response, num_retries=0) is True
+        assert transport._should_retry(endpoint, response, num_retries=0) is True
 
     def test_stops_when_max_retries_reached(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
         response = HTTPResponse(status_code=429, headers={}, body={})
 
-        assert transport._should_retry(response, num_retries=HTTPTransport.MAX_RETRIES) is False
+        assert transport._should_retry(endpoint, response, num_retries=HTTPTransport.MAX_RETRIES) is False
 
     def test_does_not_retry_non_retryable_status(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
         response = HTTPResponse(status_code=200, headers={}, body={})
 
-        assert transport._should_retry(response, num_retries=0) is False
+        assert transport._should_retry(endpoint, response, num_retries=0) is False
+
+    def test_does_not_retry_when_endpoint_not_retryable(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=False)
+        response = HTTPResponse(status_code=429, headers={}, body={})
+
+        assert transport._should_retry(endpoint, response, num_retries=0) is False
 
 
 class TestComputeBackoff:

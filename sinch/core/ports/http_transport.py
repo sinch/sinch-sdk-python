@@ -5,7 +5,7 @@ from abc import ABC
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from platform import python_version
-from typing import Optional, Union
+from typing import Optional
 
 from requests import Response
 from sinch.core.endpoint import HTTPEndpoint
@@ -101,46 +101,58 @@ class HTTPTransport(ABC):
         request_data = self.prepare_request(endpoint)
         request_data = self.authenticate(endpoint, request_data)
 
-        http_response = self._send_with_retries(request_data)
+        http_response = self._send_with_retries(endpoint, request_data)
 
         if self._should_refresh_token(endpoint, http_response):
             used_token = self._get_bearer_token_from_request(request_data)
             new_token = self.sinch.configuration.token_manager.refresh_auth_token(used_token)
             self._set_bearer_token(request_data, new_token.access_token)
-            http_response = self._send_with_retries(request_data)
+            http_response = self._send_with_retries(endpoint, request_data)
 
         return endpoint.handle_response(http_response)
     
 
-    def _send_with_retries(self, request_data: Union[HttpRequest, HTTPEndpoint]) -> HTTPResponse:
+    def _send_with_retries(
+        self, endpoint: HTTPEndpoint, request_data: Optional[HttpRequest] = None
+    ) -> HTTPResponse:
         """
         Sends a request, retrying rate-limited responses up to
         MAX_RETRIES times with backoff between attempts.
 
-        :param request_data: The prepared request to send, or, on the legacy
-            ``send`` path, the endpoint to call.
-        :type request_data: Union[HttpRequest, HTTPEndpoint]
+        Retries are only attempted for endpoints that opt in via
+        :attr:`HTTPEndpoint.IS_RETRYABLE`.
+
+        :param endpoint: The endpoint being called, whose ``is_retryable`` flag
+            gates whether retries are attempted.
+        :type endpoint: HTTPEndpoint
+        :param request_data: The prepared request to send. ``None`` on the legacy
+            ``send`` path, where the endpoint is sent directly.
+        :type request_data: Optional[HttpRequest]
         :returns: The HTTP response from the last attempt.
         :rtype: HTTPResponse
         """
         num_retries = 0
         while True:
-            if isinstance(request_data, HTTPEndpoint):
-                http_response = self.send(request_data)
+            if request_data is None:
+                http_response = self.send(endpoint)
             else:
                 http_response = self.send_request(request_data)
 
-            if self._should_retry(http_response, num_retries):
+            if self._should_retry(endpoint, http_response, num_retries):
                 time.sleep(self._compute_backoff(http_response, num_retries))
                 num_retries += 1
             else:
                 return http_response
 
-    def _should_retry(self, http_response: HTTPResponse, num_retries: int) -> bool:
+    def _should_retry(
+        self, endpoint: HTTPEndpoint, http_response: HTTPResponse, num_retries: int
+    ) -> bool:
         """
-        Returns True when the response is a transient error and
-        retries remain.
+        Returns True when the endpoint opts into retries, the response is a
+        transient error and retries remain.
 
+        :param endpoint: The endpoint being called.
+        :type endpoint: HTTPEndpoint
         :param http_response: The response received.
         :type http_response: HTTPResponse
         :param num_retries: Number of retries already performed.
@@ -148,6 +160,8 @@ class HTTPTransport(ABC):
         :returns: Whether the request should be retried.
         :rtype: bool
         """
+        if not endpoint.IS_RETRYABLE:
+            return False
         if num_retries >= self.MAX_RETRIES:
             return False
         return http_response.status_code in self.RETRYABLE_STATUS_CODES
@@ -314,12 +328,12 @@ class HTTPTransport(ABC):
         :rtype: HTTPResponse
         """
         token_before = self.sinch.configuration.token_manager.token
-        http_response = self._send_with_retries(endpoint)
+        http_response = self._send_with_retries(endpoint, request_data=None)
 
         if self._should_refresh_token(endpoint, http_response):
             used_token = token_before.access_token if token_before else None
             self.sinch.configuration.token_manager.refresh_auth_token(used_token)
-            http_response = self._send_with_retries(endpoint)
+            http_response = self._send_with_retries(endpoint, request_data=None)
 
         return endpoint.handle_response(http_response)
 
