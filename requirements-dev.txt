@@ -12,3 +12,8 @@ requests>=2.0.0
 
 # Data Validation
 pydantic >= 2.0.0
+
+# Documentation
+# Sphinx 7.1 introduced python_maximum_signature_line_length and  7.x is also the last series supporting Python 3.9.
+sphinx >= 7.1
+sphinx-rtd-theme >= 2.0
