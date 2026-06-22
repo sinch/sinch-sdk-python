@@ -7,7 +7,10 @@ from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     parse_json,
     normalize_iso_timestamp,
 )
-from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
+from sinch.domains.numbers.sinch_events.v1.events import (
+    NumberSinchEvent,
+    NumberSinchEventAdapter,
+)
 
 
 class SinchEvents:
@@ -65,6 +68,6 @@ class SinchEvents:
         if timestamp:
             event_body["timestamp"] = normalize_iso_timestamp(timestamp)
         try:
-            return NumberSinchEvent(**event_body)
+            return NumberSinchEventAdapter.validate_python(event_body)
         except Exception as e:
             raise ValueError(f"Failed to parse event body: {e}")
