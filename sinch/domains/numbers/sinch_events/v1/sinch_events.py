@@ -1,15 +1,16 @@
 from typing import Any, Dict, Optional, Union
+
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_signature_header,
 )
 from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     decode_payload,
-    parse_json,
     normalize_iso_timestamp,
+    parse_json,
 )
-from sinch.domains.numbers.sinch_events.v1.events import (
-    NumberSinchEvent,
+from sinch.domains.numbers.sinch_events.v1.events.number_sinch_event_union import (
     NumberSinchEventAdapter,
+    NumberSinchEventUnion,
 )
 
 
@@ -45,7 +46,7 @@ class SinchEvents:
         self,
         event_body: Union[str, bytes, Dict[str, Any]],
         headers: Optional[Dict[str, str]] = None,
-    ) -> NumberSinchEvent:
+    ) -> NumberSinchEventUnion:
         """
         Parses the event payload into a NumberSinchEvent object.
 

@@ -26,6 +26,10 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[deprecation notice]** `HTTPTransport.send(endpoint)` is deprecated in favour of `send_request(request_data)`; the legacy method still works for backward compatibility, but will be removed in 3.0 (#156).
 - **[deprecation notice]** `TokenManagerBase.invalidate_expired_token()` and `handle_invalid_token()` (and the `TokenState.EXPIRED` value) are deprecated and will be removed in 3.0, as token renewal now goes through `refresh_auth_token()` (#156).
 
+### Numbers
+
+- **[feature]** Numbers Sinch Events added `ActiveNumberSinchEvent` and `NumberOrderSinchEvent` subtypes. `SinchEvents.parse_event` now returns the most-specific type via a Pydantic discriminated union (`NumberSinchEventUnion`) keyed on `resourceType` (#160).
+- **[deprecation notice]** `NumberSinchEvent` as a concrete class is deprecated; in 3.0 it will become a type alias for `NumberSinchEventUnion`. Use `ActiveNumberSinchEvent` or `NumberOrderSinchEvent` for specific resource types, and `NumberSinchEventUnion` for type hints (#160).
 
 ### SMS
 
