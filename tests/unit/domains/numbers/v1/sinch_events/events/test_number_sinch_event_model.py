@@ -69,6 +69,7 @@ def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data
     assert response.event_type is None
     assert response.status is None
     assert response.failure_code is None
+    assert response.internal_failure_code is None
 
 
 def test_number_sinch_event_response_invalid_data_expects_validation_error(invalid_data):
