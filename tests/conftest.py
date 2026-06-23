@@ -34,72 +34,21 @@ class TokenBasedPaginationRequest(BaseModel):
     page_token: str = None
 
 
-def configure_origin(
-    sinch_client,
-    numbers_origin,
-    conversation_origin,
-    auth_origin,
-    sms_origin
-):
-    if auth_origin:
-        sinch_client.configuration.auth_origin = auth_origin
-
-    if numbers_origin:
-        sinch_client.configuration.numbers_origin = numbers_origin
-
-    if conversation_origin:
-        sinch_client.configuration.conversation_origin = conversation_origin
-
-    if sms_origin:
-        sinch_client.configuration.sms_origin = sms_origin
-        sinch_client.configuration.sms_origin_with_service_plan_id = sms_origin
-
-    return sinch_client
-
-
 @pytest.fixture
 def key_id():
-    return os.getenv("KEY_ID")
-
+    return "test_key_id"
 
 @pytest.fixture
 def key_secret():
-    return os.getenv("KEY_SECRET")
-
+    return "test_key_secret"
 
 @pytest.fixture
 def project_id():
-    return os.getenv("PROJECT_ID")
-
-
-@pytest.fixture
-def numbers_origin():
-    return os.getenv("NUMBERS_ORIGIN")
-
-
-@pytest.fixture
-def conversation_origin():
-    return os.getenv("CONVERSATION_ORIGIN")
-
-
-@pytest.fixture
-def auth_origin():
-    return os.getenv("AUTH_ORIGIN")
-
-
-@pytest.fixture
-def sms_origin():
-    return os.getenv("SMS_ORIGIN")
-
-
-@pytest.fixture
-def disable_ssl():
-    return os.getenv("DISABLE_SSL")
-
+    return "test_project_id"
 
 @pytest.fixture
 def service_plan_id():
-    return os.getenv("SERVICE_PLAN_ID")
+    return "test_service_plan_id"
 
 @pytest.fixture
 def http_response():
@@ -155,29 +104,17 @@ def sms_pagination_request_data_with_page_and_page_size_none():
     return SMSBasePaginationRequest()
 
 
-
 @pytest.fixture
 def sinch_client_sync(
     key_id,
     key_secret,
-    numbers_origin,
-    conversation_origin,
-    auth_origin,
-    sms_origin,
     project_id
 ):
-    return configure_origin(
-        SinchClient(
+    return SinchClient(
             key_id=key_id,
             key_secret=key_secret,
             project_id=project_id
-        ),
-        numbers_origin,
-        conversation_origin,
-        auth_origin,
-        sms_origin
-    )
-
+        )
 
 @pytest.fixture
 def mock_sinch_client_numbers():

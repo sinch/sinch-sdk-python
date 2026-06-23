@@ -1,18 +1,6 @@
 name: Test Python SDK
 on: [ push ]
 
-env:
-  AUTH_ORIGIN: ${{ secrets.AUTH_ORIGIN }}
-  CONVERSATION_ORIGIN: ${{ secrets.CONVERSATION_ORIGIN }}
-  DISABLE_SSL: ${{ secrets.DISABLE_SSL }}
-  KEY_ID: ${{ secrets.KEY_ID }}
-  KEY_SECRET: ${{ secrets.KEY_SECRET }}
-  NUMBERS_ORIGIN: ${{ secrets.NUMBERS_ORIGIN }}
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
-  SERVICE_PLAN_ID: ${{ secrets.SERVICE_PLAN_ID }}
-  SMS_ORIGIN: ${{ secrets.SMS_ORIGIN }}
-  TEMPLATES_ORIGIN: ${{ secrets.TEMPLATES_ORIGIN }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -73,7 +61,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: sinch/sinch-sdk-mockserver
-        token: ${{ secrets.PAT_CI }}
+        token: ${{ secrets.MOCKSERVER_REPO_PAT_CI }}
         fetch-depth: 0
         path: sinch-sdk-mockserver
 
