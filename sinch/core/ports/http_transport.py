@@ -34,6 +34,7 @@ class HTTPTransport(ABC):
     RETRYABLE_STATUS_CODES = frozenset({429})
     BACKOFF_BASE_SECONDS = 1.0
     BACKOFF_GROWTH = 4
+    RETRY_AFTER_JITTER = 0.25
 
     def __init__(self, sinch):
         self.sinch = sinch
@@ -176,7 +177,7 @@ class HTTPTransport(ABC):
         headers = {key.lower(): value for key, value in http_response.headers.items()}
         retry_after_seconds = self._parse_retry_after(headers.get("retry-after"))
         if retry_after_seconds is not None:
-            return retry_after_seconds + random.uniform(0, 0.25)
+            return retry_after_seconds + random.uniform(0, self.RETRY_AFTER_JITTER)
 
         max_delay = self.BACKOFF_BASE_SECONDS * (self.BACKOFF_GROWTH ** num_retries)
         return random.uniform(0, max_delay)

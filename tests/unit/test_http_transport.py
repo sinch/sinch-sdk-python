@@ -97,9 +97,11 @@ def mock_sinch():
 
 @pytest.fixture
 def no_sleep(mocker):
-    mocker.patch.object(random, "uniform", return_value=0.0)
     return mocker.patch.object(time, "sleep")
 
+@pytest.fixture
+def no_jitter(mocker):
+    return mocker.patch.object(random, "uniform", return_value=0.0)
 
 @pytest.fixture
 def base_request():
@@ -292,7 +294,7 @@ class TestRetryWithBackoff:
     def _rate_limited(headers=None):
         return _requests_response(429, body={"error": "rate limited"}, headers=headers)
 
-    def test_retries_on_429_then_succeeds(self, mock_sinch, no_sleep):
+    def test_retries_on_429_then_succeeds(self, mock_sinch, no_sleep, no_jitter):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(side_effect=[
             self._rate_limited(),
@@ -307,7 +309,7 @@ class TestRetryWithBackoff:
         assert transport.http_session.request.call_count == 3
         assert no_sleep.call_count == 2
 
-    def test_gives_up_and_returns_last_response_after_max_retries(self, mock_sinch, no_sleep):
+    def test_gives_up_and_returns_last_response_after_max_retries(self, mock_sinch, no_sleep, no_jitter):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=self._rate_limited())
         endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=True)
@@ -318,7 +320,7 @@ class TestRetryWithBackoff:
         assert transport.http_session.request.call_count == HTTPTransport.MAX_RETRIES + 1
         assert no_sleep.call_count == HTTPTransport.MAX_RETRIES
 
-    def test_no_retry_on_success(self, mock_sinch, no_sleep):
+    def test_no_retry_on_success(self, mock_sinch, no_sleep, no_jitter):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=_requests_response(200, body={"ok": True}))
         endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
@@ -329,7 +331,7 @@ class TestRetryWithBackoff:
         assert transport.http_session.request.call_count == 1
         no_sleep.assert_not_called()
 
-    def test_no_retry_on_non_retryable_status(self, mock_sinch, no_sleep):
+    def test_no_retry_on_non_retryable_status(self, mock_sinch, no_sleep, no_jitter):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=_requests_response(400, body={"error": "bad"}))
         endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
@@ -340,7 +342,7 @@ class TestRetryWithBackoff:
         assert transport.http_session.request.call_count == 1
         no_sleep.assert_not_called()
 
-    def test_honors_retry_after_header(self, mock_sinch, no_sleep):
+    def test_honors_retry_after_header(self, mock_sinch, no_sleep, no_jitter):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(side_effect=[
             self._rate_limited(headers={"Retry-After": "7"}),
@@ -352,7 +354,7 @@ class TestRetryWithBackoff:
 
         no_sleep.assert_called_once_with(7.0)
 
-    def test_no_retry_when_endpoint_not_retryable(self, mock_sinch, no_sleep):
+    def test_no_retry_when_endpoint_not_retryable(self, mock_sinch, no_sleep, no_jitter):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=self._rate_limited())
         endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value, is_retryable=False)
@@ -401,7 +403,15 @@ class TestComputeBackoff:
 
         backoff = transport._compute_backoff(response, num_retries=0)
 
-        assert 5.0 <= backoff < 5.25
+        assert 5.0 <= backoff < 5.0 + HTTPTransport.RETRY_AFTER_JITTER
+
+    def test_retry_after_jitter_is_within_bounds(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        response = HTTPResponse(status_code=429, headers={"Retry-After": "5"}, body={})
+
+        for _ in range(100):  # run many times to exercise the random range
+            backoff = transport._compute_backoff(response, num_retries=0)
+            assert 5.0 <= backoff <= 5.0 + HTTPTransport.RETRY_AFTER_JITTER
 
     def test_exponential_growth_when_no_header(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
