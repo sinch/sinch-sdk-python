@@ -20,11 +20,11 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[dependency]** Set up minimum version for `requests` to `>=2.0.0` to prevent pulling in versions with known vulnerabilities (#152).
-- **[fix]** Fixed a race condition in OAuth token creation and renewal under concurrent requests: `TokenManagerBase` now uses a lock with double-checked locking so the initial token is fetched exactly once, and a new `refresh_auth_token(used_token)` deduplicates concurrent renewals by only fetching when the stale token still matches the cached one (#156).
-- **[refactor]** `HTTPTransport` now prepares and authenticates requests in `request()`, so the new `send_request(request_data)` receives an already-prepared `HttpRequest` and acts as a pure I/O primitive, simplifying subclassing (#156).
-- **[deprecation notice]** `HTTPTransport.send(endpoint)` is deprecated in favour of `send_request(request_data)`; the legacy method still works for backward compatibility, but will be removed in 3.0 (#156).
-- **[deprecation notice]** `TokenManagerBase.invalidate_expired_token()` and `handle_invalid_token()` (and the `TokenState.EXPIRED` value) are deprecated and will be removed in 3.0, as token renewal now goes through `refresh_auth_token()` (#156).
+- **[dependency]** Set up minimum version for `requests` to `>=2.0.0` to prevent pulling in versions with known vulnerabilities.
+- **[fix]** Fixed a race condition in OAuth token creation and renewal under concurrent requests: `TokenManagerBase` now uses a lock with double-checked locking so the initial token is fetched exactly once, and a new `refresh_auth_token(used_token)` deduplicates concurrent renewals by only fetching when the stale token still matches the cached one.
+- **[refactor]** `HTTPTransport` now prepares and authenticates requests in `request()`, so the new `send_request(request_data)` receives an already-prepared `HttpRequest` and acts as a pure I/O primitive, simplifying subclassing.
+- **[deprecation notice]** `HTTPTransport.send(endpoint)` is deprecated in favour of `send_request(request_data)`; the legacy method still works for backward compatibility, but will be removed in 3.0.
+- **[deprecation notice]** `TokenManagerBase.invalidate_expired_token()` and `handle_invalid_token()` (and the `TokenState.EXPIRED` value) are deprecated and will be removed in 3.0, as token renewal now goes through `refresh_auth_token()`.
 
 
 ### SMS
@@ -36,7 +36,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### Numbers
 
-- **[feature]** `NumberSinchEvent` synchronized with the Numbers OAS spec: new `internal_failure_code` field, additional `status` values (`IN_REVIEW`, `BLOCKED`, `COMPLETED`, `REJECTED`, `EXPIRED`), a new `NUMBER_ORDER_PROCESSING` event type, and corrected event type `DEPROVISIONING_FROM_VOICE_PLATFORM` (previously `DEPROVISIONING_TO_VOICE_PLATFORM`) (#161).
+- **[feature]** `NumberSinchEvent` synchronized with the Numbers OAS spec: new `internal_failure_code` field, additional `status` values (`IN_REVIEW`, `BLOCKED`, `COMPLETED`, `REJECTED`, `EXPIRED`), a new `NUMBER_ORDER_PROCESSING` event type, and corrected event type `DEPROVISIONING_FROM_VOICE_PLATFORM` (previously `DEPROVISIONING_TO_VOICE_PLATFORM`).
 
 ---
 
@@ -44,7 +44,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SMS
 
-- **[fix]** SMS paginator fix (#145).
+- **[fix]** SMS paginator fix.
 
 ---
 
@@ -56,52 +56,52 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[design]** Requires explicit `sms_region` and `conversation_region` on `SinchClient` before using SMS and Conversation APIs (no silent US/EU defaults); runtime failure if unset (#49, #110).
-- **[design]** The v1 asynchronous client and httpx-based async stack were removed; only synchronous `SinchClient` is supported (#55).
-- **[feature]** Automatic pagination via a shared `Paginator` pattern for paged list APIs (#46, #54).
-- **[doc]** README and configuration tests clarify which credentials apply to each API (#48).
+- **[design]** Requires explicit `sms_region` and `conversation_region` on `SinchClient` before using SMS and Conversation APIs (no silent US/EU defaults); runtime failure if unset.
+- **[design]** The v1 asynchronous client and httpx-based async stack were removed; only synchronous `SinchClient` is supported.
+- **[feature]** Automatic pagination via a shared `Paginator` pattern for paged list APIs.
+- **[doc]** README and configuration tests clarify which credentials apply to each API.
 
 ### Conversation
 
-- **[feature]** Messages API refresh: convenience send methods (`send_text_message()`, `send_card_message()`, `send_carousel_message()`, `send_choice_message()`, `send_contact_info_message()`, `send_list_message()`, `send_location_message()`, `send_media_message()`, `send_template_message()`), `list()` as a paginator, `update()`, `event_destination_target` (wires `callback_url`), and a `sinch_client.conversation.sinch_events(...)` helper for inbound event handling (#109–#120).
-- **[feature]** Conversation Sinch Events (webhooks) support (#122, #131, #132, #133).
-- **[design]** Conversation webhook REST client removed; handle inbound traffic via Sinch Events (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)) (#131, #132, #133).
+- **[feature]** Messages API refresh: convenience send methods (`send_text_message()`, `send_card_message()`, `send_carousel_message()`, `send_choice_message()`, `send_contact_info_message()`, `send_list_message()`, `send_location_message()`, `send_media_message()`, `send_template_message()`), `list()` as a paginator, `update()`, `event_destination_target` (wires `callback_url`), and a `sinch_client.conversation.sinch_events(...)` helper for inbound event handling.
+- **[feature]** Conversation Sinch Events (webhooks) support.
+- **[design]** Conversation webhook REST client removed; handle inbound traffic via Sinch Events (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)).
 
 ### Numbers
 
-- **[feature]** Flatter API (`rent`, `list`, `event_destinations`, and related entry points), `event_destination_target`, and a Numbers Sinch Events helper (#44, #53, #57, #58, #59, #62).
-- **[feature]** Available Regions endpoint (#56).
-- **[feature]** Webhook helper validates the signing secret in `validate_signature_header()` (#61).
-- **[tech]** Numbers Events payloads are passed through without client-side pre-processing (#63).
+- **[feature]** Flatter API (`rent`, `list`, `event_destinations`, and related entry points), `event_destination_target`, and a Numbers Sinch Events helper.
+- **[feature]** Available Regions endpoint.
+- **[feature]** Webhook helper validates the signing secret in `validate_signature_header()`.
+- **[tech]** Numbers Events payloads are passed through without client-side pre-processing.
 
 ### Number Lookup
 
-- **[feature]** Number Lookup v1 (lookup API, models, snippets, and E2E coverage) (#99, #101, #104).
+- **[feature]** Number Lookup v1 (lookup API, models, snippets, and E2E coverage).
 
 ### SMS
 
-- **[design]** SMS client configuration and authentication paths refactored for project vs service-plan credentials, including delivery-report flows (#90).
-- **[feature]** SMS delivery reports models and pagination (#87). `groups` and `inbounds` are planned for a future release (see migration guide).
-- **[feature]** SMS Sinch Events (webhooks) support (#103).
-- **[doc]** SMS migration guide and Sinch events quickstart material (#107, #108).
+- **[design]** SMS client configuration and authentication paths refactored for project vs service-plan credentials, including delivery-report flows.
+- **[feature]** SMS delivery reports models and pagination. `groups` and `inbounds` are planned for a future release (see migration guide).
+- **[feature]** SMS Sinch Events (webhooks) support.
+- **[doc]** SMS migration guide and Sinch events quickstart material.
 
 ### Verification
 
-- **[design]** Verification V1 APIs are removed (#124). V2 Verification support is planned in a future release (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)).
+- **[design]** Verification V1 APIs are removed. V2 Verification support is planned in a future release (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)).
 
 ### Voice
 
-- **[design]** Voice V1 APIs are removed (#124). V2 Voice support is planned in a future release (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)).
+- **[design]** Voice V1 APIs are removed. V2 Voice support is planned in a future release (see [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)).
 
 ### Others
 
 - **[dependency]** Pydantic v2 (`pydantic = ">=2.0.0"`).
-- **[releasing]** Ruff linter adoption (#84) and CI workflow updates (#121).
-- **[doc]** Snippets and Getting Started live under `examples/` (#95, #98, #105, #106, #115, #118, #125, #127).
-- **[doc]** Docstring updates across Numbers, SMS, and Conversation (#64, #65, #67, #96, #97).
-- **[refactor]** Model, type, and class renames (#60, #70, #82).
-- **[tech]** Conversation, Numbers, and SMS models and endpoints resynchronized with OpenAPI specification (#68, #75, #123, #128, #129, #134, #135).
-- **[test]** E2E test infrastructure and refactoring (#45, #66, #102); SMS batches test coverage (#91, #93, #94).
+- **[releasing]** Ruff linter adoption and CI workflow updates.
+- **[doc]** Snippets and Getting Started live under `examples/`.
+- **[doc]** Docstring updates across Numbers, SMS, and Conversation.
+- **[refactor]** Model, type, and class renames.
+- **[tech]** Conversation, Numbers, and SMS models and endpoints resynchronized with OpenAPI specification.
+- **[test]** E2E test infrastructure and refactoring; SMS batches test coverage.
 
 ---
 
@@ -109,8 +109,8 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[feature]** Python 3.13 and 3.14 support (#86, #89).
-- **[releasing]** CI updates (#86, #89).
+- **[feature]** Python 3.13 and 3.14 support.
+- **[releasing]** CI updates.
 
 ---
 
@@ -118,7 +118,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### Voice
 
-- **[fix]** DTMF conference fix (#79).
+- **[fix]** DTMF conference fix.
 
 ---
 
@@ -127,11 +127,11 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### Test
 
 - **[test]** End-to-end tests disabled.
-- **[test]** Tests and CI improvements (#41, #42, #43, #74).
+- **[test]** Tests and CI improvements.
 
 ### SDK
 
-- **[fix]** Async authentication fixes (#41, #42, #43, #74).
+- **[fix]** Async authentication fixes.
 
 ### Chore
 
@@ -144,7 +144,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[fix]** Remove aiohttp leftovers (#40).
+- **[fix]** Remove aiohttp leftovers.
 
 ---
 
@@ -152,7 +152,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### Chore
 
-- **[releasing]** CI strategy updates (#34, #36, #29, #17).
+- **[releasing]** CI strategy updates.
 
 ### Verification
 
@@ -172,9 +172,9 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### SDK
 
-- **[feature]** Verification API (#26, #27, #28).
-- **[feature]** Voice API (#26, #27, #28).
+- **[feature]** Verification API.
+- **[feature]** Voice API.
 
 ### Chore
 
-- **[doc]** General availability README updates (#26, #27, #28).
+- **[doc]** General availability README updates.
