@@ -36,7 +36,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### Numbers
 
-- **[feature]** `NumberSinchEvent` fields and enums synchronized with the Numbers OAS spec (#161).
+- **[feature]** `NumberSinchEvent` synchronized with the Numbers OAS spec: new `internal_failure_code` field, additional `status` values (`IN_REVIEW`, `BLOCKED`, `COMPLETED`, `REJECTED`, `EXPIRED`), a new `NUMBER_ORDER_PROCESSING` event type, and corrected event type `DEPROVISIONING_FROM_VOICE_PLATFORM` (previously `DEPROVISIONING_TO_VOICE_PLATFORM`) (#161).
 
 ---
 
