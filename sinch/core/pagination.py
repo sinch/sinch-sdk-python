@@ -5,7 +5,10 @@ from sinch.core.types import BM
 
 class Paginator(ABC, Generic[BM]):
     """
-    Pagination response object.
+    Public interface for paginated list responses.
+
+    Use :meth:`content`, :meth:`next_page` and :meth:`iterator` to traverse the
+    result set without dealing with the underlying pagination scheme.
     """
     def __init__(self, sinch, endpoint, result: BM):
         self._sinch = sinch
@@ -19,16 +22,34 @@ class Paginator(ABC, Generic[BM]):
 
     # TODO: Make content() method abstract in Parent class as we implement in the other domains:
     #  - Refactor pydantic models in other domains to have a content property.
-    def content(self):
+    def content(self) -> list[BM]:
+        """
+        Return the items contained in the current page.
+
+        :returns: The list of items in the current page.
+        :rtype: list[BM]
+        """
         pass
 
     # TODO: Make iterator() method abstract in Parent class as we implement in the other domains:
     #  - Refactor pydantic models in other domains to have a content property.
     def iterator(self) -> Iterator[BM]:
+        """
+        Iterate over individual items across all pages, fetching each page on demand.
+
+        :returns: An iterator over every item in the result set.
+        :rtype: Iterator[BM]
+        """
         pass
 
     @abstractmethod
     def next_page(self):
+        """
+        Advance to the next page of results.
+
+        :returns: This paginator positioned on the next page, or ``None`` if there is no further page.
+        :rtype: Paginator | None
+        """
         pass
 
     @abstractmethod
@@ -42,7 +63,10 @@ class Paginator(ABC, Generic[BM]):
 
 
 class SMSPaginator(Paginator[BM]):
-    """Base paginator for integer-based pagination with explicit page navigation and metadata."""
+    """Base paginator for integer-based pagination with explicit page navigation and metadata.
+
+    :meta private:
+    """
 
     def __init__(self, sinch, endpoint, result=None):
         super().__init__(sinch, endpoint, result or sinch.configuration.transport.request(endpoint))
@@ -107,7 +131,10 @@ class SMSPaginator(Paginator[BM]):
 
 
 class TokenBasedPaginator(Paginator[BM]):
-    """Base paginator for token-based pagination with explicit page navigation and metadata."""
+    """Base paginator for token-based pagination with explicit page navigation and metadata.
+
+    :meta private:
+    """
 
     def __init__(self, sinch, endpoint, result=None):
         super().__init__(sinch, endpoint, result or sinch.configuration.transport.request(endpoint))
