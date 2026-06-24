@@ -9,6 +9,7 @@ class OAuthEndpoint(HTTPEndpoint):
     ENDPOINT_URL = "{origin}/oauth2/token"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.BASIC.value
+    IS_RETRYABLE = True
 
     def __init__(self):
         pass

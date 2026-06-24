@@ -4,6 +4,7 @@ from sinch.core.models.http_response import HTTPResponse
 
 class HTTPEndpoint(ABC):
     ENDPOINT_URL = None
+    IS_RETRYABLE = False
 
     @property
     @abstractmethod

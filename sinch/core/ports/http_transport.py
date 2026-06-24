@@ -1,5 +1,9 @@
+import random
+import time
 import warnings
 from abc import ABC
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from platform import python_version
 from typing import Optional
 
@@ -25,6 +29,12 @@ class HTTPTransport(ABC):
         honored but deprecated; implement :meth:`send_request` instead. The
         ``send`` override path will be removed in 3.0.
     """
+
+    MAX_RETRIES = 3
+    RETRYABLE_STATUS_CODES = frozenset({429})
+    BACKOFF_BASE_SECONDS = 1.0
+    BACKOFF_GROWTH = 4
+    RETRY_AFTER_JITTER = 0.25
 
     def __init__(self, sinch):
         self.sinch = sinch
@@ -91,15 +101,114 @@ class HTTPTransport(ABC):
 
         request_data = self.prepare_request(endpoint)
         request_data = self.authenticate(endpoint, request_data)
-        http_response = self.send_request(request_data)
+
+        http_response = self._send_with_retries(endpoint, request_data)
 
         if self._should_refresh_token(endpoint, http_response):
             used_token = self._get_bearer_token_from_request(request_data)
             new_token = self.sinch.configuration.token_manager.refresh_auth_token(used_token)
             self._set_bearer_token(request_data, new_token.access_token)
-            http_response = self.send_request(request_data)
+            http_response = self._send_with_retries(endpoint, request_data)
 
         return endpoint.handle_response(http_response)
+    
+
+    def _send_with_retries(
+        self, endpoint: HTTPEndpoint, request_data: Optional[HttpRequest] = None
+    ) -> HTTPResponse:
+        """
+        Sends a request, retrying rate-limited responses (up to MAX_RETRIES,
+        with backoff) for endpoints that opt in via :attr:`HTTPEndpoint.IS_RETRYABLE`.
+
+        :param endpoint: The endpoint being called.
+        :type endpoint: HTTPEndpoint
+        :param request_data: The prepared request, or ``None`` on the legacy ``send`` path.
+        :type request_data: Optional[HttpRequest]
+        :returns: The HTTP response from the last attempt.
+        :rtype: HTTPResponse
+        """
+        num_retries = 0
+        while True:
+            if request_data is None:
+                http_response = self.send(endpoint)
+            else:
+                http_response = self.send_request(request_data)
+
+            if self._should_retry(endpoint, http_response, num_retries):
+                time.sleep(self._compute_backoff(http_response, num_retries))
+                num_retries += 1
+            else:
+                return http_response
+
+    def _should_retry(
+        self, endpoint: HTTPEndpoint, http_response: HTTPResponse, num_retries: int
+    ) -> bool:
+        """
+        Returns True when the endpoint opts into retries, the response is a
+        transient error and retries remain.
+
+        :param endpoint: The endpoint being called.
+        :type endpoint: HTTPEndpoint
+        :param http_response: The response received.
+        :type http_response: HTTPResponse
+        :param num_retries: Number of retries already performed.
+        :type num_retries: int
+        :returns: Whether the request should be retried.
+        :rtype: bool
+        """
+        if not endpoint.IS_RETRYABLE:
+            return False
+        if num_retries >= self.MAX_RETRIES:
+            return False
+        return http_response.status_code in self.RETRYABLE_STATUS_CODES
+
+    def _compute_backoff(self, http_response: HTTPResponse, num_retries: int) -> float:
+        """
+        Computes how long to wait before the next retry.
+
+        :param http_response: The response received.
+        :type http_response: HTTPResponse
+        :param num_retries: Number of retries already performed.
+        :type num_retries: int
+        :returns: The delay in seconds.
+        :rtype: float
+        """
+        
+        headers = {key.lower(): value for key, value in http_response.headers.items()}
+        retry_after_seconds = self._parse_retry_after(headers.get("retry-after"))
+        if retry_after_seconds is not None:
+            return retry_after_seconds + random.uniform(0, self.RETRY_AFTER_JITTER)
+
+        max_delay = self.BACKOFF_BASE_SECONDS * (self.BACKOFF_GROWTH ** num_retries)
+        return random.uniform(0, max_delay)
+
+    @staticmethod
+    def _parse_retry_after(value: Optional[str]) -> Optional[float]:
+        """
+        Parses the Retry-After header into a
+        delay in seconds, or None if absent/unparseable.
+
+        :param value: The raw header value.
+        :type value: Optional[str]
+        :returns: The delay in seconds, or None if absent/invalid.
+        :rtype: Optional[float]
+        """
+        if not value:
+            return None
+
+        try:
+            seconds = float(value)
+            return seconds if seconds >= 0 else None
+        except ValueError:
+            pass
+
+        try:
+            retry_at = parsedate_to_datetime(value)
+        except (TypeError, ValueError):
+            return None
+        if retry_at.tzinfo is None:
+            retry_at = retry_at.replace(tzinfo=timezone.utc)
+        return max(0.0, (retry_at - datetime.now(timezone.utc)).total_seconds())
 
 
     def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
@@ -215,12 +324,12 @@ class HTTPTransport(ABC):
         :rtype: HTTPResponse
         """
         token_before = self.sinch.configuration.token_manager.token
-        http_response = self.send(endpoint)
+        http_response = self._send_with_retries(endpoint, request_data=None)
 
         if self._should_refresh_token(endpoint, http_response):
             used_token = token_before.access_token if token_before else None
             self.sinch.configuration.token_manager.refresh_auth_token(used_token)
-            http_response = self.send(endpoint)
+            http_response = self._send_with_retries(endpoint, request_data=None)
 
         return endpoint.handle_response(http_response)
 
