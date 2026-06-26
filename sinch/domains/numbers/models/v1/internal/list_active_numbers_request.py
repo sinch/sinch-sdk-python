@@ -1,13 +1,16 @@
 from typing import Optional
-from pydantic import Field, StrictInt, StrictStr, field_validator, conlist
+
+from pydantic import Field, StrictInt, StrictStr, conlist, field_validator
+
+from sinch.core.models.internal.base_model_config import _to_camel_case
 from sinch.domains.numbers.models.v1.internal.base import (
     BaseModelConfigurationRequest,
 )
 from sinch.domains.numbers.models.v1.types import (
     CapabilityType,
-    OrderByType,
     NumberSearchPatternType,
     NumberType,
+    OrderByType,
 )
 
 
@@ -33,5 +36,5 @@ class ListActiveNumbersRequest(BaseModelConfigurationRequest):
     @classmethod
     def convert_order_by(cls, value):
         if isinstance(value, str):
-            return cls._to_camel_case(value)
+            return _to_camel_case(value)
         return value
