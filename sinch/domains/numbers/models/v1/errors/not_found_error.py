@@ -13,4 +13,3 @@ class NotFoundError(BaseModelConfigurationResponse):
     message: Optional[StrictStr] = Field(default=None)
     status: Optional[StrictStr] = Field(default=None)
     details: Optional[conlist(NotFoundErrorDetails)] = Field(default=None)
-
