@@ -1,0 +1,61 @@
+name: Sync Merged Changes to Public Repo
+
+# Trigger this workflow whenever a Pull Request is merged into the internal repo.
+# A merge closes the PR and updates the base branch, so we can sync that branch to the public repository.
+on:
+  pull_request:
+    types: [closed]
+
+env:
+  SDK_NAME: sinch-sdk-python # Adjust dynamically if needed
+  PUBLIC_REPO_OWNER: sinch
+
+# Ensure we don't have multiple syncs trying to push at the exact same time
+concurrency:
+  group: sync-to-public-${{ github.repository }}-${{ github.event.pull_request.base.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync-to-public:
+    # Only sync when a PR is merged in the internal repo; skip merges performed by the sync app
+    if: |
+      github.event.pull_request.merged == true &&
+      github.actor != 'sinch-internal-repo-sync-app[bot]' &&
+      endsWith(github.event.repository.name, 'internal')
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Resolve the target branch name
+      - name: Resolve Target Branch
+        run: echo "TARGET_BRANCH=${{ github.event.pull_request.base.ref }}" >> "$GITHUB_ENV"
+
+      # 2. Checkout the internal repository (the source of truth)
+      - name: Checkout Internal Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 0 # We need full history to push correctly
+          persist-credentials: false # We'll use the App token for pushing, not the default GITHUB
+
+      # 3. Generate a temporary token scoped to the PUBLIC repository
+      - name: Generate GitHub App Token for Public Repo
+        uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.SINCH_INTERNAL_REPO_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SINCH_INTERNAL_REPO_SYNC_APP_PRIVATE_KEY }}
+          owner: ${{ env.PUBLIC_REPO_OWNER }}
+          repositories: ${{ env.SDK_NAME }}
+
+      # 4. Push the updated branch to the public repository
+      - name: Push to Public Repository
+        env:
+          SYNC_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          echo "Syncing branch $TARGET_BRANCH to public repository..."
+
+          # Add the public repository as a remote using the App token
+          git remote add public "https://x-access-token:${SYNC_TOKEN}@github.com/${PUBLIC_REPO_OWNER}/${SDK_NAME}.git"
+
+          # Push the specific branch that was just updated
+          # We do NOT force push (-f) by default to prevent accidentally wiping out public history if things get out of sync.
+          git push public HEAD:refs/heads/$TARGET_BRANCH
