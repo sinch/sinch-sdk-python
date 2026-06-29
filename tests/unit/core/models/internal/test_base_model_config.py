@@ -176,8 +176,6 @@ class TestCamelCaseDumpModel:
         }
 
     def test_model_dump_json_also_camelizes(self):
-        # Improvement over the previous model_dump override: the wrap
-        # serializer applies to JSON serialization too.
         model = CamelCaseDumpModel(snake_extra="value")
         assert json.loads(model.model_dump_json(by_alias=True)) == {
             "snakeExtra": "value",
@@ -208,9 +206,6 @@ class TestComposition:
         assert outer.extra_at_root == "extra"
 
     def test_snake_extras_inner_in_base_config_outer_keeps_outer_extras_raw(self):
-        # Reproduces the historical SMS pattern: a Response-derived inner
-        # model used inside a permissive outer model. The inner normalizes
-        # its extras, the outer forwards its own as-provided.
         class Common(SnakeCaseExtrasModel):
             foo_bar: int
 
