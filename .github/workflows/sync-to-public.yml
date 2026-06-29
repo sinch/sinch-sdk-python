@@ -1,7 +1,7 @@
 name: Sync Merged Changes to Public Repo
 
 # Trigger this workflow whenever a Pull Request is merged into the internal repo.
-# A merge closes the PR and updates the base branch, so we can sync that branch to the public repository.
+# A merge closes the PR and updates the base branch, so we can sync that branch to the public repository
 on:
   pull_request:
     types: [closed]
