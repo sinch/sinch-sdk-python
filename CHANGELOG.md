@@ -27,6 +27,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[deprecation notice]** `HTTPTransport.send(endpoint)` is deprecated in favour of `send_request(request_data)`; the legacy method still works for backward compatibility, but will be removed in 3.0.
 - **[deprecation notice]** `TokenManagerBase.invalidate_expired_token()` and `handle_invalid_token()` (and the `TokenState.EXPIRED` value) are deprecated and will be removed in 3.0, as token renewal now goes through `refresh_auth_token()`.
 - **[tech]** Removed unused GitHub environment secrets from CI workflow and simplified test fixtures to use hardcoded test values.
+- **[refactor]** Consolidated the duplicated per-domain `BaseModelConfiguration` classes into three shared base classes in `sinch.core.models.internal` (`BaseConfigModel`, `SnakeCaseExtrasModel`, `CamelCaseDumpModel`).
 - **[doc]** Improve README structure and content.
 
 
