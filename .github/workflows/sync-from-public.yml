@@ -1,0 +1,43 @@
+name: Sync From Public
+
+env:
+  SDK_NAME: sinch-sdk-python
+
+# Ensures only one sync runs at a time. Cancels any running sync when a new trigger arrives.
+concurrency:
+  group: sync-repo-${{ github.repository }}
+  cancel-in-progress: true
+  
+on:
+  schedule:
+    # Runs only once a day at midnight to catch any missed updates
+    - cron: '0 0 * * *'
+  repository_dispatch:
+    types: [public_push_event] # Keeps your instant trigger active
+  workflow_dispatch: # Allows manual run
+
+jobs:
+  sync-repo:
+    if: endsWith(github.event.repository.name, 'internal')
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Generate a temporary installation token using the GitHub App
+      - name: Generate GitHub App Token
+        uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.SINCH_INTERNAL_REPO_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SINCH_INTERNAL_REPO_SYNC_APP_PRIVATE_KEY }}
+
+      # 2. Execute the sync using the short-lived token
+      - name: Sync Public to Private
+        env:
+          SYNC_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          # Clone the public repository as a bare repo (read-only, public)
+          git clone --bare https://github.com/sinch/$SDK_NAME.git public_repo
+          cd public_repo
+
+          # Push all branches and tags to the private repo using the App Token
+          git push --all https://x-access-token:${SYNC_TOKEN}@github.com/sinch/${SDK_NAME}-internal.git
+          git push --tags https://x-access-token:${SYNC_TOKEN}@github.com/sinch/${SDK_NAME}-internal.git
