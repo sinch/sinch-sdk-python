@@ -1,0 +1,38 @@
+name: Notify Private Repo of Update
+
+env:
+  SDK_NAME: sinch-sdk-python
+
+on:
+  push:
+
+jobs:
+  ping-private:
+    if: |
+      github.actor != 'sinch-internal-repo-sync-app[bot]' && !endsWith(github.event.repository.name, 'internal')
+
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Generate a temporary token from the GitHub App
+      - name: Generate GitHub App Token
+        uses: actions/create-github-app-token@v3
+        id: app-token
+        with:
+          client-id: ${{ vars.SINCH_INTERNAL_REPO_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SINCH_INTERNAL_REPO_SYNC_APP_PRIVATE_KEY }}
+          # Explicitly request access to the internal repository:
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ env.SDK_NAME }}-internal
+
+      # 2. Use that token to send the "ping" to the private repo
+      - name: Send Repository Dispatch to Private Repo
+        env:
+          SYNC_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          curl -X POST --fail-with-body \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${SYNC_TOKEN}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "X-GitHub-Api-Version: 2026-03-10" \
+          https://api.github.com/repos/sinch/${SDK_NAME}-internal/dispatches \
+          -d '{"event_type": "public_push_event"}'
