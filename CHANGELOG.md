@@ -16,7 +16,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
-## v2.1.0 – 2026-06-05
+## v2.1.0 – 2026-06-30
 
 ### SDK
 
