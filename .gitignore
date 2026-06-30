@@ -51,6 +51,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+lcov.info
 
 # E2E features
 *.feature
@@ -73,7 +74,9 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+docs/build/
+docs/api/
+
 
 # PyBuilder
 .pybuilder/

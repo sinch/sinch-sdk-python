@@ -1,5 +1,5 @@
-from typing import Optional, List
-from pydantic import StrictStr, Field
+from typing import Optional
+from pydantic import StrictStr, Field, conlist
 from sinch.domains.sms.models.v1.types import (
     DeliveryReceiptStatusCodeType,
     DeliveryReportType,
@@ -16,11 +16,11 @@ class GetBatchDeliveryReportRequest(BaseModelConfigurationRequest):
         default=None,
         description="The type of delivery report.",
     )
-    status: Optional[List[DeliveryStatusType]] = Field(
+    status: Optional[conlist(DeliveryStatusType)] = Field(
         default=None,
         description="Comma separated list of delivery_report_statuses to include",
     )
-    code: Optional[List[DeliveryReceiptStatusCodeType]] = Field(
+    code: Optional[conlist(DeliveryReceiptStatusCodeType)] = Field(
         default=None,
         description="Comma separated list of delivery receipt error codes to include",
     )

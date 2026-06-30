@@ -2,6 +2,8 @@ from sinch.domains.sms.api.v1 import (
     Batches,
     DeliveryReports,
 )
+from sinch.domains.sms.api.v1.groups_apis import Groups
+from sinch.domains.sms.api.v1.inbounds_apis import Inbounds
 from sinch.domains.sms.sinch_events.v1.sms_sinch_event import SmsSinchEvent
 
 
@@ -16,6 +18,8 @@ class SMS:
 
         self.batches = Batches(self._sinch)
         self.delivery_reports = DeliveryReports(self._sinch)
+        self.inbounds = Inbounds(self._sinch)
+        self.groups = Groups(self._sinch)
 
     def sinch_events(self, sinch_event_secret: str) -> SmsSinchEvent:
         """

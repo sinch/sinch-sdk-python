@@ -1,0 +1,21 @@
+/* ---------------------------------------------------------------------------
+   Multi-line signatures (one parameter per line).
+
+   When a signature is wrapped, Sphinx renders each parameter as a <dd> inside
+   a nested <dl>. The Read the Docs theme styles every <dl>/<dd> with borders,
+   background tint and vertical margins, which leak into the signature and draw
+   ugly "lines" between parameters. Flatten that nested list so the parameters
+   read as a clean indented column.
+--------------------------------------------------------------------------- */
+.rst-content .sig dl,
+.rst-content .sig dd {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+/* Keep each parameter indented under the opening parenthesis. */
+.rst-content .sig dd {
+    margin-left: 2em;
+}

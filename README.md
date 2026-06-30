@@ -255,7 +255,7 @@ The following example replaces the default `requests` backend with `httpx` and r
 import httpx
 from sinch import SinchClient
 from sinch.core.ports.http_transport import HTTPTransport
-from sinch.core.endpoint import HTTPEndpoint
+from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 
 
@@ -266,9 +266,7 @@ class MyHTTPImplementation(HTTPTransport):
             proxy=f"http://{proxy_user}:{proxy_password}@{proxy_url}"
         )
 
-    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
-        request_data = self.prepare_request(endpoint)
-        request_data = self.authenticate(endpoint, request_data)
+    def send_request(self, request_data: HttpRequest) -> HTTPResponse:
 
         body = request_data.request_body
         response = self.http_client.request(

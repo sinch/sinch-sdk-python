@@ -1,10 +1,8 @@
 import requests
 from datetime import datetime, timezone
 from behave import given, when, then
+from sinch.domains.sms.models.v1.shared.mo_text_message import MOTextMessage
 from sinch.domains.sms.sinch_events.v1.sms_sinch_event import SmsSinchEvent
-from sinch.domains.sms.sinch_events.v1.events import (
-    MOTextSinchEvent,
-)
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
     RecipientDeliveryReport,
@@ -36,7 +34,7 @@ def step_check_valid_signature(context, event_type, status=None):
 
 @then('the SMS event describes an "incoming SMS" event')
 def step_check_incoming_sms_event(context):
-    incoming_sms_event: MOTextSinchEvent = context.event
+    incoming_sms_event: MOTextMessage = context.event
     assert incoming_sms_event.id == '01W4FFL35P4NC4K35SMSBATCH8'
     assert incoming_sms_event.from_ == '12015555555'
     assert incoming_sms_event.to == '12017777777'

@@ -1,21 +1,28 @@
 import requests
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
-from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
 
-
 class HTTPTransportRequests(HTTPTransport):
+    """
+    Sync HTTP transport using the requests library.
+    """
+
     def __init__(self, sinch):
         super().__init__(sinch)
         self.http_session = requests.Session()
 
-    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
-        request_data: HttpRequest = self.prepare_request(endpoint)
-        request_data: HttpRequest = self.authenticate(endpoint, request_data)
+    def send_request(self, request_data: HttpRequest) -> HTTPResponse:
+        """
+        Performs the HTTP call with requests and maps the result to an HTTPResponse.
 
+        :param request_data: The prepared request to send.
+        :type request_data: HttpRequest
+        :returns: The HTTP response.
+        :rtype: HTTPResponse
+        """
         self.sinch.configuration.logger.debug(
-            f"Sync HTTP {request_data.http_method} call with headers:"
-            f" {request_data.headers} and body: {request_data.request_body} to URL: {request_data.url}"
+            "Sync HTTP request %s call with headers: %s and body: %s to URL: %s",
+            request_data.http_method, request_data.headers, request_data.request_body, request_data.url
         )
         response = self.http_session.request(
             method=request_data.http_method,
@@ -30,8 +37,8 @@ class HTTPTransportRequests(HTTPTransport):
         response_body = self.deserialize_json_response(response)
 
         self.sinch.configuration.logger.debug(
-            f"Sync HTTP {response.status_code} response with headers: {response.headers}"
-            f"and body: {response_body} from URL: {request_data.url}"
+            "Sync HTTP response %s with headers: %s and body: %s from URL: %s",
+            response.status_code, response.headers, response_body, request_data.url
         )
 
         return HTTPResponse(
