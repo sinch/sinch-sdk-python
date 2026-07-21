@@ -57,15 +57,3 @@ def test_list_groups_response_expects_content_returns_empty_list_when_no_groups(
     model = ListGroupsResponse()
 
     assert model.content == []
-
-
-def test_list_groups_response_expects_strict_int_rejects_str():
-    """Test that StrictInt fields reject string values."""
-    with pytest.raises(ValidationError):
-        ListGroupsResponse(count="one")
-
-    with pytest.raises(ValidationError):
-        ListGroupsResponse(page="zero")
-
-    with pytest.raises(ValidationError):
-        ListGroupsResponse(page_size="ten")

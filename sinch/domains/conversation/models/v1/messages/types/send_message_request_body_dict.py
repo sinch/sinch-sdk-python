@@ -1,5 +1,7 @@
 from typing import TypedDict
+
 from typing_extensions import NotRequired
+
 from sinch.domains.conversation.models.v1.messages.types.card_message_dict import (
     CardMessageDict,
 )
@@ -29,7 +31,7 @@ from sinch.domains.conversation.models.v1.messages.types.text_message_dict impor
 )
 
 
-class SendMessageRequestBodyDict(TypedDict, total=False):
+class SendMessageRequestBodyDict(TypedDict):
     """
     TypedDict for the message body in send message requests.
     At least one message type must be provided.

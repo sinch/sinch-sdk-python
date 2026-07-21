@@ -18,7 +18,12 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ## v2.2.0 – unreleased
 
+### Conversation
 
+- **[feature]** Conversation Apps API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[deprecation notice]** `ConversationProcessingMode` and `ConversationRetentionPolicyType` are deprecated; they are unused by the SDK and will be removed in 3.0.
+- **[deprecation notice]** `ConversationMetadataReportView` is deprecated in favour of `ConversationMetadataReportViewType`; it will be removed in 3.0.
+- **[deprecation notice]** `ConversationChannel` is deprecated in favour of `ConversationChannelType`; it will be removed in 3.0.
 
 ---
 

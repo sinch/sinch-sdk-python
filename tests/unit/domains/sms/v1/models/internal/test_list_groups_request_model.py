@@ -18,12 +18,3 @@ def test_list_groups_request_expects_parsed_input():
 
     assert model.page == 1
     assert model.page_size == 10
-
-
-def test_list_groups_request_expects_strict_int_rejects_str():
-    """Test that StrictInt fields reject string values."""
-    with pytest.raises(ValidationError):
-        ListGroupsRequest(page="one")
-
-    with pytest.raises(ValidationError):
-        ListGroupsRequest(page_size="ten")

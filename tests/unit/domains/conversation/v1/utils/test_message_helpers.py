@@ -1,5 +1,5 @@
 import pytest
-from sinch.domains.conversation.api.v1.utils import (
+from sinch.domains.conversation.api.v1.internal.utils import (
     build_recipient_dict,
     coerce_recipient,
     split_send_kwargs,

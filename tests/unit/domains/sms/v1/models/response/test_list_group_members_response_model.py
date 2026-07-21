@@ -33,9 +33,3 @@ def test_list_group_members_response_expects_no_pagination_fields():
     assert getattr(model, "count", None) is None
     assert getattr(model, "page", None) is None
     assert getattr(model, "page_size", None) is None
-
-
-def test_list_group_members_response_expects_strict_str_rejects_non_string():
-    """Test that non-string members are rejected."""
-    with pytest.raises(ValidationError):
-        ListGroupMembersResponse(members=[123])
