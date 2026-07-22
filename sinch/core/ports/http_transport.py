@@ -11,6 +11,7 @@ from requests import Response
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.internal.base_model_config import legacy_extra_fields_normalization_scope
 from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.enums import HTTPAuthentication
 from sinch import __version__ as sdk_version
@@ -96,21 +97,24 @@ class HTTPTransport(ABC):
         :returns: The handled HTTP response.
         :rtype: HTTPResponse
         """
-        if self._legacy_send:
-            return self._legacy_request(endpoint)
+        with legacy_extra_fields_normalization_scope(
+            self.sinch.configuration.legacy_extra_fields_normalization
+        ):
+            if self._legacy_send:
+                return self._legacy_request(endpoint)
 
-        request_data = self.prepare_request(endpoint)
-        request_data = self.authenticate(endpoint, request_data)
+            request_data = self.prepare_request(endpoint)
+            request_data = self.authenticate(endpoint, request_data)
 
-        http_response = self._send_with_retries(endpoint, request_data)
-
-        if self._should_refresh_token(endpoint, http_response):
-            used_token = self._get_bearer_token_from_request(request_data)
-            new_token = self.sinch.configuration.token_manager.refresh_auth_token(used_token)
-            self._set_bearer_token(request_data, new_token.access_token)
             http_response = self._send_with_retries(endpoint, request_data)
 
-        return endpoint.handle_response(http_response)
+            if self._should_refresh_token(endpoint, http_response):
+                used_token = self._get_bearer_token_from_request(request_data)
+                new_token = self.sinch.configuration.token_manager.refresh_auth_token(used_token)
+                self._set_bearer_token(request_data, new_token.access_token)
+                http_response = self._send_with_retries(endpoint, request_data)
+
+            return endpoint.handle_response(http_response)
     
 
     def _send_with_retries(

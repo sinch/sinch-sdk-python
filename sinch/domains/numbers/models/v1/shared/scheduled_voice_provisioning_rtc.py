@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Literal, Optional
 from pydantic import StrictStr, Field
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_common import (
     ScheduledVoiceProvisioningCommon,
@@ -7,3 +7,4 @@ from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_common 
 
 class ScheduledVoiceProvisioningRTC(ScheduledVoiceProvisioningCommon):
     app_id: Optional[StrictStr] = Field(default=None, alias="appId")
+    type: Literal["RTC"] = Field(default="RTC", alias="type")

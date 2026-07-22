@@ -1,4 +1,6 @@
 from sinch.domains.numbers.models.v1.internal import RentAnyNumberRequest
+from sinch.domains.numbers.models.v1.internal.sms_configuration_request import SmsConfigurationRequest
+from sinch.domains.numbers.models.v1.internal.voice_configuration_request import VoiceConfigurationRTC
 
 
 def test_rent_any_number_request_expects_valid_data():
@@ -26,21 +28,15 @@ def test_rent_any_number_request_expects_valid_data():
 
     request = RentAnyNumberRequest(**data)
 
-    assert request.number_pattern == {
-        "pattern": "string",
-        "searchPattern": "START"
-        }
+    assert request.number_pattern.pattern == "string"
+    assert request.number_pattern.search_pattern == "START"
     assert request.region_code == "string"
     assert request.number_type == "MOBILE"
     assert request.capabilities == ["SMS"]
-    assert request.sms_configuration == {
-            "servicePlanId": "string",
-            "campaignId": "string"
-        }
-    assert request.voice_configuration == {
-            "type": "RTC",
-            "appId": "string"
-        }
+    assert request.sms_configuration == SmsConfigurationRequest(campaign_id="string", service_plan_id="string")  
+    assert request.voice_configuration == VoiceConfigurationRTC(app_id="string", type="RTC")
+
+
     assert request.event_destination_target == "https://www.your-callback-server.com/callback"
 
 

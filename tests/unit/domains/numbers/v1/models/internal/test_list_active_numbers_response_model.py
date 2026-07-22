@@ -1,7 +1,9 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 import pytest
+from sinch.core.models.internal.base_model_config import legacy_extra_fields_normalization_scope
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersResponse
+from sinch.domains.numbers.models.v1.shared.voice_configuration_rtc import VoiceConfigurationRTC
 
 
 @pytest.fixture
@@ -36,14 +38,10 @@ def test_data():
                         "appId": "123456",
                         "status": "FAILED",
                         "lastUpdatedTime": "2025-02-04T15:32:06.693027Z",
-                        "type": "RTC",
-                        "trunkId": "",
-                        "serviceId": ""
+                        "type": "RTC"
                     },
                     "lastUpdatedTime": None,
-                    "type": "RTC",
-                    "trunkId": "",
-                    "serviceId": ""
+                    "type": "RTC"
                 },
                 "callbackUrl": ""
             }
@@ -61,8 +59,6 @@ def assert_voice_configuration(voice_config):
         datetime(2025, 2, 4, 15, 32, 6, 693027, tzinfo=timezone.utc))
     assert voice_config.scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert voice_config.scheduled_voice_provisioning.type == "RTC"
-    assert voice_config.scheduled_voice_provisioning.trunk_id == ""
-    assert voice_config.scheduled_voice_provisioning.service_id == ""
 
 
 def assert_sms_configuration(sms_config):
@@ -75,7 +71,9 @@ def test_list_active_numbers_response_expects_correct_mapping(test_data):
     """
     Check if response is handled and mapped to the appropriate fields correctly.
     """
+
     response = ListActiveNumbersResponse(**test_data)
+    assert isinstance(response.active_numbers[0].voice_configuration, VoiceConfigurationRTC)
     assert hasattr(response, "content")
     assert response.content == response.active_numbers
 

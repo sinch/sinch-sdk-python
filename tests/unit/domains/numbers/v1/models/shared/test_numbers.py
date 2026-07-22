@@ -1,8 +1,7 @@
 from datetime import datetime, timezone
 from pydantic import TypeAdapter
-from sinch.domains.numbers.models.v1.shared import ScheduledSmsProvisioning, SmsConfiguration
-from sinch.domains.numbers.models.v1.types import VoiceConfiguration
-
+from sinch.domains.numbers.models.v1.shared import ScheduledSmsProvisioning, SmsConfiguration, VoiceConfiguration
+from sinch.domains.numbers.models.v1.shared.voice_configuration_custom import VoiceConfigurationCustom
 
 def test_scheduled_provisioning_sms_configuration_valid_expects_parsed_data():
     """
@@ -70,16 +69,12 @@ def test_voice_configuration_rtc_valid_expects_parsed_data():
     data = {
         "type": "RTC",
         "appId": "test_app",
-        "trunkId": "",
-        "serviceId": "",
         "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
         "scheduledVoiceProvisioning": {
             "type": "EST",
             "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
             "status": "WAITING",
-            "appId": "",
             "trunkId": "test_app_est",
-            "serviceId": ""
         }
     }
 
@@ -103,17 +98,13 @@ def test_voice_configuration_est_valid_expects_parsed_data():
     """
     data = {
         "type": "EST",
-        "appId": "",
         "trunkId": "test_trunk",
-        "serviceId": "",
         "lastUpdatedTime": "2025-02-25T09:32:27.437Z",
         "scheduledVoiceProvisioning": {
             "type": "EST",
             "lastUpdatedTime": "2025-02-25T09:32:27.437Z",
             "status": "ACTIVE",
-            "appId": "",
             "trunkId": "test_trunk",
-            "serviceId": ""
         }
     }
 
@@ -137,16 +128,12 @@ def test_voice_configuration_fax_valid_expects_parsed_data():
     """
     data = {
         "type": "FAX",
-        "appId": "",
-        "trunkId": "",
         "serviceId": "test_service",
         "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
         "scheduledVoiceProvisioning": {
             "type": "FAX",
             "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
             "status": "ACTIVE",
-            "appId": "",
-            "trunkId": "",
             "serviceId": "test_service"
         }
     }
@@ -163,3 +150,33 @@ def test_voice_configuration_fax_valid_expects_parsed_data():
     assert config.scheduled_voice_provisioning.type == "FAX"
     assert config.scheduled_voice_provisioning.status == "ACTIVE"
     assert config.scheduled_voice_provisioning.service_id == "test_service"
+
+def test_voice_configuration_custom_valid_expects_parsed_data():
+    """
+    Test a valid CUSTOM voice configuration
+    """
+    data = {
+        "type": "CUSTOM",
+        "customField": "custom_value",
+        "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
+        "scheduledVoiceProvisioning": {
+            "type": "CUSTOM",
+            "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
+            "status": "ACTIVE",
+            "customField": "custom_value"
+        }
+    }
+
+    voice_configuration_adapter = TypeAdapter(VoiceConfiguration)
+    config = voice_configuration_adapter.validate_python(data)
+
+    assert isinstance(config, VoiceConfigurationCustom)
+    assert config.type == "CUSTOM"
+    assert config.lastUpdatedTime  == "2025-01-24T09:32:27.437Z"
+    assert config.scheduledVoiceProvisioning is not None
+    assert config.scheduledVoiceProvisioning["type"] == "CUSTOM"
+    assert config.scheduledVoiceProvisioning["status"] == "ACTIVE"
+    assert config.customField == "custom_value"
+    assert config.scheduledVoiceProvisioning["customField"] == "custom_value"
+
+    

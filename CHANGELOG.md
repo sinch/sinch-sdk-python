@@ -18,6 +18,14 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ## v2.2.0 – unreleased
 
+### SDK
+
+- **[design]** Extra fields on request and response models now pass through unchanged by default (no camelCase/snake_case rewriting). A new `Configuration(legacy_extra_fields_normalization=True)` flag restores the previous auto-conversion behavior for callers who depend on it; the flag is transitional and will be removed in 3.0.
+
+### Numbers
+
+- **[refactor]** `voice_configuration`, `sms_configuration`, and `number_pattern` request fields are now typed Pydantic models instead of raw dicts with validators. Added `VoiceConfigurationCustom`/`ScheduledVoiceProvisioningCustom` response variants for unrecognized voice configuration types.
+
 ### Conversation
 
 - **[feature]** Conversation Apps API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.

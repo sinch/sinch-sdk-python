@@ -21,5 +21,5 @@ def test_numbers_callback_config_response_all_fields(test_data):
 
     assert response.project_id == "project-test-id"
     assert response.hmac_secret == "secret-key-456"
-    assert response.extra_field == "Extra content"
-    assert response.extra_dict == {"key": "value"}
+    assert response.extraField == "Extra content"
+    assert response.extraDict == {"key": "value"}

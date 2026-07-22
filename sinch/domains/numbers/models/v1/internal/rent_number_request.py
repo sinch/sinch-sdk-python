@@ -1,7 +1,10 @@
-from typing import Optional, Dict
+from typing import Optional
 from pydantic import Field, StrictStr
-from sinch.domains.numbers.models.v1.utils.validators import (
-    validate_sms_voice_configuration,
+from sinch.domains.numbers.models.v1.internal.sms_configuration_request import (
+    SmsConfigurationRequest,
+)
+from sinch.domains.numbers.models.v1.internal.voice_configuration_request import (
+    VoiceConfigurationRequestUnion,
 )
 from sinch.domains.numbers.models.v1.internal.base import (
     BaseModelConfigurationRequest,
@@ -13,20 +16,12 @@ class RentNumberRequest(BaseModelConfigurationRequest):
         alias="phoneNumber",
         description="Phone number in E.164 format with leading '+'. Example: '+12025550134'.",
     )
-    # Accepts only dictionary input, not Pydantic models
-    sms_configuration: Optional[Dict] = Field(
+    sms_configuration: Optional[SmsConfigurationRequest] = Field(
         default=None, alias="smsConfiguration"
     )
-    voice_configuration: Optional[Dict] = Field(
+    voice_configuration: Optional[VoiceConfigurationRequestUnion] = Field(
         default=None, alias="voiceConfiguration"
     )
     event_destination_target: Optional[StrictStr] = Field(
         default=None, alias="callbackUrl"
     )
-
-    def __init__(self, **data):
-        """
-        Custom initializer to validate nested dictionaries.
-        """
-        validate_sms_voice_configuration(data)
-        super().__init__(**data)

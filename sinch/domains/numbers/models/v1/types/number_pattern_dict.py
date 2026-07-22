@@ -1,6 +1,8 @@
 from typing import TypedDict
 from typing_extensions import NotRequired
-from sinch.domains.numbers.models.v1.types import NumberSearchPatternType
+from sinch.domains.numbers.models.v1.types.number_search_pattern_type import (
+    NumberSearchPatternType,
+)
 
 
 class NumberPatternDict(TypedDict):

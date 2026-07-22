@@ -1,8 +1,8 @@
 from pydantic import StrictStr
 from sinch.domains.numbers.models.v1.internal.base import (
-    BaseModelConfigurationRequest,
+    BaseModelConfigurationResponse,
 )
 
 
-class VoiceConfigurationCustom(BaseModelConfigurationRequest):
+class VoiceConfigurationCustom(BaseModelConfigurationResponse):
     type: StrictStr

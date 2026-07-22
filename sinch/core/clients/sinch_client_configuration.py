@@ -1,4 +1,5 @@
 import logging
+import warnings
 from logging import Logger
 
 from sinch.core.ports.http_transport import HTTPTransport
@@ -8,6 +9,16 @@ from sinch.core.token_manager import TokenManager
 class Configuration:
     """
     Sinch client configuration object.
+
+    :param legacy_extra_fields_normalization: When
+        ``True``, restores the behavior before 2.2.0 where extra fields on request/response models were
+        auto-converted to the api convention ``snake_case`` or ``camelCase``. When
+        ``False`` (default), extra fields pass through unchanged in both
+        directions.
+
+        .. deprecated:: 2.2
+            This flag is transitional and will be removed in 3.0, along with
+            the legacy auto-conversion behavior it restores.
     """
     def __init__(
         self,
@@ -23,6 +34,7 @@ class Configuration:
         sms_api_token: str = None,
         sms_region: str = None,
         conversation_region: str = None,
+        legacy_extra_fields_normalization: bool = False,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -30,7 +42,8 @@ class Configuration:
         self.connection_timeout = connection_timeout
         self.sms_api_token = sms_api_token
         self.service_plan_id = service_plan_id
-        
+        self.legacy_extra_fields_normalization = legacy_extra_fields_normalization
+
         # Determine authentication method based on provided parameters
         self._authentication_method = self._determine_authentication_method()
         self.auth_origin = "https://auth.sinch.com"

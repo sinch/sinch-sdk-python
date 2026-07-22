@@ -4,12 +4,12 @@ from pydantic import StrictStr, Field, StrictInt, conlist
 from sinch.domains.numbers.models.v1.internal.base import (
     BaseModelConfigurationResponse,
 )
-from sinch.domains.numbers.models.v1.shared import Money, SmsConfiguration
-from sinch.domains.numbers.models.v1.types import (
-    CapabilityType,
-    NumberType,
+from sinch.domains.numbers.models.v1.shared import (
+    Money,
+    SmsConfiguration,
     VoiceConfiguration,
 )
+from sinch.domains.numbers.models.v1.types import CapabilityType, NumberType
 
 
 class ActiveNumber(BaseModelConfigurationResponse):

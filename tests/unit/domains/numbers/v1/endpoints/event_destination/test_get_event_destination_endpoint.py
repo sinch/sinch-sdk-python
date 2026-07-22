@@ -61,7 +61,7 @@ def test_build_query_params_expects_correct_mapping(endpoint_extra_request_data)
     """
     expected_params = {
         "key": "value",
-        "extraField": "extra value"
+        "extra_field": "extra value"
     }
     assert endpoint_extra_request_data.build_query_params() == expected_params
 

@@ -92,7 +92,7 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "capabilities": ["SMS"],
         "numberPattern.pattern": "123",
         "numberPattern.searchPattern": "STARTS_WITH",
-        "extraField": "extra value"
+        "extra_field": "extra value"
     }
     assert endpoint.build_query_params() == expected_params
 

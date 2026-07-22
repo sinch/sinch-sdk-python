@@ -14,6 +14,16 @@ class SinchClient:
     Synchronous implementation of the Sinch Client
     By default this implementation uses HTTPTransportRequests based on Requests library
     Custom Sync HTTPTransport implementation can be provided via `transport` argument
+
+    :param legacy_extra_fields_normalization: When
+        ``True``, restores the behavior before 2.2.0 where extra fields on request/response models were
+        auto-converted to the api convention ``snake_case`` or ``camelCase``. When
+        ``False`` (default), extra fields pass through unchanged in both
+        directions.
+
+        .. deprecated:: 2.2
+            This flag is transitional and will be removed in 3.0, along with
+            the legacy auto-conversion behavior it restores.
     """
     def __init__(
         self,
@@ -26,6 +36,7 @@ class SinchClient:
         sms_api_token: str = None,
         sms_region: str = None,
         conversation_region: str = None,
+        legacy_extra_fields_normalization: bool = False,
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -39,6 +50,7 @@ class SinchClient:
             sms_api_token=sms_api_token,
             sms_region=sms_region,
             conversation_region=conversation_region,
+            legacy_extra_fields_normalization=legacy_extra_fields_normalization,
         )
 
         self.authentication = Authentication(self)

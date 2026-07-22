@@ -48,7 +48,7 @@ def test_number_sinch_event_response_expects_parsed_data(valid_data):
     assert response.status == "SUCCEEDED"
     assert response.failure_code is None
     assert response.internal_failure_code is None
-    assert response.extra_field == "extra_value"
+    assert response.extraField == "extra_value"
 
 
 def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data():

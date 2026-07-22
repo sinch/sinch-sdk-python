@@ -35,7 +35,7 @@ def test_data():
                 "status": "PROVISIONING_STATUS_UNSPECIFIED",
                 "trunkId": "string",
             },
-            "appId": "string",
+            "trunkId": "string",
         },
         "callbackUrl": "https://www.your-callback-server.com/callback",
         "extraField": "Extra content",
@@ -67,7 +67,7 @@ def assert_voice_configuration(voice_config):
     expected_last_updated_time = (
         datetime(2025, 1, 25, 18, 19, 31, 95000, tzinfo=timezone.utc))
     assert voice_config.last_updated_time == expected_last_updated_time
-    assert voice_config.app_id == "string"
+    assert voice_config.trunk_id == "string"
     scheduled_voice_provisioning = voice_config.scheduled_voice_provisioning
     assert scheduled_voice_provisioning.type == "EST"
     expected_last_updated_time = (
@@ -103,5 +103,6 @@ def test_active_number_response_expects_all_fields_mapped_correctly(test_data):
     assert_sms_configuration(response.sms_configuration)
     assert_voice_configuration(response.voice_configuration)
 
-    assert response.extra_field == "Extra content"
-    assert response.extra_dict == {"key": "value"}
+    assert response.extraField == "Extra content"
+    assert response.extraDict == {"key": "value"}
+

@@ -281,9 +281,6 @@ def test_response_raises_validation_error_when_required_credential_field_missing
 
 def test_response_unknown_channel_is_kept_as_unvalidated_extra_field():
     """An unrecognized channel is not rejected: extra='allow' stores it, unvalidated.
-
-    The extras-snakify hook inserts an underscore before every uppercase
-    letter, so "UNKNOWN" ends up as "u_n_k_n_o_w_n" rather than "unknown".
     """
     model = ConversationChannelCredentialsResponse.model_validate(
         [
@@ -296,8 +293,8 @@ def test_response_unknown_channel_is_kept_as_unvalidated_extra_field():
 
     assert model.sms is None
     dumped = model.model_dump(by_alias=True, exclude_none=True)
-    assert "u_n_k_n_o_w_n" in dumped #Solved when pass through is implemented
-    assert dumped["u_n_k_n_o_w_n"] == {"token": "my-token"}
+    assert "UNKNOWN" in dumped 
+    assert dumped["UNKNOWN"] == {"token": "my-token"}
 
 
 def test_response_raises_key_error_when_entry_missing_channel_key():

@@ -23,14 +23,10 @@ def test_update_number_configuration_request_valid_expects_parsed_response():
     request = UpdateNumberConfigurationRequest(**data)
     assert request.phone_number == "+1234567890"
     assert request.display_name == "Test Number"
-    assert request.sms_configuration == {
-            "servicePlanId": "string",
-            "campaignId": "YOUR_campaignId_from_TCR"
-    }
-    assert request.voice_configuration == {
-            "type": "RTC",
-            "appId": "YOUR_Voice_appId"
-    }
+    assert request.sms_configuration.service_plan_id == "string"
+    assert request.sms_configuration.campaign_id == "YOUR_campaignId_from_TCR"
+    assert request.voice_configuration.type == "RTC"
+    assert request.voice_configuration.app_id == "YOUR_Voice_appId"
     assert request.event_destination_target == "https://www.your-callback-server.com/callback"
 
 

@@ -22,11 +22,9 @@ def test_rent_number_request_expects_snake_case_input():
 
     # Assert the field values
     assert request.phone_number == "+1234567890"
-    assert request.sms_configuration == {"service_plan_id": "YOUR_SMS_servicePlanId"}
-    assert request.voice_configuration == {
-        "app_id": "YOUR_voice_appID",
-        "type": "RTC"
-    }
+    assert request.sms_configuration.service_plan_id == "YOUR_SMS_servicePlanId"
+    assert request.voice_configuration.type == "RTC"
+    assert request.voice_configuration.app_id == "YOUR_voice_appID"
     assert request.callback_url == "https://example.com/callback"
 
 
@@ -47,11 +45,9 @@ def test_rent_number_request_expects_mixed_case_input():
 
     # Assert fields are populated correctly
     assert request.phone_number == "+1234567890"
-    assert request.sms_configuration == {"servicePlanId": "YOUR_SMS_servicePlanId"}
-    assert request.voice_configuration == {
-            "appId": "YOUR_voice_appID",
-            "type": "RTC"
-        }
+    assert request.sms_configuration.service_plan_id == "YOUR_SMS_servicePlanId"
+    assert request.voice_configuration.type == "RTC"
+    assert request.voice_configuration.app_id == "YOUR_voice_appID"
     assert request.callback_url == "https://example.com/callback"
 
 
@@ -89,6 +85,6 @@ def test_rent_number_request_expects_optional_param_none():
 
     # Assert the field values
     assert request.phone_number == "+1234567890"
-    assert request.sms_configuration == {"service_plan_id": "YOUR_SMS_servicePlanId"}
+    assert request.sms_configuration.service_plan_id == "YOUR_SMS_servicePlanId"
     assert request.voice_configuration is None
     assert request.callback_url == "https://example.com/callback"

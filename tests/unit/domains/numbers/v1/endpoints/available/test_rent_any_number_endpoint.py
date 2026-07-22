@@ -57,9 +57,9 @@ def valid_response_data():
                 "type": "RTC",
                 "lastUpdatedTime": "2025-01-24T09:32:27.437Z",
                 "status": "PROVISIONING_STATUS_UNSPECIFIED",
-                "trunkId": "string",
+                "appId": "string"
             },
-            "appId": "string",
+            "appId": "string"
         },
         "callbackUrl": "https://www.your-callback-server.com/callback",
     }
@@ -87,7 +87,7 @@ def test_request_body_expects_correct_json(valid_request_data):
         "type": "MOBILE",
         "capabilities": ["SMS"],
         "smsConfiguration": {"servicePlanId": "string", "campaignId": "string"},
-        "voiceConfiguration": {"appId": "string"},
+        "voiceConfiguration": {"type": "RTC", "appId": "string"},
         "callbackUrl": "https://www.your-callback-server.com/callback",
     }
 
@@ -138,6 +138,6 @@ def test_handle_response_expects_valid_mapping(valid_response_data):
     assert voice_config.scheduled_voice_provisioning.type == "RTC"
     assert voice_config.scheduled_voice_provisioning.last_updated_time == expected_last_updated_time
     assert voice_config.scheduled_voice_provisioning.status == "PROVISIONING_STATUS_UNSPECIFIED"
-    assert voice_config.scheduled_voice_provisioning.trunk_id == "string"
+    assert voice_config.scheduled_voice_provisioning.app_id == "string"
     assert voice_config.app_id == "string"
     assert response.event_destination_target == "https://www.your-callback-server.com/callback"

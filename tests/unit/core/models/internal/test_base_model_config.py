@@ -18,6 +18,7 @@ from sinch.core.models.internal.base_model_config import (
     _camelize_keys,
     _to_camel_case,
     _to_snake_case,
+    legacy_extra_fields_normalization_scope,
 )
 
 
@@ -120,23 +121,50 @@ class TestBaseConfigModel:
 
 
 # ---------------------------------------------------------------------------
-# SnakeCaseExtrasModel — normalize extras on validation
+# SnakeCaseExtrasModel — extras pass through by default; snake_case
+# normalization is opt-in via legacy_extra_fields_normalization_scope
 # ---------------------------------------------------------------------------
 
 
 class TestSnakeCaseExtrasModel:
-    def test_extras_normalized_camel_to_snake_on_init(self):
+    def test_extras_pass_through_unchanged_by_default(self):
         model = SnakeCaseExtrasModel(extraField="x", anotherCamel=42)
+        assert model.extraField == "x"
+        assert model.anotherCamel == 42
+
+    def test_dump_emits_extras_unchanged_by_default(self):
+        model = SnakeCaseExtrasModel(extraField="x")
+        assert model.model_dump(by_alias=True) == {"extraField": "x"}
+
+    def test_extras_normalized_camel_to_snake_when_legacy_enabled(self):
+        with legacy_extra_fields_normalization_scope(True):
+            model = SnakeCaseExtrasModel(extraField="x", anotherCamel=42)
         assert model.extra_field == "x"
         assert model.another_camel == 42
 
-    def test_snake_extras_are_idempotent(self):
-        model = SnakeCaseExtrasModel(already_snake="value")
+    def test_snake_extras_are_idempotent_when_legacy_enabled(self):
+        with legacy_extra_fields_normalization_scope(True):
+            model = SnakeCaseExtrasModel(already_snake="value")
         assert model.already_snake == "value"
 
-    def test_dump_emits_normalized_snake_keys(self):
-        model = SnakeCaseExtrasModel(extraField="x")
+    def test_dump_emits_normalized_snake_keys_when_legacy_enabled(self):
+        with legacy_extra_fields_normalization_scope(True):
+            model = SnakeCaseExtrasModel(extraField="x")
         assert model.model_dump(by_alias=True) == {"extra_field": "x"}
+
+    def test_request_model_extras_normalized_at_dump_even_if_built_outside_scope(self):
+        # Simulates a request model built before HTTPTransport.request() opens
+        # the scope: model_post_init sees the ambient default (False), but the
+        # dump-time hook re-checks the policy active when .model_dump() runs.
+        model = SnakeCaseExtrasModel(extraCamelKwarg="foo")
+        assert model.extraCamelKwarg == "foo"
+
+        with legacy_extra_fields_normalization_scope(True):
+            dumped = model.model_dump(by_alias=True)
+        assert dumped == {"extra_camel_kwarg": "foo"}
+
+        # Outside any scope, the same object still dumps as passthrough.
+        assert model.model_dump(by_alias=True) == {"extraCamelKwarg": "foo"}
 
 
 # ---------------------------------------------------------------------------
@@ -145,19 +173,30 @@ class TestSnakeCaseExtrasModel:
 
 
 class TestCamelCaseDumpModel:
-    def test_extras_emit_as_camel_with_by_alias_true(self):
+    def test_extras_pass_through_unchanged_by_default(self):
         model = CamelCaseDumpModel(snake_extra="value", another_snake=42)
         assert model.model_dump(by_alias=True) == {
+            "snake_extra": "value",
+            "another_snake": 42,
+        }
+
+    def test_extras_emit_as_camel_when_legacy_enabled(self):
+        with legacy_extra_fields_normalization_scope(True):
+            model = CamelCaseDumpModel(snake_extra="value", another_snake=42)
+            dumped = model.model_dump(by_alias=True)
+        assert dumped == {
             "snakeExtra": "value",
             "anotherSnake": 42,
         }
 
     def test_extras_kept_as_snake_when_by_alias_false(self):
         # Mirrors the previous Numbers override: conversion is gated on by_alias.
-        model = CamelCaseDumpModel(snake_extra="value")
-        assert model.model_dump(by_alias=False) == {"snake_extra": "value"}
+        with legacy_extra_fields_normalization_scope(True):
+            model = CamelCaseDumpModel(snake_extra="value")
+            dumped = model.model_dump(by_alias=False)
+        assert dumped == {"snake_extra": "value"}
 
-    def test_nested_dict_keys_camelized_recursively(self):
+    def test_nested_dict_fields_kept_raw_by_default(self):
         class Outer(CamelCaseDumpModel):
             sms_configuration: Optional[Dict[str, Any]] = Field(
                 default=None, alias="smsConfiguration"
@@ -171,13 +210,35 @@ class TestCamelCaseDumpModel:
             voice_configuration={"appId": "Y", "type": "RTC"},
         )
         assert model.model_dump(by_alias=True) == {
+            "smsConfiguration": {"service_plan_id": "X"},
+            "voiceConfiguration": {"appId": "Y", "type": "RTC"},
+        }
+
+    def test_nested_dict_keys_camelized_recursively_when_legacy_enabled(self):
+        class Outer(CamelCaseDumpModel):
+            sms_configuration: Optional[Dict[str, Any]] = Field(
+                default=None, alias="smsConfiguration"
+            )
+            voice_configuration: Optional[Dict[str, Any]] = Field(
+                default=None, alias="voiceConfiguration"
+            )
+
+        with legacy_extra_fields_normalization_scope(True):
+            model = Outer(
+                sms_configuration={"service_plan_id": "X"},
+                voice_configuration={"appId": "Y", "type": "RTC"},
+            )
+            dumped = model.model_dump(by_alias=True)
+        assert dumped == {
             "smsConfiguration": {"servicePlanId": "X"},
             "voiceConfiguration": {"appId": "Y", "type": "RTC"},
         }
 
-    def test_model_dump_json_also_camelizes(self):
-        model = CamelCaseDumpModel(snake_extra="value")
-        assert json.loads(model.model_dump_json(by_alias=True)) == {
+    def test_model_dump_json_also_camelizes_when_legacy_enabled(self):
+        with legacy_extra_fields_normalization_scope(True):
+            model = CamelCaseDumpModel(snake_extra="value")
+            dumped = model.model_dump_json(by_alias=True)
+        assert json.loads(dumped) == {
             "snakeExtra": "value",
         }
 
@@ -188,7 +249,7 @@ class TestCamelCaseDumpModel:
 
 
 class TestComposition:
-    def test_nested_snake_extras_models_normalize_at_every_level(self):
+    def test_nested_snake_extras_models_keep_extras_raw_by_default(self):
         class Inner(SnakeCaseExtrasModel):
             foo_bar: int
 
@@ -202,6 +263,24 @@ class TestComposition:
             extraAtRoot="extra",
         )
         assert outer.inner.foo_bar == 12
+        assert outer.inner.extraField == 123
+        assert outer.extraAtRoot == "extra"
+
+    def test_nested_snake_extras_models_normalize_at_every_level_when_legacy_enabled(self):
+        class Inner(SnakeCaseExtrasModel):
+            foo_bar: int
+
+        class Outer(SnakeCaseExtrasModel):
+            inner: Inner
+            name: int
+
+        with legacy_extra_fields_normalization_scope(True):
+            outer = Outer(
+                inner={"foo_bar": 12, "extraField": 123},
+                name=112,
+                extraAtRoot="extra",
+            )
+        assert outer.inner.foo_bar == 12
         assert outer.inner.extra_field == 123
         assert outer.extra_at_root == "extra"
 
@@ -213,19 +292,31 @@ class TestComposition:
             common: Common
             name: int
 
-        outer = Outer(
-            common={"foo_bar": 12, "extraField": 123},
-            name=112,
-            extraAtRoot="extra",
-        )
+        with legacy_extra_fields_normalization_scope(True):
+            outer = Outer(
+                common={"foo_bar": 12, "extraField": 123},
+                name=112,
+                extraAtRoot="extra",
+            )
         assert outer.common.extra_field == 123
         assert getattr(outer, "extraAtRoot") == "extra"
 
-    def test_camel_dump_outer_camelizes_nested_free_form_dict_keys(self):
+    def test_camel_dump_outer_keeps_nested_free_form_dict_keys_raw_by_default(self):
         class Outer(CamelCaseDumpModel):
             payload: Dict[str, Any]
 
         outer = Outer(payload={"user_id": "abc", "nested_obj": {"item_id": 1}})
         assert outer.model_dump(by_alias=True) == {
+            "payload": {"user_id": "abc", "nested_obj": {"item_id": 1}}
+        }
+
+    def test_camel_dump_outer_camelizes_nested_free_form_dict_keys_when_legacy_enabled(self):
+        class Outer(CamelCaseDumpModel):
+            payload: Dict[str, Any]
+
+        with legacy_extra_fields_normalization_scope(True):
+            outer = Outer(payload={"user_id": "abc", "nested_obj": {"item_id": 1}})
+            dumped = outer.model_dump(by_alias=True)
+        assert dumped == {
             "payload": {"userId": "abc", "nestedObj": {"itemId": 1}}
         }
