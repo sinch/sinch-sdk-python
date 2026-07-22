@@ -79,6 +79,24 @@ def test_send_message_request_body_expects_accepts_choice_message():
     assert body.choice_message.choices[0].text_message.text == "Option 1"
 
 
+def test_send_message_request_body_expects_accepts_choice_display_mode():
+    """
+    Test that a choice accepts a display_mode.
+    """
+    body = SendMessageRequestBody(
+        choice_message=ChoiceMessage(
+            choices=[
+                TextChoiceMessage(
+                    text_message=TextMessage(text="Option 1"),
+                    display_mode="PERSISTENT",
+                )
+            ]
+        )
+    )
+
+    assert body.choice_message.choices[0].display_mode == "PERSISTENT"
+
+
 def test_send_message_request_body_expects_accepts_location_message():
     """
     Test that the model accepts location_message with coordinates and title.

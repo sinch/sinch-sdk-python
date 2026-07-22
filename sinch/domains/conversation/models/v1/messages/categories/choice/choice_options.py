@@ -1,25 +1,30 @@
 from typing import Any, Optional
+
 from pydantic import Field
+
+from sinch.domains.conversation.models.v1.messages.categories.calendar.calendar_message import (
+    CalendarMessage,
+)
 from sinch.domains.conversation.models.v1.messages.categories.call.call_message import (
     CallMessage,
 )
 from sinch.domains.conversation.models.v1.messages.categories.location.location_message import (
     LocationMessage,
 )
-from sinch.domains.conversation.models.v1.messages.categories.url.url_message import (
-    UrlMessage,
-)
-from sinch.domains.conversation.models.v1.messages.categories.calendar.calendar_message import (
-    CalendarMessage,
-)
 from sinch.domains.conversation.models.v1.messages.categories.sharelocation.share_location_message import (
     ShareLocationMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.text import (
+    TextMessage,
+)
+from sinch.domains.conversation.models.v1.messages.categories.url.url_message import (
+    UrlMessage,
 )
 from sinch.domains.conversation.models.v1.messages.internal.base import (
     BaseModelConfiguration,
 )
-from sinch.domains.conversation.models.v1.messages.categories.text import (
-    TextMessage,
+from sinch.domains.conversation.models.v1.messages.types.display_mode_type import (
+    DisplayModeType,
 )
 
 
@@ -27,6 +32,10 @@ class ChoiceMessageWithPostback(BaseModelConfiguration):
     postback_data: Optional[Any] = Field(
         default=None,
         description="An optional field. This data will be returned in the ChoiceResponseMessage. The default is message_id_{text, title}.",
+    )
+    display_mode: Optional[DisplayModeType] = Field(
+        default=None,
+        description="Controls the display behavior of a choice.",
     )
 
 

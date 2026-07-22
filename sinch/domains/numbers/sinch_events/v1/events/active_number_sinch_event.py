@@ -2,30 +2,14 @@ from typing import Literal, Optional, Union
 
 from pydantic import Field, StrictStr
 
-from sinch.domains.numbers.sinch_events.v1.events.number_base_sinch_event import (
-    NumberBaseSinchEvent,
-)
-from sinch.domains.numbers.sinch_events.v1.events.resource_type import (
-    ResourceType,
+from sinch.domains.numbers.sinch_events.v1.events.number_sinch_event import (
+    NumberSinchEvent,
 )
 
 
-class NumberSinchEvent(NumberBaseSinchEvent):
-    """
-    .. deprecated:: 2.2
-        In 3.0 this class will be removed and ``NumberSinchEvent`` will become
-        a type alias `NumberSinchEventPayload`.
-    """
-
-    resource_id: Optional[StrictStr] = Field(
-        default=None,
-        alias="resourceId",
-        description="The unique identifier of the resource, depending on the resource type. For example, a phone number.",
-    )
-    resource_type: Optional[ResourceType] = Field(
-        default=None,
-        alias="resourceType",
-        description="The type of the resource.",
+class ActiveNumberSinchEvent(NumberSinchEvent):
+    resource_type: Literal["ACTIVE_NUMBER"] = Field(
+        default="ACTIVE_NUMBER", alias="resourceType"
     )
     event_type: Optional[
         Union[
@@ -36,7 +20,6 @@ class NumberSinchEvent(NumberBaseSinchEvent):
                 "DEPROVISIONING_FROM_CAMPAIGN",
                 "PROVISIONING_TO_VOICE_PLATFORM",
                 "DEPROVISIONING_FROM_VOICE_PLATFORM",
-                "NUMBER_ORDER_PROCESSING",
             ],
             StrictStr,
         ]
@@ -48,11 +31,6 @@ class NumberSinchEvent(NumberBaseSinchEvent):
             Literal[
                 "SUCCEEDED",
                 "FAILED",
-                "IN_REVIEW",
-                "BLOCKED",
-                "COMPLETED",
-                "REJECTED",
-                "EXPIRED",
             ],
             StrictStr,
         ]

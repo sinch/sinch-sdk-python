@@ -4,9 +4,12 @@ from pydantic import ValidationError
 from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
 
 
-@pytest.fixture
-def valid_data():
-    return {
+def test_number_sinch_event_response_expects_parsed_data():
+    """
+    Expects all fields to map correctly from camelCase input
+    and handle valid data appropriately.
+    """
+    data = {
         "eventId": "event-123",
         "timestamp": "2025-04-08T09:38:04.854087+00:00",
         "projectId": "project-456",
@@ -16,26 +19,9 @@ def valid_data():
         "status": "SUCCEEDED",
         "failureCode": None,
         "internalFailureCode": None,
-        "extraField": "extra_value"
+        "extraField": "extra_value",
     }
-
-
-@pytest.fixture
-def invalid_data():
-    return {
-        "eventId": 123,
-        "timestamp": "invalid-timestamp",
-        "projectId": "project-456",
-        "resourceId": "+1234567890"
-    }
-
-
-def test_number_sinch_event_response_expects_parsed_data(valid_data):
-    """
-    Expects all fields to map correctly from camelCase input
-    and handle valid data appropriately.
-    """
-    response = NumberSinchEvent(**valid_data)
+    response = NumberSinchEvent(**data)
 
     assert response.event_id == "event-123"
     assert response.timestamp == datetime(
@@ -55,10 +41,7 @@ def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data
     """
     Expects the model to handle missing optional fields.
     """
-    data = {
-        "eventId": "event-123",
-        "projectId": "project-456"
-    }
+    data = {"eventId": "event-123", "projectId": "project-456"}
     response = NumberSinchEvent(**data)
 
     assert response.event_id == "event-123"
@@ -72,9 +55,20 @@ def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data
     assert response.internal_failure_code is None
 
 
-def test_number_sinch_event_response_invalid_data_expects_validation_error(invalid_data):
+def test_number_sinch_event_build_with_empty_dict():
+    """
+    Expects an empty dict do not raise and exception as all fields are optional
+    """
+    data = {}
+
+    response = NumberSinchEvent(**data)
+    assert isinstance(response, NumberSinchEvent)
+
+
+def test_number_sinch_event_response_invalid_data_expects_validation_error():
     """
     Expects the model to raise a validation error for invalid data.
     """
+    data = {"eventId": 123}
     with pytest.raises(ValidationError):
-        NumberSinchEvent(**invalid_data)
+        NumberSinchEvent(**data)

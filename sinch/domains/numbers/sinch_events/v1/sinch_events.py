@@ -1,13 +1,17 @@
 from typing import Any, Dict, Optional, Union
+
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_signature_header,
 )
 from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     decode_payload,
-    parse_json,
     normalize_iso_timestamp,
+    parse_json,
 )
-from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
+from sinch.domains.numbers.sinch_events.v1.events import (
+    NumberSinchEventAdapter,
+    NumberSinchEventPayload,
+)
 
 
 class SinchEvents:
@@ -42,7 +46,7 @@ class SinchEvents:
         self,
         event_body: Union[str, bytes, Dict[str, Any]],
         headers: Optional[Dict[str, str]] = None,
-    ) -> NumberSinchEvent:
+    ) -> NumberSinchEventPayload:
         """
         Parses the event payload into a NumberSinchEvent object.
 
@@ -55,7 +59,7 @@ class SinchEvents:
         :param headers: Request headers (used to decode charset when event_body is bytes).
         :type headers: Optional[Dict[str, str]]
         :returns: A parsed Pydantic object with a timezone-aware ``timestamp``.
-        :rtype: NumberSinchEvent
+        :rtype: NumberSinchEventPayload
         """
         if isinstance(event_body, bytes):
             event_body = parse_json(decode_payload(event_body, headers))
@@ -65,6 +69,6 @@ class SinchEvents:
         if timestamp:
             event_body["timestamp"] = normalize_iso_timestamp(timestamp)
         try:
-            return NumberSinchEvent(**event_body)
+            return NumberSinchEventAdapter.validate_python(event_body)
         except Exception as e:
             raise ValueError(f"Failed to parse event body: {e}")

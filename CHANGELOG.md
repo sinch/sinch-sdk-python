@@ -25,10 +25,13 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### Numbers
 
 - **[refactor]** `voice_configuration`, `sms_configuration`, and `number_pattern` request fields are now typed Pydantic models instead of raw dicts with validators. Added `VoiceConfigurationCustom`/`ScheduledVoiceProvisioningCustom` response variants for unrecognized voice configuration types.
+- **[feature]** `parse_event()` now returns a `NumberSinchEventPayload` resolved to one of two new concrete subclasses depending on `resourceType`: `ActiveNumberSinchEvent` (`ACTIVE_NUMBER`) and `NumberOrderSinchEvent` (`NUMBER_ORDER`), both inheriting from `NumberSinchEvent`.
+- **[deprecation notice]** `NumberSinchEvent` is deprecated; in 3.0 it will be removed in favour of the concrete subclasses plus `NumberBaseSinchEvent`, which will become the fallback for unrecognized resource types.
 
 ### Conversation
 
 - **[feature]** Conversation Apps API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]**  New field `display_mode` added to `ChoiceOption` and `ChoiceOptionDict` to control whether a choice is transient or persistent in the message bubble.
 - **[deprecation notice]** `ConversationProcessingMode` and `ConversationRetentionPolicyType` are deprecated; they are unused by the SDK and will be removed in 3.0.
 - **[deprecation notice]** `ConversationMetadataReportView` is deprecated in favour of `ConversationMetadataReportViewType`; it will be removed in 3.0.
 - **[deprecation notice]** `ConversationChannel` is deprecated in favour of `ConversationChannelType`; it will be removed in 3.0.

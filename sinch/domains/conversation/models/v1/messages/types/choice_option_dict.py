@@ -1,4 +1,5 @@
 from typing import Any, TypedDict
+
 from typing_extensions import NotRequired
 
 from sinch.domains.conversation.models.v1.messages.types.calendar_message_dict import (
@@ -6,6 +7,9 @@ from sinch.domains.conversation.models.v1.messages.types.calendar_message_dict i
 )
 from sinch.domains.conversation.models.v1.messages.types.call_message_dict import (
     CallMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.display_mode_type import (
+    DisplayModeType,
 )
 from sinch.domains.conversation.models.v1.messages.types.location_message_dict import (
     LocationMessageDict,
@@ -24,6 +28,9 @@ from sinch.domains.conversation.models.v1.messages.types.url_message_dict import
 class ChoiceOptionDict(TypedDict):
     # Optional metadata returned back to you as postback
     postback_data: NotRequired[Any]
+
+    # Controls the display behavior of a choice
+    display_mode: NotRequired[DisplayModeType]
 
     # Exactly one of the following keys is expected per choice:
     call_message: NotRequired[CallMessageDict]
