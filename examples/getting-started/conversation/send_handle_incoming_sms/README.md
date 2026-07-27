@@ -10,7 +10,7 @@ see that the MO was received and processed.
 
 ## Requirements
 
-- [Python 3.9+](https://www.python.org/)
+- [Python 3.10+](https://www.python.org/)
 - [Flask](https://flask.palletsprojects.com/en/stable/)
 - [Sinch account](https://dashboard.sinch.com/)
 - An existing Conversation API app configured for SMS (with a Sinch number)
