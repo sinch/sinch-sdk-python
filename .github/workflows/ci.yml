@@ -21,6 +21,16 @@ jobs:
         pip install -e .
         pip install -r requirements-dev.txt
 
+    - name: Check requirements-dev.txt is up to date
+      if: matrix.python-version == '3.14'
+      run: |
+        ./scripts/compile_requirements.sh
+        git diff --exit-code requirements-dev.txt || {
+          echo "requirements-dev.txt is out of date. Regenerate it with:"
+          echo "  ./scripts/compile_requirements.sh"
+          exit 1
+        }
+
     - name: Compile all examples
       run: |
         for file in $(find examples -name "*.py"); do

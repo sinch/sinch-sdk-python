@@ -12,7 +12,7 @@ This directory contains both the Event handlers and the server application (`ser
 
 ## Requirements
 
-- [Python 3.9+](https://www.python.org/)
+- [Python 3.10+](https://www.python.org/)
 - [Flask](https://flask.palletsprojects.com/en/stable/)
 - [Sinch account](https://dashboard.sinch.com/)
 - [ngrok](https://ngrok.com/docs)

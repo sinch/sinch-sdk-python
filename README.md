@@ -7,12 +7,11 @@ Here you'll find documentation related to the Sinch Python SDK, including how to
 
 To use Sinch services, you'll need a Sinch account and access keys. You can sign up for an account and create access keys at [dashboard.sinch.com](https://dashboard.sinch.com).
 
-For more information on the SDK, refer to the dedicated [Python SDK documentation](https://developers.sinch.com/docs/sdks/python) section, and for the Sinch APIs on which this SDK is based, refer to the official [developer documentation portal](https://developers.sinch.com).
-
 
 ## Table of contents:
 
 - [Prerequisites](#prerequisites)
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Supported APIs](#supported-apis)
 - [Getting started](#getting-started)
@@ -34,6 +33,15 @@ For more information on the SDK, refer to the dedicated [Python SDK documentatio
 
 > **Warning**:
 > This SDK is intended for server-side (backend) use only. Do not use it in front-end or client-side applications (web, mobile, or desktop), regardless of language or framework. Doing so can expose your Sinch credentials to end-users.
+
+
+## Documentation
+
+For more information on the SDK, refer to the dedicated [Python SDK documentation](https://developers.sinch.com/docs/sdks/python).
+
+For the SDK's programmatic API surface, see the online [SDK reference](https://developers.sinch.com/sdk/sinch-sdk-python/latest).
+
+For broader Sinch product documentation, including the underlying REST APIs, visit the official [Sinch developer portal](https://developers.sinch.com/).
 
 ## Installation
 
@@ -106,7 +114,7 @@ event = sinch_events.parse_event(raw_body, headers)
 
 `SINCH_EVENT_SECRET` is optional and set per app in the [Conversation dashboard](https://dashboard.sinch.com/convapi/apps). `parse_event` works without validating the request, but then its origin can't be verified, so calling `validate_authentication_header` (which returns `True`/`False`) is recommended in production.
 
-You can find a complete example in [examples/sinch_events/conversation_api](./examples/sinch_events/conversation_api).
+You can find a complete example in [examples/sinch_events/conversation_api](https://github.com/sinch/sinch-sdk-python/blob/main/examples/sinch_events/conversation_api).
 
 ### SMS API
 
@@ -163,7 +171,7 @@ event = sinch_events.parse_event(raw_body, headers)
 
 Signature authentication for SMS events must be enabled for your account by your account manager; until then the signature headers are absent and `parse_event` can be used on its own. See the [SMS events documentation](https://developers.sinch.com/docs/sms/api-reference/sms/tag/Webhooks/#tag/Webhooks/section/Callbacks).
 
-You can find a complete example in [examples/sinch_events/sms_api](./examples/sinch_events/sms_api).
+You can find a complete example in [examples/sinch_events/sms_api](https://github.com/sinch/sinch-sdk-python/blob/main/examples/sinch_events/sms_api).
 
 ### Numbers API
 
@@ -181,7 +189,7 @@ event = sinch_events.parse_event(raw_body, headers)
 
 `SINCH_EVENT_SECRET` is the value configured on the Event Destination. `parse_event` works without validating the request, but then its origin can't be verified, so calling `validate_authentication_header` is recommended in production.
 
-You can find a complete example in [examples/sinch_events/numbers_api](./examples/sinch_events/numbers_api).
+You can find a complete example in [examples/sinch_events/numbers_api](https://github.com/sinch/sinch-sdk-python/blob/main/examples/sinch_events/numbers_api).
 
 ### Number Lookup API
 
@@ -313,20 +321,20 @@ The SDK relies on the following third-party dependencies:
 ## Examples
 
 You can find:
- - a Python example of each request in the [examples/snippets](./examples/snippets) folder.
- - getting started guides for specific use cases in the [examples/getting-started](./examples/getting-started) folder.
- - server-side event handling examples in the [examples/sinch_events](./examples/sinch_events) folder.
+ - a Python example of each request in the [examples/snippets](https://github.com/sinch/sinch-sdk-python/blob/main/examples/snippets) folder.
+ - getting started guides for specific use cases in the [examples/getting-started](https://github.com/sinch/sinch-sdk-python/blob/main/examples/getting-started) folder.
+ - server-side event handling examples in the [examples/sinch_events](https://github.com/sinch/sinch-sdk-python/blob/main/examples/sinch_events) folder.
 
 ## Changelog & Migration
 
-For information about the latest changes in the SDK, please refer to the [CHANGELOG](CHANGELOG.md) file
-and the [MIGRATION_GUIDE](MIGRATION_GUIDE.md) for instructions on how to update your code when upgrading to a new major version of the SDK.
+For information about the latest changes in the SDK, please refer to the [CHANGELOG](https://github.com/sinch/sinch-sdk-python/blob/main/CHANGELOG.md) file
+and the [MIGRATION_GUIDE](https://github.com/sinch/sinch-sdk-python/blob/main/MIGRATION_GUIDE.md) for instructions on how to update your code when upgrading to a new major version of the SDK.
 
 ## License
 
 This project is licensed under the Apache License. 
 
-See the [LICENSE](LICENSE) file for the license text.
+See the [LICENSE](https://github.com/sinch/sinch-sdk-python/blob/main/LICENSE) file for the license text.
 
 
 ## Contact
