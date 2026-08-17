@@ -19,6 +19,7 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False, is_retryable=False):
     """Create a MockEndpoint that satisfies the abstract property contract."""
 
     class _Endpoint(HTTPEndpoint):
+        ENDPOINT_URL = "{origin}/test"
         HTTP_AUTHENTICATION = auth_type
         HTTP_METHOD = "GET"
 
@@ -28,9 +29,6 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False, is_retryable=False):
 
         def build_url(self, sinch):
             return "api.sinch.com/test"
-
-        def get_url_without_origin(self, sinch):
-            return "/test"
 
         def request_body(self):
             return {}

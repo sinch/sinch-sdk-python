@@ -80,10 +80,10 @@ def test_build_query_params_expects_all_params():
 
     assert query_params["page"] == 1
     assert query_params["page_size"] == 20
-    assert query_params["from"] == ["+46701111111", "+46702222222"]
+    assert query_params["from"] == "+46701111111,+46702222222"
     assert query_params["client_reference"] == "test_ref_123"
-    assert "start_date" in query_params
-    assert "end_date" in query_params
+    assert query_params["start_date"] == "2024-06-01T00:00:00Z"
+    assert query_params["end_date"] == "2024-06-30T00:00:00Z"
 
 
 def test_build_query_params_expects_excludes_none_values(request_data):

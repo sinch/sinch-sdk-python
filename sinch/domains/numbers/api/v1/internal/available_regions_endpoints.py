@@ -1,12 +1,12 @@
+from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.exceptions import (
-    NumbersException,
     NumberNotFoundException,
+    NumbersException,
 )
 from sinch.domains.numbers.api.v1.internal.base.numbers_endpoint import (
     NumbersEndpoint,
 )
-from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.domains.numbers.models.v1.internal import (
     ListAvailableRegionsRequest,
     ListAvailableRegionsResponse,
@@ -22,17 +22,15 @@ class ListAvailableRegionsEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(
-        self, project_id: str, request_data: ListAvailableRegionsRequest
-    ):
-        super(ListAvailableRegionsEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
+    QUERY_PARAM_FIELDS: set = {"types"}
 
-    def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: ListAvailableRegionsRequest,
+        response_model=ListAvailableRegionsResponse,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
     def handle_response(
         self, response: HTTPResponse
@@ -45,6 +43,6 @@ class ListAvailableRegionsEndpoint(NumbersEndpoint):
                 response=ex.http_response,
                 is_from_server=ex.is_from_server,
             )
-        return self.process_response_model(
+        return self._process_response_model(
             response.body, ListAvailableRegionsResponse
         )

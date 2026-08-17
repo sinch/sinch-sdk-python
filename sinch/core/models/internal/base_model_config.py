@@ -5,6 +5,7 @@ from typing import Any, Generator
 
 from pydantic import BaseModel, ConfigDict, SerializationInfo, model_serializer
 from pydantic.functional_serializers import SerializerFunctionWrapHandler
+from pydantic_core import PydanticUndefined
 
 # Request-scoped normalization policy for extra fields.
 #
@@ -99,6 +100,7 @@ class _SnakifyExtrasOnInit:
     """
 
     def model_post_init(self, __context: Any) -> None:
+        super().model_post_init(__context)
         if not _legacy_extra_fields_normalization.get():
             return
         extra = self.__pydantic_extra__
@@ -147,6 +149,24 @@ class BaseConfigModel(BaseModel):
     """
 
     model_config = ConfigDict(populate_by_name=True, extra="allow")
+
+    #: Fields with a non-``None`` default, precomputed once per subclass.
+    _fields_with_defaults: frozenset = frozenset()
+
+    @classmethod
+    def __pydantic_init_subclass__(cls, **kwargs: Any) -> None:
+        super().__pydantic_init_subclass__(**kwargs)
+        cls._fields_with_defaults = frozenset(
+            name
+            for name, field in cls.model_fields.items()
+            if (field.default is not None and field.default is not PydanticUndefined)
+            or field.default_factory is not None
+        )
+
+    def model_post_init(self, __context: Any) -> None:
+        """Marks applied non-``None`` defaults as set."""
+        if self._fields_with_defaults:
+            self.__pydantic_fields_set__.update(self._fields_with_defaults)
 
 
 class SnakeCaseExtrasModel(_SnakifyExtrasOnInit, BaseConfigModel):

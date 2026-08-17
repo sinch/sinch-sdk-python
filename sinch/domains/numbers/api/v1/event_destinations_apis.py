@@ -27,10 +27,10 @@ class EventDestinations(BaseNumbers):
 
         For detailed documentation, visit: https://developers.sinch.com
         """
-        request_data = None
-        if kwargs:
-            request_data = BaseModelConfigurationRequest(**kwargs)
-        return self._request(GetEventDestinationEndpoint, request_data)
+        return self._request(
+            GetEventDestinationEndpoint,
+            BaseModelConfigurationRequest(**kwargs),
+        )
 
     def update(self, hmac_secret: str, **kwargs) -> EventDestinationResponse:
         """

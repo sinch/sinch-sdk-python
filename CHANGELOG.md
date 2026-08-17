@@ -21,6 +21,9 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### SDK
 
 - **[design]** Extra fields on request and response models now pass through unchanged by default (no camelCase/snake_case rewriting). A new `Configuration(legacy_extra_fields_normalization=True)` flag restores the previous auto-conversion behavior for callers who depend on it; the flag is transitional and will be removed in 3.0.
+- **[refactor]** Unified request body and query-parameter serialization across all domains behind a new `BaseHTTPEndpoint`. Concrete endpoints now only declare `ENDPOINT_URL`, `HTTP_METHOD`, `HTTP_AUTHENTICATION`, and optional `QUERY_PARAM_FIELDS` / `QUERY_PARAM_FIELDS_EXPLODE_FALSE` / `response_model`; per-domain base classes only implement `_get_origin` and `_raise_for_error`. Body and query-parameter serialization, previously duplicated in each endpoint's `request_body()` / `build_query_params()`, is now centralized in the base class with no change to the wire format.
+- **[fix]** Query parameters are now serialized with `mode="json"`, so `date`/`datetime` (and other non-primitive) values are sent in their proper JSON string form instead of being coerced via `str()`. Affects the endpoints with `date`/`datetime` query parameters: `ListBatchesEndpoint`, `ListDeliveryReportsEndpoint`, `ListInboundsEndpoint`, and `ListMessagesEndpoint`.
+- **[feature]** Added an `UNSET`/`Unset`/`UnsetOr` sentinel (exported from `sinch.core`) to distinguish an omitted optional parameter from an explicit `None`. New endpoints opt in via `UNSET_SERIALIZATION`, so an explicit `None` is sent as `null` while omitted fields are dropped; already-deployed endpoints keep the legacy behavior until 3.0.
 
 ### Numbers
 

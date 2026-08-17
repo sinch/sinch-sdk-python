@@ -8,7 +8,7 @@ wait_for_server() {
   SLEEP_SECONDS="${SLEEP_SECONDS:-2}"
 
   for ((i = 1; i <= MAX_RETRIES; i++)); do
-    if curl -sSf "$url" > /dev/null; then
+    if curl -sSf "$url" > /dev/null 2>&1; then
       echo "$url is ready!"
       return 0
     fi
@@ -20,9 +20,11 @@ wait_for_server() {
   exit 1
 }
 
-# Wait for auth mock servers
-wait_for_server "http://localhost:3011/health"
-# Wait for numbers mock servers
-wait_for_server "http://localhost:3013/health"
+# One port per mock server backing the e2e suites, see tests/e2e/shared_config.py
+wait_for_server "http://localhost:3011/health" # auth
+wait_for_server "http://localhost:3013/health" # numbers
+wait_for_server "http://localhost:3014/health" # conversation
+wait_for_server "http://localhost:3017/health" # sms
+# wait_for_server "http://localhost:3022/health" # number lookup missing health.json in mockserver
 
 echo "All mock servers are ready!"

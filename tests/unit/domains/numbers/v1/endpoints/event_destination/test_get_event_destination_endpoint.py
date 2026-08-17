@@ -1,4 +1,5 @@
 import pytest
+import json
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.internal import GetEventDestinationEndpoint
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
@@ -19,13 +20,14 @@ def mock_response():
 
 @pytest.fixture
 def endpoint_empty_request_data():
-    return GetEventDestinationEndpoint("test_project_id", request_data=None)
+    return GetEventDestinationEndpoint(
+        "test_project_id", request_data=BaseModelConfigurationRequest()
+    )
 
 
 @pytest.fixture
 def endpoint_extra_request_data():
     data = {
-        "key": "value",
         "extra_field": "extra value"
     }
     request_model = BaseModelConfigurationRequest(**data)
@@ -55,15 +57,17 @@ def test_build_empty_query_params_expects_correct_mapping(endpoint_empty_request
     assert endpoint_empty_request_data.build_query_params() == {}
 
 
-def test_build_query_params_expects_correct_mapping(endpoint_extra_request_data):
+def test_build_query_params_expects_correct_mapping_with_extra_fields(endpoint_extra_request_data):
     """
-    Check if Query params is handled and mapped to the appropriate fields correctly.
+    Extra fields are not passed as query parameters
     """
-    expected_params = {
-        "key": "value",
-        "extra_field": "extra value"
-    }
-    assert endpoint_extra_request_data.build_query_params() == expected_params
+    assert endpoint_extra_request_data.build_query_params() == {}
+
+def test_request_body_expects_correct_mapping_with_extra_fields(endpoint_extra_request_data):
+    """
+    Extra fields are included in the request body.
+    """
+    assert endpoint_extra_request_data.request_body() == json.dumps({"extra_field": "extra value"})
 
 
 @endpoint_fixtures

@@ -4,8 +4,6 @@ from pydantic import StrictStr, TypeAdapter, conlist
 
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
-from sinch.core.models.utils import model_dump_for_query_params
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.api.v1.internal.base.sms_endpoint import SmsEndpoint
 from sinch.domains.sms.models.v1.internal.group_id_request import (
     GroupIdRequest,
@@ -34,27 +32,13 @@ class CreateGroupEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: GroupRequest):
-        super(CreateGroupEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def request_body(self):
-        request_data = self.request_data.model_dump(
-            mode="json", by_alias=True, exclude_none=True
-        )
-        return json.dumps(request_data)
-
-    def handle_response(self, response: HTTPResponse) -> GroupResponse:
-        try:
-            super(CreateGroupEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, GroupResponse)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: GroupRequest,
+        response_model=GroupResponse,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
 
 class ListGroupsEndpoint(SmsEndpoint):
@@ -62,24 +46,15 @@ class ListGroupsEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: ListGroupsRequest):
-        super(ListGroupsEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    QUERY_PARAM_FIELDS: set = {"page", "page_size"}
 
-    def build_query_params(self) -> dict:
-        return model_dump_for_query_params(self.request_data)
-
-    def handle_response(self, response: HTTPResponse) -> ListGroupsResponse:
-        try:
-            super(ListGroupsEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, ListGroupsResponse)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: ListGroupsRequest,
+        response_model=ListGroupsResponse,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
 
 class GetGroupEndpoint(SmsEndpoint):
@@ -87,21 +62,13 @@ class GetGroupEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: GroupIdRequest):
-        super(GetGroupEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def handle_response(self, response: HTTPResponse) -> GroupResponse:
-        try:
-            super(GetGroupEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, GroupResponse)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: GroupIdRequest,
+        response_model=GroupResponse,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
 
 class ReplaceGroupEndpoint(SmsEndpoint):
@@ -109,31 +76,13 @@ class ReplaceGroupEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.PUT.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: ReplaceGroupRequest):
-        super(ReplaceGroupEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def request_body(self):
-        path_params = self._get_path_params_from_url()
-        request_data = self.request_data.model_dump(
-            mode="json",
-            by_alias=True,
-            exclude_none=True,
-            exclude=path_params,
-        )
-        return json.dumps(request_data)
-
-    def handle_response(self, response: HTTPResponse) -> GroupResponse:
-        try:
-            super(ReplaceGroupEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, GroupResponse)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: ReplaceGroupRequest,
+        response_model=GroupResponse,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
 
 class UpdateGroupEndpoint(SmsEndpoint):
@@ -141,12 +90,16 @@ class UpdateGroupEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: UpdateGroupRequest):
-        super(UpdateGroupEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    def __init__(
+        self,
+        project_id: str,
+        request_data: UpdateGroupRequest,
+        response_model=GroupResponse,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
     def request_body(self):
+        """None fields are sent as explicit null, not omitted, so the API can clear a field."""
         path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
             mode="json",
@@ -154,17 +107,6 @@ class UpdateGroupEndpoint(SmsEndpoint):
             exclude=path_params,
         )
         return json.dumps(request_data)
-
-    def handle_response(self, response: HTTPResponse) -> GroupResponse:
-        try:
-            super(UpdateGroupEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, GroupResponse)
 
 
 class DeleteGroupEndpoint(SmsEndpoint):
@@ -173,20 +115,7 @@ class DeleteGroupEndpoint(SmsEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: GroupIdRequest):
-        super(DeleteGroupEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def handle_response(self, response: HTTPResponse) -> None:
-        try:
-            super(DeleteGroupEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return None
+        super().__init__(project_id, request_data)
 
 
 class ListGroupMembersEndpoint(SmsEndpoint):
@@ -195,23 +124,13 @@ class ListGroupMembersEndpoint(SmsEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: GroupIdRequest):
-        super(ListGroupMembersEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
+        super().__init__(project_id, request_data)
 
     def handle_response(
         self, response: HTTPResponse
     ) -> ListGroupMembersResponse:
-        try:
-            super(ListGroupMembersEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
+        """The API returns a bare JSON array of members, not a {"members": [...]} object."""
+        self._raise_for_error(response)
         members = TypeAdapter(conlist(StrictStr)).validate_python(
             response.body
         )

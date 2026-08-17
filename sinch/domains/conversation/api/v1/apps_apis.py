@@ -1,6 +1,8 @@
 from typing import Literal, Optional, Union, overload
 
+from sinch.core.models.internal.utils import strip_unset
 from sinch.core.pagination import Paginator, TokenBasedPaginator
+from sinch.core.sentinel import UNSET, UnsetOr
 from sinch.domains.conversation.api.v1.base import BaseConversation
 from sinch.domains.conversation.api.v1.internal.apps_endpoints import (
     CreateAppEndpoint,
@@ -56,22 +58,24 @@ class Apps(BaseConversation):
         self,
         channel_credentials: ConversationChannelCredentialsDict,
         display_name: str,
-        conversation_metadata_report_view: Optional[
-            ConversationMetadataReportViewType
-        ] = None,
-        retention_policy: Optional[RetentionPolicyDict] = None,
-        dispatch_retention_policy: Optional[
-            DispatchRetentionPolicyDict
-        ] = None,
-        processing_mode: Optional[ProcessingModeType] = None,
-        smart_conversation: Optional[SmartConversationDict] = None,
-        event_destination_settings: Optional[
-            EventDestinationSettingsDict
-        ] = None,
-        message_retry_settings: Optional[MessageRetrySettingsDict] = None,
-        delivery_report_based_fallback: Optional[
-            DeliveryReportBasedFallbackDict
-        ] = None,
+        conversation_metadata_report_view: UnsetOr[
+            Optional[ConversationMetadataReportViewType]
+        ] = UNSET,
+        retention_policy: UnsetOr[Optional[RetentionPolicyDict]] = UNSET,
+        dispatch_retention_policy: UnsetOr[
+            Optional[DispatchRetentionPolicyDict]
+        ] = UNSET,
+        processing_mode: UnsetOr[Optional[ProcessingModeType]] = UNSET,
+        smart_conversation: UnsetOr[Optional[SmartConversationDict]] = UNSET,
+        event_destination_settings: UnsetOr[
+            Optional[EventDestinationSettingsDict]
+        ] = UNSET,
+        message_retry_settings: UnsetOr[
+            Optional[MessageRetrySettingsDict]
+        ] = UNSET,
+        delivery_report_based_fallback: UnsetOr[
+            Optional[DeliveryReportBasedFallbackDict]
+        ] = UNSET,
         *,
         raw_response: Literal[False] = False,
         **kwargs,
@@ -82,22 +86,24 @@ class Apps(BaseConversation):
         self,
         channel_credentials: ConversationChannelCredentialsDict,
         display_name: str,
-        conversation_metadata_report_view: Optional[
-            ConversationMetadataReportViewType
-        ] = None,
-        retention_policy: Optional[RetentionPolicyDict] = None,
-        dispatch_retention_policy: Optional[
-            DispatchRetentionPolicyDict
-        ] = None,
-        processing_mode: Optional[ProcessingModeType] = None,
-        smart_conversation: Optional[SmartConversationDict] = None,
-        event_destination_settings: Optional[
-            EventDestinationSettingsDict
-        ] = None,
-        message_retry_settings: Optional[MessageRetrySettingsDict] = None,
-        delivery_report_based_fallback: Optional[
-            DeliveryReportBasedFallbackDict
-        ] = None,
+        conversation_metadata_report_view: UnsetOr[
+            Optional[ConversationMetadataReportViewType]
+        ] = UNSET,
+        retention_policy: UnsetOr[Optional[RetentionPolicyDict]] = UNSET,
+        dispatch_retention_policy: UnsetOr[
+            Optional[DispatchRetentionPolicyDict]
+        ] = UNSET,
+        processing_mode: UnsetOr[Optional[ProcessingModeType]] = UNSET,
+        smart_conversation: UnsetOr[Optional[SmartConversationDict]] = UNSET,
+        event_destination_settings: UnsetOr[
+            Optional[EventDestinationSettingsDict]
+        ] = UNSET,
+        message_retry_settings: UnsetOr[
+            Optional[MessageRetrySettingsDict]
+        ] = UNSET,
+        delivery_report_based_fallback: UnsetOr[
+            Optional[DeliveryReportBasedFallbackDict]
+        ] = UNSET,
         *,
         raw_response: Literal[True],
         **kwargs,
@@ -107,22 +113,24 @@ class Apps(BaseConversation):
         self,
         channel_credentials: ConversationChannelCredentialsDict,
         display_name: str,
-        conversation_metadata_report_view: Optional[
-            ConversationMetadataReportViewType
-        ] = None,
-        retention_policy: Optional[RetentionPolicyDict] = None,
-        dispatch_retention_policy: Optional[
-            DispatchRetentionPolicyDict
-        ] = None,
-        processing_mode: Optional[ProcessingModeType] = None,
-        smart_conversation: Optional[SmartConversationDict] = None,
-        event_destination_settings: Optional[
-            EventDestinationSettingsDict
-        ] = None,
-        message_retry_settings: Optional[MessageRetrySettingsDict] = None,
-        delivery_report_based_fallback: Optional[
-            DeliveryReportBasedFallbackDict
-        ] = None,
+        conversation_metadata_report_view: UnsetOr[
+            Optional[ConversationMetadataReportViewType]
+        ] = UNSET,
+        retention_policy: UnsetOr[Optional[RetentionPolicyDict]] = UNSET,
+        dispatch_retention_policy: UnsetOr[
+            Optional[DispatchRetentionPolicyDict]
+        ] = UNSET,
+        processing_mode: UnsetOr[Optional[ProcessingModeType]] = UNSET,
+        smart_conversation: UnsetOr[Optional[SmartConversationDict]] = UNSET,
+        event_destination_settings: UnsetOr[
+            Optional[EventDestinationSettingsDict]
+        ] = UNSET,
+        message_retry_settings: UnsetOr[
+            Optional[MessageRetrySettingsDict]
+        ] = UNSET,
+        delivery_report_based_fallback: UnsetOr[
+            Optional[DeliveryReportBasedFallbackDict]
+        ] = UNSET,
         *,
         raw_response: bool = False,
         **kwargs,
@@ -137,21 +145,21 @@ class Apps(BaseConversation):
         :param display_name: The display name for the app.
         :type display_name: str
         :param conversation_metadata_report_view: Whether conversation metadata is included in reports.
-        :type conversation_metadata_report_view: Optional[ConversationMetadataReportViewType]
+        :type conversation_metadata_report_view: UnsetOr[Optional[ConversationMetadataReportViewType]]
         :param retention_policy: The retention policy for messages and conversations.
-        :type retention_policy: Optional[RetentionPolicyDict]
+        :type retention_policy: UnsetOr[Optional[RetentionPolicyDict]]
         :param dispatch_retention_policy: The retention policy for messages in dispatch mode.
-        :type dispatch_retention_policy: Optional[DispatchRetentionPolicyDict]
+        :type dispatch_retention_policy: UnsetOr[Optional[DispatchRetentionPolicyDict]]
         :param processing_mode: The processing mode for the app.
-        :type processing_mode: Optional[ProcessingModeType]
+        :type processing_mode: UnsetOr[Optional[ProcessingModeType]]
         :param smart_conversation: Smart Conversation settings for the app.
-        :type smart_conversation: Optional[SmartConversationDict]
+        :type smart_conversation: UnsetOr[Optional[SmartConversationDict]]
         :param event_destination_settings: Settings for the destination of Sinch events.
-        :type event_destination_settings: Optional[EventDestinationSettingsDict]
+        :type event_destination_settings: UnsetOr[Optional[EventDestinationSettingsDict]]
         :param message_retry_settings: Settings controlling message retry behavior.
-        :type message_retry_settings: Optional[MessageRetrySettingsDict]
+        :type message_retry_settings: UnsetOr[Optional[MessageRetrySettingsDict]]
         :param delivery_report_based_fallback: Delivery-report-based channel fallback settings.
-        :type delivery_report_based_fallback: Optional[DeliveryReportBasedFallbackDict]
+        :type delivery_report_based_fallback: UnsetOr[Optional[DeliveryReportBasedFallbackDict]]
         :param raw_response: When ``False`` (default) the response exposes ``channel_credentials``
             as a channel-keyed model. Set to ``True`` to get the raw ``AppResponse`` with
             ``channel_credentials`` as the server array.
@@ -164,15 +172,19 @@ class Apps(BaseConversation):
         """
         request_data = CreateAppRequest(
             channel_credentials=channel_credentials,
-            conversation_metadata_report_view=conversation_metadata_report_view,
             display_name=display_name,
-            retention_policy=retention_policy,
-            dispatch_retention_policy=dispatch_retention_policy,
-            processing_mode=processing_mode,
-            smart_conversation=smart_conversation,
-            event_destination_settings=event_destination_settings,
-            message_retry_settings=message_retry_settings,
-            delivery_report_based_fallback=delivery_report_based_fallback,
+            **strip_unset(
+                {
+                    "conversation_metadata_report_view": conversation_metadata_report_view,
+                    "retention_policy": retention_policy,
+                    "dispatch_retention_policy": dispatch_retention_policy,
+                    "processing_mode": processing_mode,
+                    "smart_conversation": smart_conversation,
+                    "event_destination_settings": event_destination_settings,
+                    "message_retry_settings": message_retry_settings,
+                    "delivery_report_based_fallback": delivery_report_based_fallback,
+                }
+            ),
             **kwargs,
         )
         response = self._request(
@@ -186,26 +198,28 @@ class Apps(BaseConversation):
     def update(
         self,
         app_id: str,
-        channel_credentials: Optional[
-            ConversationChannelCredentialsDict
-        ] = None,
-        display_name: Optional[str] = None,
-        conversation_metadata_report_view: Optional[
-            ConversationMetadataReportViewType
-        ] = None,
-        retention_policy: Optional[RetentionPolicyDict] = None,
-        dispatch_retention_policy: Optional[
-            DispatchRetentionPolicyDict
-        ] = None,
-        processing_mode: Optional[ProcessingModeType] = None,
-        smart_conversation: Optional[SmartConversationDict] = None,
-        event_destination_settings: Optional[
-            EventDestinationSettingsDict
-        ] = None,
-        message_retry_settings: Optional[MessageRetrySettingsDict] = None,
-        delivery_report_based_fallback: Optional[
-            DeliveryReportBasedFallbackDict
-        ] = None,
+        channel_credentials: UnsetOr[
+            Optional[ConversationChannelCredentialsDict]
+        ] = UNSET,
+        display_name: UnsetOr[Optional[str]] = UNSET,
+        conversation_metadata_report_view: UnsetOr[
+            Optional[ConversationMetadataReportViewType]
+        ] = UNSET,
+        retention_policy: UnsetOr[Optional[RetentionPolicyDict]] = UNSET,
+        dispatch_retention_policy: UnsetOr[
+            Optional[DispatchRetentionPolicyDict]
+        ] = UNSET,
+        processing_mode: UnsetOr[Optional[ProcessingModeType]] = UNSET,
+        smart_conversation: UnsetOr[Optional[SmartConversationDict]] = UNSET,
+        event_destination_settings: UnsetOr[
+            Optional[EventDestinationSettingsDict]
+        ] = UNSET,
+        message_retry_settings: UnsetOr[
+            Optional[MessageRetrySettingsDict]
+        ] = UNSET,
+        delivery_report_based_fallback: UnsetOr[
+            Optional[DeliveryReportBasedFallbackDict]
+        ] = UNSET,
         *,
         raw_response: Literal[False] = False,
         **kwargs,
@@ -215,26 +229,28 @@ class Apps(BaseConversation):
     def update(
         self,
         app_id: str,
-        channel_credentials: Optional[
-            ConversationChannelCredentialsDict
-        ] = None,
-        display_name: Optional[str] = None,
-        conversation_metadata_report_view: Optional[
-            ConversationMetadataReportViewType
-        ] = None,
-        retention_policy: Optional[RetentionPolicyDict] = None,
-        dispatch_retention_policy: Optional[
-            DispatchRetentionPolicyDict
-        ] = None,
-        processing_mode: Optional[ProcessingModeType] = None,
-        smart_conversation: Optional[SmartConversationDict] = None,
-        event_destination_settings: Optional[
-            EventDestinationSettingsDict
-        ] = None,
-        message_retry_settings: Optional[MessageRetrySettingsDict] = None,
-        delivery_report_based_fallback: Optional[
-            DeliveryReportBasedFallbackDict
-        ] = None,
+        channel_credentials: UnsetOr[
+            Optional[ConversationChannelCredentialsDict]
+        ] = UNSET,
+        display_name: UnsetOr[Optional[str]] = UNSET,
+        conversation_metadata_report_view: UnsetOr[
+            Optional[ConversationMetadataReportViewType]
+        ] = UNSET,
+        retention_policy: UnsetOr[Optional[RetentionPolicyDict]] = UNSET,
+        dispatch_retention_policy: UnsetOr[
+            Optional[DispatchRetentionPolicyDict]
+        ] = UNSET,
+        processing_mode: UnsetOr[Optional[ProcessingModeType]] = UNSET,
+        smart_conversation: UnsetOr[Optional[SmartConversationDict]] = UNSET,
+        event_destination_settings: UnsetOr[
+            Optional[EventDestinationSettingsDict]
+        ] = UNSET,
+        message_retry_settings: UnsetOr[
+            Optional[MessageRetrySettingsDict]
+        ] = UNSET,
+        delivery_report_based_fallback: UnsetOr[
+            Optional[DeliveryReportBasedFallbackDict]
+        ] = UNSET,
         *,
         raw_response: Literal[True],
         **kwargs,
@@ -243,26 +259,28 @@ class Apps(BaseConversation):
     def update(
         self,
         app_id: str,
-        channel_credentials: Optional[
-            ConversationChannelCredentialsDict
-        ] = None,
-        display_name: Optional[str] = None,
-        conversation_metadata_report_view: Optional[
-            ConversationMetadataReportViewType
-        ] = None,
-        retention_policy: Optional[RetentionPolicyDict] = None,
-        dispatch_retention_policy: Optional[
-            DispatchRetentionPolicyDict
-        ] = None,
-        processing_mode: Optional[ProcessingModeType] = None,
-        smart_conversation: Optional[SmartConversationDict] = None,
-        event_destination_settings: Optional[
-            EventDestinationSettingsDict
-        ] = None,
-        message_retry_settings: Optional[MessageRetrySettingsDict] = None,
-        delivery_report_based_fallback: Optional[
-            DeliveryReportBasedFallbackDict
-        ] = None,
+        channel_credentials: UnsetOr[
+            Optional[ConversationChannelCredentialsDict]
+        ] = UNSET,
+        display_name: UnsetOr[Optional[str]] = UNSET,
+        conversation_metadata_report_view: UnsetOr[
+            Optional[ConversationMetadataReportViewType]
+        ] = UNSET,
+        retention_policy: UnsetOr[Optional[RetentionPolicyDict]] = UNSET,
+        dispatch_retention_policy: UnsetOr[
+            Optional[DispatchRetentionPolicyDict]
+        ] = UNSET,
+        processing_mode: UnsetOr[Optional[ProcessingModeType]] = UNSET,
+        smart_conversation: UnsetOr[Optional[SmartConversationDict]] = UNSET,
+        event_destination_settings: UnsetOr[
+            Optional[EventDestinationSettingsDict]
+        ] = UNSET,
+        message_retry_settings: UnsetOr[
+            Optional[MessageRetrySettingsDict]
+        ] = UNSET,
+        delivery_report_based_fallback: UnsetOr[
+            Optional[DeliveryReportBasedFallbackDict]
+        ] = UNSET,
         *,
         raw_response: bool = False,
         **kwargs,
@@ -274,29 +292,32 @@ class Apps(BaseConversation):
         existing values AND the new values in the call (for example, get the app, merge
         your changes into its ``channel_credentials`` map, and send the updated map here).
 
+        Omitted parameters are left untouched on the server; passing ``None``
+        explicitly clears the field.
+
         :param app_id: The ID of the app to update.
         :type app_id: str
         :param channel_credentials: Channel credentials, keyed by channel. The order of the
             entries defines the app channel priority.
-        :type channel_credentials: Optional[ConversationChannelCredentialsDict]
+        :type channel_credentials: UnsetOr[Optional[ConversationChannelCredentialsDict]]
         :param display_name: The display name for the app.
-        :type display_name: Optional[str]
+        :type display_name: UnsetOr[Optional[str]]
         :param conversation_metadata_report_view: Whether conversation metadata is included in reports.
-        :type conversation_metadata_report_view: Optional[ConversationMetadataReportViewType]
+        :type conversation_metadata_report_view: UnsetOr[Optional[ConversationMetadataReportViewType]]
         :param retention_policy: The retention policy for messages and conversations.
-        :type retention_policy: Optional[RetentionPolicyDict]
+        :type retention_policy: UnsetOr[Optional[RetentionPolicyDict]]
         :param dispatch_retention_policy: The retention policy for messages in dispatch mode.
-        :type dispatch_retention_policy: Optional[DispatchRetentionPolicyDict]
+        :type dispatch_retention_policy: UnsetOr[Optional[DispatchRetentionPolicyDict]]
         :param processing_mode: The processing mode for the app.
-        :type processing_mode: Optional[ProcessingModeType]
+        :type processing_mode: UnsetOr[Optional[ProcessingModeType]]
         :param smart_conversation: Smart Conversation settings for the app.
-        :type smart_conversation: Optional[SmartConversationDict]
+        :type smart_conversation: UnsetOr[Optional[SmartConversationDict]]
         :param event_destination_settings: Settings for the destination of Sinch events.
-        :type event_destination_settings: Optional[EventDestinationSettingsDict]
+        :type event_destination_settings: UnsetOr[Optional[EventDestinationSettingsDict]]
         :param message_retry_settings: Settings controlling message retry behavior.
-        :type message_retry_settings: Optional[MessageRetrySettingsDict]
+        :type message_retry_settings: UnsetOr[Optional[MessageRetrySettingsDict]]
         :param delivery_report_based_fallback: Delivery-report-based channel fallback settings.
-        :type delivery_report_based_fallback: Optional[DeliveryReportBasedFallbackDict]
+        :type delivery_report_based_fallback: UnsetOr[Optional[DeliveryReportBasedFallbackDict]]
         :param raw_response: When ``False`` (default) the response exposes ``channel_credentials``
             as a channel-keyed model. Set to ``True`` to get the raw ``AppResponse`` with
             ``channel_credentials`` as the server array.
@@ -309,16 +330,20 @@ class Apps(BaseConversation):
         """
         request_data = UpdateAppRequest(
             app_id=app_id,
-            channel_credentials=channel_credentials,
-            display_name=display_name,
-            conversation_metadata_report_view=conversation_metadata_report_view,
-            retention_policy=retention_policy,
-            dispatch_retention_policy=dispatch_retention_policy,
-            processing_mode=processing_mode,
-            smart_conversation=smart_conversation,
-            event_destination_settings=event_destination_settings,
-            message_retry_settings=message_retry_settings,
-            delivery_report_based_fallback=delivery_report_based_fallback,
+            **strip_unset(
+                {
+                    "channel_credentials": channel_credentials,
+                    "display_name": display_name,
+                    "conversation_metadata_report_view": conversation_metadata_report_view,
+                    "retention_policy": retention_policy,
+                    "dispatch_retention_policy": dispatch_retention_policy,
+                    "processing_mode": processing_mode,
+                    "smart_conversation": smart_conversation,
+                    "event_destination_settings": event_destination_settings,
+                    "message_retry_settings": message_retry_settings,
+                    "delivery_report_based_fallback": delivery_report_based_fallback,
+                }
+            ),
             **kwargs,
         )
         response = self._request(

@@ -30,7 +30,6 @@ def request_data():
         },
     )
 
-
 @pytest.fixture
 def mock_response():
     return HTTPResponse(
@@ -98,14 +97,25 @@ def test_request_body_expects_correct_serialization(request_data):
     assert "event_destination_settings" not in body
     assert "project_id" not in body
 
+def test_request_body_accepts_none_fields_and_exclude_unset_fields():
+    """Test that an explicit None is sent as null."""
+    endpoint = CreateAppEndpoint(
+        "test_project_id",
+        CreateAppRequest(
+            channel_credentials={
+                "SMS": {"token": "my-token", "claimed_identity": "identity"}
+            },
+            display_name="My App",
+            retention_policy=None,
+        ),
+    )
+    body = json.loads(endpoint.request_body())
 
-def test_request_body_excludes_none_fields(request_data):
-    """Test that None fields are excluded from the serialized request body."""
-    body = json.loads(CreateAppEndpoint("test_project_id", request_data).request_body())
-
-    assert "retention_policy" not in body
-    assert "message_retry_settings" not in body
+    assert body["display_name"] == "My App"
+    assert body["retention_policy"] is None
     assert "processing_mode" not in body
+    assert "smart_conversation" not in body
+
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):

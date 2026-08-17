@@ -104,6 +104,20 @@ def test_build_query_params_expects_empty_when_no_body_fields():
 
     assert endpoint.build_query_params() == {}
 
+def test_build_query_params_accepts_none_fields():
+    """Test that an explicit None is  listed in update_mask."""
+    endpoint = UpdateAppEndpoint(
+        "test_project_id",
+        UpdateAppRequest(
+            app_id="01FC66621XXXXX119Z8PMV1QPQ",
+            display_name="Updated App",
+            retention_policy=None,
+        ),
+    )
+
+    mask = endpoint.build_query_params()["update_mask"].split(",")
+    assert set(mask) == {"display_name", "retention_policy"}
+
 
 def test_request_body_expects_correct_serialization(request_data):
     """Test that app_id is excluded from the body and aliases are applied."""
@@ -119,6 +133,23 @@ def test_request_body_expects_correct_serialization(request_data):
     assert body["channel_credentials"][0]["static_bearer"]["token"] == "my-token"
     assert body["channel_credentials"][0]["static_bearer"]["claimed_identity"] == "identity"
     assert body["channel_credentials"][0]["channel"] == "SMS"
+
+def test_request_body_accepts_none_fields_and_exclude_unset_fields():
+    """Test that an explicit None is sent as null."""
+    endpoint = UpdateAppEndpoint(
+        "test_project_id",
+        UpdateAppRequest(
+            app_id="01FC66621XXXXX119Z8PMV1QPQ",
+            display_name="Updated App",
+            retention_policy=None,
+        ),
+    )
+    body = json.loads(endpoint.request_body())
+
+    assert body["display_name"] == "Updated App"
+    assert body["retention_policy"] is None
+    assert "smart_conversation" not in body
+
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
@@ -147,7 +178,6 @@ def test_handle_response_expects_correct_mapping_with_custom_response(request_da
     assert isinstance(parsed_response.channel_credentials.sms, StaticBearerCredentials)
     assert parsed_response.channel_credentials.sms.token == "my-token"
     assert parsed_response.channel_credentials.sms.claimed_identity == "identity"
-
 
 def test_handle_response_expects_conversation_exception_on_error(
     endpoint, mock_error_response
