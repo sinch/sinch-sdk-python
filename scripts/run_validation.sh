@@ -82,6 +82,7 @@ cp "$MOCKSERVER_DIR"/features/sms/* ./tests/e2e/sms/features/
 cp "$MOCKSERVER_DIR"/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
 cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/conversation/features/
 cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
+cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
 cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
 
 python -m behave tests/e2e/numbers/features

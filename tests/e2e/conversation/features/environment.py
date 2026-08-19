@@ -1,6 +1,20 @@
 from tests.e2e.shared_config import create_test_client
 
+NOT_IMPLEMENTED_SCENARIOS = {
+    "[Merge two Contacts] merge two contacts",
+    "[Get Channel Profile] Get channel profile from contact ID",
+    "[List] list a page of identity conflicts",
+    "[List] list all the identity conflicts",
+    "[List] list all the identity conflicts manually",
+}
+
 
 def before_all(context):
     """Initializes the Sinch client"""
     context.sinch = create_test_client()
+
+
+def before_scenario(context, scenario):
+    """Skips the scenarios covering operations this SDK does not implement yet."""
+    if scenario.name in NOT_IMPLEMENTED_SCENARIOS:
+        scenario.skip("SDK operation not implemented yet")

@@ -34,10 +34,13 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### Conversation
 
 - **[feature]** Conversation Apps API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Contacts API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
 - **[feature]**  New field `display_mode` added to `ChoiceOption` and `ChoiceOptionDict` to control whether a choice is transient or persistent in the message bubble.
 - **[deprecation notice]** `ConversationProcessingMode` and `ConversationRetentionPolicyType` are deprecated; they are unused by the SDK and will be removed in 3.0.
 - **[deprecation notice]** `ConversationMetadataReportView` is deprecated in favour of `ConversationMetadataReportViewType`; it will be removed in 3.0.
 - **[deprecation notice]** `ConversationChannel` is deprecated in favour of `ConversationChannelType`; it will be removed in 3.0.
+- **[deprecation notice]** `ChannelIdentity` moved to `sinch.domains.conversation.models.v1.shared`; the old `messages.shared` import path is a re-export and will be removed in 3.0.
+
 
 ---
 

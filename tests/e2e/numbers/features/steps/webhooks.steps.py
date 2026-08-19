@@ -1,6 +1,8 @@
 import json
 import requests
 from behave import given, when, then
+from sinch.domains.numbers.sinch_events.v1.events.active_number_sinch_event import ActiveNumberSinchEvent
+from sinch.domains.numbers.sinch_events.v1.events.number_order_sinch_event import NumberOrderSinchEvent
 from tests.e2e.helpers import store_webhook_response
 
 SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
@@ -12,9 +14,13 @@ WEBHOOK_ENDPOINTS = {
 }
 
 EXPECTED_EVENT = {
-    'success': ('SUCCEEDED', None),
-    'failure': ('FAILED', 'PROVISIONING_TO_VOICE_PLATFORM_FAILED'),
-    'completed': ('COMPLETED', None),
+    'success': (ActiveNumberSinchEvent, 'SUCCEEDED', None),
+    'failure': (
+        ActiveNumberSinchEvent,
+        'FAILED',
+        'PROVISIONING_TO_VOICE_PLATFORM_FAILED',
+    ),
+    'completed': (NumberOrderSinchEvent, 'COMPLETED', None),
 }
 
 
@@ -41,7 +47,8 @@ def step_check_valid_signature(context, status, event_type):
 
 @then('the event describes a "{status}" for "{event_type}" event')
 def step_check_event_details(context, status, event_type):
-    expected_status, expected_failure_code = EXPECTED_EVENT[status]
+    expected_class, expected_status, expected_failure_code = EXPECTED_EVENT[status]
+    assert type(context.event) is expected_class
     assert context.event.event_type == event_type
     assert context.event.status == expected_status
     assert context.event.failure_code == expected_failure_code
