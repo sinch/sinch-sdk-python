@@ -35,7 +35,7 @@ class ChoiceMessageWithPostback(BaseModelConfiguration):
     )
     display_mode: Optional[DisplayModeType] = Field(
         default=None,
-        description="Controls the display behavior of a choice.",
+        description="Controls the display behavior of a choice. Only supported for Choice Message on the RCS channel. Has no effect on other channels or message types, except for a carousel's outer choices, where it is rejected outright.",
     )
 
 
