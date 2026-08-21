@@ -8,6 +8,7 @@ from sinch.domains.sms.models.v1.response import (
     RecipientDeliveryReport,
 )
 from tests.e2e.helpers import store_webhook_response
+from tests.e2e.shared_config import SMS_ORIGIN
 
 SINCH_SMS_SINCH_EVENT_SECRET = 'KayakingTheSwell'
 
@@ -19,7 +20,7 @@ def step_webhook_handler_is_available(context):
 
 @when('I send a request to trigger an "incoming SMS" event')
 def step_send_incoming_sms_event(context):
-    response = requests.get('http://localhost:3017/webhooks/sms/incoming-sms')
+    response = requests.get(f'{SMS_ORIGIN}/webhooks/sms/incoming-sms')
     store_webhook_response(context, response)
     context.event = context.sms_sinch_event.parse_event(context.raw_event)
 
@@ -47,7 +48,7 @@ def step_check_incoming_sms_event(context):
 
 @when('I send a request to trigger an "SMS delivery report" event')
 def step_send_delivery_report_event(context):
-    response = requests.get('http://localhost:3017/webhooks/sms/delivery-report-sms')
+    response = requests.get(f'{SMS_ORIGIN}/webhooks/sms/delivery-report-sms')
     store_webhook_response(context, response)
     context.event = context.sms_sinch_event.parse_event(context.raw_event)
 
@@ -74,7 +75,7 @@ def step_check_delivery_report_event(context):
 @when('I send a request to trigger an "SMS recipient delivery report" event with the status "Delivered"')
 def step_send_recipient_delivery_report_event_delivered(context):
     response = requests.get(
-        'http://localhost:3017/webhooks/sms/recipient-delivery-report-sms-delivered'
+        f'{SMS_ORIGIN}/webhooks/sms/recipient-delivery-report-sms-delivered'
     )
     store_webhook_response(context, response)
     context.event = context.sms_sinch_event.parse_event(context.raw_event)
@@ -83,7 +84,7 @@ def step_send_recipient_delivery_report_event_delivered(context):
 @when('I send a request to trigger an "SMS recipient delivery report" event with the status "Aborted"')
 def step_send_recipient_delivery_report_event_aborted(context):
     response = requests.get(
-        'http://localhost:3017/webhooks/sms/recipient-delivery-report-sms-aborted'
+        f'{SMS_ORIGIN}/webhooks/sms/recipient-delivery-report-sms-aborted'
     )
     store_webhook_response(context, response)
     context.event = context.sms_sinch_event.parse_event(context.raw_event)

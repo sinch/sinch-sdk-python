@@ -1,8 +1,10 @@
 #!/bin/bash
 # Runs, in order: unit tests, Ruff lint/format checks and the e2e (behave) suites.
 #
-# The e2e step needs the mock servers from the sinch-sdk-mockserver repository.
-# Point MOCKSERVER_DIR at your local clone if it is not next to this repository:
+# The e2e step runs against the remote mock server at MOCKSERVER_BASE_URL
+# (defaults to https://sinch-sdk-mockserver.sliplane.app). It still needs the
+# feature files from the sinch-sdk-mockserver repository; point MOCKSERVER_DIR
+# at your local clone if it is not next to this repository:
 #
 #   MOCKSERVER_DIR=~/Desktop/sinch-sdk-mockserver ./scripts/run_checks.sh
 #
@@ -68,22 +70,26 @@ if [ ! -d "$MOCKSERVER_DIR" ]; then
   exit 1
 fi
 
-echo "Starting mock servers from $MOCKSERVER_DIR..."
-(cd "$MOCKSERVER_DIR" && docker compose up -d)
+./.github/scripts/check-mockservers-are-available.sh
 
-./.github/scripts/wait-for-mockserver.sh
+# On macOS/BSD, `cp` exits 1 (without copying) when source and destination
+# are already identical, which would otherwise abort the script via `set -e`.
+safe_cp() {
+  cp "$@" || true
+}
+
 
 echo "Copying feature files..."
-cp "$MOCKSERVER_DIR"/features/numbers/available-regions.feature ./tests/e2e/numbers/features/
-cp "$MOCKSERVER_DIR"/features/numbers/callback-configuration.feature ./tests/e2e/numbers/features/
-cp "$MOCKSERVER_DIR"/features/numbers/numbers.feature ./tests/e2e/numbers/features/
-cp "$MOCKSERVER_DIR"/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
-cp "$MOCKSERVER_DIR"/features/sms/* ./tests/e2e/sms/features/
-cp "$MOCKSERVER_DIR"/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
-cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/conversation/features/
-cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
-cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
-cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/numbers/available-regions.feature ./tests/e2e/numbers/features/
+safe_cp "$MOCKSERVER_DIR"/features/numbers/callback-configuration.feature ./tests/e2e/numbers/features/
+safe_cp "$MOCKSERVER_DIR"/features/numbers/numbers.feature ./tests/e2e/numbers/features/
+safe_cp "$MOCKSERVER_DIR"/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
+safe_cp "$MOCKSERVER_DIR"/features/sms/* ./tests/e2e/sms/features/
+safe_cp "$MOCKSERVER_DIR"/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
 
 python -m behave tests/e2e/numbers/features
 python -m behave tests/e2e/sms/features

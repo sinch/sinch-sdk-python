@@ -4,6 +4,7 @@ from behave import given, when, then
 from sinch.domains.numbers.sinch_events.v1.events.active_number_sinch_event import ActiveNumberSinchEvent
 from sinch.domains.numbers.sinch_events.v1.events.number_order_sinch_event import NumberOrderSinchEvent
 from tests.e2e.helpers import store_webhook_response
+from tests.e2e.shared_config import NUMBERS_ORIGIN
 
 SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
 
@@ -32,7 +33,7 @@ def step_webhook_handler_is_available(context):
 @when('I send a request to trigger the "{status}" for "{event_type}" event')
 def step_send_trigger_event(context, status, event_type):
     endpoint = WEBHOOK_ENDPOINTS[status]
-    response = requests.get(f'http://localhost:3013/webhooks/numbers/{endpoint}')
+    response = requests.get(f'{NUMBERS_ORIGIN}/webhooks/numbers/{endpoint}')
     store_webhook_response(context, response)
     event_json = json.loads(context.raw_event)
     context.event = context.numbers_webhook.parse_event(event_json)
