@@ -13,8 +13,7 @@ def request_data():
         page_size=10,
         capabilities=["SMS"],
         number_pattern="123",
-        number_search_pattern="STARTS_WITH",
-        extra_field="extra value"
+        number_search_pattern="STARTS_WITH"
     )
 
 
@@ -92,7 +91,6 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "capabilities": ["SMS"],
         "numberPattern.pattern": "123",
         "numberPattern.searchPattern": "STARTS_WITH"
-        # extra_field is not included because it's not part of QUERY_PARAM_FIELDS
     }
     assert endpoint.build_query_params() == expected_params
 

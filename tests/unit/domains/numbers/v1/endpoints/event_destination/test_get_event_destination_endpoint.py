@@ -67,7 +67,7 @@ def test_request_body_expects_correct_mapping_with_extra_fields(endpoint_extra_r
     """
     Extra fields are included in the request body.
     """
-    assert endpoint_extra_request_data.request_body() == json.dumps({"extra_field": "extra value"})
+    assert endpoint_extra_request_data.request_body() == json.dumps({"extraField": "extra value"})
 
 
 @endpoint_fixtures

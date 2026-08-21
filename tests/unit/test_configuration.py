@@ -7,7 +7,7 @@ from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.core.models.internal.base_model_config import (
     SnakeCaseExtrasModel,
-    legacy_extra_fields_normalization_scope,
+    transform_kwargs_casing_scope,
 )
 from sinch.core.token_manager import TokenManager
 
@@ -26,7 +26,7 @@ def test_configuration_expects_correct_initialization(sinch_client_sync):
         sms_api_token="HappyCappyToken",
         sms_region="us",
         conversation_region="eu",
-        legacy_extra_fields_normalization=True,
+        transform_kwargs_casing=False,
     )
 
     assert client_configuration.key_id == "CapyKey"
@@ -37,19 +37,19 @@ def test_configuration_expects_correct_initialization(sinch_client_sync):
     assert client_configuration.sms_api_token == "HappyCappyToken"
     assert client_configuration.sms_region == "us"
     assert client_configuration.conversation_region == "eu"
-    assert client_configuration.legacy_extra_fields_normalization is True
+    assert client_configuration.transform_kwargs_casing is False
     assert isinstance(client_configuration.transport, HTTPTransportRequests)
     assert isinstance(client_configuration.token_manager, TokenManager)
 
 
-def test_configuration_expects_legacy_extra_fields_normalization_default_false(sinch_client_sync):
-    """ Test that legacy_extra_fields_normalization defaults to False when not provided """
+def test_configuration_expects_transform_kwargs_casing_default_true(sinch_client_sync):
+    """ Test that transform_kwargs_casing defaults to False when not provided """
     client_configuration = Configuration(
         transport=HTTPTransportRequests(sinch_client_sync),
         token_manager=TokenManager(sinch_client_sync),
         project_id="test_project_id",
     )
-    assert client_configuration.legacy_extra_fields_normalization is False
+    assert client_configuration.transform_kwargs_casing is True
 
 
 def test_set_sms_region_property_and_check_that_sms_origin_was_updated(sinch_client_sync):

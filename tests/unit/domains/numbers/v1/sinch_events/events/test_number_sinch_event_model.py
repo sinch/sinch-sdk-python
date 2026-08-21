@@ -1,15 +1,13 @@
 import pytest
 from datetime import datetime, timezone
 from pydantic import ValidationError
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
 
 
-def test_number_sinch_event_response_expects_parsed_data():
-    """
-    Expects all fields to map correctly from camelCase input
-    and handle valid data appropriately.
-    """
-    data = {
+@pytest.fixture
+def valid_data():
+    return {
         "eventId": "event-123",
         "timestamp": "2025-04-08T09:38:04.854087+00:00",
         "projectId": "project-456",
@@ -21,7 +19,25 @@ def test_number_sinch_event_response_expects_parsed_data():
         "internalFailureCode": None,
         "extraField": "extra_value",
     }
-    response = NumberSinchEvent(**data)
+
+
+@pytest.fixture
+def invalid_data():
+    return {
+        "eventId": 123,
+        "timestamp": "invalid-timestamp",
+        "projectId": "project-456",
+        "resourceId": "+1234567890"
+    }
+
+
+def test_number_sinch_event_response_expects_parsed_data(valid_data):
+    """
+    Expects all fields to map correctly from camelCase input
+    and handle valid data appropriately.
+    """
+    with transform_kwargs_casing_scope(False):
+        response = NumberSinchEvent(**valid_data)
 
     assert response.event_id == "event-123"
     assert response.timestamp == datetime(
@@ -65,10 +81,9 @@ def test_number_sinch_event_build_with_empty_dict():
     assert isinstance(response, NumberSinchEvent)
 
 
-def test_number_sinch_event_response_invalid_data_expects_validation_error():
+def test_number_sinch_event_response_invalid_data_expects_validation_error(invalid_data):
     """
     Expects the model to raise a validation error for invalid data.
     """
-    data = {"eventId": 123}
     with pytest.raises(ValidationError):
-        NumberSinchEvent(**data)
+        NumberSinchEvent(**invalid_data)

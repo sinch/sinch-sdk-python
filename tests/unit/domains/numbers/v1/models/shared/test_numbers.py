@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from pydantic import TypeAdapter
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.domains.numbers.models.v1.shared import ScheduledSmsProvisioning, SmsConfiguration, VoiceConfiguration
 from sinch.domains.numbers.models.v1.shared.voice_configuration_custom import VoiceConfigurationCustom
 
@@ -166,9 +167,9 @@ def test_voice_configuration_custom_valid_expects_parsed_data():
             "customField": "custom_value"
         }
     }
-
-    voice_configuration_adapter = TypeAdapter(VoiceConfiguration)
-    config = voice_configuration_adapter.validate_python(data)
+    with transform_kwargs_casing_scope(False):
+        voice_configuration_adapter = TypeAdapter(VoiceConfiguration)
+        config = voice_configuration_adapter.validate_python(data)
 
     assert isinstance(config, VoiceConfigurationCustom)
     assert config.type == "CUSTOM"

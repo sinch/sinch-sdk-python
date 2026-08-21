@@ -89,6 +89,25 @@ Get `project_id`, `key_id` and `key_secret` from the [Access keys](https://dashb
 
 This snippet is the common starting point for every API. Some APIs have a different initialization or need extra parameters (for example, a region), see the section for each API.
 
+### Extra fields casing conversion
+
+Every request and response model in the SDK only declares the fields defined by the Sinch APIs. Any other key you pass in on a request, or that the API returns in a response, is considered an extra field. Extra fields are always accepted: on a request they are always sent in the request body, and on a response model they are exposed as regular attributes.
+
+By default, these extra fields are automatically converted to the API's casing standard. So for camelCase APIs, extra fields are converted to camelCase, and for snake_case APIs, extra fields are converted to snake_case.
+
+From version 2.2.0, you can disable this conversion by setting `transform_kwargs_casing` to `False`, so extra fields pass through exactly as given in both directions: the field set on a request is sent as-is in the request body, and the field name returned by the API is exposed as-is on the response model.
+
+```python
+sinch_client = SinchClient(
+    project_id=os.environ["SINCH_PROJECT_ID"],
+    key_id=os.environ["SINCH_KEY_ID"],
+    key_secret=os.environ["SINCH_KEY_SECRET"],
+    transform_kwargs_casing=False,
+)
+```
+
+> **Recommendation:** Set `transform_kwargs_casing=False` in new integrations. This will become the only behavior in 3.0, where extra fields will always pass through unchanged and the flag will be removed.
+
 ### Conversation API
 
 The Conversation API is regionalized. To use this API, the `conversation_region` parameter is required:

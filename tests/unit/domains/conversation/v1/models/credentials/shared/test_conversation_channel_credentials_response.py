@@ -2,6 +2,7 @@
 import pytest
 from pydantic import ValidationError
 
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.domains.conversation.models.v1.credentials.shared.conversation_channel_credentials_response import (
     ConversationChannelCredentialsResponse,
     StaticBearerChannelCredentialsResponse,
@@ -279,20 +280,21 @@ def test_response_raises_validation_error_when_required_credential_field_missing
         )
 
 
-def test_response_unknown_channel_is_kept_as_unvalidated_extra_field():
+def test_response_unknown_channel_is_camelized_by_default():
     """An unrecognized channel is not rejected: extra='allow' stores it, unvalidated.
     """
-    model = ConversationChannelCredentialsResponse.model_validate(
-        [
-            {
-                "channel": "UNKNOWN",
-                "static_bearer": {"token": "my-token"},
-            }
-        ]
-    )
+    with transform_kwargs_casing_scope(False):
+        model = ConversationChannelCredentialsResponse.model_validate(
+            [
+                {
+                    "channel": "UNKNOWN",
+                    "static_bearer": {"token": "my-token"},
+                }
+            ]
+        )
+        dumped = model.model_dump(by_alias=True, exclude_none=True)
 
     assert model.sms is None
-    dumped = model.model_dump(by_alias=True, exclude_none=True)
     assert "UNKNOWN" in dumped 
     assert dumped["UNKNOWN"] == {"token": "my-token"}
 

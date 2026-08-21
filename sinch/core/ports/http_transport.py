@@ -11,7 +11,7 @@ from requests import Response
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
-from sinch.core.models.internal.base_model_config import legacy_extra_fields_normalization_scope
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.enums import HTTPAuthentication
 from sinch import __version__ as sdk_version
@@ -97,8 +97,8 @@ class HTTPTransport(ABC):
         :returns: The handled HTTP response.
         :rtype: HTTPResponse
         """
-        with legacy_extra_fields_normalization_scope(
-            self.sinch.configuration.legacy_extra_fields_normalization
+        with transform_kwargs_casing_scope(
+            self.sinch.configuration.transform_kwargs_casing
         ):
             if self._legacy_send:
                 return self._legacy_request(endpoint)

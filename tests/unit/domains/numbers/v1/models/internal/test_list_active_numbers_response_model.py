@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from decimal import Decimal
 import pytest
-from sinch.core.models.internal.base_model_config import legacy_extra_fields_normalization_scope
 from sinch.domains.numbers.models.v1.internal import ListActiveNumbersResponse
 from sinch.domains.numbers.models.v1.shared.voice_configuration_rtc import VoiceConfigurationRTC
 

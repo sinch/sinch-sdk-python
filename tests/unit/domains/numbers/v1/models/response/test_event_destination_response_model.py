@@ -1,4 +1,5 @@
 import pytest
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.domains.numbers.models.v1.response import EventDestinationResponse
 
 
@@ -17,7 +18,8 @@ def test_numbers_callback_config_response_all_fields(test_data):
     Expects all fields to map correctly from camelCase input
     and handle extra fields appropriately
     """
-    response = EventDestinationResponse(**test_data)
+    with transform_kwargs_casing_scope(False):
+        response = EventDestinationResponse(**test_data)
 
     assert response.project_id == "project-test-id"
     assert response.hmac_secret == "secret-key-456"

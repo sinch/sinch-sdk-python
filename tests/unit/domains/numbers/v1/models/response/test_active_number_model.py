@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import pytest
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 
@@ -82,8 +83,8 @@ def test_active_number_response_expects_all_fields_mapped_correctly(test_data):
     Expects all fields to map correctly from camelCase input,
     converts nested keys to snake_case, and handles dynamic fields
     """
-
-    response = ActiveNumber(**test_data)
+    with transform_kwargs_casing_scope(False):
+        response = ActiveNumber(**test_data)
 
     assert response.phone_number == "+12025550134"
     assert response.display_name == "string"
