@@ -47,7 +47,7 @@ idna==3.19
     # via requests
 imagesize==1.5.0 ; python_full_version < '3.10'
     # via sphinx
-imagesize==2.0.0 ; python_full_version >= '3.10'
+imagesize==2.0.1 ; python_full_version >= '3.10'
     # via sphinx
 importlib-metadata==8.7.1 ; python_full_version < '3.10'
     # via sphinx
@@ -166,7 +166,7 @@ urllib3==2.7.0 ; python_full_version >= '3.10'
     # via
     #   -r requirements.in
     #   requests
-uv==0.12.5
+uv==0.12.6
     # via -r requirements.in
 win-unicode-console==0.5 ; python_full_version < '3.10'
     # via behave
