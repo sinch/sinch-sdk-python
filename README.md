@@ -11,6 +11,7 @@ To use Sinch services, you'll need a Sinch account and access keys. You can sign
 ## Table of contents:
 
 - [Prerequisites](#prerequisites)
+- [Version support](#version-support)
 - [Documentation](#documentation)
 - [Installation](#installation)
 - [Supported APIs](#supported-apis)
@@ -34,6 +35,41 @@ To use Sinch services, you'll need a Sinch account and access keys. You can sign
 > **Warning**:
 > This SDK is intended for server-side (backend) use only. Do not use it in front-end or client-side applications (web, mobile, or desktop), regardless of language or framework. Doing so can expose your Sinch credentials to end-users.
 
+## Version support
+
+This SDK follows [Semantic Versioning](https://semver.org/) for version numbering. 
+SemVer defines what changes are allowed in each type of release (major, minor, patch) but does not define a support or patching policy.
+
+This section describes the support policy for this project.
+
+**Release cadence**
+
+A new major version will not be released until at least 6 months after the previous major version.
+
+**Support policy**
+
+Patches are published only for the latest minor release within each supported major version. For example: if version 2.0 exists and 2.1.0 is released, patches will be applied to 2.1.x only. Users on 2.0.x will no longer receive patches and must upgrade to 2.1.x to get bug fixes and security updates.
+
+| Version | Status | Support | Timeline |
+|---------|--------|---------|----------|
+| **Current major** (latest released) | Fully supported | All new features, bug fixes, and security fixes | Ongoing |
+| **Previous major** | Maintenance | Critical bug fixes and security fixes only, no new features | Begins when current major is released; ends when next major is released or 1 year from current release, whichever comes first |
+| **Older majors** | End-of-Life (EOL) | No patches or support | — |
+
+**What are critical bug fixes?**
+
+For the previous major version, we apply patches for:
+- Security vulnerabilities
+- Data loss risks
+- Breaking compatibility issues
+
+**If you're using an unsupported version**
+
+We recommend upgrading to a supported version to receive ongoing security and stability updates. Bug reports against unsupported versions are not prioritized and may not be addressed.
+
+**Dependency security updates**
+
+We assess dependency vulnerabilities by severity level. High and Critical vulnerabilities (CVSS score ≥ 7.0) are backported to the latest minor release of both the current and previous major versions. Medium and Low severity vulnerabilities (CVSS < 7.0) are applied to the current major version only.
 
 ## Documentation
 
