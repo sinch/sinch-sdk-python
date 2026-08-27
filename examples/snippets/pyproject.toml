@@ -5,10 +5,23 @@ description = "Code snippets demonstrating usage of the Sinch Python SDK"
 readme = "README.md"
 package-mode = false
 
+# Dependency versions below were generated/resolved using Python 3.14.5
 [tool.poetry.dependencies]
-python = "^3.9"
-python-dotenv = "^1.0.0"
+python = "^3.10"
+python-dotenv = "1.2.2"
 sinch = {path = "../..", develop = true}
+
+# Transitive dependencies (pulled in by sinch above)
+annotated-types = "0.7.0"
+certifi = "2026.7.22"
+charset-normalizer = "3.4.9"
+idna = "3.18"
+pydantic = "2.13.4"
+pydantic-core = "2.46.4"
+requests = "2.34.2"
+typing-inspection = "0.4.2"
+typing-extensions = "4.16.0"
+urllib3 = "2.7.0"
 
 [build-system]
 requires = ["poetry-core"]
