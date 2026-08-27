@@ -1,12 +1,6 @@
 from tests.e2e.shared_config import create_test_client
 
-NOT_IMPLEMENTED_SCENARIOS = {
-    "[Merge two Contacts] merge two contacts",
-    "[Get Channel Profile] Get channel profile from contact ID",
-    "[List] list a page of identity conflicts",
-    "[List] list all the identity conflicts",
-    "[List] list all the identity conflicts manually",
-}
+NOT_IMPLEMENTED_SCENARIOS = {}
 
 
 def before_all(context):

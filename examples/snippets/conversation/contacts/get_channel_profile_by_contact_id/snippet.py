@@ -19,15 +19,19 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
-# The ID of the contact to update
-contact_id = "CONVERSATION_CONTACT_ID"
+# The ID of the Conversation application the contact belongs to
+conversation_application_id = "APPLICATION_ID"
 
-# The display name of the contact to update
-contact_display_name = "Updated from Python SDK snippet"
+# The ID of the contact to retrieve the channel profile for
+conversation_contact_id = "CONTACT_ID"
 
-response = sinch_client.conversation.contacts.update(
-    contact_id=contact_id,
-    display_name=contact_display_name,
+# The channel associated with the contact
+conversation_channel = "MESSENGER"
+
+response = sinch_client.conversation.contacts.get_channel_profile_by_contact_id(
+    app_id=conversation_application_id,
+    channel=conversation_channel,
+    contact_id=conversation_contact_id
 )
 
-print(f"Successfully updated contact.\n{response}")
+print(f"Successfully retrieved channel profile.\n{response}")

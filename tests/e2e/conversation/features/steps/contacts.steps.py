@@ -177,3 +177,108 @@ def step_delete_contact(context):
 @then('the delete contact response contains no data')
 def step_validate_delete_contact_response(context):
     assert context.delete_contact_response is None, 'Delete contact response should be None'
+
+
+@when('I send a request to merge a source contact to a destination contact')
+def step_merge_contacts(context):
+    context.merge_contact_response = context.contacts.merge_contact(
+        destination_id='01W4FFL35P4NC4K35CONTACT002',
+        source_id='01W4FFL35P4NC4K35CONTACT001',
+    )
+
+
+@then('the response contains data from the destination contact and from the source contact')
+def step_validate_merge_contacts(context):
+    contact = context.merge_contact_response
+    assert contact is not None, 'Merge contact response should not be None'
+    assert contact.id == '01W4FFL35P4NC4K35CONTACT002', (
+        f'Expected contact.id to be "01W4FFL35P4NC4K35CONTACT002", got "{contact.id}"'
+    )
+    assert contact.display_name == 'Pika pika', (
+        f'Expected contact.display_name to be "Pika pika", got "{contact.display_name}"'
+    )
+    assert contact.channel_priority == ['MMS', 'MESSENGER'], (
+        f'Expected channel_priority to be ["MMS", "MESSENGER"], got {contact.channel_priority}'
+    )
+    assert len(contact.channel_identities) == 3, (
+        f'Expected 3 channel identities, got {len(contact.channel_identities)}'
+    )
+
+
+@when('I send a request to get the channel profile of a contact ID')
+def step_get_channel_profile(context):
+    context.channel_profile_response = context.contacts.get_channel_profile_by_contact_id(
+        app_id='01W4FFL35P4NC4K35CONVAPP001',
+        channel='MESSENGER',
+        contact_id='01W4FFL35P4NC4K35CONTACT001',
+    )
+
+
+@then('the response contains the profile of the contact on the requested channel')
+def step_validate_channel_profile(context):
+    profile = context.channel_profile_response
+    assert profile is not None, 'Channel profile response should not be None'
+    assert profile.profile_name == 'Marty McFly FB', (
+        f'Expected profile_name to be "Marty McFly FB", got "{profile.profile_name}"'
+    )
+
+
+@when('I send a request to list the existing identity conflicts')
+def step_list_identity_conflicts_page(context):
+    context.identity_conflicts_response = context.contacts.list_identity_conflicts(
+        page_size=2
+    )
+
+
+@then('the response contains "{count}" identity conflicts')
+def step_validate_identity_conflicts_page_count(context, count):
+    expected_count = int(count)
+    conflicts_page = context.identity_conflicts_response.content()
+    assert len(conflicts_page) == expected_count, (
+        f'Expected {expected_count} identity conflicts, got {len(conflicts_page)}'
+    )
+
+
+@when('I send a request to list all the identity conflicts')
+def step_list_all_identity_conflicts(context):
+    response = context.contacts.list_identity_conflicts(page_size=2)
+    context.identity_conflicts_list = list(response.iterator())
+
+
+@then('the identity conflicts list contains "{count}" identity conflicts')
+def step_validate_total_identity_conflicts_count(context, count):
+    expected_count = int(count)
+    assert len(context.identity_conflicts_list) == expected_count, (
+        f'Expected {expected_count} identity conflicts, got {len(context.identity_conflicts_list)}'
+    )
+
+
+@when('I iterate manually over the identity conflicts pages')
+def step_iterate_identity_conflicts_pages(context):
+    context.identity_conflicts_response = context.contacts.list_identity_conflicts(
+        page_size=2
+    )
+
+    context.identity_conflicts_list = []
+    context.identity_conflicts_pages_iteration = 0
+    reached_end_of_pages = False
+
+    while not reached_end_of_pages:
+        context.identity_conflicts_list.extend(
+            context.identity_conflicts_response.content()
+        )
+        context.identity_conflicts_pages_iteration += 1
+        if context.identity_conflicts_response.has_next_page:
+            context.identity_conflicts_response = (
+                context.identity_conflicts_response.next_page()
+            )
+        else:
+            reached_end_of_pages = True
+
+
+@then('the identity conflicts iteration result contains the data from "{count}" pages')
+def step_validate_identity_conflicts_page_iteration_count(context, count):
+    expected_pages_count = int(count)
+    assert context.identity_conflicts_pages_iteration == expected_pages_count, (
+        f'Expected {expected_pages_count} pages, got {context.identity_conflicts_pages_iteration}'
+    )

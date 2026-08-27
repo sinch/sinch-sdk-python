@@ -1,6 +1,7 @@
 """
 Unit tests for Conversation Contacts API
 """
+
 import pytest
 
 from sinch.core.pagination import TokenBasedPaginator
@@ -8,24 +9,41 @@ from sinch.domains.conversation.api.v1.contacts_apis import Contacts
 from sinch.domains.conversation.api.v1.internal.contacts_endpoints import (
     CreateContactEndpoint,
     DeleteContactEndpoint,
+    GetChannelProfileEndpoint,
     GetContactEndpoint,
     ListContactsEndpoint,
+    ListIdentityConflictsEndpoint,
+    MergeContactEndpoint,
     UpdateContactEndpoint,
 )
 from sinch.domains.conversation.conversation import Conversation
 from sinch.domains.conversation.models.v1.contacts.internal.list_contacts_response import (
     ListContactsResponse,
 )
+from sinch.domains.conversation.models.v1.contacts.internal.list_identity_conflicts_response import (
+    ListIdentityConflictsResponse,
+)
 from sinch.domains.conversation.models.v1.contacts.internal import (
     ContactIdRequest,
     CreateContactRequest,
+    GetChannelProfileRequest,
     ListContactsRequest,
+    ListIdentityConflictsRequest,
+    MergeContactRequest,
     UpdateContactRequest,
 )
 from sinch.domains.conversation.models.v1.contacts.response.contact_response import (
     ContactResponse,
 )
-from sinch.domains.conversation.models.v1.messages.shared.channel_identity import ChannelIdentity
+from sinch.domains.conversation.models.v1.contacts.response.get_channel_profile_response import (
+    GetChannelProfileResponse,
+)
+from sinch.domains.conversation.models.v1.messages.internal.request.recipient import (
+    Recipient,
+)
+from sinch.domains.conversation.models.v1.messages.shared.channel_identity import (
+    ChannelIdentity,
+)
 
 
 @pytest.fixture
@@ -263,6 +281,234 @@ def test_contacts_list_expects_correct_request(
     assert request_data.external_id == "external-1"
     assert request_data.channel == "SMS"
     assert request_data.identity == "+12015555555"
+
+    assert isinstance(response, TokenBasedPaginator)
+    assert hasattr(response, "has_next_page")
+    assert response.result == mock_response
+
+
+def test_contacts_merge_expects_correct_request(
+    mock_sinch_client_conversation, mock_contact_response, mocker
+):
+    """Test that merge sends the correct request and returns ContactResponse."""
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_contact_response
+    spy_endpoint = mocker.spy(MergeContactEndpoint, "__init__")
+
+    response = Conversation(mock_sinch_client_conversation).contacts.merge_contact(
+        destination_id="01W4FFL35P4NC4K35CONTACT002",
+        source_id="01W4FFL35P4NC4K35CONTACT001",
+        strategy="MERGE",
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    request_data = kwargs["request_data"]
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert isinstance(request_data, MergeContactRequest)
+    assert request_data.destination_id == "01W4FFL35P4NC4K35CONTACT002"
+    assert request_data.source_id == "01W4FFL35P4NC4K35CONTACT001"
+    assert request_data.strategy == "MERGE"
+
+    assert isinstance(response, ContactResponse)
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
+
+
+def test_contacts_merge_expects_omitted_optional_unset(
+    mock_sinch_client_conversation, mock_contact_response, mocker
+):
+    """Test that an omitted strategy stays unset."""
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_contact_response
+    spy_endpoint = mocker.spy(MergeContactEndpoint, "__init__")
+
+    Conversation(mock_sinch_client_conversation).contacts.merge_contact(
+        destination_id="01W4FFL35P4NC4K35CONTACT002",
+        source_id="01W4FFL35P4NC4K35CONTACT001",
+    )
+
+    _, kwargs = spy_endpoint.call_args
+    fields_set = kwargs["request_data"].model_fields_set
+
+    assert "destination_id" in fields_set
+    assert "source_id" in fields_set
+    assert "strategy" not in fields_set
+
+
+def test_contacts_get_channel_profile_with_contact_id_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """Test that get_channel_profile sends the correct request and returns GetChannelProfileResponse."""
+    mock_response = GetChannelProfileResponse(profile_name="Marty McFly FB")
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_response
+    spy_endpoint = mocker.spy(GetChannelProfileEndpoint, "__init__")
+
+    response = Conversation(
+        mock_sinch_client_conversation
+    ).contacts.get_channel_profile(
+        app_id="01W4FFL35P4NC4K35CONVAPP001",
+        channel="MESSENGER",
+        recipient={
+            "contact_id": "01W4FFL35P4NC4K35CONTACT001"
+        },
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    request_data = kwargs["request_data"]
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert isinstance(request_data, GetChannelProfileRequest)
+    assert request_data.app_id == "01W4FFL35P4NC4K35CONVAPP001"
+    assert request_data.channel == "MESSENGER"
+    assert isinstance(request_data.recipient, Recipient)
+    assert request_data.recipient.contact_id == "01W4FFL35P4NC4K35CONTACT001"
+
+    assert isinstance(response, GetChannelProfileResponse)
+    assert response.profile_name == "Marty McFly FB"
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
+
+
+def test_contacts_get_channel_profile_with_channel_profile_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """Test that get_channel_profile sends the correct request and returns GetChannelProfileResponse."""
+    mock_response = GetChannelProfileResponse(profile_name="Marty McFly FB")
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_response
+    spy_endpoint = mocker.spy(GetChannelProfileEndpoint, "__init__")
+
+    response = Conversation(
+        mock_sinch_client_conversation
+    ).contacts.get_channel_profile(
+        app_id="01W4FFL35P4NC4K35CONVAPP001",
+        channel="MESSENGER",
+        recipient={
+            "channel_identities": [
+                    {
+                        "channel": "MESSENGER",
+                        "identity": "7968425018576406",
+                    }
+                ]
+        },
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    request_data = kwargs["request_data"]
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert isinstance(request_data, GetChannelProfileRequest)
+    assert request_data.app_id == "01W4FFL35P4NC4K35CONVAPP001"
+    assert request_data.channel == "MESSENGER"
+    assert isinstance(request_data.recipient, Recipient)
+    assert request_data.recipient.contact_id is None
+    channel_identities = request_data.recipient.identified_by.channel_identities
+    assert len(channel_identities) == 1
+    assert channel_identities[0].channel == "MESSENGER"
+    assert channel_identities[0].identity == "7968425018576406"
+
+    assert isinstance(response, GetChannelProfileResponse)
+    assert response.profile_name == "Marty McFly FB"
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
+
+
+def test_contacts_get_channel_profile_by_channel_identity_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """Test that get_channel_profile_by_channel_identity sends the correct request and returns GetChannelProfileResponse."""
+    mock_response = GetChannelProfileResponse(profile_name="Marty McFly FB")
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_response
+    spy_endpoint = mocker.spy(GetChannelProfileEndpoint, "__init__")
+
+    response = Conversation(
+        mock_sinch_client_conversation
+    ).contacts.get_channel_profile_by_channel_identity(
+        app_id="01W4FFL35P4NC4K35CONVAPP001",
+        channel="MESSENGER",
+        recipient_identities=[
+            {
+                "channel": "MESSENGER",
+                "identity": "7968425018576406",
+            }
+        ],
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    request_data = kwargs["request_data"]
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert isinstance(request_data, GetChannelProfileRequest)
+    assert request_data.app_id == "01W4FFL35P4NC4K35CONVAPP001"
+    assert request_data.channel == "MESSENGER"
+    assert isinstance(request_data.recipient, Recipient)
+    assert request_data.recipient.contact_id is None
+    channel_identities = request_data.recipient.identified_by.channel_identities
+    assert len(channel_identities) == 1
+    assert channel_identities[0].channel == "MESSENGER"
+    assert channel_identities[0].identity == "7968425018576406"
+
+    assert isinstance(response, GetChannelProfileResponse)
+    assert response.profile_name == "Marty McFly FB"
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
+
+
+def test_contacts_get_channel_profile_by_contact_id_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """Test that get_channel_profile_by_contact_id sends the correct request and returns GetChannelProfileResponse."""
+    mock_response = GetChannelProfileResponse(profile_name="Marty McFly FB")
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_response
+    spy_endpoint = mocker.spy(GetChannelProfileEndpoint, "__init__")
+
+    response = Conversation(
+        mock_sinch_client_conversation
+    ).contacts.get_channel_profile_by_contact_id(
+        app_id="01W4FFL35P4NC4K35CONVAPP001",
+        channel="MESSENGER",
+        contact_id="01W4FFL35P4NC4K35CONTACT001",
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    request_data = kwargs["request_data"]
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert isinstance(request_data, GetChannelProfileRequest)
+    assert request_data.app_id == "01W4FFL35P4NC4K35CONVAPP001"
+    assert request_data.channel == "MESSENGER"
+    assert isinstance(request_data.recipient, Recipient)
+    assert request_data.recipient.contact_id == "01W4FFL35P4NC4K35CONTACT001"
+    assert request_data.recipient.identified_by is None
+
+    assert isinstance(response, GetChannelProfileResponse)
+    assert response.profile_name == "Marty McFly FB"
+    mock_sinch_client_conversation.configuration.transport.request.assert_called_once()
+
+
+
+def test_contacts_list_identity_conflicts_expects_correct_request(
+    mock_sinch_client_conversation, mocker
+):
+    """Test that list_identity_conflicts sends the correct request and returns a TokenBasedPaginator."""
+    mock_response = ListIdentityConflictsResponse(conflicts=[])
+    mock_sinch_client_conversation.configuration.transport.request.return_value = mock_response
+    spy_endpoint = mocker.spy(ListIdentityConflictsEndpoint, "__init__")
+
+    response = Conversation(
+        mock_sinch_client_conversation
+    ).contacts.list_identity_conflicts(
+        page_size=10,
+        page_token="a-token",
+    )
+
+    spy_endpoint.assert_called_once()
+    _, kwargs = spy_endpoint.call_args
+    request_data = kwargs["request_data"]
+
+    assert kwargs["project_id"] == "test_project_id"
+    assert isinstance(request_data, ListIdentityConflictsRequest)
+    assert request_data.page_size == 10
+    assert request_data.page_token == "a-token"
 
     assert isinstance(response, TokenBasedPaginator)
     assert hasattr(response, "has_next_page")

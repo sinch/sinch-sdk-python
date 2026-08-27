@@ -19,15 +19,15 @@ sinch_client = SinchClient(
     conversation_region=os.environ.get("SINCH_CONVERSATION_REGION") or "MY_CONVERSATION_REGION"
 )
 
-# The ID of the contact to update
-contact_id = "CONVERSATION_CONTACT_ID"
+# The ID of the contact to merge into (the destination contact)
+destination_id = "DESTINATION_CONTACT_ID"
 
-# The display name of the contact to update
-contact_display_name = "Updated from Python SDK snippet"
+# The ID of the contact to merge from (the source contact)
+source_id = "SOURCE_CONTACT_ID"
 
-response = sinch_client.conversation.contacts.update(
-    contact_id=contact_id,
-    display_name=contact_display_name,
+response = sinch_client.conversation.contacts.merge_contact(
+    destination_id=destination_id,
+    source_id=source_id
 )
 
-print(f"Successfully updated contact.\n{response}")
+print(f"Successfully merged contacts.\n{response}")
