@@ -90,11 +90,13 @@ safe_cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/con
 safe_cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/voice-v2/calls.feature ./tests/e2e/voice/v2/features/
 
 python -m behave tests/e2e/numbers/features
 python -m behave tests/e2e/sms/features
 python -m behave tests/e2e/conversation/features
 python -m behave tests/e2e/number-lookup/features
+python -m behave tests/e2e/voice/v2/features
 
 echo ""
 echo "All checks passed."

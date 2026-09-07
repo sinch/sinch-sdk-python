@@ -191,6 +191,11 @@ def mock_sinch_client_conversation():
 
 
 @pytest.fixture
+def mock_sinch_client_voice():
+    return _create_mock_sinch_client()
+
+
+@pytest.fixture
 def mock_pagination_active_number_responses():
     return [
         Mock(

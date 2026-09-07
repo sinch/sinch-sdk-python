@@ -5,6 +5,7 @@ import pytest
 from sinch import SinchClient
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
+from sinch.core.enums import VoiceRegionEnum
 from sinch.core.models.internal.base_model_config import (
     SnakeCaseExtrasModel,
     transform_kwargs_casing_scope,
@@ -79,6 +80,53 @@ def test_set_conversation_domain_property_expects_updated_conversation_origin(si
     sinch_client_sync.configuration.conversation_region = "eu"
     sinch_client_sync.configuration.conversation_domain = "https://{}.test.conversation.api.sinch.com"
     assert sinch_client_sync.configuration.conversation_origin == "https://eu.test.conversation.api.sinch.com"
+
+
+def test_configuration_expects_voice_v2_origin_defaults_to_global(sinch_client_sync):
+    """ Test that voice_v2_origin defaults to the global endpoint when voice_region is not provided """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+    )
+    assert client_configuration.voice_region == VoiceRegionEnum.GLOBAL
+    assert client_configuration.voice_v2_origin == "https://voice.api.sinch.com"
+
+
+def test_configuration_expects_voice_v2_origin_with_enum_region(sinch_client_sync):
+    """ Test that voice_v2_origin is built from a VoiceRegionEnum member """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        voice_region=VoiceRegionEnum.EUROPE,
+    )
+    assert client_configuration.voice_v2_origin == "https://eu1.voice.api.sinch.com"
+
+
+def test_configuration_expects_voice_v2_origin_with_unlisted_string_region(sinch_client_sync):
+    """ Test that voice_region accepts a raw string not present in VoiceRegionEnum,
+    keeping the door open for regions the SDK doesn't know about yet """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        voice_region="eu2",
+    )
+    assert client_configuration.voice_v2_origin == "https://eu2.voice.api.sinch.com"
+
+
+def test_set_voice_region_property_expects_updated_voice_v2_origin(sinch_client_sync):
+    """ Test that setting the voice_region property updates voice_v2_origin """
+    sinch_client_sync.configuration.voice_region = VoiceRegionEnum.AUSTRALIA
+    assert sinch_client_sync.configuration.voice_v2_origin == "https://au1.voice.api.sinch.com"
+
+
+def test_set_voice_region_property_back_to_global_expects_updated_voice_v2_origin(sinch_client_sync):
+    """ Test that setting the voice_region property back to GLOBAL removes the region prefix """
+    sinch_client_sync.configuration.voice_region = VoiceRegionEnum.EUROPE
+    sinch_client_sync.configuration.voice_region = VoiceRegionEnum.GLOBAL
+    assert sinch_client_sync.configuration.voice_v2_origin == "https://voice.api.sinch.com"
 
 
 def test_if_logger_name_was_preserved_correctly(sinch_client_sync):

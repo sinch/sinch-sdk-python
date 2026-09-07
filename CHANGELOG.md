@@ -41,6 +41,11 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[deprecation notice]** `ConversationChannel` is deprecated in favour of `ConversationChannelType`; it will be removed in 3.0.
 - **[deprecation notice]** `ChannelIdentity` moved to `sinch.domains.conversation.models.v1.shared`; the old `messages.shared` import path is a re-export and will be removed in 3.0.
 
+### Voice
+
+- **[feature]** New Voice domain, exposing the [Voice API v2](https://developers.sinch.com/docs/voice-2.0) under (`sinch_client.voice.v2`).
+- **[feature]** Voice V2 Calls API: `start` operation to create and initiate an outbound call or a batch of outbound call sessions.
+
 
 ---
 

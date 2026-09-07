@@ -84,6 +84,7 @@ jobs:
         cp sinch-sdk-mockserver/features/conversation/apps.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/contacts.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/voice-v2/calls.feature ./tests/e2e/voice/v2/features/
 
     - name: Check mockserver availability
       run: .github/scripts/check-mockservers-are-available.sh
@@ -95,3 +96,4 @@ jobs:
         python -m behave tests/e2e/sms/features
         python -m behave tests/e2e/conversation/features
         python -m behave tests/e2e/number-lookup/features
+        python -m behave tests/e2e/voice/v2/features

@@ -1,5 +1,8 @@
 from logging import Logger
+from typing import Union
+
 from sinch.core.clients.sinch_client_configuration import Configuration
+from sinch.core.enums import VoiceRegionEnum
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.domains.authentication import Authentication
@@ -7,6 +10,7 @@ from sinch.domains.numbers import VirtualNumbers
 from sinch.domains.conversation import Conversation
 from sinch.domains.sms import SMS
 from sinch.domains.number_lookup import NumberLookup
+from sinch.domains.voice import Voice
 
 
 class SinchClient:
@@ -36,6 +40,7 @@ class SinchClient:
         sms_api_token: str = None,
         sms_region: str = None,
         conversation_region: str = None,
+        voice_region: Union[VoiceRegionEnum, str] = VoiceRegionEnum.GLOBAL,
         transform_kwargs_casing: bool = True,
     ):
         self.configuration = Configuration(
@@ -50,6 +55,7 @@ class SinchClient:
             sms_api_token=sms_api_token,
             sms_region=sms_region,
             conversation_region=conversation_region,
+            voice_region=voice_region,
             transform_kwargs_casing=transform_kwargs_casing,
         )
 
@@ -58,3 +64,4 @@ class SinchClient:
         self.conversation = Conversation(self)
         self.sms = SMS(self)
         self.number_lookup = NumberLookup(self)
+        self.voice = Voice(self)

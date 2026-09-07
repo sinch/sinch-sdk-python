@@ -97,6 +97,7 @@ pip install sinch
 |                   | [SMS API](https://developers.sinch.com/docs/sms/)     |
 | Numbers           | [Numbers API](https://developers.sinch.com/docs/numbers/)                   |
 | Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup/) |
+| Voice             | [Voice API v2](https://developers.sinch.com/docs/voice-2.0) (preview/beta) |
 
 > **Note:** The SMS API is end-of-sale. New integrations should use the [Conversation API](https://developers.sinch.com/docs/conversation/) instead, which supports SMS and many other channels.
 
@@ -250,6 +251,12 @@ You can find a complete example in [examples/sinch_events/numbers_api](https://g
 
 The Number Lookup API needs no extra parameters, use the [common client](#client-initialization) based in project authentication shown above.
 
+
+### Voice API
+
+> **Note:** Support for the Voice API v2 is currently in preview/beta.
+
+The Voice API needs no extra parameters, use the [common client](#client-initialization) based in project authentication shown above.
 
 
 ### Your First Request
