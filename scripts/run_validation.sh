@@ -14,6 +14,14 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+# Load repo-root .env if present.
+if [ -f "$REPO_DIR/.env" ]; then
+  set -a
+  source "$REPO_DIR/.env"
+  set +a
+fi
+
 MOCKSERVER_DIR="${MOCKSERVER_DIR:-$(dirname "$REPO_DIR")/sinch-sdk-mockserver}"
 
 SKIP_E2E=false
@@ -90,7 +98,7 @@ safe_cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/con
 safe_cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/voice-v2/calls.feature ./tests/e2e/voice/v2/features/
+safe_cp "$MOCKSERVER_DIR"/features/voice-v2/* ./tests/e2e/voice/v2/features/
 
 python -m behave tests/e2e/numbers/features
 python -m behave tests/e2e/sms/features

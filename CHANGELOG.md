@@ -45,6 +45,8 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 - **[feature]** New Voice domain, exposing the [Voice API v2](https://developers.sinch.com/docs/voice-2.0) under (`sinch_client.voice.v2`).
 - **[feature]** Voice V2 Calls API: `start` operation to create and initiate an outbound call or a batch of outbound call sessions.
+- **[feature]** Voice V2 Batches API: `get`, `get_details`, and `stop` operations to retrieve, inspect, and stop call batches.
+- **[feature]** Voice V2 Sessions API: `get` operation to retrieve a session.
 
 
 ---
