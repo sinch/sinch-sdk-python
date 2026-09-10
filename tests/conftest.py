@@ -6,6 +6,7 @@ from unittest.mock import Mock, MagicMock
 import pytest
 from typing import Optional
 from sinch import SinchClient
+from sinch.core.internal.sinch_events.utils import build_string_to_sign, compute_content_md5, compute_signature
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.v1.authentication import OAuthToken
 from pydantic import BaseModel
@@ -20,6 +21,15 @@ def parse_iso_datetime(iso_string):
     if iso_string.endswith('Z'):
         iso_string = iso_string[:-1] + '+00:00'
     return datetime.fromisoformat(iso_string)
+
+def generate_service_authentication_header(method, path, headers, body, service_secret, service_id):
+    """Compute a valid Authorization header for the given request, using the SDK's own signing helpers."""
+    content_md5 = compute_content_md5(body)
+    string_to_sign = build_string_to_sign(
+        method, content_md5, headers["content-type"], headers["x-timestamp"], path
+    )
+    signature = compute_signature(string_to_sign, service_secret)
+    return f"service {service_id}:{signature}"
 
 
 class SMSBasePaginationRequest(BaseModel):

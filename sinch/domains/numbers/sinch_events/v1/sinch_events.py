@@ -3,10 +3,12 @@ from typing import Any, Dict, Optional, Union
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_signature_header,
 )
-from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
+from sinch.core.internal.sinch_events.utils import (
     decode_payload,
-    normalize_iso_timestamp,
     parse_json,
+)
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
+    normalize_iso_timestamp,
 )
 from sinch.domains.numbers.sinch_events.v1.events import (
     NumberSinchEventAdapter,

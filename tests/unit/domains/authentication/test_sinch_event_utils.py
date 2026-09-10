@@ -1,23 +1,8 @@
 import pytest
 from datetime import datetime, timezone
 from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
-    parse_json,
     normalize_iso_timestamp,
 )
-
-
-class TestParseJson:
-    def test_parse_json_expects_valid_json_string(self):
-        """Test parse_json with a valid JSON string."""
-        json_string = '{"key": "value", "number": 123}'
-        result = parse_json(json_string)
-        assert result == {"key": "value", "number": 123}
-
-    def test_parse_json_expects_invalid_json_raises_value_error(self):
-        """Test parse_json with invalid JSON raises ValueError."""
-        invalid_json = '{"key": "value"'
-        with pytest.raises(ValueError, match="Failed to decode JSON"):
-            parse_json(invalid_json)
 
 
 class TestNormalizeIsoTimestamp:

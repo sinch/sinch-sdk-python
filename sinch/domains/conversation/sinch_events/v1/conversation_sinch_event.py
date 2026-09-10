@@ -3,9 +3,11 @@ from typing import Any, Dict, Union, Optional
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_sinch_event_signature_with_nonce,
 )
-from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
+from sinch.core.internal.sinch_events.utils import (
     decode_payload,
     parse_json,
+)
+from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     normalize_iso_timestamp,
 )
 from sinch.domains.conversation.models.v1.sinch_events import (
