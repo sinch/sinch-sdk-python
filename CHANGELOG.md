@@ -84,7 +84,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ### Number Lookup
 
-- **[feature]** Number Lookup v1 (lookup API, models, snippets, and E2E coverage).
+- **[feature]** Number Lookup v2 (lookup API, models, snippets, and E2E coverage).
 
 ### SMS
 
