@@ -96,7 +96,7 @@ pip install sinch
 | Messaging         | [Conversation API](https://developers.sinch.com/docs/conversation/)   |
 |                   | [SMS API](https://developers.sinch.com/docs/sms/)     |
 | Numbers           | [Numbers API](https://developers.sinch.com/docs/numbers/)                   |
-| Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup/) |
+| Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup-api-v2/) |
 
 > **Note:** The SMS API is end-of-sale. New integrations should use the [Conversation API](https://developers.sinch.com/docs/conversation/) instead, which supports SMS and many other channels.
 
