@@ -2,16 +2,18 @@ from typing import Dict, Optional
 
 from pydantic import Field, StrictStr, conlist
 
+from sinch.domains.voice.models.v2.calls.internal.request.idempotency_key_request import (
+    IdempotencyKeyRequest,
+)
 from sinch.domains.voice.models.v2.calls.shared.batch_options import (
     BatchOptions,
 )
-from sinch.domains.voice.models.v2.internal.base.base_model_configuration import (
-    BaseModelConfiguration,
+from sinch.domains.voice.models.v2.svaml.shared.svaml_command import (
+    SvamlCommand,
 )
-from sinch.domains.voice.models.v2.svaml.shared.svaml_command import SvamlCommand
 
 
-class StartCallRequest(BaseModelConfiguration):
+class StartCallRequest(IdempotencyKeyRequest):
     commands: conlist(SvamlCommand) = Field(
         default=...,
         description="An ordered list of SVAML v2 (Sinch Voice Application Markup Language) commands that describe a call flow. Commands are executed sequentially in the order they are defined.",

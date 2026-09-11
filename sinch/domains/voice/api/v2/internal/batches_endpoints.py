@@ -14,7 +14,6 @@ from sinch.domains.voice.models.v2.batches.response.batch_summary_response impor
 
 
 class GetBatchCallSummaryEndpoint(VoiceEndpoint):
-    UNSET_SERIALIZATION = True
     ENDPOINT_URL = "{origin}/v2/projects/{project_id}/batches/{batch_id}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -29,7 +28,6 @@ class GetBatchCallSummaryEndpoint(VoiceEndpoint):
 
 
 class StopBatchProcessingEndpoint(VoiceEndpoint):
-    UNSET_SERIALIZATION = True
     ENDPOINT_URL = "{origin}/v2/projects/{project_id}/batches/{batch_id}"
     HTTP_METHOD = HTTPMethods.DELETE.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
@@ -44,7 +42,6 @@ class StopBatchProcessingEndpoint(VoiceEndpoint):
 
 
 class GetBatchDetailsEndpoint(VoiceEndpoint):
-    UNSET_SERIALIZATION = True
     ENDPOINT_URL = (
         "{origin}/v2/projects/{project_id}/batches/{batch_id}/details"
     )

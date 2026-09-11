@@ -11,12 +11,12 @@ from sinch.domains.voice.models.v2.calls.response.start_call_response import (
 
 
 class StartCallEndpoint(VoiceEndpoint):
-    UNSET_SERIALIZATION = True
     ENDPOINT_URL = "{origin}/v2/projects/{project_id}/calls"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     QUERY_PARAM_FIELDS = {"service_id"}
+    HEADER_PARAM_FIELDS = {"idempotency_key"}
 
     def __init__(
         self,

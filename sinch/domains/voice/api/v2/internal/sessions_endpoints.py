@@ -11,7 +11,6 @@ from sinch.domains.voice.models.v2.sessions.response.session_response import (
 
 
 class GetSessionEndpoint(VoiceEndpoint):
-    UNSET_SERIALIZATION = True
     ENDPOINT_URL = "{origin}/v2/projects/{project_id}/sessions/{session_id}"
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value

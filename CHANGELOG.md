@@ -25,6 +25,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[fix]** Query parameters are now serialized with `mode="json"`, so `date`/`datetime` (and other non-primitive) values are sent in their proper JSON string form instead of being coerced via `str()`. Affects the endpoints with `date`/`datetime` query parameters: `ListBatchesEndpoint`, `ListDeliveryReportsEndpoint`, `ListInboundsEndpoint`, and `ListMessagesEndpoint`.
 - **[feature]** Added an `UNSET`/`Unset`/`UnsetOr` sentinel (exported from `sinch.core`) to distinguish an omitted optional parameter from an explicit `None`. New endpoints opt in via `UNSET_SERIALIZATION`, so an explicit `None` is sent as `null` while omitted fields are dropped; already-deployed endpoints keep the legacy behavior until 3.0.
 - **[feature]** `HTTP 429` retries are now applied to every endpoint and are configurable via `Configuration(retry_configuration=RetryConfiguration(...))`: `retry_policy` (`RetryPolicy.DEFAULT`/`RETRY_AFTER`/`BACKOFF`/`NONE`), `max_retries` (default `3`), and `backoff_growth` (default `4`).
+- **[feature]** `BaseHTTPEndpoint` gains `HEADER_PARAM_FIELDS` / `build_headers()`, mirroring `QUERY_PARAM_FIELDS`, so request-data fields can be declared to be sent as headers. Headers are built once per request and reused unchanged across automatic retries.
 
 ### Numbers
 

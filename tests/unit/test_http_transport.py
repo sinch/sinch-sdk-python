@@ -15,7 +15,7 @@ from sinch.domains.authentication.models.v1.authentication import OAuthToken
 
 
 # Mock classes and fixtures
-def _make_mock_endpoint(auth_type, error_on_4xx=False):
+def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None):
     """Create a MockEndpoint that satisfies the abstract property contract."""
 
     class _Endpoint(HTTPEndpoint):
@@ -35,6 +35,9 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False):
 
         def build_query_params(self):
             return {}
+
+        def build_headers(self):
+            return build_headers() if build_headers else None
 
         def handle_response(self, response: HTTPResponse):
             if error_on_4xx and response.status_code >= 400:
@@ -152,6 +155,29 @@ class TestHTTPTransport:
 
         with pytest.raises(ValidationException):
             transport.authenticate(endpoint, base_request)
+
+
+class TestPrepareRequest:
+
+    def test_merges_endpoint_headers(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            build_headers=lambda: {"Idempotency-Key": "abc123"},
+        )
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.headers["Idempotency-Key"] == "abc123"
+        assert "User-Agent" in request_data.headers
+
+    def test_endpoint_without_headers_only_sends_user_agent(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert list(request_data.headers) == ["User-Agent"]
 
 
 class TestSend:
@@ -357,6 +383,29 @@ class TestRetryWithBackoff:
         transport.request(endpoint)
 
         no_sleep.assert_called_once_with(7.0)
+
+    def test_headers_built_once_are_reused_across_retries(self, mock_sinch, no_sleep, no_jitter):
+        """endpoint.build_headers() is only consulted once per request() call, so a
+        header like Idempotency-Key stays identical across every automatic retry."""
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(side_effect=[
+            self._rate_limited(),
+            self._rate_limited(),
+            _requests_response(200, body={"ok": True}),
+        ])
+        build_headers = Mock(side_effect=lambda: {"Idempotency-Key": "fixed-key"})
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value, build_headers=build_headers
+        )
+
+        transport.request(endpoint)
+
+        build_headers.assert_called_once()
+        sent_headers = [
+            call.kwargs["headers"]["Idempotency-Key"]
+            for call in transport.http_session.request.call_args_list
+        ]
+        assert sent_headers == ["fixed-key", "fixed-key", "fixed-key"]
 
     def test_no_retry_when_policy_is_none(self, mock_sinch, no_sleep, no_jitter):
         mock_sinch.configuration.retry_manager = RetryManager(RetryConfiguration(retry_policy=RetryPolicy.NONE))

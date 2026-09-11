@@ -53,6 +53,7 @@ def request_data(commands):
         service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
         parameters=[{"numberB": "+15559876544"}],
         batch_options={"max_cps": 10, "ttl_seconds": 3600},
+        idempotency_key="my-custom-key",
     )
 
 
@@ -139,13 +140,24 @@ def test_request_body_expects_correct_serialization(endpoint):
     assert body["batchOptions"] == {"maxCps": 10, "ttlSeconds": 3600}
 
 
-def test_request_body_expects_path_and_query_params_excluded(endpoint):
-    """Test that path params and query params never leak into the body."""
+def test_request_body_expects_path_query_params_and_headers_excluded(endpoint):
+    """Test that path params, query params, and headers never leak into the body."""
     body = json.loads(endpoint.request_body())
 
     assert "project_id" not in body
     assert "service_id" not in body
     assert "serviceId" not in body
+    assert "Idempotency-Key" not in body
+
+
+def test_build_headers_expects_correct_serialization(commands):
+    """Test that headers defined in the endpoint are correctly built."""
+    endpoint = StartCallEndpoint(
+        "test_project_id",
+        StartCallRequest(commands=commands, idempotency_key="my-custom-key"),
+    )
+
+    assert endpoint.build_headers() == {"Idempotency-Key": "my-custom-key"}
 
 
 def test_request_body_accepts_none_fields_and_exclude_unset_fields(commands):
