@@ -1,6 +1,7 @@
 from logging import Logger
 from typing import Union
 
+from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.enums import VoiceRegionEnum
 from sinch.core.token_manager import TokenManager
@@ -42,6 +43,7 @@ class SinchClient:
         conversation_region: str = None,
         voice_region: Union[VoiceRegionEnum, str] = VoiceRegionEnum.GLOBAL,
         transform_kwargs_casing: bool = True,
+        retry_configuration: RetryConfiguration = None,
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -57,6 +59,7 @@ class SinchClient:
             conversation_region=conversation_region,
             voice_region=voice_region,
             transform_kwargs_casing=transform_kwargs_casing,
+            retry_configuration=retry_configuration,
         )
 
         self.authentication = Authentication(self)

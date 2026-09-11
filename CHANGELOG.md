@@ -24,6 +24,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[refactor]** Unified request body and query-parameter serialization across all domains behind a new `BaseHTTPEndpoint`. Concrete endpoints now only declare `ENDPOINT_URL`, `HTTP_METHOD`, `HTTP_AUTHENTICATION`, and optional `QUERY_PARAM_FIELDS` / `QUERY_PARAM_FIELDS_EXPLODE_FALSE` / `response_model`; per-domain base classes only implement `_get_origin` and `_raise_for_error`. Body and query-parameter serialization, previously duplicated in each endpoint's `request_body()` / `build_query_params()`, is now centralized in the base class with no change to the wire format.
 - **[fix]** Query parameters are now serialized with `mode="json"`, so `date`/`datetime` (and other non-primitive) values are sent in their proper JSON string form instead of being coerced via `str()`. Affects the endpoints with `date`/`datetime` query parameters: `ListBatchesEndpoint`, `ListDeliveryReportsEndpoint`, `ListInboundsEndpoint`, and `ListMessagesEndpoint`.
 - **[feature]** Added an `UNSET`/`Unset`/`UnsetOr` sentinel (exported from `sinch.core`) to distinguish an omitted optional parameter from an explicit `None`. New endpoints opt in via `UNSET_SERIALIZATION`, so an explicit `None` is sent as `null` while omitted fields are dropped; already-deployed endpoints keep the legacy behavior until 3.0.
+- **[feature]** `HTTP 429` retries are now applied to every endpoint and are configurable via `Configuration(retry_configuration=RetryConfiguration(...))`: `retry_policy` (`RetryPolicy.DEFAULT`/`RETRY_AFTER`/`BACKOFF`/`NONE`), `max_retries` (default `3`), and `backoff_growth` (default `4`).
 
 ### Numbers
 
@@ -34,7 +35,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ### Conversation
 
 - **[feature]** Conversation Apps API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
-- **[feature]** Conversation Contacts API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Contacts API: `create`, `get`, `list`, `update`, `delete`, `merge`, `get_channel_profile`, and `list_identity_conflicts` operations, with full model, endpoints and unit/e2e test coverage.
 - **[feature]**  New field `display_mode` added to `ChoiceOption` and `ChoiceOptionDict` to control whether a choice is transient or persistent in the message bubble.
 - **[deprecation notice]** `ConversationProcessingMode` and `ConversationRetentionPolicyType` are deprecated; they are unused by the SDK and will be removed in 3.0.
 - **[deprecation notice]** `ConversationMetadataReportView` is deprecated in favour of `ConversationMetadataReportViewType`; it will be removed in 3.0.

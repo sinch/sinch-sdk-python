@@ -13,8 +13,6 @@ from sinch.core.types import BM
 class HTTPEndpoint(ABC):
     """Minimal contract the transport layer needs to send any request."""
 
-    IS_RETRYABLE: bool = False
-
     @property
     @abstractmethod
     def ENDPOINT_URL(self) -> str:

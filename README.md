@@ -291,6 +291,50 @@ Logging configuration for this SDK utilizes following hierarchy:
 
 If all logging returned by this SDK needs to be disabled, usage of `NullHandler` provided by the standard `logging` module is advised.
 
+## Retry configuration
+
+When an API call or OAuth token request returns HTTP 429 (Too Many Requests), the SDK retries automatically. Configure this via `RetryConfiguration`, passed to `SinchClient` as `retry_configuration`; the same settings apply to product API calls and token fetches.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `retry_policy` | `RetryPolicy` | `RetryPolicy.DEFAULT` | `DEFAULT`: honor `Retry-After` when present, otherwise exponential backoff. `RETRY_AFTER`: retry only when a usable `Retry-After` header is present. `BACKOFF`: ignore `Retry-After` and use full-jitter exponential backoff. `NONE`: disable automatic retries. |
+| `max_retries` | `int` | `3` | Maximum retries after the first attempt before the error is surfaced to the caller. Must be zero or greater. |
+| `backoff_growth` | `int` | `4` | Growth factor for the backoff ceiling (`1000ms * backoff_growth^attempt`). The wait is a random value between 0 and that ceiling. Must be one or greater. |
+
+`Retry-After` may be a delay in seconds or an HTTP-date (RFC 7231). A small jitter (0–250 ms) is added so concurrent clients do not retry in lockstep. Invalid values are rejected.
+
+### Retry settings
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.retry_configuration import RetryConfiguration
+from sinch.core.enums import RetryPolicy
+
+sinch = SinchClient(
+    ...,
+    retry_configuration=RetryConfiguration(
+        retry_policy=RetryPolicy.BACKOFF,
+        max_retries=5,
+        backoff_growth=2,
+    ),
+)
+```
+
+### Disable Retry Policy
+
+To disable automatic retries (for example when an outer HTTP layer already honors `Retry-After`):
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.retry_configuration import RetryConfiguration
+from sinch.core.enums import RetryPolicy
+
+sinch = SinchClient(
+    ...,
+    retry_configuration=RetryConfiguration(retry_policy=RetryPolicy.NONE),
+)
+```
+
 ## Handling exceptions
 
 Each API throws a custom, API related exception for an unsuccessful backed call.

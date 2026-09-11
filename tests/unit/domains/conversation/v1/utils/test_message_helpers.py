@@ -107,7 +107,6 @@ class TestCoerceRecipient:
             result.identified_by.channel_identities[0].identity == "+46701234567"
         )
 
-
 class TestSplitSendKwargs:
 
     @pytest.mark.parametrize(
