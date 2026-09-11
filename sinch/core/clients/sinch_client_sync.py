@@ -1,4 +1,5 @@
 from logging import Logger
+from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
@@ -37,6 +38,7 @@ class SinchClient:
         sms_region: str = None,
         conversation_region: str = None,
         transform_kwargs_casing: bool = True,
+        retry_configuration: RetryConfiguration = None,
     ):
         self.configuration = Configuration(
             key_id=key_id,
@@ -51,6 +53,7 @@ class SinchClient:
             sms_region=sms_region,
             conversation_region=conversation_region,
             transform_kwargs_casing=transform_kwargs_casing,
+            retry_configuration=retry_configuration,
         )
 
         self.authentication = Authentication(self)

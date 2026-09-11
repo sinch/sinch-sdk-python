@@ -2,6 +2,8 @@ import logging
 import warnings
 from logging import Logger
 
+from sinch.core.clients.retry_configuration import RetryConfiguration
+from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.ports.http_transport import HTTPTransport
 from sinch.core.token_manager import TokenManager
 
@@ -35,6 +37,7 @@ class Configuration:
         sms_region: str = None,
         conversation_region: str = None,
         transform_kwargs_casing: bool = True,
+        retry_configuration: RetryConfiguration = None,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
@@ -43,6 +46,8 @@ class Configuration:
         self.sms_api_token = sms_api_token
         self.service_plan_id = service_plan_id
         self.transform_kwargs_casing = transform_kwargs_casing
+        self.retry_configuration = retry_configuration or RetryConfiguration()
+        self.retry_manager = RetryManager(self.retry_configuration)
 
         # Determine authentication method based on provided parameters
         self._authentication_method = self._determine_authentication_method()
