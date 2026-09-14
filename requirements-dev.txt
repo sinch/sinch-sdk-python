@@ -23,7 +23,7 @@ colorama==0.4.6
     #   sphinx
 coverage==7.10.7 ; python_full_version < '3.10'
     # via -r requirements.in
-coverage==7.16.0 ; python_full_version >= '3.10'
+coverage==7.16.1 ; python_full_version >= '3.10'
     # via -r requirements.in
 cucumber-expressions==18.0.1 ; python_full_version < '3.10'
     # via behave

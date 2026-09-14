@@ -1,4 +1,4 @@
-from typing import Literal, Optional, Union
+from typing import Literal
 
 from pydantic import Field, StrictStr
 
@@ -15,10 +15,4 @@ class StopMessagesCommand(BaseModelConfiguration):
         default=...,
         alias="messagesName",
         description="Name of the message sequence to stop, as set by `messagesName` in the `messages` command.",
-    )
-    flags: Optional[
-        Union[Literal["ONLY_PLAYING", "ALL_FROM_NOW_ON"], StrictStr]
-    ] = Field(
-        default=None,
-        description="Controls how much of the sequence is stopped - only the currently playing message or all remaining queued messages.",
     )

@@ -12,6 +12,7 @@ def test_call_expects_parsed_input():
         project_id="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
         service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
         session_id="01BX5ZZKBKACTAV9WEVGEMMVRB",
+        call_name="origin",
         bridge_name="my-bridge",
         batch_id="01BX5ZZKBKACTAV9WEVGEMMVRC",
         **{"from": {"type": "PHONE", "phone": {"number": "+15551234567"}}},
@@ -34,6 +35,7 @@ def test_call_expects_parsed_input():
     assert model.project_id == "5c5bf2b1-35ae-4825-ab89-457e07bb60e6"
     assert model.service_id == "6e124178-c29d-46a5-943c-5c2ae544aade"
     assert model.session_id == "01BX5ZZKBKACTAV9WEVGEMMVRB"
+    assert model.call_name == "origin"
     assert model.bridge_name == "my-bridge"
     assert model.batch_id == "01BX5ZZKBKACTAV9WEVGEMMVRC"
     assert isinstance(model.from_, Phone)
@@ -62,6 +64,7 @@ def test_call_expects_parsed_input():
     assert alias_dump["projectId"] == "5c5bf2b1-35ae-4825-ab89-457e07bb60e6"
     assert alias_dump["serviceId"] == "6e124178-c29d-46a5-943c-5c2ae544aade"
     assert alias_dump["sessionId"] == "01BX5ZZKBKACTAV9WEVGEMMVRB"
+    assert alias_dump["callName"] == "origin"
     assert alias_dump["bridgeName"] == "my-bridge"
     assert alias_dump["batchId"] == "01BX5ZZKBKACTAV9WEVGEMMVRC"
     assert alias_dump["startTime"] == "2025-02-10T09:00:00Z"
@@ -96,6 +99,7 @@ def test_call_expects_all_optionals_default_to_none():
         call_resource_url="https://voice.api.sinch.com/v2/projects/5c5bf2b1-35ae-4825-ab89-457e07bb60e6/calls/01ARZ3NDEKTSV4RRFFQ69G5FAA",
     )
 
+    assert model.call_name is None
     assert model.bridge_name is None
     assert model.batch_id is None
     assert model.from_ is None

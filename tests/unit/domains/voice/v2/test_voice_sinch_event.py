@@ -45,6 +45,7 @@ def call_payload():
         "projectId": "5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
         "serviceId": "a74b1566-0f18-4f8e-9c23-8e6b5df8fd3e",
         "sessionId": "01AN4Z07BY79KA1307SR9X4MV2",
+        "callName": "origin",
         "direction": "INBOUND",
         "originationType": "PHONE",
         "callType": "PHONE",
