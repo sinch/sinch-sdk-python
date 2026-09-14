@@ -153,4 +153,8 @@ CLAUDE.local.md
 qodana.yaml
 
 # AI stuff
-.claude
+.claude/*
+!.claude/settings.json
+!.claude/hooks/
+!.claude/context/
+.claude/hooks/checks/
