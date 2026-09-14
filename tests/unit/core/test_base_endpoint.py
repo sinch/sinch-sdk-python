@@ -2,15 +2,15 @@
 
 Covers build_url, request_body (legacy exclude_none dump and opt-in
 UNSET_SERIALIZATION exclude_unset dump, including how non-None defaults
-behave under each mode), build_query_params (identical in both modes) and
-handle_response.
+behave under each mode), build_query_params, build_headers (identical in
+both modes) and handle_response.
 """
 
 import json
 from typing import List, Literal, Optional
 
 import pytest
-from pydantic import BaseModel, StrictStr
+from pydantic import BaseModel, Field, StrictStr
 
 from sinch.core.endpoint import BaseHTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
@@ -23,6 +23,8 @@ class _Request(BaseConfigModel):
     kind: Literal["fixed"] = "fixed"
     limit: Optional[int] = None
     channels: Optional[List[str]] = None
+    token: Optional[str] = Field(default=None, alias="X-Token")
+    tags: Optional[List[str]] = Field(default=None, alias="X-Tags")
 
 
 class _Response(BaseModel):
@@ -53,6 +55,10 @@ class _LegacyEndpoint(BaseHTTPEndpoint):
 
 class _UnsetEndpoint(_LegacyEndpoint):
     UNSET_SERIALIZATION = True
+
+
+class _HeaderEndpoint(_UnsetEndpoint):
+    HEADER_PARAM_FIELDS = {"token", "tags"}
 
 
 def _body(endpoint) -> dict:
@@ -91,6 +97,17 @@ class TestRequestBody:
         assert "item_id" not in body
         assert "limit" not in body
         assert "channels" not in body
+
+    def test_header_fields_are_excluded_from_body(self):
+        endpoint = _HeaderEndpoint(
+            "project", _Request(item_id="123", token="secret", tags=["a", "b"])
+        )
+        body = _body(endpoint)
+
+        assert "token" not in body
+        assert "X-Token" not in body
+        assert "tags" not in body
+        assert "X-Tags" not in body
 
     # Legacy mode (UNSET_SERIALIZATION = False)
 
@@ -174,6 +191,32 @@ class TestBuildQueryParams:
         )
 
         assert endpoint.build_query_params() == {"channels": "SMS,RCS"}
+
+
+class TestBuildHeaders:
+    def test_no_header_fields_declared_returns_empty_dict(self):
+        endpoint = _UnsetEndpoint("project", _Request(item_id="123"))
+
+        assert endpoint.build_headers() == {}
+
+    def test_none_header_field_is_omitted(self):
+        endpoint = _HeaderEndpoint("project", _Request(item_id="123"))
+
+        assert endpoint.build_headers() == {}
+
+    def test_provided_header_field_uses_alias_as_header_name(self):
+        endpoint = _HeaderEndpoint(
+            "project", _Request(item_id="123", token="secret")
+        )
+
+        assert endpoint.build_headers() == {"X-Token": "secret"}
+
+    def test_list_header_field_is_comma_joined(self):
+        endpoint = _HeaderEndpoint(
+            "project", _Request(item_id="123", tags=["a", "b"])
+        )
+
+        assert endpoint.build_headers() == {"X-Tags": "a,b"}
 
 
 class TestHandleResponse:

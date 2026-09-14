@@ -15,6 +15,15 @@ class HTTPAuthentication(Enum):
     SMS_TOKEN = "SMS_TOKEN"
 
 
+class VoiceRegionEnum(str, Enum):
+    GLOBAL = ""
+    NORTH_AMERICA = "us1"
+    SOUTH_AMERICA = "br1"
+    EUROPE = "eu1"
+    ASIA_PACIFIC = "sg1"
+    AUSTRALIA = "au1"
+
+    
 class RetryPolicy(Enum):
     #: Honor a ``Retry-After`` header if present, otherwise fall back to backoff.
     DEFAULT = "DEFAULT"

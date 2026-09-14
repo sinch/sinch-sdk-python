@@ -36,6 +36,10 @@ class HTTPEndpoint(ABC):
         """Builds the query string parameters sent with the request."""
         return None
 
+    def build_headers(self) -> Optional[dict]:
+        """Builds the request-specific headers sent with the request."""
+        return None
+
     def request_body(self) -> Optional[Union[str, dict]]:
         """
         Builds the request body sent with the request.
@@ -73,6 +77,10 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
     QUERY_PARAM_FIELDS: set = set()
     #: request_data fields sent as query params with explode=false (comma-separated values).
     QUERY_PARAM_FIELDS_EXPLODE_FALSE: set = set()
+
+    # Always pass the field name for HEADER_PARAM_FIELDS, not the alias
+    #: request_data fields sent as request headers. The field's alias is used as the header name.
+    HEADER_PARAM_FIELDS: set = set()
 
     def __init__(
         self,
@@ -119,13 +127,29 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
             )
             query_params.update(query_params_to_comma_joined_lists(exploded, exploded.keys()))
         return query_params
-    
+
+    def build_headers(self) -> dict[str, str]:
+        """Builds the request headers sent with the request, from HEADER_PARAM_FIELDS. The field's alias is used as the header name.
+
+        A list value is comma-joined into a single header.
+        """
+        headers: dict[str, str] = {}
+        if self.HEADER_PARAM_FIELDS:
+            values = self.request_data.model_dump(
+                mode="json", by_alias=True, exclude_none=True,
+                include=self.HEADER_PARAM_FIELDS,
+            )
+            values = query_params_to_comma_joined_lists(values, values.keys())
+            headers.update({name: str(value) for name, value in values.items()})
+        return headers
+
     def _build_body_data(self) -> dict[str, Any]:
-        """Builds the request body fields as a dict, excluding path params, QUERY_PARAM_FIELDS and QUERY_PARAM_FIELDS_EXPLODE_FALSE."""
+        """Builds the request body fields as a dict, excluding path params, QUERY_PARAM_FIELDS, QUERY_PARAM_FIELDS_EXPLODE_FALSE and HEADER_PARAM_FIELDS."""
         exclude = (
             self._get_path_params_from_url()
             | self.QUERY_PARAM_FIELDS
             | self.QUERY_PARAM_FIELDS_EXPLODE_FALSE
+            | self.HEADER_PARAM_FIELDS
         )
         if self.UNSET_SERIALIZATION:
             return self.request_data.model_dump(

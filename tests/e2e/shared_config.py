@@ -9,6 +9,7 @@ NUMBERS_ORIGIN = f'{MOCKSERVER_BASE_URL}/numbers'
 SMS_ORIGIN = f'{MOCKSERVER_BASE_URL}/sms'
 NUMBER_LOOKUP_ORIGIN = f'{MOCKSERVER_BASE_URL}/number-lookup'
 CONVERSATION_ORIGIN = f'{MOCKSERVER_BASE_URL}/conversation'
+VOICE_V2_ORIGIN = f'{MOCKSERVER_BASE_URL}/voice-v2'
 
 
 def create_test_client():
@@ -24,6 +25,7 @@ def create_test_client():
     client.configuration.sms_origin = SMS_ORIGIN
     client.configuration.number_lookup_origin = NUMBER_LOOKUP_ORIGIN
     client.configuration.conversation_origin = CONVERSATION_ORIGIN
+    client.configuration.voice_v2_origin = VOICE_V2_ORIGIN
     return client
 
 

@@ -3,6 +3,7 @@ import threading
 import pytest
 from sinch import SinchClient
 from sinch.core.clients.sinch_client_configuration import Configuration
+from sinch.core.enums import VoiceRegionEnum
 from sinch.core.models.internal.base_model_config import (
     _transform_kwargs_casing,
     transform_kwargs_casing_scope,
@@ -71,6 +72,40 @@ def test_sinch_client_expects_conversation_region_error_when_not_provided():
     
     with pytest.raises(ValueError, match="Conversation region is required"):
         sinch_client.configuration.get_conversation_origin()
+
+
+def test_sinch_client_expects_voice_region_default_global():
+    """ Test that SinchClient defaults voice_region to GLOBAL when not provided """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id",
+    )
+    assert sinch_client.configuration.voice_region == VoiceRegionEnum.GLOBAL
+    assert sinch_client.configuration.voice_v2_origin == "https://voice.api.sinch.com"
+
+
+def test_sinch_client_expects_to_be_initialized_with_voice_region():
+    """ Test that SinchClient can be initialized with a voice_region enum member """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id",
+        voice_region=VoiceRegionEnum.EUROPE,
+    )
+    assert sinch_client.configuration.voice_region == VoiceRegionEnum.EUROPE
+    assert sinch_client.configuration.voice_v2_origin == "https://eu1.voice.api.sinch.com"
+
+
+def test_sinch_client_expects_to_be_initialized_with_unlisted_voice_region_string():
+    """ Test that SinchClient accepts a raw string voice_region not present in VoiceRegionEnum """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id",
+        voice_region="eu2",
+    )
+    assert sinch_client.configuration.voice_v2_origin == "https://eu2.voice.api.sinch.com"
 
 
 class TestLegacyExtraFieldsNormalizationIsolation:

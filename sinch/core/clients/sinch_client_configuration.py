@@ -1,7 +1,9 @@
 import logging
 import warnings
 from logging import Logger
+from typing import Union
 
+from sinch.core.enums import VoiceRegionEnum
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.ports.http_transport import HTTPTransport
@@ -36,6 +38,7 @@ class Configuration:
         sms_api_token: str = None,
         sms_region: str = None,
         conversation_region: str = None,
+        voice_region: Union[VoiceRegionEnum, str] = VoiceRegionEnum.GLOBAL,
         transform_kwargs_casing: bool = True,
         retry_configuration: RetryConfiguration = None,
     ):
@@ -54,6 +57,8 @@ class Configuration:
         self.auth_origin = "https://auth.sinch.com"
         self.numbers_origin = "https://numbers.api.sinch.com"
         self.number_lookup_origin = "https://lookup.api.sinch.com"
+        self._voice_region = voice_region
+        self._voice_domain = "https://{}voice.api.sinch.com"
         self._conversation_region = conversation_region
         self._conversation_domain = "https://{}.conversation.api.sinch.com"
         self._sms_region = sms_region
@@ -63,6 +68,7 @@ class Configuration:
         self.token_manager = token_manager
         self.transport: HTTPTransport = transport
 
+        self._set_voice_origin()
         self._set_conversation_origin()
         self._set_sms_origin()
         self._set_sms_origin_with_service_plan_id()
@@ -138,6 +144,25 @@ class Configuration:
         _get_sms_domain,
         _set_sms_domain,
         doc="SMS Domain"
+    )
+
+    def _set_voice_origin(self):
+        region = self._voice_region
+        value = region.value if isinstance(region, VoiceRegionEnum) else region
+        prefix = f"{value}." if value else ""
+        self.voice_v2_origin = self._voice_domain.format(prefix)
+
+    def _set_voice_region(self, region):
+        self._voice_region = region
+        self._set_voice_origin()
+
+    def _get_voice_region(self):
+        return self._voice_region
+
+    voice_region = property(
+        _get_voice_region,
+        _set_voice_region,
+        doc="Voice Region"
     )
 
     def _set_conversation_origin(self):
