@@ -2,7 +2,7 @@ import pytest
 from pydantic import ValidationError
 
 from sinch.domains.voice.models.v2.sinch_events.incoming_call_events import (
-    IncomingCallEvents,
+    IncomingCallResponseEvents,
 )
 from sinch.domains.voice.models.v2.sinch_events.voice_sinch_event_response import (
     VoiceSinchEventResponse,
@@ -24,7 +24,7 @@ def test_voice_sinch_event_response_expects_parsed_input():
 
     assert isinstance(model.commands[0], HangupCommand)
     assert model.call_name == "incoming"
-    assert isinstance(model.events, IncomingCallEvents)
+    assert isinstance(model.events, IncomingCallResponseEvents)
     assert isinstance(model.events.on_hangup[0], HangupCommand)
 
     # Asserting aliases on dump by alias

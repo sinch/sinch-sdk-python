@@ -10,7 +10,7 @@ from sinch.domains.voice.models.v2.svaml.shared.svaml_command import (
 )
 
 
-class IncomingCallEvents(BaseModelConfiguration):
+class IncomingCallResponseEvents(BaseModelConfiguration):
     on_hangup: Optional[List[SvamlCommand]] = Field(
         default=None,
         alias="onHangup",

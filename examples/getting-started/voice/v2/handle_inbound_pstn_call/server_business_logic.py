@@ -65,15 +65,27 @@ def _handle_call_incoming(
                 "command": "dial",
                 "call_name": "agent",
                 "from_": {"type": "PHONE", "phone": {"number": sinch_number}},
-                "to": {"type": "PHONE", "phone": {"number": destination_number}},
+                "to": {
+                    "type": "PHONE",
+                    "phone": {"number": destination_number},
+                },
                 "dial_timeout_duration_seconds": 30,
                 "events": {
-                    "on_answer": [{"command": "bridgeCall", "bridge_name": "inbound-bridge"}],
-                    "on_hangup": [{"command": "hangup", "call_name": "incoming"}],
-                    "on_timeout": [{"command": "hangup", "call_name": "incoming"}],
+                    "on_answer": [
+                        {
+                            "command": "bridgeCall",
+                            "bridge_name": "inbound-bridge",
+                        }
+                    ],
+                    "on_hangup": [
+                        {"command": "hangup", "call_name": "incoming"}
+                    ],
+                    "on_timeout": [
+                        {"command": "hangup", "call_name": "incoming"}
+                    ],
                 },
             },
         ],
         call_name="incoming",
-        events={"on_hangup": [{"command": "hangup", "call_name": "agent"}]},
+        on_hangup=[{"command": "hangup", "call_name": "agent"}],
     )

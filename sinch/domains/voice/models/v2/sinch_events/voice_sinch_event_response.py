@@ -6,7 +6,7 @@ from sinch.domains.voice.models.v2.internal.base.base_model_configuration import
     BaseModelConfiguration,
 )
 from sinch.domains.voice.models.v2.sinch_events.incoming_call_events import (
-    IncomingCallEvents,
+    IncomingCallResponseEvents,
 )
 from sinch.domains.voice.models.v2.svaml.shared.svaml_command import (
     SvamlCommand,
@@ -25,7 +25,7 @@ class VoiceSinchEventResponse(BaseModelConfiguration):
 
 **Note:** This property only takes effect in responses to sinch events triggered by an incoming call. In responses to other sinch event types, it is ignored.""",
     )
-    events: Optional[IncomingCallEvents] = Field(
+    events: Optional[IncomingCallResponseEvents] = Field(
         default=None,
         description="""Commands to execute on specific events for this call.
 

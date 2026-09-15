@@ -9,7 +9,6 @@ import pytest
 from sinch.domains.voice import Voice
 from sinch.domains.voice.api.v2.sinch_events import SinchEvents
 from sinch.domains.voice.models.v2.sinch_events import (
-    MenuInput,
     VoiceSinchEventRequest,
     VoiceSinchEventResponse,
 )
@@ -135,12 +134,24 @@ def test_build_incoming_call_response_expects_call_name_and_events(voice_sinch_e
     response = voice_sinch_event.build_incoming_call_response(
         commands=[{"command": "hangup"}],
         call_name="incoming",
-        events={"on_hangup": [{"command": "hangup"}]},
+        on_hangup=[{"command": "hangup"}],
     )
     assert isinstance(response, VoiceSinchEventResponse)
     assert response.call_name == "incoming"
     assert len(response.events.on_hangup) == 1
     assert response.events.on_hangup[0].command == "hangup"
+
+
+def test_build_incoming_call_response_expects_call_name_and_events_unset(voice_sinch_event):
+    """Test that build_incoming_call_response sets call_name and leaves events unset when on_hangup is not provided."""
+    response = voice_sinch_event.build_incoming_call_response(
+        commands=[{"command": "hangup"}],
+        call_name="incoming",
+    )
+    assert isinstance(response, VoiceSinchEventResponse)
+    assert response.call_name == "incoming"
+    assert "events" not in response.model_fields_set
+    
 
 
 def test_validate_authentication_header_expects_true_for_valid_signature(valid_request):

@@ -8,9 +8,9 @@ from sinch.core.internal.sinch_events.utils import (
     parse_json,
 )
 from sinch.core.models.internal.utils import strip_unset
-from sinch.core.sentinel import UNSET, UnsetOr
-from sinch.domains.voice.models.v2.sinch_events.incoming_call_events_dict import (
-    IncomingCallEventsDict,
+from sinch.core.sentinel import UNSET, Unset, UnsetOr
+from sinch.domains.voice.models.v2.sinch_events.incoming_call_events import (
+    IncomingCallResponseEvents,
 )
 from sinch.domains.voice.models.v2.sinch_events.voice_sinch_event_request import (
     VoiceSinchEventRequest,
@@ -107,7 +107,7 @@ class SinchEvents:
         self,
         commands: List[SvamlCommandDict],
         call_name: UnsetOr[Optional[str]] = UNSET,
-        events: UnsetOr[Optional[IncomingCallEventsDict]] = UNSET,
+        on_hangup: UnsetOr[Optional[List[SvamlCommandDict]]] = UNSET,
     ) -> VoiceSinchEventResponse:
         """
         Build the SVAML response to return from the handler for a `call.incoming` sinch event.
@@ -116,17 +116,24 @@ class SinchEvents:
         :type commands: List[SvamlCommandDict]
         :param call_name: (optional) Name of the call.
         :type call_name: UnsetOr[Optional[str]]
-        :param events: (optional) Commands to execute on specific events for this call.
-        :type events: UnsetOr[Optional[IncomingCallEventsDict]]
+        :param on_hangup: (optional) Commands to execute when the call is hung up.
+        :type on_hangup: UnsetOr[Optional[List[SvamlCommandDict]]]
         :returns: The sinch event response, ready to be serialized.
         :rtype: VoiceSinchEventResponse
         """
+
+        events: UnsetOr[IncomingCallResponseEvents] = UNSET
+        if not isinstance(on_hangup, Unset):
+            events = IncomingCallResponseEvents(on_hangup=on_hangup)
+
         return VoiceSinchEventResponse(
             commands=commands,
             **strip_unset({"call_name": call_name, "events": events}),
         )
 
-    def serialize_response(self, response: VoiceSinchEventResponse) -> Dict[str, Any]:
+    def serialize_response(
+        self, response: VoiceSinchEventResponse
+    ) -> Dict[str, Any]:
         """
         Serialize a sinch event response into a JSON-ready dict.
 
@@ -135,4 +142,6 @@ class SinchEvents:
         :returns: The response body to return from the sinch event handler.
         :rtype: Dict[str, Any]
         """
-        return response.model_dump(mode="json", by_alias=True, exclude_unset=True)
+        return response.model_dump(
+            mode="json", by_alias=True, exclude_unset=True
+        )

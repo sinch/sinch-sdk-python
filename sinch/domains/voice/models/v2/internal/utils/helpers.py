@@ -8,6 +8,6 @@ def rename_wire_event_prefix(data):
         if event.startswith(_WIRE_EVENT_PREFIX):
             data = {
                 **data,
-                "event": _SDK_EVENT_PREFIX + event[len(_WIRE_EVENT_PREFIX):],
+                "event": _SDK_EVENT_PREFIX + event[len(_WIRE_EVENT_PREFIX) :],
             }
     return data
