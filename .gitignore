@@ -154,7 +154,3 @@ qodana.yaml
 
 # AI stuff
 .claude/*
-!.claude/settings.json
-!.claude/hooks/
-!.claude/context/
-.claude/hooks/checks/
