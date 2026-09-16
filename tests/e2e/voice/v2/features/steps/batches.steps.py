@@ -6,6 +6,9 @@ from sinch.domains.voice.models.v2.batches.response.batch_details_response impor
 from sinch.domains.voice.models.v2.batches.response.batch_summary_response import (
     BatchSummaryResponse,
 )
+from sinch.domains.voice.models.v2.batches.response.start_batch_response import (
+    StartBatchResponse,
+)
 
 BATCH_ID = "01M144V4N3GSTNVJ3V32TD7H9A"
 
@@ -15,6 +18,52 @@ def step_service_is_available(context):
     assert hasattr(context, 'sinch') and context.sinch, 'Sinch client was not initialized'
     assert isinstance(context.sinch.voice.v2.batches, Batches), 'Voice-V2 "Batches" service is not available'
     context.batches = context.sinch.voice.v2.batches
+
+@when('I send a request to start a batch of calls')
+def step_start_batch_of_calls(context):
+    context.response = context.batches.start(
+        commands=[
+            {
+                "command": "dial",
+                "call_name": "batch-reminder",
+                "from_": {"type": "PHONE", "phone": {"number": "+12015555555"}},
+                "to": {"type": "PHONE", "phone": {"number": "@toNumber"}},
+                "dial_timeout_duration_seconds": 30,
+                "max_call_duration_seconds": 120,
+                "events": {
+                    "on_answer": [
+                        {
+                            "command": "messages",
+                            "messages": [
+                                {
+                                    "type": "SAY",
+                                    "say": {
+                                        "text": "Hello, this is an automated reminder from Sinch. Goodbye.",
+                                        "voice_name": "Emma",
+                                    },
+                                }
+                            ],
+                            "events": {"on_finish": [{"command": "hangup"}]},
+                        }
+                    ],
+                    "on_hangup": [{"command": "hangup"}],
+                },
+            }
+        ],
+        parameters=[
+            {"toNumber": "+12017777777"},
+            {"toNumber": "+12018888888"},
+        ],
+        batch_options={"max_cps": 5, "ttl_seconds": 600},
+    )
+
+
+@then('the response contains the information about the batch started')
+def step_validate_start_batch(context):
+    data: StartBatchResponse = context.response
+    assert data.batch_id == '01HZXK9RSQNS9WE4KX0ZG3D5UC'
+    assert data.project_id == 'b2c3d4e5-f6a7-4890-b123-c4d5e6f7a890'
+    assert data.service_id == '0a1b2c3d-4e5f-4678-9abc-d1e2f3a4b5c6'
 
 
 @when('I send a request to get a batch call summary')

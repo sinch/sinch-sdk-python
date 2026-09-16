@@ -43,7 +43,6 @@ def test_calls_start_expects_correct_request(
             projectId="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             serviceId="6e124178-c29d-46a5-943c-5c2ae544aade",
             sessionId="01BX5ZZKBKACTAV9WEVGEMMVRB",
-            batchId="01BX5ZZKBKACTAV9WEVGEMMVRC",
         )
     )
     spy = mocker.spy(StartCallEndpoint, "__init__")
@@ -51,8 +50,6 @@ def test_calls_start_expects_correct_request(
     response = Voice(mock_sinch_client_voice).v2.calls.start(
         commands=commands,
         service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
-        parameters=[{"numberB": "+15559876544"}],
-        batch_options={"max_cps": 10, "ttl_seconds": 3600},
         idempotency_key="my-custom-key",
     )
 
@@ -69,30 +66,13 @@ def test_calls_start_expects_correct_request(
         events={"on_hangup": [{"command": "hangup"}]},
     )
     assert request_data.service_id == "6e124178-c29d-46a5-943c-5c2ae544aade"
-    assert request_data.parameters == [{"numberB": "+15559876544"}]
-    assert request_data.batch_options.max_cps == 10
-    assert request_data.batch_options.ttl_seconds == 3600
     assert isinstance(response, StartCallResponse)
     assert response.session_id == "01BX5ZZKBKACTAV9WEVGEMMVRB"
     assert response.project_id == "5c5bf2b1-35ae-4825-ab89-457e07bb60e6"
     assert response.service_id == "6e124178-c29d-46a5-943c-5c2ae544aade"
-    assert response.batch_id == "01BX5ZZKBKACTAV9WEVGEMMVRC"
     assert request_data.idempotency_key == "my-custom-key"
     mock_sinch_client_voice.configuration.transport.request.assert_called_once()
 
-
-def test_calls_start_expects_omitted_optionals_unset(
-    mock_sinch_client_voice, commands, mocker
-):
-    """Test that optional body parameters not passed by the caller stay unset."""
-    spy = mocker.spy(StartCallEndpoint, "__init__")
-
-    Voice(mock_sinch_client_voice).v2.calls.start(commands=commands)
-
-    _, kwargs = spy.call_args
-    request_data = kwargs["request_data"]
-    assert "parameters" not in request_data.model_fields_set
-    assert "batch_options" not in request_data.model_fields_set
 
 def test_calls_start_expects_omitted_optionals_with_default_values_to_be_generated(
     mock_sinch_client_voice, commands, mocker

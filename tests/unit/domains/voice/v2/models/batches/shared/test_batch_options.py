@@ -1,4 +1,4 @@
-from sinch.domains.voice.models.v2.calls.shared.batch_options import (
+from sinch.domains.voice.models.v2.batches.shared.batch_options import (
     BatchOptions,
 )
 

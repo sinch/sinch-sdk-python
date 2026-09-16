@@ -4,14 +4,14 @@ import pytest
 
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.voice.api.v2.exceptions import VoiceException
-from sinch.domains.voice.api.v2.internal.calls_endpoints import (
-    StartCallEndpoint,
+from sinch.domains.voice.api.v2.internal.batches_endpoints import (
+    StartBatchEndpoint,
 )
-from sinch.domains.voice.models.v2.calls.internal.request.start_call_request import (
-    StartCallRequest,
+from sinch.domains.voice.models.v2.batches.internal.request.start_batch_request import (
+    StartBatchRequest,
 )
-from sinch.domains.voice.models.v2.calls.response.start_call_response import (
-    StartCallResponse,
+from sinch.domains.voice.models.v2.batches.response.start_batch_response import (
+    StartBatchResponse,
 )
 
 
@@ -22,7 +22,7 @@ def commands():
             "command": "dial",
             "call_name": "origin",
             "from_": {"type": "PHONE", "phone": {"number": "+15551234567"}},
-            "to": {"type": "PHONE", "phone": {"number": "+15559876543"}},
+            "to": {"type": "PHONE", "phone": {"number": "@to_number"}},
             "dial_timeout_duration_seconds": 30,
             "max_call_duration_seconds": 3600,
             "events": {
@@ -48,16 +48,18 @@ def commands():
 
 @pytest.fixture
 def request_data(commands):
-    return StartCallRequest(
+    return StartBatchRequest(
         commands=commands,
+        parameters=[{"to_number": "+15559876544"}],
         service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
+        batch_options={"max_cps": 10, "ttl_seconds": 3600},
         idempotency_key="my-custom-key",
     )
 
 
 @pytest.fixture
 def endpoint(request_data):
-    return StartCallEndpoint("test_project_id", request_data)
+    return StartBatchEndpoint("test_project_id", request_data)
 
 
 @pytest.fixture
@@ -67,7 +69,7 @@ def mock_response():
         body={
             "projectId": "5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             "serviceId": "6e124178-c29d-46a5-943c-5c2ae544aade",
-            "sessionId": "01BX5ZZKBKACTAV9WEVGEMMVRB",
+            "batchId": "01BX5ZZKBKACTAV9WEVGEMMVRC",
         },
         headers={"Content-Type": "application/json"},
     )
@@ -104,9 +106,13 @@ def test_build_query_params_expects_service_id(endpoint):
 
 def test_build_query_params_expects_none_field_excluded(commands):
     """Test that a service_id passed as None is excluded from the query params."""
-    endpoint = StartCallEndpoint(
+    endpoint = StartBatchEndpoint(
         "test_project_id",
-        StartCallRequest(commands=commands, service_id=None),
+        StartBatchRequest(
+            commands=commands,
+            parameters=[{"to_number": "+15559876544"}],
+            service_id=None,
+        ),
     )
 
     assert endpoint.build_query_params() == {}
@@ -123,7 +129,7 @@ def test_request_body_expects_correct_serialization(endpoint):
         "type": "PHONE",
         "phone": {"number": "+15551234567"},
     }
-    assert dial["to"] == {"type": "PHONE", "phone": {"number": "+15559876543"}}
+    assert dial["to"] == {"type": "PHONE", "phone": {"number": "@to_number"}}
     assert dial["dialTimeoutDurationSeconds"] == 30
     assert dial["maxCallDurationSeconds"] == 3600
     on_answer = dial["events"]["onAnswer"][0]
@@ -133,6 +139,8 @@ def test_request_body_expects_correct_serialization(endpoint):
     assert message["say"]["text"] == "Hello, your call is now connected."
     assert message["say"]["voiceName"] == "Emma"
     assert dial["events"]["onHangup"] == [{"command": "hangup"}]
+    assert body["parameters"] == [{"to_number": "+15559876544"}]
+    assert body["batchOptions"] == {"maxCps": 10, "ttlSeconds": 3600}
 
 
 def test_request_body_expects_path_query_params_and_headers_excluded(endpoint):
@@ -147,22 +155,43 @@ def test_request_body_expects_path_query_params_and_headers_excluded(endpoint):
 
 def test_build_headers_expects_correct_serialization(commands):
     """Test that headers defined in the endpoint are correctly built."""
-    endpoint = StartCallEndpoint(
+    endpoint = StartBatchEndpoint(
         "test_project_id",
-        StartCallRequest(commands=commands, idempotency_key="my-custom-key"),
+        StartBatchRequest(
+            commands=commands,
+            parameters=[{"to_number": "+15559876544"}],
+            idempotency_key="my-custom-key",
+        ),
     )
 
     assert endpoint.build_headers() == {"Idempotency-Key": "my-custom-key"}
 
 
+def test_request_body_accepts_none_fields_and_exclude_unset_fields(commands):
+    """Test that an explicit None is sent as null and an omitted field is absent."""
+    endpoint = StartBatchEndpoint(
+        "test_project_id",
+        StartBatchRequest(
+            commands=commands,
+            parameters=[{"to_number": "+15559876544"}],
+            batch_options=None,
+        ),
+    )
+    body = json.loads(endpoint.request_body())
+
+    assert body["commands"][0]["command"] == "dial"
+    assert body["batchOptions"] is None
+    assert "serviceId" not in body
+
+
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
-    """Test that the response is parsed and mapped into a StartCallResponse correctly."""
+    """Test that the response is parsed and mapped into a StartBatchResponse correctly."""
     parsed_response = endpoint.handle_response(mock_response)
 
-    assert isinstance(parsed_response, StartCallResponse)
+    assert isinstance(parsed_response, StartBatchResponse)
     assert parsed_response.project_id == "5c5bf2b1-35ae-4825-ab89-457e07bb60e6"
     assert parsed_response.service_id == "6e124178-c29d-46a5-943c-5c2ae544aade"
-    assert parsed_response.session_id == "01BX5ZZKBKACTAV9WEVGEMMVRB"
+    assert parsed_response.batch_id == "01BX5ZZKBKACTAV9WEVGEMMVRC"
 
 
 def test_handle_response_expects_voice_exception_on_error(
