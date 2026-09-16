@@ -191,3 +191,27 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
         if self.response_model is None:
             return None
         return self._process_response_model(response.body, self.response_model)
+
+
+class _StandardPaginatedLinkEndpoint:
+    """Delegates to a paginated endpoint but targets an absolute URL served by the API.
+
+    The URL already carries the pagination information along with every other query parameter,
+    so it is used as-is instead of being rebuilt from the request data.
+
+    :meta private:
+    """
+
+    def __init__(self, endpoint, url):
+        self._endpoint = endpoint
+        self._url = url
+
+    def __getattr__(self, name):
+        # everything but the URL is handled by the endpoint being paginated
+        return getattr(self._endpoint, name)
+
+    def build_url(self, sinch):
+        return self._url
+
+    def build_query_params(self):
+        return {}

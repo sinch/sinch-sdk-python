@@ -408,16 +408,19 @@ class Apps(BaseConversation):
     @overload
     def list(
         self, *, raw_response: Literal[False] = False, **kwargs
-    ) -> Paginator[AppCustomResponse]: ...
+    ) -> Paginator[ListAppsCustomResponse, AppCustomResponse]: ...
 
     @overload
     def list(
         self, *, raw_response: Literal[True], **kwargs
-    ) -> Paginator[AppResponse]: ...
+    ) -> Paginator[ListAppsResponse, AppResponse]: ...
 
     def list(
         self, *, raw_response: bool = False, **kwargs
-    ) -> Union[Paginator[AppResponse], Paginator[AppCustomResponse]]:
+    ) -> Union[
+        Paginator[ListAppsResponse, AppResponse],
+        Paginator[ListAppsCustomResponse, AppCustomResponse],
+    ]:
         """
         List all apps for the current project.
 
@@ -426,14 +429,14 @@ class Apps(BaseConversation):
             objects with ``channel_credentials`` as the server array.
         :type raw_response: bool
         :returns: A paginator for iterating through the apps.
-        :rtype: Union[Paginator[AppResponse], Paginator[AppCustomResponse]]
+        :rtype: Union[Paginator[ListAppsResponse, AppResponse], Paginator[ListAppsCustomResponse, AppCustomResponse]]
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
         response_model = (
             ListAppsResponse if raw_response else ListAppsCustomResponse
         )
-        return TokenBasedPaginator(
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListAppsEndpoint(
                 project_id=self._sinch.configuration.project_id,

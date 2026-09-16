@@ -32,8 +32,14 @@ from sinch.domains.conversation.models.v1.contacts.internal.get_channel_profile_
 from sinch.domains.conversation.models.v1.contacts.internal.list_contacts_request import (
     ListContactsRequest,
 )
+from sinch.domains.conversation.models.v1.contacts.internal.list_contacts_response import (
+    ListContactsResponse,
+)
 from sinch.domains.conversation.models.v1.contacts.internal.list_identity_conflicts_request import (
     ListIdentityConflictsRequest,
+)
+from sinch.domains.conversation.models.v1.contacts.internal.list_identity_conflicts_response import (
+    ListIdentityConflictsResponse,
 )
 from sinch.domains.conversation.models.v1.contacts.internal.merge_contact_request import (
     MergeContactRequest,
@@ -80,7 +86,7 @@ class Contacts(BaseConversation):
         channel: Optional[ConversationChannelType] = None,
         identity: Optional[str] = None,
         **kwargs,
-    ) -> Paginator[ContactResponse]:
+    ) -> Paginator[ListContactsResponse, ContactResponse]:
         """
         List all contacts in the project. Note that, if a WhatsApp contact is returned,
         the ``display_name`` field of that contact may be populated with the WhatsApp
@@ -106,11 +112,11 @@ class Contacts(BaseConversation):
         :type **kwargs: dict
 
         :returns: A paginator for iterating through the contacts.
-        :rtype: Paginator[ContactResponse]
+        :rtype: Paginator[ListContactsResponse, ContactResponse]
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        return TokenBasedPaginator(
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListContactsEndpoint(
                 project_id=self._sinch.configuration.project_id,
@@ -460,7 +466,7 @@ class Contacts(BaseConversation):
         page_size: Optional[int] = None,
         page_token: Optional[str] = None,
         **kwargs,
-    ) -> Paginator[ContactIdentityConflict]:
+    ) -> Paginator[ListIdentityConflictsResponse, ContactIdentityConflict]:
         """
         Lists contact identity conflicts across supported SIM-based channels (SMS, MMS, RCS).
         Use this to identify contact records sharing the same identity (e.g., phone number),
@@ -474,11 +480,11 @@ class Contacts(BaseConversation):
         :type **kwargs: dict
 
         :returns: A paginator for iterating through the contact identity conflicts.
-        :rtype: Paginator[ContactIdentityConflict]
+        :rtype: Paginator[ListIdentityConflictsResponse, ContactIdentityConflict]
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        return TokenBasedPaginator(
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListIdentityConflictsEndpoint(
                 project_id=self._sinch.configuration.project_id,
