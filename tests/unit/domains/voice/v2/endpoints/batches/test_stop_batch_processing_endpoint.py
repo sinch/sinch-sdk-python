@@ -8,6 +8,9 @@ from sinch.domains.voice.api.v2.internal.batches_endpoints import (
 from sinch.domains.voice.models.v2.batches.internal.request.batch_id_request import (
     BatchIdRequest,
 )
+from sinch.domains.voice.models.v2.batches.response.batch_stop_response import (
+    BatchStopResponse,
+)
 
 
 @pytest.fixture
@@ -61,10 +64,11 @@ def test_request_body_expects_no_body(endpoint):
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
-    """Test that the response is parsed and returns none correctly."""
+    """Test that the response is parsed into a BatchStopResponse."""
     parsed_response = endpoint.handle_response(mock_response)
 
-    assert parsed_response is None
+    assert isinstance(parsed_response, BatchStopResponse)
+    assert parsed_response.result == "STOP_REQUESTED"
 
 
 def test_handle_response_expects_voice_exception_on_error(

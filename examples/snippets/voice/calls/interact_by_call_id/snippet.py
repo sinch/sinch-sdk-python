@@ -18,9 +18,14 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET",
 )
 
-# The ID of the batch call operation to stop
-batch_id = "BATCH_ID"
+# The ID of the ongoing call to interact with
+call_id = "CALL_ID"
 
-response = sinch_client.voice.v2.batches.stop(batch_id=batch_id)
+# The SVAML commands to interact with the ongoing call
+commands = [{"command": "hangup"}]
 
-print(f"Batch processing cancellation result: {response.result}")
+sinch_client.voice.v2.calls.interact_by_call_id(
+    call_id=call_id, commands=commands
+)
+
+print("Successfully submitted commands to the call.")

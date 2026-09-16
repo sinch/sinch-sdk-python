@@ -2,6 +2,9 @@ from sinch.domains.voice.models.v2.batches.response.batch_details_response impor
     BatchDetailsResponse,
     BatchSessionSummary,
 )
+from sinch.domains.voice.models.v2.batches.response.batch_stop_response import (
+    BatchStopResponse,
+)
 from sinch.domains.voice.models.v2.batches.response.batch_summary_response import (
     BatchSummaryResponse,
 )
@@ -12,6 +15,7 @@ from sinch.domains.voice.models.v2.batches.response.start_batch_response import 
 __all__ = [
     "BatchDetailsResponse",
     "BatchSessionSummary",
+    "BatchStopResponse",
     "BatchSummaryResponse",
     "StartBatchResponse",
 ]

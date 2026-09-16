@@ -19,6 +19,9 @@ from sinch.domains.voice.models.v2.batches.internal.request.start_batch_request 
 from sinch.domains.voice.models.v2.batches.response.batch_details_response import (
     BatchDetailsResponse,
 )
+from sinch.domains.voice.models.v2.batches.response.batch_stop_response import (
+    BatchStopResponse,
+)
 from sinch.domains.voice.models.v2.batches.response.batch_summary_response import (
     BatchSummaryResponse,
 )
@@ -199,7 +202,9 @@ def test_batches_get_details_expects_correct_request(
 
 def test_batches_stop_expects_correct_request(mock_sinch_client_voice, mocker):
     """Test that all parameters of stop are mapped onto the request model."""
-    mock_sinch_client_voice.configuration.transport.request.return_value = None
+    mock_sinch_client_voice.configuration.transport.request.return_value = (
+        BatchStopResponse(result="STOP_REQUESTED")
+    )
     spy = mocker.spy(StopBatchProcessingEndpoint, "__init__")
 
     response = Voice(mock_sinch_client_voice).v2.batches.stop(
@@ -212,5 +217,6 @@ def test_batches_stop_expects_correct_request(mock_sinch_client_voice, mocker):
     assert kwargs["project_id"] == "test_project_id"
     assert isinstance(request_data, BatchIdRequest)
     assert request_data.batch_id == "01BX5ZZKBKACTAV9WEVGEMMVRC"
-    assert response is None
+    assert isinstance(response, BatchStopResponse)
+    assert response.result == "STOP_REQUESTED"
     mock_sinch_client_voice.configuration.transport.request.assert_called_once()

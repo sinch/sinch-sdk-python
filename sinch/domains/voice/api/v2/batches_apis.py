@@ -18,6 +18,9 @@ from sinch.domains.voice.models.v2.batches.internal.request.start_batch_request 
 from sinch.domains.voice.models.v2.batches.response.batch_details_response import (
     BatchDetailsResponse,
 )
+from sinch.domains.voice.models.v2.batches.response.batch_stop_response import (
+    BatchStopResponse,
+)
 from sinch.domains.voice.models.v2.batches.response.batch_summary_response import (
     BatchSummaryResponse,
 )
@@ -108,7 +111,7 @@ class Batches(BaseVoice):
         request_data = BatchIdRequest(batch_id=batch_id, **kwargs)
         return self._request(GetBatchDetailsEndpoint, request_data)
 
-    def stop(self, batch_id: str, **kwargs) -> None:
+    def stop(self, batch_id: str, **kwargs) -> BatchStopResponse:
         """
         Stop processing a batch of call sessions. This will prevent any queued calls in the batch from being initiated. Calls that are already in progress will not be affected and will continue until completion.
 
@@ -116,8 +119,8 @@ class Batches(BaseVoice):
         :type batch_id: str
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
-        :returns: None
-        :rtype: None
+        :returns: The state of the batch processing cancellation request.
+        :rtype: BatchStopResponse
 
         For detailed documentation, visit https://developers.sinch.com/docs/voice/.
         """

@@ -5,6 +5,12 @@ from sinch.domains.voice.models.v2.shared.call_destination import (
 from sinch.domains.voice.models.v2.shared.call_header import CallHeader
 from sinch.domains.voice.models.v2.shared.call_origin import CallOrigin
 from sinch.domains.voice.models.v2.shared.money import Money
+from sinch.domains.voice.models.v2.shared.pagination_links import (
+    PaginationLinks,
+)
+from sinch.domains.voice.models.v2.shared.pagination_meta import (
+    PaginationMeta,
+)
 from sinch.domains.voice.models.v2.shared.phone import Phone, PhoneDetails
 from sinch.domains.voice.models.v2.shared.sip import Sip, SipDetails
 from sinch.domains.voice.models.v2.shared.sip_from import (
@@ -27,6 +33,8 @@ __all__ = [
     "CallHeader",
     "CallOrigin",
     "Money",
+    "PaginationLinks",
+    "PaginationMeta",
     "Phone",
     "PhoneDetails",
     "Sip",

@@ -11,6 +11,9 @@ from sinch.domains.voice.models.v2.batches.internal.request.start_batch_request 
 from sinch.domains.voice.models.v2.batches.response.batch_details_response import (
     BatchDetailsResponse,
 )
+from sinch.domains.voice.models.v2.batches.response.batch_stop_response import (
+    BatchStopResponse,
+)
 from sinch.domains.voice.models.v2.batches.response.batch_summary_response import (
     BatchSummaryResponse,
 )
@@ -59,7 +62,7 @@ class StopBatchProcessingEndpoint(VoiceEndpoint):
         self,
         project_id: str,
         request_data: BatchIdRequest,
-        response_model=None,
+        response_model=BatchStopResponse,
     ):
         super().__init__(project_id, request_data, response_model)
 

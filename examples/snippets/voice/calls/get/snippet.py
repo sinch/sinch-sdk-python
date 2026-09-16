@@ -18,9 +18,9 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET",
 )
 
-# The ID of the batch call operation to stop
-batch_id = "BATCH_ID"
+# The ID of the call to retrieve
+call_id = "CALL_ID"
 
-response = sinch_client.voice.v2.batches.stop(batch_id=batch_id)
+response = sinch_client.voice.v2.calls.get(call_id=call_id)
 
-print(f"Batch processing cancellation result: {response.result}")
+print(f"Successfully retrieved call details.\n{response}")

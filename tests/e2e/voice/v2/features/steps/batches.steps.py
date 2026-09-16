@@ -3,6 +3,9 @@ from sinch.domains.voice.api.v2.batches_apis import Batches
 from sinch.domains.voice.models.v2.batches.response.batch_details_response import (
     BatchDetailsResponse,
 )
+from sinch.domains.voice.models.v2.batches.response.batch_stop_response import (
+    BatchStopResponse,
+)
 from sinch.domains.voice.models.v2.batches.response.batch_summary_response import (
     BatchSummaryResponse,
 )
@@ -106,4 +109,5 @@ def step_stop_batch_processing(context):
 
 @then('the response confirms the batch stop request was accepted')
 def step_validate_stop_batch_processing(context):
-    assert context.response is None
+    data: BatchStopResponse = context.response
+    assert data.result == 'STOP_REQUESTED'
