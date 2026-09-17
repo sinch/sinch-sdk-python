@@ -8,20 +8,32 @@ from sinch.domains.voice.api.v2.internal.calls_endpoints import (
     ListCallsEndpoint,
     StartCallEndpoint,
     PatchCallByIdEndpoint,
-    PatchCallBySessionAndNameEndpoint
+    PatchCallBySessionAndNameEndpoint,
+)
+from sinch.domains.voice.api.v2.internal.services_endpoints import (
+    CreateServiceEndpoint,
+    DeleteServiceEndpoint,
+    GetServiceEndpoint,
+    ListServicesEndpoint,
+    UpdateServiceEndpoint,
 )
 from sinch.domains.voice.api.v2.internal.sessions_endpoints import (
     GetSessionEndpoint,
 )
 
 __all__ = [
+    "CreateServiceEndpoint",
+    "DeleteServiceEndpoint",
     "GetBatchCallSummaryEndpoint",
     "GetBatchDetailsEndpoint",
     "GetCallByIdEndpoint",
+    "GetServiceEndpoint",
     "GetSessionEndpoint",
     "ListCallsEndpoint",
+    "ListServicesEndpoint",
     "PatchCallByIdEndpoint",
     "PatchCallBySessionAndNameEndpoint",
     "StartCallEndpoint",
     "StopBatchProcessingEndpoint",
+    "UpdateServiceEndpoint",
 ]

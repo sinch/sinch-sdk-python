@@ -54,6 +54,7 @@ from sinch.domains.voice.models.v2.svaml.shared.stop_recording_command import (
 from sinch.domains.voice.models.v2.svaml.shared.svaml_command import (
     SvamlCommand,
 )
+from sinch.domains.voice.models.v2.svaml.shared.svaml_input import SvamlInput
 from sinch.domains.voice.models.v2.svaml.shared.transcription_options import (
     TranscriptionOptions,
 )
@@ -85,5 +86,6 @@ __all__ = [
     "StopMessagesCommand",
     "StopRecordingCommand",
     "SvamlCommand",
+    "SvamlInput",
     "TranscriptionOptions",
 ]

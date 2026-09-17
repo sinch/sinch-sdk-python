@@ -40,7 +40,7 @@ class Call(BaseModelConfiguration):
     call_name: Optional[StrictStr] = Field(
         default=None,
         alias="callName",
-        description="The name identifying this call leg within the session, as assigned by the `callName` property in the `dial` command or in the SVAML response to an incoming call webhook.\n\nOmitted for calls that were not assigned a name. Must be 1-32 characters with no whitespace. Regex pattern: `^\\S+$`.",
+        description="The name identifying this call leg within the session, as assigned by the `callName` property in the `dial` command or in the SVAML response to an incoming call event.\n\nOmitted for calls that were not assigned a name. Must be 1-32 characters with no whitespace. Regex pattern: `^\\S+$`.",
     )
     bridge_name: Optional[StrictStr] = Field(
         default=None,

@@ -77,6 +77,9 @@ from sinch.domains.voice.models.v2.svaml.types.stop_recording_command_dict impor
 from sinch.domains.voice.models.v2.svaml.types.svaml_command_dict import (
     SvamlCommandDict,
 )
+from sinch.domains.voice.models.v2.svaml.types.svaml_input_dict import (
+    SvamlInputDict,
+)
 from sinch.domains.voice.models.v2.svaml.types.transcription_options_dict import (
     TranscriptionOptionsDict,
 )
@@ -111,5 +114,6 @@ __all__ = [
     "StopMessagesCommandDict",
     "StopRecordingCommandDict",
     "SvamlCommandDict",
+    "SvamlInputDict",
     "TranscriptionOptionsDict",
 ]
