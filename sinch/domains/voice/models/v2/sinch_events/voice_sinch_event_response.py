@@ -5,7 +5,7 @@ from pydantic import Field, StrictStr
 from sinch.domains.voice.models.v2.internal.base.base_model_configuration import (
     BaseModelConfiguration,
 )
-from sinch.domains.voice.models.v2.sinch_events.incoming_call_events import (
+from sinch.domains.voice.models.v2.svaml.shared.incoming_call_response_events import (
     IncomingCallResponseEvents,
 )
 from sinch.domains.voice.models.v2.svaml.shared.svaml_command import (

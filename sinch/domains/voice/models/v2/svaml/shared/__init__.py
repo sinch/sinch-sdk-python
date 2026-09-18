@@ -17,6 +17,9 @@ from sinch.domains.voice.models.v2.svaml.shared.goto_menu_command import (
 from sinch.domains.voice.models.v2.svaml.shared.hangup_command import (
     HangupCommand,
 )
+from sinch.domains.voice.models.v2.svaml.shared.incoming_call_response_events import (
+    IncomingCallResponseEvents,
+)
 from sinch.domains.voice.models.v2.svaml.shared.menu_command import MenuCommand
 from sinch.domains.voice.models.v2.svaml.shared.menu_item import MenuItem
 from sinch.domains.voice.models.v2.svaml.shared.menu_prompt import MenuPrompt
@@ -88,4 +91,5 @@ __all__ = [
     "SvamlCommand",
     "SvamlInput",
     "TranscriptionOptions",
+    "IncomingCallResponseEvents",
 ]

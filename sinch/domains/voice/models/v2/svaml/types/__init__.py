@@ -25,6 +25,9 @@ from sinch.domains.voice.models.v2.svaml.types.goto_menu_command_dict import (
 from sinch.domains.voice.models.v2.svaml.types.hangup_command_dict import (
     HangupCommandDict,
 )
+from sinch.domains.voice.models.v2.svaml.types.incoming_call_response_events_dict import (
+    IncomingCallResponseEventsDict,
+)
 from sinch.domains.voice.models.v2.svaml.types.menu_command_dict import (
     MenuCommandDict,
 )
@@ -94,6 +97,7 @@ __all__ = [
     "DialCommandDict",
     "GotoMenuCommandDict",
     "HangupCommandDict",
+    "IncomingCallResponseEventsDict",
     "MenuCommandDict",
     "MenuItemDict",
     "MenuPromptDict",

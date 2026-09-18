@@ -1,4 +1,4 @@
-from sinch.domains.voice.models.v2.sinch_events.incoming_call_events import (
+from sinch.domains.voice.models.v2.svaml.shared.incoming_call_response_events import (
     IncomingCallResponseEvents,
 )
 from sinch.domains.voice.models.v2.svaml.shared.hangup_command import (
@@ -6,7 +6,7 @@ from sinch.domains.voice.models.v2.svaml.shared.hangup_command import (
 )
 
 
-def test_incoming_call_events_expects_parsed_input():
+def test_incoming_call_response_events_expects_parsed_input():
     """Test that the model correctly parses a full valid input."""
     model = IncomingCallResponseEvents(on_hangup=[{"command": "hangup"}])
 
@@ -17,7 +17,7 @@ def test_incoming_call_events_expects_parsed_input():
     assert alias_dump["onHangup"] == [{"command": "hangup"}]
 
 
-def test_incoming_call_events_expects_optional_on_hangup_defaults_to_none():
+def test_incoming_call_response_events_expects_optional_on_hangup_defaults_to_none():
     """Test that the optional on_hangup field defaults to None."""
     model = IncomingCallResponseEvents()
 

@@ -50,6 +50,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[feature]** Voice V2 Batches API: `start`, `get`, `get_details`, and `stop` operations to create, retrieve, inspect, and stop batches of outbound calls.
 - **[feature]** Voice V2 Sessions API: `get` operation to retrieve a session.
 - **[feature]** Voice V2 Services API: `list`, `create`, `get`, `update`, and `delete` operations to manage services.
+- **[feature]** Voice V2 Svaml API: `validate` and `describe` operations to validate and describe a SVAML payload.
 
 
 ---

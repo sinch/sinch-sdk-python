@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from sinch.domains.voice.models.v2.sinch_events.incoming_call_events import (
+from sinch.domains.voice.models.v2.svaml.shared.incoming_call_response_events import (
     IncomingCallResponseEvents,
 )
 from sinch.domains.voice.models.v2.sinch_events.voice_sinch_event_response import (
