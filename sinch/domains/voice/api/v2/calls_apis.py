@@ -64,7 +64,7 @@ class Calls(BaseVoice):
         :returns: The created call session.
         :rtype: StartCallResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = StartCallRequest(
             commands=commands,
@@ -120,7 +120,7 @@ class Calls(BaseVoice):
         :returns: LinkBasedPaginator with Call items
         :rtype: Paginator[ListCallsResponse,Call]
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         return LinkBasedPaginator._initialize(
             sinch=self._sinch,
@@ -153,7 +153,7 @@ class Calls(BaseVoice):
         :returns: The call details.
         :rtype: Call
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = CallIdRequest(call_id=call_id, **kwargs)
         return self._request(GetCallByIdEndpoint, request_data)
@@ -179,7 +179,7 @@ class Calls(BaseVoice):
         :returns: None
         :rtype: None
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = PatchCallByIdRequest(
             call_id=call_id,
@@ -217,7 +217,7 @@ class Calls(BaseVoice):
         :returns: None
         :rtype: None
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = PatchCallBySessionAndNameRequest(
             session_id=session_id,

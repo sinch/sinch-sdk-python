@@ -62,7 +62,7 @@ class Services(BaseVoice):
         :returns: LinkBasedPaginator with ServiceShortResponse items
         :rtype: Paginator[ListServicesResponse,ServiceShortResponse]
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         return LinkBasedPaginator._initialize(
             sinch=self._sinch,
@@ -105,7 +105,7 @@ class Services(BaseVoice):
         :returns: The created service.
         :rtype: ServiceResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = CreateServiceRequest(
             name=name,
@@ -132,7 +132,7 @@ class Services(BaseVoice):
         :returns: The service details.
         :rtype: ServiceResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = ServiceIdRequest(service_id=service_id, **kwargs)
         return self._request(GetServiceEndpoint, request_data)
@@ -150,7 +150,7 @@ class Services(BaseVoice):
         """
         Updates an existing service resource with the provided properties. Only the fields included in the request body will be modified; omitted fields remain unchanged.
 
-        To set a service as the default for the project, include `is_default=True`. 
+        To set a service as the default for the project, include `is_default=True`.
         Note that each project can have only one default service. Setting a new default will automatically remove the default status from the previously designated service.
 
         :param service_id: (required) The ID of the service.
@@ -170,7 +170,7 @@ class Services(BaseVoice):
         :returns: The updated service.
         :rtype: ServiceResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = UpdateServiceRequest(
             service_id=service_id,
@@ -189,9 +189,9 @@ class Services(BaseVoice):
 
     def delete(self, service_id: str, **kwargs) -> None:
         """
-        Deletes a service permanently. 
+        Deletes a service permanently.
 
-        **Important:** The default service cannot be deleted. To delete the current default service, 
+        **Important:** The default service cannot be deleted. To delete the current default service,
         a different service must first be designated as the default using the PATCH endpoint.
 
         :param service_id: (required) The ID of the service.
@@ -201,7 +201,7 @@ class Services(BaseVoice):
         :returns: None
         :rtype: None
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = ServiceIdRequest(service_id=service_id, **kwargs)
         return self._request(DeleteServiceEndpoint, request_data)

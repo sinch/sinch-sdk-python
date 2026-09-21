@@ -4,7 +4,7 @@ from sinch.domains.voice.api.v2.voice import VoiceV2
 class Voice:
     """
     Documentation for Sinch Voice is found at
-    https://developers.sinch.com/docs/voice/.
+    https://developers.sinch.com/docs/voice-2.0.
     """
 
     def __init__(self, sinch):

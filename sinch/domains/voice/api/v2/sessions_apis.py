@@ -22,7 +22,7 @@ class Sessions(BaseVoice):
         :returns: The session details.
         :rtype: SessionResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = SessionIdRequest(session_id=session_id, **kwargs)
         return self._request(GetSessionEndpoint, request_data)

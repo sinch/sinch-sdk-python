@@ -6,7 +6,7 @@ This release removes legacy SDK support.
 
 This guide lists all removed classes and interfaces from V1 and how to migrate to their V2 equivalents.
 
-> **Note:** Voice and Verification are not yet covered by the new V2 APIs. Support will be added in future releases.
+> **Note:** Verification is not yet covered by the new V2 APIs. Support will be added in future releases.
 
 ---
 
@@ -62,6 +62,43 @@ token_client = SinchClient(
 # Note: The code is backward compatible. The sms_region can still be set through the configuration object,
 # but you must ensure this setting is done BEFORE any SMS API call:
 sinch_client.configuration.sms_region = "eu"
+```
+
+---
+
+### Voice Region
+
+**In V1:**
+```python
+from sinch import SinchClient
+
+sinch_client = SinchClient(
+    project_id="your-project-id",
+    key_id="your-key-id",
+    key_secret="your-key-secret",
+)
+
+sinch_client.configuration.voice_region = "use1"
+```
+- `voice_region` could only be set through the configuration object, as a plain string, after client initialization.
+
+**In V2:**
+- `voice_region` is exposed on `SinchClient` and on the configuration object, now using the `VoiceRegionEnum` enum instead of a plain string. It **defaults to `GLOBAL`**, so Voice V2 calls work out without setting it explicitly. Set it only if you need to pin calls to a specific region.
+
+```python
+from sinch import SinchClient
+from sinch.core.enums import VoiceRegionEnum
+
+sinch_client = SinchClient(
+    project_id="your-project-id",
+    key_id="your-key-id",
+    key_secret="your-key-secret",
+    voice_region=VoiceRegionEnum.EUROPE,
+)
+
+# Note: voice_region can also be set through the configuration object,
+# but you must ensure this setting is done BEFORE any Voice API call:
+sinch_client.configuration.voice_region = VoiceRegionEnum.EUROPE
 ```
 
 ---
@@ -383,4 +420,119 @@ sinch_client.numbers.rent_any(
     voice_configuration={...},
     event_destination_target="https://example.com/events",
 )
+```
+
+---
+
+### [`Voice`](https://github.com/sinch/sinch-sdk-python/tree/main/sinch/domains/voice)
+
+#### Overview
+
+Voice V1 has been fully removed. Voice V2 is a different call model built around SVAML commands (`answer`, `dial`, `bridge`, `hangup`, `menu`, `say`, etc.) instead of dedicated callout/conference objects. All V2 access goes through a new `.v2` segment: **`sinch_client.voice.v2.*`**. See [Voice Region](#voice-region) above for the `voice_region` parameter.
+
+`sinch_client.voice.v2` exposes sub-APIs — `calls`, `batches`, `services`, `sessions`, `svaml` and  `sinch_events` for inbound webhook handling.
+
+#### Replacement APIs / attributes
+
+| Old | New |
+|-----|-----|
+| `sinch_client.voice.callouts` (`text_to_speech()`, `conference()`, `custom()`) | `sinch_client.voice.v2.calls.start(commands=[...])` — the call's behavior (PSTN callout, TTS, conference bridge, custom) is expressed via SVAML `commands`, not via separate methods |
+| `sinch_client.voice.calls` (`get()`, `update()`, `manage_with_call_leg()`) | `sinch_client.voice.v2.calls` (`get()`, `list()`, `interact_by_call_id()`, `interact_by_call_name()`) |
+| `sinch_client.voice.conferences` (`call()`, `get()`, `kick_all()`, `kick_participant()`, `manage_participant()`) | No dedicated conference object. Bridge/dial multiple legs together using SVAML `dial`/`bridge` commands passed to `calls.start()` / `calls.interact_by_call_id()` |
+| `sinch_client.voice.applications` (number assignment: `get_numbers()`, `assign_numbers()`, `unassign_number()`, `query_number()`) | Not supported for Voice V2. Number assignment must be managed from the [Sinch Dashboard](https://dashboard.sinch.com/) instead |
+| `sinch_client.voice.applications` (`get_callback_urls()`, `update_callback_urls()`) | Callback/webhook configuration is now managed at the **service** level via `sinch_client.voice.v2.services` — set `call_behavior` (type `EVENT_DESTINATION`) with an `event_destination`/`webhook` config when creating or updating a service, instead of per-number callback URLs |
+| — | **New in V2:** `sinch_client.voice.v2.batches` (bulk/templated calling) and `sinch_client.voice.v2.services` (project-level call behavior and event destination configuration) |
+
+##### Calls API
+
+| Old method | New method in `voice.v2.calls` |
+|------------|--------------------------------|
+| `callouts.text_to_speech()`, `callouts.conference()`, `callouts.custom()` | `start(commands: List[SvamlCommandDict], service_id=None, idempotency_key=UNSET)` — outbound call creation, behavior defined by SVAML commands |
+| `calls.get(call_id)` | `get(call_id: str) -> Call` |
+| — | **New:** `list(service_id=None, from_=None, to=None, call_type=None, start_time=None, end_time=None, call_result=None, call_reason=None, page_size=None, page=None)`. Returns **`Paginator[Call]`** |
+| `calls.update(call_id, instructions, action)` | `interact_by_call_id(call_id: str, commands: List[SvamlCommandDict], idempotency_key=UNSET) -> None` |
+| `calls.manage_with_call_leg(call_id, call_leg, instructions, action)` | `interact_by_call_name(session_id: str, call_name: str, commands: List[SvamlCommandDict], idempotency_key=UNSET) -> None` |
+
+##### Batches API (new in V2)
+
+Batches queue many calls at once from a single set of SVAML `commands`, with per-call `parameters` interpolated into the commands via `@param_name` placeholders (e.g. `"phone": {"number": "@to_number"}`).
+
+| Method in `voice.v2.batches` | Description |
+|-------------------------------|--------------|
+| `start(commands: List[SvamlCommandDict], parameters: List[Dict[str, str]], service_id=None, batch_options=UNSET, idempotency_key=UNSET) -> StartBatchResponse` | Start a batch of calls |
+| `get(batch_id: str) -> BatchSummaryResponse` | Get batch summary |
+| `get_details(batch_id: str) -> BatchDetailsResponse` | Get per-call batch details |
+| `stop(batch_id: str) -> BatchStopResponse` | Stop a running batch |
+
+##### Services API (new in V2)
+
+A "service" configures how calls are handled for a project (default webhooks, event destinations, call behavior). There is no V1 equivalent.
+
+| Method in `voice.v2.services` | Description |
+|-------------------------------|--------------|
+| `create(name: str, description=UNSET, is_default=UNSET, call_behavior=UNSET, idempotency_key=UNSET) -> ServiceResponse` | Create a service |
+| `list(filter=None, is_default=None, page_size=None, page=None)` | Returns **`Paginator[ServiceShortResponse]`** |
+| `get(service_id: str) -> ServiceResponse` | Get a service |
+| `update(service_id: str, name=UNSET, description=UNSET, is_default=UNSET, call_behavior=UNSET, idempotency_key=UNSET) -> ServiceResponse` | Update a service |
+| `delete(service_id: str) -> None` | Delete a service |
+
+##### Sessions API (new in V2)
+
+A session groups related call legs (e.g. all legs of a bridged call) and their states.
+
+| Method in `voice.v2.sessions` | Description |
+|--------------------------------|--------------|
+| `get(session_id: str) -> SessionResponse` | Get a session |
+
+##### Svaml API (new in V2)
+
+Validate and describe a SVAML payload without creating a call — useful for checking the structure/flow of `commands` ahead of time.
+
+| Method in `voice.v2.svaml` | Description |
+|------------------------------|--------------|
+| `validate(commands: List[SvamlCommandDict], call_name=UNSET, on_hangup=UNSET, validation_type=UNSET) -> ValidateSvamlResponse` | Validate a SVAML payload's structure/content, optionally in `strict`/`normal` mode via `validation_type` |
+| `describe(commands: List[SvamlCommandDict], call_name=UNSET, on_hangup=UNSET) -> DescribeSvamlResponse` | Get a human-readable description of the commands, events, and messages defined in a SVAML payload |
+
+#### Sinch Events (inbound webhook handling)
+
+Access is via **`sinch_client.voice.v2.sinch_events`**.
+
+| Method | Description |
+|--------|--------------|
+| `validate_authentication_header(method, path, headers, body, service_id, service_secret) -> bool` | Validates the inbound request's Authorization header |
+| `parse_event(event_body, headers=None) -> VoiceSinchEventRequest` | Parses the inbound JSON/bytes/dict payload |
+| `build_response(commands: List[SvamlCommandDict]) -> VoiceSinchEventResponse` | Builds a SVAML response to return to Sinch |
+| `build_incoming_call_response(commands, call_name=UNSET, on_hangup=UNSET) -> VoiceSinchEventResponse` | Specialized builder for `call.incoming` events |
+| `serialize_response(response: VoiceSinchEventResponse) -> Dict[str, Any]` | Serializes the response for the HTTP reply |
+
+```python
+# New
+sinch_events_service = sinch_client.voice.v2.sinch_events
+
+is_valid_request = sinch_events_service.validate_authentication_header(
+    method=method, path=path, headers=headers, body=raw_body,
+    service_id=service_id, service_secret=service_secret,
+)
+if not is_valid_request:
+    return Response(status=401)
+
+voice_event_request = sinch_events_service.parse_event(raw_body, headers)
+
+voice_event_response = sinch_events_service.build_response(
+    commands=[
+        {
+            "command": "messages",
+            "messages": [
+                {
+                    "type": "SAY",
+                    "say": {
+                        "text": "Hello from Sinch!",
+                        "voice_name": "Emma",
+                    },
+                },
+            ],
+        },
+    ],
+)
+return jsonify(sinch_events_service.serialize_response(voice_event_response)), 200
 ```

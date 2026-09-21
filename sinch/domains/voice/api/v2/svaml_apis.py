@@ -53,7 +53,7 @@ class Svaml(BaseVoice):
         :returns: A human-readable description of the SVAML call flow.
         :rtype: DescribeSvamlResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         events: UnsetOr[IncomingCallResponseEvents] = UNSET
         if not isinstance(on_hangup, Unset):
@@ -92,7 +92,7 @@ class Svaml(BaseVoice):
         :returns: The result of the SVAML validation.
         :rtype: ValidateSvamlResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         events: UnsetOr[IncomingCallResponseEvents] = UNSET
         if not isinstance(on_hangup, Unset):

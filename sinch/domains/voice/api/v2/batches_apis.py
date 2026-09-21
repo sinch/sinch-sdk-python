@@ -61,7 +61,7 @@ class Batches(BaseVoice):
         :returns: The queued batch of call sessions.
         :rtype: StartBatchResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = StartBatchRequest(
             commands=commands,
@@ -88,7 +88,7 @@ class Batches(BaseVoice):
         :returns: The batch call summary.
         :rtype: BatchSummaryResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = BatchIdRequest(batch_id=batch_id, **kwargs)
         return self._request(GetBatchCallSummaryEndpoint, request_data)
@@ -106,7 +106,7 @@ class Batches(BaseVoice):
         :returns: The per-session batch details.
         :rtype: BatchDetailsResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = BatchIdRequest(batch_id=batch_id, **kwargs)
         return self._request(GetBatchDetailsEndpoint, request_data)
@@ -122,7 +122,7 @@ class Batches(BaseVoice):
         :returns: The state of the batch processing cancellation request.
         :rtype: BatchStopResponse
 
-        For detailed documentation, visit https://developers.sinch.com/docs/voice/.
+        For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = BatchIdRequest(batch_id=batch_id, **kwargs)
         return self._request(StopBatchProcessingEndpoint, request_data)
