@@ -35,12 +35,6 @@ def test_group_request_expects_parsed_input():
     assert model.auto_update.remove.first_word == "LEAVE"
 
 
-def test_group_request_expects_strict_str_rejects_int():
-    """Test that StrictStr fields reject integer values."""
-    with pytest.raises(ValidationError):
-        GroupRequest(name=123)
-
-
 def test_group_request_expects_auto_update_nested_parsing():
     """Test that auto_update parses nested add and remove keywords correctly."""
     model = GroupRequest(

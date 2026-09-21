@@ -2,7 +2,9 @@ import hashlib
 import hmac
 import base64
 import json
-from typing import Dict, Union, Optional, List
+from typing import Dict
+
+from sinch.core.internal.sinch_events.utils import get_header, normalize_headers
 
 
 def validate_signature_header(
@@ -36,13 +38,6 @@ def validate_signature_header(
     return hmac.compare_digest(signature, expected_signature)
 
 
-def normalize_headers(headers: Dict[str, str]) -> Dict[str, str]:
-    """
-    Normalize headers by converting keys to lowercase and filtering out None values
-    """
-    return {k.lower(): v for k, v in headers.items() if v is not None}
-
-
 def compute_hmac_signature(body: str, secret: str) -> str:
     """
     Compute HMAC-SHA1 signature
@@ -52,17 +47,6 @@ def compute_hmac_signature(body: str, secret: str) -> str:
         msg=body.encode('utf-8') if isinstance(body, str) else body,
         digestmod=hashlib.sha1
     ).hexdigest()
-
-
-def get_header(header_value: Optional[Union[str, List[str]]]) -> Optional[str]:
-    """
-    Extract header value, handling both string and list cases
-    """
-    if header_value is None:
-        return None
-    if isinstance(header_value, list):
-        return header_value[0] if header_value else None
-    return header_value
 
 
 def validate_sinch_event_signature_with_nonce(

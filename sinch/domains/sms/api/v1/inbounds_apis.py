@@ -13,6 +13,9 @@ from sinch.domains.sms.models.v1.internal.inbound_id_request import (
 from sinch.domains.sms.models.v1.internal.list_inbounds_request import (
     ListInboundsRequest,
 )
+from sinch.domains.sms.models.v1.internal.list_inbounds_response import (
+    ListInboundsResponse,
+)
 from sinch.domains.sms.models.v1.types.inbound_message import InboundMessage
 
 
@@ -43,7 +46,7 @@ class Inbounds(BaseSms):
         end_date: Optional[datetime] = None,
         client_reference: Optional[str] = None,
         **kwargs,
-    ) -> Paginator[InboundMessage]:
+    ) -> Paginator[ListInboundsResponse, InboundMessage]:
         """
         With the list operation,
             you can list all inbound messages that you have received. This operation supports pagination. Inbounds are returned in reverse chronological order.
@@ -71,8 +74,8 @@ class Inbounds(BaseSms):
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
-        :returns: Paginator[InboundMessage]
-        :rtype: Paginator[InboundMessage]
+        :returns: Paginator[ListInboundsResponse, InboundMessage]
+        :rtype: Paginator[ListInboundsResponse, InboundMessage]
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
@@ -91,4 +94,4 @@ class Inbounds(BaseSms):
 
         endpoint.set_authentication_method(self._sinch)
 
-        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
+        return SMSPaginator._initialize(sinch=self._sinch, endpoint=endpoint)

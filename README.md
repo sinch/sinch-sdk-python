@@ -97,6 +97,7 @@ pip install sinch
 |                   | [SMS API](https://developers.sinch.com/docs/sms/)     |
 | Numbers           | [Numbers API](https://developers.sinch.com/docs/numbers/)                   |
 | Verification      | [Number Lookup API](https://developers.sinch.com/docs/number-lookup-api-v2/) |
+| Voice             | [Voice API v2](https://developers.sinch.com/docs/voice-2.0) (preview/beta) |
 
 > **Note:** The SMS API is end-of-sale. New integrations should use the [Conversation API](https://developers.sinch.com/docs/conversation/) instead, which supports SMS and many other channels.
 
@@ -124,6 +125,25 @@ sinch_client = SinchClient(
 Get `project_id`, `key_id` and `key_secret` from the [Access keys](https://dashboard.sinch.com/settings/access-keys) page in your Sinch dashboard (`key_secret` is shown only once, at creation time). It's highly recommended to not hardcode these credentials: load them from environment variables for local development, and from a secret manager in production.
 
 This snippet is the common starting point for every API. Some APIs have a different initialization or need extra parameters (for example, a region), see the section for each API.
+
+### Extra fields casing conversion
+
+Every request and response model in the SDK only declares the fields defined by the Sinch APIs. Any other key you pass in on a request, or that the API returns in a response, is considered an extra field. Extra fields are always accepted: on a request they are always sent in the request body, and on a response model they are exposed as regular attributes.
+
+By default, these extra fields are automatically converted to the API's casing standard. So for camelCase APIs, extra fields are converted to camelCase, and for snake_case APIs, extra fields are converted to snake_case.
+
+From version 2.2.0, you can disable this conversion by setting `transform_kwargs_casing` to `False`, so extra fields pass through exactly as given in both directions: the field set on a request is sent as-is in the request body, and the field name returned by the API is exposed as-is on the response model.
+
+```python
+sinch_client = SinchClient(
+    project_id=os.environ["SINCH_PROJECT_ID"],
+    key_id=os.environ["SINCH_KEY_ID"],
+    key_secret=os.environ["SINCH_KEY_SECRET"],
+    transform_kwargs_casing=False,
+)
+```
+
+> **Recommendation:** Set `transform_kwargs_casing=False` in new integrations. This will become the only behavior in 3.0, where extra fields will always pass through unchanged and the flag will be removed.
 
 ### Conversation API
 
@@ -232,6 +252,12 @@ You can find a complete example in [examples/sinch_events/numbers_api](https://g
 The Number Lookup API needs no extra parameters, use the [common client](#client-initialization) based in project authentication shown above.
 
 
+### Voice API
+
+> **Note:** Support for the Voice API v2 is currently in preview/beta.
+
+The Voice API needs no extra parameters, use the [common client](#client-initialization) based in project authentication shown above.
+
 
 ### Your First Request
 
@@ -264,6 +290,50 @@ Logging configuration for this SDK utilizes following hierarchy:
 3. If `logger` (logger instance) configurable was provided, SDK will use that particular logger for all its logging operations.
 
 If all logging returned by this SDK needs to be disabled, usage of `NullHandler` provided by the standard `logging` module is advised.
+
+## Retry configuration
+
+When an API call or OAuth token request returns HTTP 429 (Too Many Requests), the SDK retries automatically. Configure this via `RetryConfiguration`, passed to `SinchClient` as `retry_configuration`; the same settings apply to product API calls and token fetches.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `retry_policy` | `RetryPolicy` | `RetryPolicy.DEFAULT` | `DEFAULT`: honor `Retry-After` when present, otherwise exponential backoff. `RETRY_AFTER`: retry only when a usable `Retry-After` header is present. `BACKOFF`: ignore `Retry-After` and use full-jitter exponential backoff. `NONE`: disable automatic retries. |
+| `max_retries` | `int` | `3` | Maximum retries after the first attempt before the error is surfaced to the caller. Must be zero or greater. |
+| `backoff_growth` | `int` | `4` | Growth factor for the backoff ceiling (`1000ms * backoff_growth^attempt`). The wait is a random value between 0 and that ceiling. Must be one or greater. |
+
+`Retry-After` may be a delay in seconds or an HTTP-date (RFC 7231). A small jitter (0–250 ms) is added so concurrent clients do not retry in lockstep. Invalid values are rejected.
+
+### Retry settings
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.retry_configuration import RetryConfiguration
+from sinch.core.enums import RetryPolicy
+
+sinch = SinchClient(
+    ...,
+    retry_configuration=RetryConfiguration(
+        retry_policy=RetryPolicy.BACKOFF,
+        max_retries=5,
+        backoff_growth=2,
+    ),
+)
+```
+
+### Disable Retry Policy
+
+To disable automatic retries (for example when an outer HTTP layer already honors `Retry-After`):
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.retry_configuration import RetryConfiguration
+from sinch.core.enums import RetryPolicy
+
+sinch = SinchClient(
+    ...,
+    retry_configuration=RetryConfiguration(retry_policy=RetryPolicy.NONE),
+)
+```
 
 ## Handling exceptions
 

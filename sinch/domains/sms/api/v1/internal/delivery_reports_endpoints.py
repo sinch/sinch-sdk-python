@@ -1,14 +1,11 @@
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.core.models.http_response import HTTPResponse
-from sinch.core.models.utils import model_dump_for_query_params
-from sinch.domains.sms.api.v1.exceptions import SmsException
+from sinch.domains.sms.api.v1.internal.base import SmsEndpoint
 from sinch.domains.sms.models.v1.internal import (
     GetBatchDeliveryReportRequest,
     GetRecipientDeliveryReportRequest,
     ListDeliveryReportsRequest,
     ListDeliveryReportsResponse,
 )
-from sinch.domains.sms.api.v1.internal.base import SmsEndpoint
 from sinch.domains.sms.models.v1.response import (
     BatchDeliveryReport,
     RecipientDeliveryReport,
@@ -22,33 +19,20 @@ class GetBatchDeliveryReportEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
+    QUERY_PARAM_FIELDS: set = {
+        "batch_id",
+        "type",
+        "client_reference",
+    }
+    QUERY_PARAM_FIELDS_EXPLODE_FALSE: set = {"status", "code"}
+
     def __init__(
-        self, project_id: str, request_data: GetBatchDeliveryReportRequest
+        self,
+        project_id: str,
+        request_data: GetBatchDeliveryReportRequest,
+        response_model=BatchDeliveryReport,
     ):
-        super(GetBatchDeliveryReportEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def build_query_params(self) -> dict:
-        path_params = self._get_path_params_from_url()
-        return model_dump_for_query_params(
-            self.request_data, exclude=path_params
-        )
-
-    def handle_response(self, response: HTTPResponse) -> BatchDeliveryReport:
-        try:
-            super(GetBatchDeliveryReportEndpoint, self).handle_response(
-                response
-            )
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, BatchDeliveryReport)
+        super().__init__(project_id, request_data, response_model)
 
 
 class GetRecipientDeliveryReportEndpoint(SmsEndpoint):
@@ -60,29 +44,9 @@ class GetRecipientDeliveryReportEndpoint(SmsEndpoint):
         self,
         project_id: str,
         request_data: GetRecipientDeliveryReportRequest,
+        response_model=RecipientDeliveryReport,
     ):
-        super(GetRecipientDeliveryReportEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def handle_response(
-        self, response: HTTPResponse
-    ) -> RecipientDeliveryReport:
-        try:
-            super(GetRecipientDeliveryReportEndpoint, self).handle_response(
-                response
-            )
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(
-            response.body, RecipientDeliveryReport
-        )
+        super().__init__(project_id, request_data, response_model)
 
 
 class ListDeliveryReportsEndpoint(SmsEndpoint):
@@ -90,29 +54,19 @@ class ListDeliveryReportsEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
+    QUERY_PARAM_FIELDS: set = {
+        "page",
+        "page_size",
+        "start_date",
+        "end_date",
+        "client_reference",
+    }
+    QUERY_PARAM_FIELDS_EXPLODE_FALSE: set = {"status", "code"}
+
     def __init__(
-        self, project_id: str, request_data: ListDeliveryReportsRequest
+        self,
+        project_id: str,
+        request_data: ListDeliveryReportsRequest,
+        response_model=ListDeliveryReportsResponse,
     ):
-        super(ListDeliveryReportsEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def build_query_params(self) -> dict:
-        return model_dump_for_query_params(self.request_data)
-
-    def handle_response(
-        self, response: HTTPResponse
-    ) -> ListDeliveryReportsResponse:
-        try:
-            super(ListDeliveryReportsEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(
-            response.body, ListDeliveryReportsResponse
-        )
+        super().__init__(project_id, request_data, response_model)

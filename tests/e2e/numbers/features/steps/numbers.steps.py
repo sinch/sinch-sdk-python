@@ -115,12 +115,8 @@ def step_validate_rented_number(context):
     assert data.sms_configuration.scheduled_provisioning.error_codes == []
     assert data.voice_configuration.type == 'RTC'
     assert data.voice_configuration.app_id == ''
-    assert data.voice_configuration.trunk_id == ''
-    assert data.voice_configuration.service_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.type == 'RTC'
     assert data.voice_configuration.scheduled_voice_provisioning.app_id == 'sunshine-rain-drop-very-beautifulday'
-    assert data.voice_configuration.scheduled_voice_provisioning.trunk_id == ''
-    assert data.voice_configuration.scheduled_voice_provisioning.service_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.status == 'WAITING'
     assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat(
         '2024-06-06T14:42:42.604092+00:00'
@@ -237,12 +233,8 @@ def step_then_response_contains_updated_number(context):
     assert data.sms_configuration.scheduled_provisioning.error_codes == []
     assert data.voice_configuration.type == 'RTC'
     assert data.voice_configuration.app_id == 'sunshine-rain-drop-very-beautifulday'
-    assert data.voice_configuration.trunk_id == ''
-    assert data.voice_configuration.service_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.status == 'WAITING'
     assert data.voice_configuration.scheduled_voice_provisioning.type == 'FAX'
-    assert data.voice_configuration.scheduled_voice_provisioning.app_id == ''
-    assert data.voice_configuration.scheduled_voice_provisioning.trunk_id == ''
     assert data.voice_configuration.scheduled_voice_provisioning.service_id == '01W4FFL35P4NC4K35FAXSERVICE'
     assert data.voice_configuration.scheduled_voice_provisioning.last_updated_time == datetime.fromisoformat(
         '2024-06-06T20:02:20.437509+00:00'

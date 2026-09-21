@@ -4,6 +4,7 @@ on: [ push ]
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
@@ -68,13 +69,8 @@ jobs:
       with:
         repository: sinch/sinch-sdk-mockserver
         token: ${{ secrets.MOCKSERVER_REPO_PAT_CI }}
-        fetch-depth: 0
+        fetch-depth: 1
         path: sinch-sdk-mockserver
-
-    - name: Start mock servers with Docker Compose
-      run: |
-        cd sinch-sdk-mockserver
-        docker compose up -d
 
     - name: Copy feature files
       run: |
@@ -85,10 +81,13 @@ jobs:
         cp sinch-sdk-mockserver/features/sms/* ./tests/e2e/sms/features/
         cp sinch-sdk-mockserver/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
         cp sinch-sdk-mockserver/features/conversation/messages.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/conversation/apps.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/conversation/contacts.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/voice-v2/* ./tests/e2e/voice/v2/features/
 
-    - name: Wait for mock server
-      run: .github/scripts/wait-for-mockserver.sh
+    - name: Check mockserver availability
+      run: .github/scripts/check-mockservers-are-available.sh
       shell: bash
 
     - name: Run e2e tests sync
@@ -97,3 +96,4 @@ jobs:
         python -m behave tests/e2e/sms/features
         python -m behave tests/e2e/conversation/features
         python -m behave tests/e2e/number-lookup/features
+        python -m behave tests/e2e/voice/v2/features

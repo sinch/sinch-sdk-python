@@ -11,6 +11,7 @@ from sinch.domains.sms.api.v1.internal import (
 from sinch.domains.sms.models.v1.internal import (
     GetRecipientDeliveryReportRequest,
     ListDeliveryReportsRequest,
+    ListDeliveryReportsResponse,
     GetBatchDeliveryReportRequest,
 )
 from sinch.domains.sms.models.v1.response import (
@@ -100,7 +101,7 @@ class DeliveryReports(BaseSms):
         code: Optional[List[DeliveryReceiptStatusCodeType]] = None,
         client_reference: Optional[str] = None,
         **kwargs,
-    ) -> Paginator[RecipientDeliveryReport]:
+    ) -> Paginator[ListDeliveryReportsResponse, RecipientDeliveryReport]:
         """
         Get a list of finished delivery reports.
         This operation supports pagination.
@@ -122,8 +123,8 @@ class DeliveryReports(BaseSms):
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
-        :returns: Paginator[RecipientDeliveryReport]
-        :rtype: Paginator[RecipientDeliveryReport]
+        :returns: Paginator[ListDeliveryReportsResponse, RecipientDeliveryReport]
+        :rtype: Paginator[ListDeliveryReportsResponse, RecipientDeliveryReport]
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
@@ -142,4 +143,4 @@ class DeliveryReports(BaseSms):
         )
         endpoint.set_authentication_method(self._sinch)
 
-        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
+        return SMSPaginator._initialize(sinch=self._sinch, endpoint=endpoint)

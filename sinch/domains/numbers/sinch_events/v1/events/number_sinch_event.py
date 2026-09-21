@@ -1,31 +1,31 @@
-from datetime import datetime
 from typing import Literal, Optional, Union
 
 from pydantic import Field, StrictStr
 
-from sinch.domains.numbers.sinch_events.v1.internal import SinchEvent
+from sinch.domains.numbers.sinch_events.v1.events.number_base_sinch_event import (
+    NumberBaseSinchEvent,
+)
+from sinch.domains.numbers.sinch_events.v1.events.resource_type import (
+    ResourceType,
+)
 
 
-class NumberSinchEvent(SinchEvent):
-    event_id: Optional[StrictStr] = Field(
-        default=None, alias="eventId", description="The ID of the event."
-    )
-    timestamp: Optional[datetime] = Field(
-        default=None,
-        description="The date and time when the callback was created and added to the callbacks queue.",
-    )
-    project_id: Optional[StrictStr] = Field(
-        default=None,
-        alias="projectId",
-        description="The ID of the project to which the event belongs.",
-    )
+class NumberSinchEvent(NumberBaseSinchEvent):
+    """
+    .. deprecated:: 2.2
+        In 3.0 this class will be removed and ``NumberSinchEvent`` will become
+        a type alias `NumberSinchEventPayload`.
+    """
+
     resource_id: Optional[StrictStr] = Field(
         default=None,
         alias="resourceId",
-        description="The unique identifier of the resource, depending on the resource type. For example, a phone number, a hosting order ID, or a brand ID.",
+        description="The unique identifier of the resource, depending on the resource type. For example, a phone number.",
     )
-    resource_type: Optional[Union[Literal["ACTIVE_NUMBER"], StrictStr]] = (
-        Field(default=None, alias="resourceType")
+    resource_type: Optional[ResourceType] = Field(
+        default=None,
+        alias="resourceType",
+        description="The type of the resource.",
     )
     event_type: Optional[
         Union[

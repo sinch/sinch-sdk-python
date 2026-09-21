@@ -5,6 +5,9 @@ from sinch.core.pagination import Paginator, SMSPaginator
 from sinch.domains.sms.models.v1.response.dry_run_response import (
     DryRunResponse,
 )
+from sinch.domains.sms.models.v1.response.list_batches_response import (
+    ListBatchesResponse,
+)
 from sinch.domains.sms.models.v1.internal import (
     BatchIdRequest,
     DeliveryFeedbackRequest,
@@ -397,7 +400,7 @@ class Batches(BaseSms):
         from_: Optional[List[str]] = None,
         client_reference: Optional[str] = None,
         **kwargs,
-    ) -> Paginator[BatchResponse]:
+    ) -> Paginator[ListBatchesResponse, BatchResponse]:
         """
         With the list operation you can list batch messages created in the last 14 days that you have created.
         This operation supports pagination.
@@ -421,8 +424,8 @@ class Batches(BaseSms):
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
-        :returns: Paginator[BatchResponse]
-        :rtype: Paginator[BatchResponse]
+        :returns: Paginator[ListBatchesResponse, BatchResponse]
+        :rtype: Paginator[ListBatchesResponse, BatchResponse]
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
@@ -440,7 +443,7 @@ class Batches(BaseSms):
         )
         endpoint.set_authentication_method(self._sinch)
 
-        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
+        return SMSPaginator._initialize(sinch=self._sinch, endpoint=endpoint)
 
     def replace(
         self,

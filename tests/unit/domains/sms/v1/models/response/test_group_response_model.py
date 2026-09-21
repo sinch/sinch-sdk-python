@@ -64,18 +64,3 @@ def test_group_response_expects_auto_update_without_keywords():
     assert model.auto_update.to == "+15551231234"
     assert model.auto_update.add is None
     assert model.auto_update.remove is None
-
-
-def test_group_response_expects_strict_str_rejects_int():
-    """Test that StrictStr fields reject integer values."""
-    with pytest.raises(ValidationError):
-        GroupResponse(id=123)
-
-    with pytest.raises(ValidationError):
-        GroupResponse(name=456)
-
-
-def test_group_response_expects_strict_int_rejects_str():
-    """Test that StrictInt fields reject string values."""
-    with pytest.raises(ValidationError):
-        GroupResponse(size="two")

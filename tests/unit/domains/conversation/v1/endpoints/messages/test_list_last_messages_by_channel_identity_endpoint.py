@@ -10,7 +10,7 @@ from sinch.domains.conversation.models.v1.messages.internal import (
 from sinch.domains.conversation.models.v1.messages.internal.request import (
     ListLastMessagesByChannelIdentityRequest,
 )
-from tests.unit.domains.conversation.v1.models.response.test_conversation_message_response_model import (
+from tests.unit.domains.conversation.v1.models.messages.response.test_conversation_message_response_model import (
     contact_message_response_data,
 )
 

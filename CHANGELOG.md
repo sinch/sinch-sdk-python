@@ -16,6 +16,45 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.2.0 – 2026-09-21
+
+### SDK
+
+- **[design]** Extra fields on request and response models are automatically converted to API standards by default, same as before. A new `Configuration(transform_kwargs_casing=False)` flag disables the conversion so extra fields pass through unchanged, for callers who need that behavior; the flag is transitional and will be removed in 3.0 where extra fields will be passed unchanged by default.
+- **[refactor]** Unified request body and query-parameter serialization across all domains behind a new `BaseHTTPEndpoint`. Concrete endpoints now only declare `ENDPOINT_URL`, `HTTP_METHOD`, `HTTP_AUTHENTICATION`, and optional `QUERY_PARAM_FIELDS` / `QUERY_PARAM_FIELDS_EXPLODE_FALSE` / `response_model`; per-domain base classes only implement `_get_origin` and `_raise_for_error`. Body and query-parameter serialization, previously duplicated in each endpoint's `request_body()` / `build_query_params()`, is now centralized in the base class with no change to the wire format.
+- **[fix]** Query parameters are now serialized with `mode="json"`, so `date`/`datetime` (and other non-primitive) values are sent in their proper JSON string form instead of being coerced via `str()`. Affects the endpoints with `date`/`datetime` query parameters: `ListBatchesEndpoint`, `ListDeliveryReportsEndpoint`, `ListInboundsEndpoint`, and `ListMessagesEndpoint`.
+- **[feature]** Added an `UNSET`/`Unset`/`UnsetOr` sentinel (exported from `sinch.core`) to distinguish an omitted optional parameter from an explicit `None`. New endpoints opt in via `UNSET_SERIALIZATION`, so an explicit `None` is sent as `null` while omitted fields are dropped; already-deployed endpoints keep the legacy behavior until 3.0.
+- **[feature]** `HTTP 429` retries are now applied to every endpoint and are configurable via `Configuration(retry_configuration=RetryConfiguration(...))`: `retry_policy` (`RetryPolicy.DEFAULT`/`RETRY_AFTER`/`BACKOFF`/`NONE`), `max_retries` (default `3`), and `backoff_growth` (default `4`).
+- **[feature]** `BaseHTTPEndpoint` gains `HEADER_PARAM_FIELDS` / `build_headers()`, mirroring `QUERY_PARAM_FIELDS`, so request-data fields can be declared to be sent as headers. Headers are built once per request and reused unchanged across automatic retries.
+
+### Numbers
+
+- **[refactor]** `voice_configuration`, `sms_configuration`, and `number_pattern` request fields are now typed Pydantic models instead of raw dicts with validators. Added `VoiceConfigurationCustom`/`ScheduledVoiceProvisioningCustom` response variants for unrecognized voice configuration types.
+- **[feature]** `parse_event()` now returns a `NumberSinchEventPayload` resolved to one of two new concrete subclasses depending on `resourceType`: `ActiveNumberSinchEvent` (`ACTIVE_NUMBER`) and `NumberOrderSinchEvent` (`NUMBER_ORDER`), both inheriting from `NumberSinchEvent`.
+- **[deprecation notice]** `NumberSinchEvent` is deprecated; in 3.0 it will be removed in favour of the concrete subclasses plus `NumberBaseSinchEvent`, which will become the fallback for unrecognized resource types.
+
+### Conversation
+
+- **[feature]** Conversation Apps API: `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Contacts API: `create`, `get`, `list`, `update`, `delete`, `merge`, `get_channel_profile`, and `list_identity_conflicts` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]**  New field `display_mode` added to `ChoiceOption` and `ChoiceOptionDict` to control whether a choice is transient or persistent in the message bubble.
+- **[deprecation notice]** `ConversationProcessingMode` and `ConversationRetentionPolicyType` are deprecated; they are unused by the SDK and will be removed in 3.0.
+- **[deprecation notice]** `ConversationMetadataReportView` is deprecated in favour of `ConversationMetadataReportViewType`; it will be removed in 3.0.
+- **[deprecation notice]** `ConversationChannel` is deprecated in favour of `ConversationChannelType`; it will be removed in 3.0.
+- **[deprecation notice]** `ChannelIdentity` moved to `sinch.domains.conversation.models.v1.shared`; the old `messages.shared` import path is a re-export and will be removed in 3.0.
+
+### Voice
+
+- **[feature]** New Voice domain, exposing the [Voice API v2](https://developers.sinch.com/docs/voice-2.0) under (`sinch_client.voice.v2`).
+- **[feature]** Voice V2 Calls API: `start`, `list`, `get`, `interact_by_call_id`, and `interact_by_call_name` operations to create an outbound call, list calls, retrieve call details, and interact with an ongoing call by call ID or by session and call name.
+- **[feature]** Voice V2 Batches API: `start`, `get`, `get_details`, and `stop` operations to create, retrieve, inspect, and stop batches of outbound calls.
+- **[feature]** Voice V2 Sessions API: `get` operation to retrieve a session.
+- **[feature]** Voice V2 Services API: `list`, `create`, `get`, `update`, and `delete` operations to manage services.
+- **[feature]** Voice V2 Svaml API: `validate` and `describe` operations to validate and describe a SVAML payload.
+
+
+---
+
 ## v2.1.0 – 2026-06-30
 
 ### SDK
@@ -45,10 +84,6 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 ---
 
 ## v2.0.1 – 2026-06-02
-
-### SDK
-
-- **[doc]** Improve README structure and content(#155).
 
 ### SMS
 

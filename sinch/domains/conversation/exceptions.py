@@ -1,5 +1,3 @@
-from sinch.core.exceptions import SinchException
+from sinch.domains.conversation.api.v1.exceptions import ConversationException
 
-
-class ConversationException(SinchException):
-    pass
+__all__ = ["ConversationException"]

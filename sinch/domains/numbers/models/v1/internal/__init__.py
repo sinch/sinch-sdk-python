@@ -39,6 +39,7 @@ from sinch.domains.numbers.models.v1.internal.voice_configuration_request import
     VoiceConfigurationEST,
     VoiceConfigurationFAX,
     VoiceConfigurationRTC,
+    VoiceConfigurationRequestUnion,
 )
 
 __all__ = [
@@ -58,4 +59,5 @@ __all__ = [
     "VoiceConfigurationEST",
     "VoiceConfigurationFAX",
     "VoiceConfigurationRTC",
+    "VoiceConfigurationRequestUnion",
 ]

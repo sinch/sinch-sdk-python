@@ -1,9 +1,8 @@
-import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.exceptions import (
-    NumbersException,
     NumberNotFoundException,
+    NumbersException,
 )
 from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import (
@@ -26,25 +25,24 @@ class GetNumberConfigurationEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: NumberRequest):
-        super(GetNumberConfigurationEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
+    def __init__(
+        self,
+        project_id: str,
+        request_data: NumberRequest,
+        response_model=ActiveNumber,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
     def handle_response(self, response: HTTPResponse) -> ActiveNumber:
         try:
-            super(GetNumberConfigurationEndpoint, self).handle_response(
-                response
-            )
+            super().handle_response(response)
         except NumbersException as e:
             raise NumberNotFoundException(
                 message=e.args[0],
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self.process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(response.body, ActiveNumber)
 
 
 class ListActiveNumbersEndpoint(NumbersEndpoint):
@@ -56,25 +54,24 @@ class ListActiveNumbersEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
+    QUERY_PARAM_FIELDS: set = {
+        "region_code",
+        "number_type",
+        "page_size",
+        "capabilities",
+        "number_search_pattern",
+        "number_pattern",
+        "page_token",
+        "order_by",
+    }
+
     def __init__(
-        self, project_id: str, request_data: ListActiveNumbersRequest
+        self,
+        project_id: str,
+        request_data: ListActiveNumbersRequest,
+        response_model=ListActiveNumbersResponse,
     ):
-        super(ListActiveNumbersEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
-
-    def handle_response(
-        self, response: HTTPResponse
-    ) -> ListActiveNumbersResponse:
-        super(ListActiveNumbersEndpoint, self).handle_response(response)
-        return self.process_response_model(
-            response.body, ListActiveNumbersResponse
-        )
+        super().__init__(project_id, request_data, response_model)
 
 
 class ReleaseNumberFromProjectEndpoint(NumbersEndpoint):
@@ -82,25 +79,26 @@ class ReleaseNumberFromProjectEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id, request_data: NumberRequest):
+    def __init__(
+        self,
+        project_id,
+        request_data: NumberRequest,
+        response_model=ActiveNumber,
+    ):
         super(ReleaseNumberFromProjectEndpoint, self).__init__(
-            project_id, request_data
+            project_id, request_data, response_model
         )
-        self.project_id = project_id
-        self.request_data = request_data
 
     def handle_response(self, response: HTTPResponse) -> ActiveNumber:
         try:
-            super(ReleaseNumberFromProjectEndpoint, self).handle_response(
-                response
-            )
+            super().handle_response(response)
         except NumbersException as e:
             raise NumberNotFoundException(
                 message=e.args[0],
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self.process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(response.body, ActiveNumber)
 
 
 class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
@@ -115,30 +113,20 @@ class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(
-        self, project_id: str, request_data: UpdateNumberConfigurationRequest
+        self,
+        project_id: str,
+        request_data: UpdateNumberConfigurationRequest,
+        response_model=ActiveNumber,
     ):
-        super(UpdateNumberConfigurationEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def request_body(self):
-        path_params = self._get_path_params_from_url()
-        request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True, exclude=path_params
-        )
-        return json.dumps(request_data)
+        super().__init__(project_id, request_data, response_model)
 
     def handle_response(self, response: HTTPResponse) -> ActiveNumber:
         try:
-            super(UpdateNumberConfigurationEndpoint, self).handle_response(
-                response
-            )
+            super().handle_response(response)
         except NumbersException as e:
             raise NumberNotFoundException(
                 message=e.args[0],
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self.process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(response.body, ActiveNumber)

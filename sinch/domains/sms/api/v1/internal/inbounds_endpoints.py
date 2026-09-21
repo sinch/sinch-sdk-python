@@ -1,7 +1,4 @@
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
-from sinch.core.models.http_response import HTTPResponse
-from sinch.core.models.utils import model_dump_for_query_params
-from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.api.v1.internal.base.sms_endpoint import SmsEndpoint
 from sinch.domains.sms.models.v1.internal.inbound_id_request import (
     InboundIdRequest,
@@ -21,20 +18,9 @@ class GetInboundEndpoint(SmsEndpoint):
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
     def __init__(self, project_id: str, request_data: InboundIdRequest):
-        super(GetInboundEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
-
-    def handle_response(self, response: HTTPResponse) -> InboundMessage:
-        try:
-            super(GetInboundEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, InboundMessage)
+        super().__init__(
+            project_id, request_data, response_model=InboundMessage
+        )
 
 
 class ListInboundsEndpoint(SmsEndpoint):
@@ -42,21 +28,22 @@ class ListInboundsEndpoint(SmsEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: ListInboundsRequest):
-        super(ListInboundsEndpoint, self).__init__(project_id, request_data)
-        self.project_id = project_id
-        self.request_data = request_data
+    QUERY_PARAM_FIELDS: set = {
+        "page",
+        "page_size",
+        "start_date",
+        "end_date",
+        "client_reference",
+    }
 
-    def build_query_params(self) -> dict:
-        return model_dump_for_query_params(self.request_data)
+    QUERY_PARAM_FIELDS_EXPLODE_FALSE: set = {"to"}
 
-    def handle_response(self, response: HTTPResponse) -> ListInboundsResponse:
-        try:
-            super(ListInboundsEndpoint, self).handle_response(response)
-        except SmsException as e:
-            raise SmsException(
-                message=e.args[0],
-                response=e.http_response,
-                is_from_server=e.is_from_server,
-            )
-        return self.process_response_model(response.body, ListInboundsResponse)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: ListInboundsRequest,
+        response_model=ListInboundsResponse,
+    ):
+        super().__init__(
+            project_id, request_data, response_model=response_model
+        )

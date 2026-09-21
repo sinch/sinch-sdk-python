@@ -1,10 +1,13 @@
-from typing import Optional, Dict, Any
+from typing import Optional
 from pydantic import Field, StrictStr, conlist
 from sinch.domains.numbers.models.v1.types import CapabilityType, NumberType
-from sinch.domains.numbers.models.v1.utils.validators import (
-    validate_sms_voice_configuration,
-    validate_number_pattern,
+from sinch.domains.numbers.models.v1.internal.sms_configuration_request import (
+    SmsConfigurationRequest,
 )
+from sinch.domains.numbers.models.v1.internal.voice_configuration_request import (
+    VoiceConfigurationRequestUnion,
+)
+from sinch.domains.numbers.models.v1.shared.number_pattern import NumberPattern
 from sinch.domains.numbers.models.v1.internal.base import (
     BaseModelConfigurationRequest,
 )
@@ -16,24 +19,16 @@ class RentAnyNumberRequest(BaseModelConfigurationRequest):
         description="ISO 3166-1 alpha-2 country code. Example: US, GB or SE.",
     )
     number_type: NumberType = Field(alias="type")
-    number_pattern: Optional[Dict[str, Any]] = Field(
+    number_pattern: Optional[NumberPattern] = Field(
         default=None, alias="numberPattern"
     )
     capabilities: Optional[conlist(CapabilityType)] = Field(default=None)
-    sms_configuration: Optional[Dict[str, Any]] = Field(
+    sms_configuration: Optional[SmsConfigurationRequest] = Field(
         default=None, alias="smsConfiguration"
     )
-    voice_configuration: Optional[Dict[str, Any]] = Field(
+    voice_configuration: Optional[VoiceConfigurationRequestUnion] = Field(
         default=None, alias="voiceConfiguration"
     )
     event_destination_target: Optional[StrictStr] = Field(
         default=None, alias="callbackUrl"
     )
-
-    def __init__(self, **data):
-        """
-        Custom initializer to validate nested dictionaries.
-        """
-        validate_sms_voice_configuration(data)
-        validate_number_pattern(data)
-        super().__init__(**data)

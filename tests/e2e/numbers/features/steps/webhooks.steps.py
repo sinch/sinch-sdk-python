@@ -1,9 +1,28 @@
 import json
 import requests
 from behave import given, when, then
+from sinch.domains.numbers.sinch_events.v1.events.active_number_sinch_event import ActiveNumberSinchEvent
+from sinch.domains.numbers.sinch_events.v1.events.number_order_sinch_event import NumberOrderSinchEvent
 from tests.e2e.helpers import store_webhook_response
+from tests.e2e.shared_config import NUMBERS_ORIGIN
 
 SINCH_NUMBERS_CALLBACK_SECRET = 'strongPa$$PhraseWith36CharactersMax'
+
+WEBHOOK_ENDPOINTS = {
+    'success': 'provisioning_to_voice_platform/succeeded',
+    'failure': 'provisioning_to_voice_platform/failed',
+    'completed': 'number_order_processing',
+}
+
+EXPECTED_EVENT = {
+    'success': (ActiveNumberSinchEvent, 'SUCCEEDED', None),
+    'failure': (
+        ActiveNumberSinchEvent,
+        'FAILED',
+        'PROVISIONING_TO_VOICE_PLATFORM_FAILED',
+    ),
+    'completed': (NumberOrderSinchEvent, 'COMPLETED', None),
+}
 
 
 @given('the Numbers Webhooks handler is available')
@@ -13,8 +32,8 @@ def step_webhook_handler_is_available(context):
 
 @when('I send a request to trigger the "{status}" for "{event_type}" event')
 def step_send_trigger_event(context, status, event_type):
-    endpoint = 'succeeded' if status == 'success' else 'failed'
-    response = requests.get(f'http://localhost:3013/webhooks/numbers/provisioning_to_voice_platform/{endpoint}')
+    endpoint = WEBHOOK_ENDPOINTS[status]
+    response = requests.get(f'{NUMBERS_ORIGIN}/webhooks/numbers/{endpoint}')
     store_webhook_response(context, response)
     event_json = json.loads(context.raw_event)
     context.event = context.numbers_webhook.parse_event(event_json)
@@ -29,10 +48,8 @@ def step_check_valid_signature(context, status, event_type):
 
 @then('the event describes a "{status}" for "{event_type}" event')
 def step_check_event_details(context, status, event_type):
+    expected_class, expected_status, expected_failure_code = EXPECTED_EVENT[status]
+    assert type(context.event) is expected_class
     assert context.event.event_type == event_type
-    if status == 'success':
-        assert context.event.status == 'SUCCEEDED'
-        assert context.event.failure_code is None
-    else:
-        assert context.event.status == 'FAILED'
-        assert context.event.failure_code == 'PROVISIONING_TO_VOICE_PLATFORM_FAILED'
+    assert context.event.status == expected_status
+    assert context.event.failure_code == expected_failure_code

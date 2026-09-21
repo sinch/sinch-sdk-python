@@ -1,10 +1,10 @@
-import json
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.numbers.api.v1.exceptions import (
     NumberNotFoundException,
     NumbersException,
 )
+from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import (
     ListAvailableNumbersRequest,
     ListAvailableNumbersResponse,
@@ -16,7 +16,6 @@ from sinch.domains.numbers.models.v1.response import (
     ActiveNumber,
     AvailableNumber,
 )
-from sinch.domains.numbers.api.v1.internal.base import NumbersEndpoint
 
 
 class RentNumberEndpoint(NumbersEndpoint):
@@ -28,27 +27,24 @@ class RentNumberEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: RentNumberRequest):
-        super(RentNumberEndpoint, self).__init__(project_id, request_data)
-
-    def request_body(self) -> str:
-        # Convert the request data to a dictionary and remove None values
-        path_params = self._get_path_params_from_url()
-        request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True, exclude=path_params
-        )
-        return json.dumps(request_data)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: RentNumberRequest,
+        response_model=ActiveNumber,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
     def handle_response(self, response: HTTPResponse) -> ActiveNumber:
         try:
-            super(RentNumberEndpoint, self).handle_response(response)
+            super().handle_response(response)
         except NumbersException as ex:
             raise NumberNotFoundException(
                 message=ex.args[0],
                 response=ex.http_response,
                 is_from_server=ex.is_from_server,
             )
-        return self.process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(response.body, ActiveNumber)
 
 
 class AvailableNumbersEndpoint(NumbersEndpoint):
@@ -60,24 +56,22 @@ class AvailableNumbersEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
+    QUERY_PARAM_FIELDS: set = {
+        "region_code",
+        "number_type",
+        "capabilities",
+        "number_search_pattern",
+        "number_pattern",
+        "page_size",
+    }
+
     def __init__(
-        self, project_id: str, request_data: ListAvailableNumbersRequest
+        self,
+        project_id: str,
+        request_data: ListAvailableNumbersRequest,
+        response_model=ListAvailableNumbersResponse,
     ):
-        super(AvailableNumbersEndpoint, self).__init__(
-            project_id, request_data
-        )
-        self.request_data = request_data
-
-    def build_query_params(self) -> dict:
-        return self.request_data.model_dump(exclude_none=True, by_alias=True)
-
-    def handle_response(
-        self, response: HTTPResponse
-    ) -> ListAvailableNumbersResponse:
-        super(AvailableNumbersEndpoint, self).handle_response(response)
-        return self.process_response_model(
-            response.body, ListAvailableNumbersResponse
-        )
+        super().__init__(project_id, request_data, response_model)
 
 
 class RentAnyNumberEndpoint(NumbersEndpoint):
@@ -89,21 +83,13 @@ class RentAnyNumberEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: RentAnyNumberRequest):
-        super(RentAnyNumberEndpoint, self).__init__(project_id, request_data)
-        self.request_data = request_data
-
-    def request_body(self) -> str:
-        request_data = self.request_data.model_dump(
-            by_alias=True, exclude_none=True
-        )
-        return json.dumps(request_data)
-
-    def handle_response(self, response: HTTPResponse) -> ActiveNumber:
-        error = super(RentAnyNumberEndpoint, self).handle_response(response)
-        if error:
-            return error
-        return self.process_response_model(response.body, ActiveNumber)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: RentAnyNumberRequest,
+        response_model=ActiveNumber,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
 
 class SearchForNumberEndpoint(NumbersEndpoint):
@@ -117,16 +103,21 @@ class SearchForNumberEndpoint(NumbersEndpoint):
     HTTP_METHOD = HTTPMethods.GET.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 
-    def __init__(self, project_id: str, request_data: NumberRequest):
-        super(SearchForNumberEndpoint, self).__init__(project_id, request_data)
+    def __init__(
+        self,
+        project_id: str,
+        request_data: NumberRequest,
+        response_model=AvailableNumber,
+    ):
+        super().__init__(project_id, request_data, response_model)
 
     def handle_response(self, response: HTTPResponse) -> AvailableNumber:
         try:
-            super(SearchForNumberEndpoint, self).handle_response(response)
+            super().handle_response(response)
         except NumbersException as e:
             raise NumberNotFoundException(
                 message=e.args[0],
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self.process_response_model(response.body, AvailableNumber)
+        return self._process_response_model(response.body, AvailableNumber)

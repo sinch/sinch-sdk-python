@@ -15,7 +15,9 @@ def request_data():
         page_size=15,
         capabilities=["SMS", "VOICE"],
         number_pattern="123",
-        number_search_pattern="STARTS_WITH"
+        number_search_pattern="STARTS_WITH",
+        page_token="next-page-token",
+        order_by="display_name",
     )
 
 
@@ -59,9 +61,9 @@ def test_build_url(endpoint, mock_sinch_client_numbers):
             "https://mock-numbers-api.sinch.com/v1/projects/test_project_id/activeNumbers")
 
 
-def test_build_query_params_expects_correct_mapping(endpoint):
+def test_build_query_params_expects_all_params(endpoint):
     """
-    Check if Query params is handled and mapped to the appropriate fields correctly.
+    Check that every ListActiveNumbersRequest field maps to the correct query param.
     """
     expected_params = {
         "regionCode": "US",
@@ -69,10 +71,12 @@ def test_build_query_params_expects_correct_mapping(endpoint):
         "pageSize": 15,
         "capabilities": ["SMS", "VOICE"],
         "numberPattern.pattern": "123",
-        "numberPattern.searchPattern": "STARTS_WITH"
+        "numberPattern.searchPattern": "STARTS_WITH",
+        "pageToken": "next-page-token",
+        "orderBy": "displayName",
     }
     assert endpoint.build_query_params() == expected_params
-
+    
 
 def test_build_query_params_omits_none_region_and_type():
     """

@@ -14,6 +14,7 @@ from sinch.domains.numbers.api.v1.internal import (
 )
 from sinch.domains.numbers.models.v1.internal import (
     ListAvailableNumbersRequest,
+    ListAvailableNumbersResponse,
     NumberRequest,
     RentAnyNumberRequest,
     RentNumberRequest,
@@ -44,8 +45,8 @@ class AvailableNumbers(BaseNumbers):
         capabilities: Optional[List[CapabilityType]] = None,
         page_size: Optional[int] = None,
         **kwargs,
-    ) -> Paginator[AvailableNumber]:
-        return TokenBasedPaginator(
+    ) -> Paginator[ListAvailableNumbersResponse, AvailableNumber]:
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=AvailableNumbersEndpoint(
                 project_id=self._sinch.configuration.project_id,

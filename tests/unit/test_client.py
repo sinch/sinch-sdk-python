@@ -1,6 +1,13 @@
+import threading
+
 import pytest
 from sinch import SinchClient
 from sinch.core.clients.sinch_client_configuration import Configuration
+from sinch.core.enums import VoiceRegionEnum
+from sinch.core.models.internal.base_model_config import (
+    _transform_kwargs_casing,
+    transform_kwargs_casing_scope,
+)
 
 
 def test_sinch_client_initialization():
@@ -65,3 +72,88 @@ def test_sinch_client_expects_conversation_region_error_when_not_provided():
     
     with pytest.raises(ValueError, match="Conversation region is required"):
         sinch_client.configuration.get_conversation_origin()
+
+
+def test_sinch_client_expects_voice_region_default_global():
+    """ Test that SinchClient defaults voice_region to GLOBAL when not provided """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id",
+    )
+    assert sinch_client.configuration.voice_region == VoiceRegionEnum.GLOBAL
+    assert sinch_client.configuration.voice_v2_origin == "https://voice.api.sinch.com"
+
+
+def test_sinch_client_expects_to_be_initialized_with_voice_region():
+    """ Test that SinchClient can be initialized with a voice_region enum member """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id",
+        voice_region=VoiceRegionEnum.EUROPE,
+    )
+    assert sinch_client.configuration.voice_region == VoiceRegionEnum.EUROPE
+    assert sinch_client.configuration.voice_v2_origin == "https://eu1.voice.api.sinch.com"
+
+
+def test_sinch_client_expects_to_be_initialized_with_unlisted_voice_region_string():
+    """ Test that SinchClient accepts a raw string voice_region not present in VoiceRegionEnum """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id",
+        voice_region="eu2",
+    )
+    assert sinch_client.configuration.voice_v2_origin == "https://eu2.voice.api.sinch.com"
+
+
+class TestLegacyExtraFieldsNormalizationIsolation:
+    """`transform_kwargs_casing` is per-client: each Configuration
+    holds its own value, and the request-scoped ContextVar that drives model
+    normalization
+    """
+
+    def test_two_configurations_hold_independent_values(self):
+        client_a = SinchClient(project_id="project_a", transform_kwargs_casing=False)
+        client_b = SinchClient(project_id="project_b", transform_kwargs_casing=True)
+
+        assert client_a.configuration.transform_kwargs_casing is False
+        assert client_b.configuration.transform_kwargs_casing is True
+
+    def test_sequential_use_on_same_thread_does_not_leak(self):
+        client_a = SinchClient(project_id="project_a", transform_kwargs_casing=False)
+        client_b = SinchClient(project_id="project_b", transform_kwargs_casing=True)
+
+        with transform_kwargs_casing_scope(
+            client_b.configuration.transform_kwargs_casing
+        ):
+            assert _transform_kwargs_casing.get() is True
+
+        with transform_kwargs_casing_scope(
+            client_a.configuration.transform_kwargs_casing
+        ):
+            assert _transform_kwargs_casing.get() is False
+
+    def test_concurrent_use_on_different_threads_does_not_leak(self):
+        client_a = SinchClient(project_id="project_a", transform_kwargs_casing=False)
+        client_b = SinchClient(project_id="project_b", transform_kwargs_casing=True)
+        results = {}
+        barrier = threading.Barrier(2)
+
+        def call_as(name, client):
+            with transform_kwargs_casing_scope(
+                client.configuration.transform_kwargs_casing
+            ):
+                barrier.wait()
+                results[name] = _transform_kwargs_casing.get()
+
+        thread_a = threading.Thread(target=call_as, args=("a", client_a))
+        thread_b = threading.Thread(target=call_as, args=("b", client_b))
+        thread_a.start()
+        thread_b.start()
+        thread_a.join()
+        thread_b.join()
+
+        assert results["a"] is False
+        assert results["b"] is True

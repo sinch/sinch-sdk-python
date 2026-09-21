@@ -7,7 +7,7 @@ from sinch.domains.numbers.models.v1.types import NumberSearchPatternType
 
 
 class NumberPattern(BaseModelConfigurationRequest):
-    pattern: Optional[StrictStr]
+    pattern: Optional[StrictStr] = Field(default=None, alias="pattern")
     search_pattern: Optional[NumberSearchPatternType] = Field(
-        alias="searchPattern"
+        default=None, alias="searchPattern"
     )

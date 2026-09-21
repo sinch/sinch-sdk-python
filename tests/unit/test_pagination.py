@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 import pytest
 from sinch.core.pagination import (
+    LinkBasedPaginator,
     SMSPaginator,
     TokenBasedPaginator
 )
@@ -10,7 +11,7 @@ from tests.conftest import SMSBasePaginationRequest
 # Helper function to initialize SMS paginator
 def initialize_sms_paginator(endpoint_mock, request_data, responses):
     client = Mock()
-    
+
     # Create a mock that returns different responses based on page number
     def mock_request(endpoint):
         page = endpoint.request_data.page or 0
@@ -20,11 +21,11 @@ def initialize_sms_paginator(endpoint_mock, request_data, responses):
             return responses[1]
         else:
             return responses[2]
-    
+
     client.configuration.transport.request.side_effect = mock_request
     endpoint_mock.request_data = request_data
 
-    return SMSPaginator(sinch=client, endpoint=endpoint_mock)
+    return SMSPaginator._initialize(sinch=client, endpoint=endpoint_mock)
 
 def test_page_size_is_zero():
     request_data = SMSBasePaginationRequest(page=0)
@@ -33,7 +34,7 @@ def test_page_size_is_zero():
     client.configuration.transport.request.return_value = response
     endpoint = Mock(request_data=request_data)
 
-    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+    paginator = SMSPaginator._initialize(sinch=client, endpoint=endpoint)
 
     assert paginator.has_next_page is False
 
@@ -44,7 +45,7 @@ def test_response_without_page_size():
     client.configuration.transport.request.return_value = response
     endpoint = Mock(request_data=request_data)
 
-    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+    paginator = SMSPaginator._initialize(sinch=client, endpoint=endpoint)
 
     assert paginator.has_next_page is False
 
@@ -64,7 +65,7 @@ def test_partial_last_page_does_not_trigger_extra_call():
     )
     endpoint = Mock(request_data=request_data)
 
-    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+    paginator = SMSPaginator._initialize(sinch=client, endpoint=endpoint)
     list(paginator.iterator())
 
     assert client.configuration.transport.request.call_count == 2
@@ -81,7 +82,7 @@ def test_stop_on_first_page():
     )
     endpoint = Mock(request_data=request_data)
 
-    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+    paginator = SMSPaginator._initialize(sinch=client, endpoint=endpoint)
     list(paginator.iterator())
 
     assert client.configuration.transport.request.call_count == 1
@@ -96,7 +97,7 @@ def test_explicit_page_size_with_mid_stream_start_stops_in_one_call():
     client.configuration.transport.request.return_value = response
     endpoint = Mock(request_data=request_data)
 
-    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+    paginator = SMSPaginator._initialize(sinch=client, endpoint=endpoint)
 
     assert paginator.has_next_page is False
     assert client.configuration.transport.request.call_count == 1
@@ -118,7 +119,7 @@ def test_mid_stream_without_page_size_makes_one_extra_call():
     )
     endpoint = Mock(request_data=request_data)
 
-    paginator = SMSPaginator(sinch=client, endpoint=endpoint)
+    paginator = SMSPaginator._initialize(sinch=client, endpoint=endpoint)
     list(paginator.iterator())
 
     assert client.configuration.transport.request.call_count == 2
@@ -175,7 +176,7 @@ def test_page_sms_iterator_sync_using_auto_pagination(
     all_delivery_reports = []
     for delivery_report in sms_paginator.iterator():
         all_delivery_reports.append(delivery_report.batch_id)
-    
+
     # Should have 4 delivery reports total (2 from page 0, 2 from page 1, 0 from page 2)
     assert len(all_delivery_reports) == 4
     assert all_delivery_reports == mock_int_pagination_expected_delivery_reports
@@ -188,7 +189,7 @@ def initialize_token_paginator(endpoint_mock, request_data, responses):
 
     endpoint_mock.request_data = request_data
 
-    return TokenBasedPaginator(sinch=client, endpoint=endpoint_mock)
+    return TokenBasedPaginator._initialize(sinch=client, endpoint=endpoint_mock)
 
 
 def test_page_token_iterator_sync_using_manual_pagination(
@@ -239,3 +240,88 @@ def test_page_token_iterator_sync_using_auto_pagination_expects_iter(
 
     assert len(active_numbers_list) == len(mock_pagination_expected_phone_numbers_response)
     assert active_numbers_list == mock_pagination_expected_phone_numbers_response
+
+
+# Link based pagination, as defined by the Sinch REST API standards: the next page is addressed
+# by an absolute link served by the API instead of a token echoed back into the query parameters.
+
+NEXT_PAGE_LINK = "https://contacts.api.sinch.com/v1/projects/proj/contacts?pageToken=cursor-def"
+
+
+def initialize_link_paginator(responses):
+    """Builds a LinkBasedPaginator serving the given responses in order."""
+    client = Mock()
+    client.configuration.transport.request.side_effect = list(responses)
+    endpoint = Mock()
+
+    return LinkBasedPaginator._initialize(sinch=client, endpoint=endpoint), client
+
+
+def page_with_next_link(*items):
+    return Mock(content=list(items), links=Mock(next=NEXT_PAGE_LINK))
+
+
+def last_page(*items):
+    return Mock(content=list(items), links=Mock(next=None))
+
+
+def test_link_based_announces_next_page_while_a_link_is_served():
+    paginator, _ = initialize_link_paginator([page_with_next_link(Mock(), Mock())])
+
+    assert paginator.has_next_page is True
+    assert len(paginator.content()) == 2
+
+
+def test_link_based_requests_the_next_page_from_the_served_link():
+    """The next page has to be fetched from the link, not rebuilt from the query parameters."""
+    paginator, client = initialize_link_paginator(
+        [page_with_next_link(Mock()), last_page(Mock())]
+    )
+
+    paginator.next_page()
+
+    next_endpoint = client.configuration.transport.request.call_args[0][0]
+    assert next_endpoint.build_url(Mock()) == NEXT_PAGE_LINK
+    assert next_endpoint.build_query_params() == {}
+
+
+def test_link_based_delegates_everything_but_the_url_to_the_paginated_endpoint():
+    paginator, client = initialize_link_paginator(
+        [page_with_next_link(Mock()), last_page(Mock())]
+    )
+    endpoint = paginator.endpoint
+
+    paginator.next_page()
+
+    next_endpoint = client.configuration.transport.request.call_args[0][0]
+    assert next_endpoint.HTTP_METHOD == endpoint.HTTP_METHOD
+    assert next_endpoint.HTTP_AUTHENTICATION == endpoint.HTTP_AUTHENTICATION
+
+
+def test_link_based_stops_when_no_next_link_is_served():
+    paginator, _ = initialize_link_paginator(
+        [page_with_next_link(Mock()), last_page(Mock())]
+    )
+
+    last = paginator.next_page()
+
+    assert last.has_next_page is False
+    assert last.next_page() is None
+
+
+def test_link_based_stops_when_no_links_object_is_served():
+    """The standards allow the links object to be omitted when the collection fits in a page."""
+    paginator, _ = initialize_link_paginator([Mock(content=[Mock()], links=None)])
+
+    assert paginator.has_next_page is False
+
+
+def test_link_based_iterator_walks_every_page_on_demand():
+    paginator, client = initialize_link_paginator(
+        [page_with_next_link(Mock(), Mock()), last_page(Mock())]
+    )
+
+    items = list(paginator.iterator())
+
+    assert len(items) == 3
+    assert client.configuration.transport.request.call_count == 2

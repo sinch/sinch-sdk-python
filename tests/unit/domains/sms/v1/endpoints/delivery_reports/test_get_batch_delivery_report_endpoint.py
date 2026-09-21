@@ -57,32 +57,22 @@ def test_build_url(endpoint, mock_sinch_client_sms):
     )
 
 
-def test_build_query_params(endpoint):
-    query_params = endpoint.build_query_params()
-    expected_params = {
-        "type": "summary",
-        "status": "DELIVERED",
-        "code": "400",
-        "client_reference": "test_client_ref",
-    }
-    assert query_params == expected_params
-
-
-def test_build_query_params_with_multiple_status_and_code():
+def test_build_query_params_expects_all_params():
     """Test that multiple status and code values are converted to comma-separated strings"""
     request_data = GetBatchDeliveryReportRequest(
         batch_id="01W4FFL35P4NC4K35SMSBATCH1",
+        type="summary",
         status=["DELIVERED", "FAILED", "QUEUED"],
         code=[400, 401, 402],
+        client_reference="test_client_ref",
     )
     endpoint = GetBatchDeliveryReportEndpoint("test_project_id", request_data)
     query_params = endpoint.build_query_params()
-    expected_params = {
-        "status": "DELIVERED,FAILED,QUEUED",
-        "code": "400,401,402",
-    }
-    assert query_params == expected_params
-
+    assert query_params["batch_id"] == "01W4FFL35P4NC4K35SMSBATCH1"
+    assert query_params["status"] == "DELIVERED,FAILED,QUEUED"
+    assert query_params["code"] == "400,401,402"
+    assert query_params["type"] == "summary"
+    assert query_params["client_reference"] == "test_client_ref"
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     """

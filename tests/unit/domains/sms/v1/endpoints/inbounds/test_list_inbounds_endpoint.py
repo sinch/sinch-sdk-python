@@ -54,11 +54,25 @@ def test_build_url(endpoint, mock_sinch_client_sms):
 
 
 def test_build_query_params_expects_all_params(endpoint):
+
+    request = ListInboundsRequest(
+        page=0,
+        page_size=2,
+        to=["+46709876543", "+46701234567"],
+        start_date=datetime(2024, 6, 1, 12, 0, 0),
+        end_date=datetime(2024, 6, 30, 12, 0, 0),
+        client_reference="ref123",
+    )
+    endpoint = ListInboundsEndpoint(
+        "test_project_id", request
+    )
     query_params = endpoint.build_query_params()
 
     assert query_params["page"] == 0
     assert query_params["page_size"] == 2
-    assert query_params["to"] == "+46709876543"
+    assert query_params["to"] == "+46709876543,+46701234567"
+    assert query_params["start_date"] == "2024-06-01T12:00:00"
+    assert query_params["end_date"] == "2024-06-30T12:00:00"
     assert query_params["client_reference"] == "ref123"
 
 
@@ -76,19 +90,6 @@ def test_build_query_params_expects_excludes_none_values():
     assert "start_date" not in query_params
     assert "end_date" not in query_params
     assert "client_reference" not in query_params
-
-
-def test_build_query_params_expects_date_filters():
-    """Test that date filters are included when provided."""
-    request_data = ListInboundsRequest(
-        start_date=datetime(2025, 1, 1, tzinfo=timezone.utc),
-        end_date=datetime(2025, 1, 31, tzinfo=timezone.utc),
-    )
-    endpoint = ListInboundsEndpoint("test_project_id", request_data)
-    query_params = endpoint.build_query_params()
-
-    assert "start_date" in query_params
-    assert "end_date" in query_params
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):

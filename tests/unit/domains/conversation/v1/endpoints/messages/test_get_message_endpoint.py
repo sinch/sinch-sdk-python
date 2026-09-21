@@ -6,7 +6,7 @@ from sinch.domains.conversation.models.v1.messages.response.message_response imp
     AppMessageResponse,
     ContactMessageResponse,
 )
-from tests.unit.domains.conversation.v1.models.response.test_conversation_message_response_model import (
+from tests.unit.domains.conversation.v1.models.messages.response.test_conversation_message_response_model import (
     contact_message_response_data,
     app_message_response_data,
 )

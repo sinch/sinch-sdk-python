@@ -11,6 +11,7 @@ from sinch.domains.numbers.models.v1.response import ActiveNumber
 
 from sinch.domains.numbers.models.v1.internal import (
     ListActiveNumbersRequest,
+    ListActiveNumbersResponse,
     NumberRequest,
     UpdateNumberConfigurationRequest,
 )
@@ -36,8 +37,8 @@ class ActiveNumbers(BaseNumbers):
         page_token: Optional[str] = None,
         order_by: Optional[OrderByType] = None,
         **kwargs,
-    ) -> Paginator[ActiveNumber]:
-        return TokenBasedPaginator(
+    ) -> Paginator[ListActiveNumbersResponse, ActiveNumber]:
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListActiveNumbersEndpoint(
                 project_id=self._sinch.configuration.project_id,

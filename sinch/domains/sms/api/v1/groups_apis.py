@@ -18,6 +18,12 @@ from sinch.domains.sms.models.v1.internal.group_request import GroupRequest
 from sinch.domains.sms.models.v1.internal.list_groups_request import (
     ListGroupsRequest,
 )
+from sinch.domains.sms.models.v1.response.list_group_members_response import (
+    ListGroupMembersResponse,
+)
+from sinch.domains.sms.models.v1.response.list_groups_response import (
+    ListGroupsResponse,
+)
 from sinch.domains.sms.models.v1.internal.replace_group_request import (
     ReplaceGroupRequest,
 )
@@ -79,7 +85,7 @@ class Groups(BaseSms):
         page: Optional[int] = None,
         page_size: Optional[int] = None,
         **kwargs,
-    ) -> Paginator[GroupResponse]:
+    ) -> Paginator[ListGroupsResponse, GroupResponse]:
         """
         With the list operation you can list all groups that you have created.
         This operation supports pagination.
@@ -93,8 +99,8 @@ class Groups(BaseSms):
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
 
-        :returns: Paginator[GroupResponse]
-        :rtype: Paginator[GroupResponse]
+        :returns: Paginator[ListGroupsResponse, GroupResponse]
+        :rtype: Paginator[ListGroupsResponse, GroupResponse]
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
@@ -108,7 +114,7 @@ class Groups(BaseSms):
         )
         endpoint.set_authentication_method(self._sinch)
 
-        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
+        return SMSPaginator._initialize(sinch=self._sinch, endpoint=endpoint)
 
     def get(self, group_id: str, **kwargs) -> GroupResponse:
         """
@@ -253,15 +259,17 @@ class Groups(BaseSms):
         request_data = GroupIdRequest(group_id=group_id, **kwargs)
         return self._request(DeleteGroupEndpoint, request_data)
 
-    def list_members(self, group_id: str, **kwargs) -> Paginator[str]:
+    def list_members(
+        self, group_id: str, **kwargs
+    ) -> Paginator[ListGroupMembersResponse, str]:
         """
         This operation retrieves the members of the group with the provided group ID.
 
         :param group_id: ID of the group whose members are being retrieved.
         :type group_id: str
 
-        :returns: Paginator[str]
-        :rtype: Paginator[str]
+        :returns: Paginator[ListGroupMembersResponse, str]
+        :rtype: Paginator[ListGroupMembersResponse, str]
 
         For detailed documentation, visit https://developers.sinch.com/docs/sms/.
         """
@@ -271,4 +279,4 @@ class Groups(BaseSms):
             request_data=request_data,
         )
         endpoint.set_authentication_method(self._sinch)
-        return SMSPaginator(sinch=self._sinch, endpoint=endpoint)
+        return SMSPaginator._initialize(sinch=self._sinch, endpoint=endpoint)

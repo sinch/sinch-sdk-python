@@ -1,6 +1,7 @@
 import pytest
 from datetime import datetime, timezone
 from pydantic import ValidationError
+from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
 from sinch.domains.numbers.sinch_events.v1.events import NumberSinchEvent
 
 
@@ -16,7 +17,7 @@ def valid_data():
         "status": "SUCCEEDED",
         "failureCode": None,
         "internalFailureCode": None,
-        "extraField": "extra_value"
+        "extraField": "extra_value",
     }
 
 
@@ -35,7 +36,8 @@ def test_number_sinch_event_response_expects_parsed_data(valid_data):
     Expects all fields to map correctly from camelCase input
     and handle valid data appropriately.
     """
-    response = NumberSinchEvent(**valid_data)
+    with transform_kwargs_casing_scope(False):
+        response = NumberSinchEvent(**valid_data)
 
     assert response.event_id == "event-123"
     assert response.timestamp == datetime(
@@ -48,17 +50,14 @@ def test_number_sinch_event_response_expects_parsed_data(valid_data):
     assert response.status == "SUCCEEDED"
     assert response.failure_code is None
     assert response.internal_failure_code is None
-    assert response.extra_field == "extra_value"
+    assert response.extraField == "extra_value"
 
 
 def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data():
     """
     Expects the model to handle missing optional fields.
     """
-    data = {
-        "eventId": "event-123",
-        "projectId": "project-456"
-    }
+    data = {"eventId": "event-123", "projectId": "project-456"}
     response = NumberSinchEvent(**data)
 
     assert response.event_id == "event-123"
@@ -70,6 +69,16 @@ def test_number_sinch_event_response_missing_optional_fields_expects_parsed_data
     assert response.status is None
     assert response.failure_code is None
     assert response.internal_failure_code is None
+
+
+def test_number_sinch_event_build_with_empty_dict():
+    """
+    Expects an empty dict do not raise and exception as all fields are optional
+    """
+    data = {}
+
+    response = NumberSinchEvent(**data)
+    assert isinstance(response, NumberSinchEvent)
 
 
 def test_number_sinch_event_response_invalid_data_expects_validation_error(invalid_data):

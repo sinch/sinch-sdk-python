@@ -6,6 +6,10 @@ from sinch.domains.numbers.api.v1 import (
     EventDestinations,
 )
 from sinch.core.pagination import Paginator
+from sinch.domains.numbers.models.v1.internal import (
+    ListActiveNumbersResponse,
+    ListAvailableNumbersResponse,
+)
 from sinch.domains.numbers.models.v1.response import (
     ActiveNumber,
     AvailableNumber,
@@ -65,7 +69,7 @@ class VirtualNumbers:
         page_token: Optional[str] = None,
         order_by: Optional[OrderByType] = None,
         **kwargs,
-    ) -> Paginator[ActiveNumber]:
+    ) -> Paginator[ListActiveNumbersResponse, ActiveNumber]:
         """
         Search for all active virtual numbers associated with a certain project.
 
@@ -97,7 +101,7 @@ class VirtualNumbers:
         :type kwargs: dict
 
         :returns: A paginator for iterating through the results.
-        :rtype: Paginator[ActiveNumber]
+        :rtype: Paginator[ListActiveNumbersResponse, ActiveNumber]
 
         For detailed documentation, visit https://developers.sinch.com
         """
@@ -420,7 +424,7 @@ class VirtualNumbers:
         capabilities: Optional[List[CapabilityType]] = None,
         page_size: Optional[int] = None,
         **kwargs,
-    ) -> Paginator[AvailableNumber]:
+    ) -> Paginator[ListAvailableNumbersResponse, AvailableNumber]:
         """
         Search for available virtual numbers for you to rent using a variety of parameters to filter results.
 
@@ -446,7 +450,7 @@ class VirtualNumbers:
         :type kwargs: dict
 
         :returns: A paginator for iterating through the results.
-        :rtype: Paginator[AvailableNumber]
+        :rtype: Paginator[ListAvailableNumbersResponse, AvailableNumber]
 
         For detailed documentation, visit: https://developers.sinch.com
         """

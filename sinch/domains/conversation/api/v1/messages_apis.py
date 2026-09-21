@@ -1,6 +1,9 @@
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 from sinch.core.pagination import Paginator, TokenBasedPaginator
+from sinch.domains.conversation.models.v1.messages.internal.list_messages_response import (
+    ListMessagesResponse,
+)
 from sinch.domains.conversation.models.v1.messages.internal.request import (
     ListMessagesRequest,
     ListLastMessagesByChannelIdentityRequest,
@@ -71,7 +74,7 @@ from sinch.domains.conversation.api.v1.internal import (
     SendMessageEndpoint,
 )
 from sinch.domains.conversation.api.v1.base import BaseConversation
-from sinch.domains.conversation.api.v1.utils import (
+from sinch.domains.conversation.api.v1.internal.utils import (
     build_recipient_dict,
     coerce_recipient,
     split_send_kwargs,
@@ -156,7 +159,7 @@ class Messages(BaseConversation):
         channel: Optional[ConversationChannelType] = None,
         direction: Optional[ConversationDirectionType] = None,
         **kwargs,
-    ) -> Paginator[ConversationMessageResponse]:
+    ) -> Paginator[ListMessagesResponse, ConversationMessageResponse]:
         """
         List messages sent or received via particular Processing Modes.
         The messages are ordered by their accept_time property in descending order.
@@ -191,11 +194,11 @@ class Messages(BaseConversation):
         :type **kwargs: dict
 
         :returns: TokenBasedPaginator with ConversationMessageResponse items
-        :rtype: Paginator[ConversationMessageResponse]
+        :rtype: Paginator[ListMessagesResponse, ConversationMessageResponse]
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        return TokenBasedPaginator(
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListMessagesEndpoint(
                 project_id=self._sinch.configuration.project_id,
@@ -232,7 +235,7 @@ class Messages(BaseConversation):
         channel: Optional[ConversationChannelType] = None,
         direction: Optional[ConversationDirectionType] = None,
         **kwargs,
-    ) -> Paginator[ConversationMessageResponse]:
+    ) -> Paginator[ListMessagesResponse, ConversationMessageResponse]:
         """
         Retrieves the last message sent to specified channel identities.
         In CONVERSATION_SOURCE mode, you can query either by channel_identities or by contact_ids.
@@ -266,11 +269,11 @@ class Messages(BaseConversation):
         :type kwargs: dict
 
         :returns: TokenBasedPaginator with ConversationMessageResponse items
-        :rtype: Paginator[ConversationMessageResponse]
+        :rtype: Paginator[ListMessagesResponse, ConversationMessageResponse]
 
         For detailed documentation, visit https://developers.sinch.com/docs/conversation/.
         """
-        return TokenBasedPaginator(
+        return TokenBasedPaginator._initialize(
             sinch=self._sinch,
             endpoint=ListLastMessagesByChannelIdentityEndpoint(
                 project_id=self._sinch.configuration.project_id,

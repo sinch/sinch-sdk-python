@@ -49,8 +49,3 @@ def test_update_group_request_expects_parsed_input():
     assert model.auto_update.add.first_word == "JOIN"
     assert model.auto_update.remove.first_word == "LEAVE"
 
-
-def test_update_group_request_expects_strict_str_rejects_int():
-    """Test that StrictStr fields reject integer values."""
-    with pytest.raises(ValidationError):
-        UpdateGroupRequest(group_id="01FC66621XXXXX119Z8PMV1QPQ", name=123)

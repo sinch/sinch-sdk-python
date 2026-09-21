@@ -26,8 +26,6 @@ def _fetch_and_process(context, path_suffix):
 
 @given("the Conversation Webhooks handler is available")
 def step_conversation_webhooks_available(context):
-    context.sinch.configuration.auth_origin = "http://localhost:3014"
-    context.sinch.configuration.conversation_origin = "http://localhost:3014"
     context.conversation_sinch_events = ConversationSinchEvent(APP_SECRET)
 
 

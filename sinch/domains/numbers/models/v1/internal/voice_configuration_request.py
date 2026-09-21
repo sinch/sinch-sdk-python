@@ -1,7 +1,12 @@
-from typing import Optional, Literal
-from pydantic import Field, StrictStr
+from typing import Annotated, Literal, Optional, Union
+
+from pydantic import BeforeValidator, Field, StrictStr
+
 from sinch.domains.numbers.models.v1.internal.base import (
     BaseModelConfigurationRequest,
+)
+from sinch.domains.numbers.models.v1.utils.validators import (
+    default_voice_configuration_type,
 )
 
 
@@ -22,3 +27,14 @@ class VoiceConfigurationRTC(BaseModelConfigurationRequest):
 
 class VoiceConfigurationCustom(BaseModelConfigurationRequest):
     type: StrictStr
+
+
+VoiceConfigurationRequestUnion = Annotated[
+    Union[
+        VoiceConfigurationRTC,
+        VoiceConfigurationEST,
+        VoiceConfigurationFAX,
+        VoiceConfigurationCustom,
+    ],
+    BeforeValidator(default_voice_configuration_type),
+]
