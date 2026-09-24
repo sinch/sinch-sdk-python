@@ -19,7 +19,7 @@ sinch_client = SinchClient(
 )
 
 # The name of the service
-name = "My Voice Service"
+name = "Example service"
 
 response = sinch_client.voice.v2.services.create(name=name)
 

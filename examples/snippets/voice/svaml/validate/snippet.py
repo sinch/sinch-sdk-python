@@ -19,7 +19,20 @@ sinch_client = SinchClient(
 )
 
 # The SVAML commands to validate
-commands = [{"command": "hangup"}]
+commands = [
+    {
+        "command": "messages",
+        "messages": [
+            {
+                "type": "SAY",
+                "say": {
+                    "text": "Hello, your call is now connected.",
+                    "voice_name": "Emma",
+                },
+            }
+        ],
+    }
+]
 
 response = sinch_client.voice.v2.svaml.validate(commands=commands)
 
