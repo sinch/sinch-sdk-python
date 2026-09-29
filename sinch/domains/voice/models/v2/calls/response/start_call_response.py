@@ -16,8 +16,7 @@ class StartCallResponse(BaseModelConfiguration):
         alias="serviceId",
         description="The ID of the service used.",
     )
-    session_id: Optional[StrictStr] = Field(
-        default=None,
+    session_id: StrictStr = Field(
         alias="sessionId",
         description="The ID of the session.",
     )

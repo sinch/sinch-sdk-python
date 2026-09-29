@@ -18,20 +18,20 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET",
 )
 
-# The Sinch phone number to call from
-from_phone_number = (
+# The phone number to be used as the caller ID, in E.164 format (e.g., +12025550123)
+sinch_phone_number = (
     os.environ.get("SINCH_PHONE_NUMBER") or "MY_SINCH_PHONE_NUMBER"
 )
 
-# The phone number of the recipient to call
-to_phone_number = "RECIPIENT_PHONE_NUMBER"
+# The phone number you want to call, in E.164 format (e.g., +12025550123)
+recipient_phone_number = "RECIPIENT_PHONE_NUMBER"
 
 # The command dialing out to the recipient
-dial_command = {
+dial = {
     "command": "dial",
     "call_name": "Python_SDK_Snippet_Call",
-    "from_": {"type": "PHONE", "phone": {"number": from_phone_number}},
-    "to": {"type": "PHONE", "phone": {"number": to_phone_number}},
+    "from_": {"type": "PHONE", "phone": {"number": sinch_phone_number}},
+    "to": {"type": "PHONE", "phone": {"number": recipient_phone_number}},
     "events": {
         "on_answer": [
             {
@@ -52,8 +52,8 @@ dial_command = {
 }
 
 # The SVAML commands describing the call flow
-commands = [dial_command]
+commands = [dial]
 
-response = sinch_client.voice.v2.calls.start(commands=commands)
+response = sinch_client.voice.v2.calls.start(commands=[dial])
 
 print(f"Call Successfully started.\n{response}")
