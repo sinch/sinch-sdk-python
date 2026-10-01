@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
+from sinch.domains.voice.helpers.v2.svaml import Calls
 
 load_dotenv()
 
@@ -27,33 +28,30 @@ sinch_phone_number = (
 recipient_phone_number = "RECIPIENT_PHONE_NUMBER"
 
 # The command dialing out to the recipient
-dial = {
-    "command": "dial",
-    "call_name": "Python_SDK_Snippet_Call",
-    "from_": {"type": "PHONE", "phone": {"number": sinch_phone_number}},
-    "to": {"type": "PHONE", "phone": {"number": recipient_phone_number}},
-    "events": {
-        "on_answer": [
-            {
-                "command": "messages",
-                "messages": [
-                    {
-                        "type": "SAY",
-                        "say": {
-                            "text": "Hello, your call is now connected.",
-                            "voice_name": "Emma",
-                        },
-                    }
-                ],
-            }
-        ],
-        "on_hangup": [{"command": "hangup"}],
-    },
-}
+dial = Calls.dial(
+    recipient_phone_number,
+    from_=sinch_phone_number,
+    name="Python_SDK_Snippet_Call",
+    on_answer=[
+        {
+            "command": "messages",
+            "messages": [
+                {
+                    "type": "SAY",
+                    "say": {
+                        "text": "Hello, your call is now connected.",
+                        "voice_name": "Emma",
+                    },
+                }
+            ],
+        }
+    ],
+    on_hangup=[Calls.hangup()],
+)
 
 # The SVAML commands describing the call flow
 commands = [dial]
 
-response = sinch_client.voice.v2.calls.start(commands=[dial])
+response = sinch_client.voice.v2.calls.start(commands=commands)
 
 print(f"Call Successfully started.\n{response}")

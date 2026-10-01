@@ -4,6 +4,7 @@ number and bridge the two legs together.
 """
 
 from sinch.domains.voice.api.v2.sinch_events import SinchEvents
+from sinch.domains.voice.helpers.v2.svaml import Calls
 from sinch.domains.voice.models.v2.shared.phone import Phone
 from sinch.domains.voice.models.v2.sinch_events.voice_sinch_event_request import (
     VoiceSinchEventRequest,
@@ -46,7 +47,7 @@ def _handle_call_incoming(
     """Answer the call, greet the caller, then dial the agent and bridge both legs."""
     return sinch_events_service.build_incoming_call_response(
         commands=[
-            {"command": "answer"},
+            Calls.answer(),
             {
                 "command": "messages",
                 "messages_name": "greeting",
@@ -60,32 +61,16 @@ def _handle_call_incoming(
                     }
                 ],
             },
-            {"command": "bridgeCall", "bridge_name": "inbound-bridge"},
-            {
-                "command": "dial",
-                "call_name": "agent",
-                "from_": {"type": "PHONE", "phone": {"number": sinch_number}},
-                "to": {
-                    "type": "PHONE",
-                    "phone": {"number": destination_number},
-                },
-                "dial_timeout_duration_seconds": 30,
-                "events": {
-                    "on_answer": [
-                        {
-                            "command": "bridgeCall",
-                            "bridge_name": "inbound-bridge",
-                        }
-                    ],
-                    "on_hangup": [
-                        {"command": "hangup", "call_name": "incoming"}
-                    ],
-                    "on_timeout": [
-                        {"command": "hangup", "call_name": "incoming"}
-                    ],
-                },
-            },
+            Calls.bridge_call("inbound-bridge"),
+            Calls.dial(
+                destination_number,
+                from_=sinch_number,
+                name="agent",
+                on_answer=[Calls.bridge_call("inbound-bridge")],
+                on_hangup=[Calls.hangup("incoming")],
+                on_timeout=[Calls.hangup("incoming")],
+            ),
         ],
         call_name="incoming",
-        on_hangup=[{"command": "hangup", "call_name": "agent"}],
+        on_hangup=[Calls.hangup("agent")],
     )
