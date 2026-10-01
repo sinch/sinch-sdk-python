@@ -1,5 +1,5 @@
 import pytest
-from pydantic import ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
 from datetime import datetime, timezone
 from sinch.domains.sms.models.v1.internal.dry_run_request import (
     DryRunTextRequest,
@@ -8,6 +8,8 @@ from sinch.domains.sms.models.v1.internal.dry_run_request import (
     DryRunRequest,
 )
 from sinch.domains.sms.models.v1.shared import MediaBody
+
+adapter = TypeAdapter(DryRunRequest)
 
 
 @pytest.fixture
@@ -290,67 +292,54 @@ class TestDryRunMediaRequest:
 
 
 class TestDryRunRequestUnion:
-    """Tests for DryRunRequest Union type."""
+    """Tests for the DryRunRequest union."""
 
-    def test_dry_run_request_union_expects_accepts_text_request_object(
-        self, sample_text_request_data
+    @pytest.mark.parametrize(
+        "payload_fixture, expected_type",
+        [
+            ("sample_text_request_data", DryRunTextRequest),
+            ("sample_binary_request_data", DryRunBinaryRequest),
+            ("sample_media_request_data", DryRunMediaRequest),
+        ],
+        ids=["text", "binary", "media"],
+    )
+    def test_dry_run_request_union_expects_each_variant_resolved(
+        self, request, payload_fixture, expected_type
     ):
-        """Test that DryRunRequest Union accepts DryRunTextRequest object."""
-        from pydantic import TypeAdapter
+        """Test that each dry-run variant resolves from its own fields."""
+        payload = dict(request.getfixturevalue(payload_fixture))
+        if isinstance(payload.get("body"), BaseModel):
+            payload["body"] = payload["body"].model_dump()
 
-        text_request = DryRunTextRequest(**sample_text_request_data)
-        adapter = TypeAdapter(DryRunRequest)
-        validated = adapter.validate_python(text_request.model_dump())
-        assert isinstance(validated, DryRunTextRequest)
+        assert type(adapter.validate_python(payload)) is expected_type
 
-    def test_dry_run_request_union_expects_accepts_binary_request_object(
-        self, sample_binary_request_data
+    @pytest.mark.parametrize(
+        "payload_fixture, expected_type",
+        [
+            ("sample_text_request_data", DryRunTextRequest),
+            ("sample_binary_request_data", DryRunBinaryRequest),
+            ("sample_media_request_data", DryRunMediaRequest),
+        ],
+        ids=["text", "binary", "media"],
+    )
+    def test_dry_run_request_union_expects_built_requests_kept(
+        self, request, payload_fixture, expected_type
     ):
-        """Test that DryRunRequest Union accepts DryRunBinaryRequest object."""
-        from pydantic import TypeAdapter
+        """Test that a request the caller built keeps its own class."""
+        built = expected_type(**request.getfixturevalue(payload_fixture))
 
-        binary_request = DryRunBinaryRequest(**sample_binary_request_data)
-        adapter = TypeAdapter(DryRunRequest)
-        validated = adapter.validate_python(binary_request.model_dump())
-        assert isinstance(validated, DryRunBinaryRequest)
-
-    def test_dry_run_request_union_expects_accepts_media_request_object(
-        self, sample_media_request_data
-    ):
-        """Test that DryRunRequest Union accepts DryRunMediaRequest object."""
-        from pydantic import TypeAdapter
-
-        media_request = DryRunMediaRequest(**sample_media_request_data)
-        adapter = TypeAdapter(DryRunRequest)
-        validated = adapter.validate_python(media_request.model_dump())
-        assert isinstance(validated, DryRunMediaRequest)
-
-    def test_dry_run_request_union_expects_accepts_dict_inputs(
-        self,
-        sample_text_request_data,
-        sample_binary_request_data,
-        sample_media_request_data,
-    ):
-        """Test that DryRunRequest Union accepts dict input for all types."""
-        from pydantic import TypeAdapter
-
-        adapter = TypeAdapter(DryRunRequest)
-
-        validated = adapter.validate_python(sample_text_request_data)
-        assert isinstance(validated, DryRunTextRequest)
-
-        validated = adapter.validate_python(sample_binary_request_data)
-        assert isinstance(validated, DryRunBinaryRequest)
-
-        media_data = sample_media_request_data.copy()
-        media_data["body"] = media_data["body"].model_dump()
-        validated = adapter.validate_python(media_data)
-        assert isinstance(validated, DryRunMediaRequest)
+        assert type(adapter.validate_python(built.model_dump())) is expected_type
 
     def test_dry_run_request_union_expects_rejects_invalid_dict(self):
         """Test that DryRunRequest Union rejects invalid dict."""
-        from pydantic import TypeAdapter, ValidationError
-
-        adapter = TypeAdapter(DryRunRequest)
         with pytest.raises(ValidationError):
             adapter.validate_python({"invalid": "data"})
+
+    def test_dry_run_request_union_expects_unknown_type_resolved_by_fields(self):
+        """Test that a type the SDK does not know resolves by the fields."""
+        request = adapter.validate_python(
+            {"to": ["+12017777777"], "body": "Hi", "type": "mt_future"}
+        )
+
+        assert type(request) is DryRunTextRequest
+        assert request.type == "mt_future"

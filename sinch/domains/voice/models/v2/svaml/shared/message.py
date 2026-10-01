@@ -1,7 +1,7 @@
-from typing import Literal, Optional, Union
+from sinch.core.models.internal.unions import ResolveUnion
+from typing import Annotated, Literal, Optional, Union
 
 from pydantic import Field, StrictStr
-from typing_extensions import Annotated
 
 from sinch.domains.voice.models.v2.internal.base.base_model_configuration import (
     BaseModelConfiguration,
@@ -43,5 +43,9 @@ class PlayMessage(BaseModelConfiguration):
 
 
 Message = Annotated[
-    Union[SayMessage, PlayMessage], Field(discriminator="type")
+    Union[
+        SayMessage,
+        PlayMessage,
+    ],
+    ResolveUnion(discriminator="type"),
 ]

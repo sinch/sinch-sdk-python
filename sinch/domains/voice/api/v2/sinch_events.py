@@ -1,3 +1,4 @@
+from sinch.core.models.internal.unions import parses_response
 from typing import Any, Dict, List, Optional, Union
 
 from sinch.core.internal.sinch_events.authorization_helpers import (
@@ -66,6 +67,7 @@ class SinchEvents:
             method=method,
         )
 
+    @parses_response
     def parse_event(
         self,
         event_body: Union[str, bytes, Dict[str, Any]],

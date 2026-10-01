@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.sms.models.v1.internal.update_text_request import (
     UpdateTextRequest,
 )
@@ -29,8 +30,11 @@ class UpdateMediaRequestWithBatchId(BatchIdMixin, UpdateMediaRequest):
     pass
 
 
-UpdateBatchMessageRequest = Union[
-    UpdateTextRequestWithBatchId,
-    UpdateBinaryRequestWithBatchId,
-    UpdateMediaRequestWithBatchId,
+UpdateBatchMessageRequest = Annotated[
+    Union[
+        UpdateTextRequestWithBatchId,
+        UpdateBinaryRequestWithBatchId,
+        UpdateMediaRequestWithBatchId,
+    ],
+    ResolveUnion(discriminator="type", discriminator_strict=False),
 ]

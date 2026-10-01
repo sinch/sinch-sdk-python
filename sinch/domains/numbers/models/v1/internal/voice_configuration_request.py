@@ -2,6 +2,8 @@ from typing import Annotated, Literal, Optional, Union
 
 from pydantic import BeforeValidator, Field, StrictStr
 
+from sinch.core.models.internal.unions import ResolveUnion
+
 from sinch.domains.numbers.models.v1.internal.base import (
     BaseModelConfigurationRequest,
 )
@@ -36,5 +38,10 @@ VoiceConfigurationRequestUnion = Annotated[
         VoiceConfigurationFAX,
         VoiceConfigurationCustom,
     ],
+    ResolveUnion(
+        discriminator="type",
+        discriminator_strict=False,
+        fallback=VoiceConfigurationCustom,
+    ),
     BeforeValidator(default_voice_configuration_type),
 ]

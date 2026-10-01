@@ -1,11 +1,12 @@
 import json
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Iterable, Optional, Type, Union
+from typing import Any, Optional, Type, Union
 
 from pydantic import BaseModel, TypeAdapter
 
 from sinch.core.models.http_response import HTTPResponse
+from sinch.core.models.internal.unions import parses_response
 from sinch.core.models.internal.utils import query_params_to_comma_joined_lists
 from sinch.core.types import BM
 
@@ -172,6 +173,7 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
         body = self._build_body_data()
         return json.dumps(body) if body else None
 
+    @parses_response
     def _process_response_model(
         self, response_body: dict, response_model: Type[BM]
     ) -> BM:

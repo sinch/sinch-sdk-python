@@ -1,7 +1,6 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 
-from pydantic import Field
-from typing_extensions import Annotated
 
 from sinch.domains.voice.models.v2.svaml.shared.amd_command import AmdCommand
 from sinch.domains.voice.models.v2.svaml.shared.amd_events import AmdEvents
@@ -62,7 +61,7 @@ SvamlCommand = Annotated[
         MenuCommand,
         GotoMenuCommand,
     ],
-    Field(discriminator="command"),
+    ResolveUnion(discriminator="command"),
 ]
 
 # Each of these models lives in its own module and declares a

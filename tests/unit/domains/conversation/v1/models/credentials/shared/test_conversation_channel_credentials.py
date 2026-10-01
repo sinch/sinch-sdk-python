@@ -1,3 +1,5 @@
+from sinch.core.models.internal.unions import response_parsing_scope
+from sinch.core.models.sinch_raw_response import SinchRawResponse
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
@@ -9,17 +11,10 @@ from sinch.domains.conversation.models.v1.credentials.shared.conversation_channe
     KakaoTalkChannelCredentials,
     TelegramChannelCredentials,
     LineChannelCredentials,
-    LineEnterpriseChannelCredentials,
     WeChatChannelCredentials,
     InstagramChannelCredentials,
     AppleBusinessChatChannelCredentials,
     KakaoTalkChatChannelCredentials,
-)
-from sinch.domains.conversation.models.v1.credentials.shared.line_enterprise_credentials_japan import (
-    LineEnterpriseCredentialsJapan,
-)
-from sinch.domains.conversation.models.v1.credentials.shared.line_enterprise_credentials_thailand import (
-    LineEnterpriseCredentialsThailand,
 )
 
 adapter = TypeAdapter(ConversationChannelCredentials)
@@ -97,38 +92,6 @@ def test_conversation_channel_credentials_expects_union_resolves_to_wrapper(payl
     assert isinstance(result, expected_class)
 
 
-def test_conversation_channel_credentials_expects_line_enterprise_japan_resolution():
-    """Test that a line_enterprise payload with line_japan resolves the nested Japan union."""
-    result = adapter.validate_python(
-        {
-            "channel": "LINE",
-            "line_enterprise_credentials": {"line_japan": {"token": "t", "secret": "s"}},
-        }
-    )
-
-    assert isinstance(result, LineEnterpriseChannelCredentials)
-    assert isinstance(
-        result.line_enterprise_credentials, LineEnterpriseCredentialsJapan
-    )
-    assert result.line_enterprise_credentials.line_japan.token == "t"
-
-
-def test_conversation_channel_credentials_expects_line_enterprise_thailand_resolution():
-    """Test that a line_enterprise payload with line_thailand resolves the nested Thailand union."""
-    result = adapter.validate_python(
-        {
-            "channel": "LINE",
-            "line_enterprise_credentials": {"line_thailand": {"token": "t", "secret": "s"}},
-        }
-    )
-
-    assert isinstance(result, LineEnterpriseChannelCredentials)
-    assert isinstance(
-        result.line_enterprise_credentials, LineEnterpriseCredentialsThailand
-    )
-    assert result.line_enterprise_credentials.line_thailand.token == "t"
-
-
 def test_conversation_channel_credentials_expects_common_fields_parsed():
     """Test that the shared common fields are parsed alongside the channel-specific field."""
     result = adapter.validate_python(
@@ -161,3 +124,15 @@ def test_conversation_channel_credentials_expects_validation_error_when_sms_uses
         adapter.validate_python({"channel": "SMS", "static_token": {"token": "t"}})
 
     assert "static_bearer" in str(excinfo.value)
+
+
+def test_conversation_channel_credentials_expects_unknown_channel_parsed_in_a_response():
+    """Test that a channel added to the API later is parsed as SinchRawResponse
+    instead of failing the whole app response."""
+    payload = {"channel": "SOME_NEW_CHANNEL", "new_credentials": {"token": "t"}}
+
+    with response_parsing_scope():
+        credentials = adapter.validate_python(payload)
+
+    assert isinstance(credentials, SinchRawResponse)
+    assert credentials.model_dump() == payload

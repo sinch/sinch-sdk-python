@@ -4,7 +4,7 @@ from contextvars import ContextVar
 from typing import Any, Generator
 
 from pydantic import BaseModel, ConfigDict, SerializationInfo, model_serializer
-from pydantic.functional_serializers import SerializerFunctionWrapHandler
+from pydantic_core.core_schema import SerializerFunctionWrapHandler
 from pydantic_core import PydanticUndefined
 
 # Request-scoped normalization policy for extra fields.
