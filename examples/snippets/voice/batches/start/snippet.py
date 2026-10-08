@@ -9,7 +9,10 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
+from sinch.domains.voice.helpers.v2.svaml import (
+    Calls,
+    CommandsSequenceCreator,
+)
 
 load_dotenv()
 
@@ -38,7 +41,7 @@ commands = CommandsSequenceCreator().dial(
     on_answer=CommandsSequenceCreator().text(
         "Hello, your call is now connected.",
         "Emma",
-        on_finish=CommandsSequenceCreator().hangup(),
+        on_finish=Calls.hangup(),
     ),
 )
 

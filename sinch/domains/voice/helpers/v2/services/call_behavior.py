@@ -1,8 +1,9 @@
 from collections.abc import Sequence
-from typing import cast
+from typing import Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.models.v2.services.types import (
     EventDestinationCallBehaviorDict,
     NoneCallBehaviorDict,
@@ -58,10 +59,12 @@ class CallBehavior:
 
     @staticmethod
     def static(
-        commands: Sequence[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
         *,
         name: UnsetOr[str] = UNSET,
-        on_hangup: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_hangup: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
     ) -> StaticCallBehaviorDict:
         """
         Calls are handled using a predefined static SVAML script. The commands
@@ -71,24 +74,24 @@ class CallBehavior:
         :param commands: An ordered list of SVAML v2 (Sinch Voice Application
             Markup Language) commands that describe a call flow. Commands are
             executed sequentially in the order they are defined.
-        :type commands: Sequence[SvamlCommandDict]
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
         :param name: Name of the call. Must be 1-32 characters. Regex
             pattern: `^\\S+$`
         :type name: UnsetOr[str]
         :param on_hangup: SVAML commands to be executed when the call is hung
             up.
-        :type on_hangup: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_hangup: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :returns: The ``STATIC`` call behavior.
         :rtype: StaticCallBehaviorDict
         """
-        events = strip_unset({"on_hangup": on_hangup})
+        events = strip_unset({"on_hangup": as_commands(on_hangup)})
         return cast(
             StaticCallBehaviorDict,
             {
                 "type": "STATIC",
                 "static": strip_unset(
                     {
-                        "commands": commands,
+                        "commands": as_commands(commands),
                         "call_name": name,
                         "events": events if events else UNSET,
                     }

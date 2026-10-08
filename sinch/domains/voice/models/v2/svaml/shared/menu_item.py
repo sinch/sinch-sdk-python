@@ -16,7 +16,7 @@ class MenuItem(BaseModelConfiguration):
     repeat_prompt: Optional[MenuPrompt] = Field(
         default=None,
         alias="repeatPrompt",
-        description="Prompt played when the menu is repeated.\n\nRepeats occur when input times out or when the provided input does not match any menu match item.",
+        description="Prompt played when the menu is repeated.\n\nRepeats occur when input times out or when the provided input does not match any menu match item. If not specified, the initial prompt is used as the repeat prompt.\n\nA repeat prompt can only be defined when a prompt is also defined for this menu item.",
     )
     input_timeout_duration_seconds: Optional[StrictInt] = Field(
         default=None,

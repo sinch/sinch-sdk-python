@@ -151,6 +151,26 @@ def test_build_incoming_call_response_expects_call_name_and_events_unset(voice_s
     assert isinstance(response, VoiceSinchEventResponse)
     assert response.call_name == "incoming"
     assert "events" not in response.model_fields_set
+
+
+def test_build_response_expects_single_command_wrapped(voice_sinch_event):
+    """Test that commands given as a single command is sent as a list."""
+    response = voice_sinch_event.build_response(commands={"command": "hangup"})
+    assert voice_sinch_event.serialize_response(response) == {
+        "commands": [{"command": "hangup"}],
+    }
+
+
+def test_build_incoming_call_response_expects_single_commands_wrapped(voice_sinch_event):
+    """Test that commands and on_hangup given as a single command are sent as lists."""
+    response = voice_sinch_event.build_incoming_call_response(
+        commands={"command": "answer"},
+        on_hangup={"command": "hangup"},
+    )
+    assert voice_sinch_event.serialize_response(response) == {
+        "commands": [{"command": "answer"}],
+        "events": {"onHangup": [{"command": "hangup"}]},
+    }
     
 
 

@@ -114,6 +114,12 @@ def test_item_expects_optionals_omitted_when_not_provided():
     assert Menu.item("main") == {"name": "main"}
 
 
+def test_item_expects_single_command_handler_wrapped():
+    """Test that on_failure given as a single command is sent as a list."""
+    item = Menu.item("main", on_failure=Calls.hangup())
+    assert item["on_fail"] == [{"command": "hangup"}]
+
+
 def test_prompt_expects_all_fields():
     """Test that prompt builds the prompt with all its fields."""
     assert Menu.prompt(SAY, allow_barge_in=False) == {

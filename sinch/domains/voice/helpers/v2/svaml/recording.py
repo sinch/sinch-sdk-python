@@ -1,8 +1,9 @@
 from collections.abc import Sequence
-from typing import cast
+from typing import Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.models.v2.svaml.types import (
     RecordingDestinationType,
     RecordingFormatType,
@@ -82,8 +83,12 @@ class Recording:
         options: RecordingOptionsDict,
         *,
         name: UnsetOr[str] = UNSET,
-        on_finish: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
-        on_failure: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_finish: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
+        on_failure: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
     ) -> StartRecordingCommandDict:
         r"""
         Starts recording the call. This is a non-blocking command — execution
@@ -103,16 +108,19 @@ class Recording:
         :param on_finish: Commands to execute when the recording is
             successfully stopped. Note that this does not mean that the file
             is delivered to the configured destination yet.
-        :type on_finish: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_finish: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :param on_failure: Commands to execute if the recording fails to
             start. If omitted, failures are silently ignored and the call
             flow continues.
-        :type on_failure: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_failure: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :returns: The ``startRecording`` command.
         :rtype: StartRecordingCommandDict
         """
         events = strip_unset(
-            {"on_finish": on_finish, "on_failure": on_failure}
+            {
+                "on_finish": as_commands(on_finish),
+                "on_failure": as_commands(on_failure),
+            }
         )
         return cast(
             StartRecordingCommandDict,

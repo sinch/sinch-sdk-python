@@ -13,6 +13,10 @@ from sinch.domains.voice.models.v2.types.stream_dict import (
     StreamDict,
     StreamOptionsDict,
 )
+from sinch.domains.voice.models.v2.types.voice_name import VoiceName
+from sinch.domains.voice.models.v2.types.voice_name_enum import (
+    VoiceNameEnum,
+)
 from sinch.domains.voice.models.v2.types.voice_relay_dict import (
     VoiceRelayDict,
 )
@@ -196,7 +200,7 @@ class Destination:
     @staticmethod
     def voice_relay(
         endpoint: str,
-        tts_voice: str,
+        tts_voice: Union[VoiceNameEnum, VoiceName],
         stt_language: str,
         *,
         enable_interruptions: UnsetOr[bool] = UNSET,
@@ -212,8 +216,11 @@ class Destination:
             request.
         :type endpoint: str
         :param tts_voice: Default voice for speech synthesis, used when a
-            WebSocket TTS message does not override it.
-        :type tts_voice: str
+            WebSocket TTS message does not override it. Use
+            ``VoiceNameEnum`` to browse voices with their language, gender
+            and pricing, or ``VoiceNameByLanguageEnum`` to browse them
+            grouped by language.
+        :type tts_voice: Union[VoiceNameEnum, VoiceName]
         :param stt_language: BCP-47 language tag used to transcribe the
             inbound audio.
         :type stt_language: str

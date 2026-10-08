@@ -3,6 +3,7 @@ from typing import Any, Dict, Iterator, List, Literal, Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.models.v2.svaml.types import (
     GotoMenuCommandDict,
     MenuCommandDict,
@@ -95,7 +96,9 @@ class Menu:
         terminating_sequence: UnsetOr[str] = UNSET,
         input_methods: UnsetOr[List[Union[Literal["DTMF"], str]]] = UNSET,
         matches: UnsetOr[Mapping[str, Sequence[SvamlCommandDict]]] = UNSET,
-        on_failure: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_failure: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
     ) -> NamedMenuItemDict:
         r"""
         Defines a single menu step, including prompts, input handling rules,
@@ -160,7 +163,7 @@ class Menu:
         :param on_failure: SVAML commands executed when the menu fails to
             collect a matching input. This handler runs after the repeat
             limit is reached without any input matching a menu match item.
-        :type on_failure: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_failure: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :returns: The named menu item.
         :rtype: NamedMenuItemDict
         """
@@ -180,7 +183,7 @@ class Menu:
                     "terminating_sequence": terminating_sequence,
                     "input_methods": input_methods,
                     "matches": matches,
-                    "on_fail": on_failure,
+                    "on_fail": as_commands(on_failure),
                 }
             ),
         )

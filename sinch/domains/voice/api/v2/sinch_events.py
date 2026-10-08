@@ -10,6 +10,7 @@ from sinch.core.internal.sinch_events.utils import (
 )
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, Unset, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.models.v2.svaml.shared.incoming_call_response_events import (
     IncomingCallResponseEvents,
 )
@@ -92,43 +93,44 @@ class SinchEvents:
 
     def build_response(
         self,
-        commands: Sequence[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
     ) -> VoiceSinchEventResponse:
         """
         Build the SVAML response to return from a sinch event handler.
 
         :param commands: (required) The ordered list of SVAML commands to execute.
-        :type commands: Sequence[SvamlCommandDict]
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
         :returns: The sinch event response, ready to be serialized.
         :rtype: VoiceSinchEventResponse
         """
-        return VoiceSinchEventResponse(commands=commands)
+        return VoiceSinchEventResponse(commands=as_commands(commands))
 
     def build_incoming_call_response(
         self,
-        commands: Sequence[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
+        *,
         call_name: UnsetOr[Optional[str]] = UNSET,
-        on_hangup: UnsetOr[Optional[Sequence[SvamlCommandDict]]] = UNSET,
+        on_hangup: UnsetOr[Optional[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]] = UNSET,
     ) -> VoiceSinchEventResponse:
         """
         Build the SVAML response to return from the handler for a `call.incoming` sinch event.
 
         :param commands: (required) The ordered list of SVAML commands to execute.
-        :type commands: Sequence[SvamlCommandDict]
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
         :param call_name: (optional) Name of the call.
         :type call_name: UnsetOr[Optional[str]]
         :param on_hangup: (optional) Commands to execute when the call is hung up.
-        :type on_hangup: UnsetOr[Optional[Sequence[SvamlCommandDict]]]
+        :type on_hangup: UnsetOr[Optional[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]]
         :returns: The sinch event response, ready to be serialized.
         :rtype: VoiceSinchEventResponse
         """
 
         events: UnsetOr[IncomingCallResponseEvents] = UNSET
         if not isinstance(on_hangup, Unset):
-            events = IncomingCallResponseEvents(on_hangup=on_hangup)
+            events = IncomingCallResponseEvents(on_hangup=as_commands(on_hangup))
 
         return VoiceSinchEventResponse(
-            commands=commands,
+            commands=as_commands(commands),
             **strip_unset({"call_name": call_name, "events": events}),
         )
 

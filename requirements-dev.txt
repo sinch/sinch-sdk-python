@@ -53,11 +53,11 @@ importlib-metadata==8.7.1 ; python_full_version < '3.10'
     # via sphinx
 iniconfig==2.1.0 ; python_full_version < '3.10'
     # via pytest
-iniconfig==2.3.0 ; python_full_version >= '3.10'
+iniconfig==2.3.1 ; python_full_version >= '3.10'
     # via pytest
 jinja2==3.1.6
     # via sphinx
-markupsafe==3.0.3
+markupsafe==3.0.4
     # via jinja2
 packaging==26.3
     # via
@@ -145,7 +145,7 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-tomli==2.4.1 ; python_full_version < '3.11'
+tomli==2.5.0 ; python_full_version < '3.11'
     # via
     #   behave
     #   pytest
@@ -168,7 +168,7 @@ urllib3==2.8.0 ; python_full_version >= '3.10'
     # via
     #   -r requirements.in
     #   requests
-uv==0.12.22
+uv==0.12.23
     # via -r requirements.in
 win-unicode-console==0.5 ; python_full_version < '3.10'
     # via behave

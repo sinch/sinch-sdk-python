@@ -4,6 +4,7 @@ from typing import Union, cast
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
 from sinch.domains.voice.helpers.v2.destinations import Destination
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.models.v2.svaml.types import (
     AnswerCommandDict,
     BridgeCallCommandDict,
@@ -64,12 +65,24 @@ class Calls:
         name: UnsetOr[str] = UNSET,
         timeout_duration_seconds: UnsetOr[int] = UNSET,
         max_duration_seconds: UnsetOr[int] = UNSET,
-        on_answer: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
-        on_busy: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
-        on_reject: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
-        on_timeout: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
-        on_hangup: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
-        on_failure: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_answer: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
+        on_busy: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
+        on_reject: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
+        on_timeout: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
+        on_hangup: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
+        on_failure: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
     ) -> DialCommandDict:
         """
         Initiates a new outbound call leg within the current session.
@@ -106,28 +119,28 @@ class Calls:
             The call is terminated automatically when this limit is reached.
         :type max_duration_seconds: UnsetOr[int]
         :param on_answer: SVAML commands to be executed when the call is answered.
-        :type on_answer: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_answer: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :param on_busy: SVAML commands to be executed when the call is busy.
-        :type on_busy: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_busy: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :param on_reject: SVAML commands to be executed when the call is rejected.
-        :type on_reject: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_reject: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :param on_timeout: SVAML commands to be executed when the call is timed out.
-        :type on_timeout: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_timeout: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :param on_hangup: SVAML commands to be executed when the call is hung up.
-        :type on_hangup: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_hangup: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :param on_failure: SVAML commands to be executed when the call fails.
-        :type on_failure: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_failure: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :returns: The ``dial`` command.
         :rtype: DialCommandDict
         """
         events = strip_unset(
             {
-                "on_answer": on_answer,
-                "on_busy": on_busy,
-                "on_reject": on_reject,
-                "on_timeout": on_timeout,
-                "on_hangup": on_hangup,
-                "on_failure": on_failure,
+                "on_answer": as_commands(on_answer),
+                "on_busy": as_commands(on_busy),
+                "on_reject": as_commands(on_reject),
+                "on_timeout": as_commands(on_timeout),
+                "on_hangup": as_commands(on_hangup),
+                "on_failure": as_commands(on_failure),
             }
         )
         return cast(

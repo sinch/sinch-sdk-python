@@ -194,6 +194,19 @@ def test_messages_expects_original_creator_unchanged():
     assert extended.build() == [Messages.start(SAY, PLAY)]
 
 
+def test_messages_expects_single_command_handler_wrapped():
+    """Test that on_finish given as a single command is sent as a list."""
+    creator = (
+        CommandsSequenceCreator()
+        .messages(on_finish=Calls.hangup())
+        .text("Hello", "Emma")
+    )
+
+    assert creator.build() == [
+        Messages.start(SAY, on_finish=[Calls.hangup()])
+    ]
+
+
 def test_menu_expects_chained_items_built_as_helper():
     """Test that chained menu calls build the same command as the helper."""
     creator = (

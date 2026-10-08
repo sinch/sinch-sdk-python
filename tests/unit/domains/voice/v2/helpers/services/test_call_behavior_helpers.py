@@ -65,3 +65,11 @@ def test_static_expects_empty_handler_kept():
     """Test that an explicit empty handler list is kept, so events is sent."""
     behavior = CallBehavior.static([Calls.answer()], on_hangup=[])
     assert behavior["static"]["events"] == {"on_hangup": []}
+
+
+def test_static_expects_single_command_handler_wrapped():
+    """Test that a handler given as a single command is sent as a list."""
+    behavior = CallBehavior.static(Calls.answer(), on_hangup=Calls.hangup())
+    assert behavior["static"]["events"] == {
+        "on_hangup": [{"command": "hangup"}]
+    }

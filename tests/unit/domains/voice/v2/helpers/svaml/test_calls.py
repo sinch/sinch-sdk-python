@@ -61,6 +61,12 @@ def test_dial_expects_empty_handler_kept():
     assert Calls.dial(TO, on_answer=[])["events"] == {"on_answer": []}
 
 
+def test_dial_expects_single_command_handler_wrapped():
+    """Test that a handler given as a single command is sent as a list."""
+    command = Calls.dial(TO, on_busy=Calls.hangup())
+    assert command["events"] == {"on_busy": [{"command": "hangup"}]}
+
+
 def test_dial_expects_str_endpoints_as_phone():
     """Test that plain string to and from_ are built as phone endpoints."""
     command = Calls.dial("+15559876543", from_="+15551234567")

@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, List, Literal, Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.helpers.v2.svaml.internal.chain import Commands
 from sinch.domains.voice.helpers.v2.svaml.menu import Menu, _check_references
 from sinch.domains.voice.helpers.v2.svaml.messages import Messages
@@ -14,12 +15,18 @@ from sinch.domains.voice.models.v2.svaml.types import (
     NamedMenuItemDict,
     SvamlCommandDict,
 )
+from sinch.domains.voice.models.v2.types.voice_name import VoiceName
+from sinch.domains.voice.models.v2.types.voice_name_enum import (
+    VoiceNameEnum,
+)
 
 
 def messages_command(
     *,
     name: UnsetOr[str] = UNSET,
-    on_finish: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+    on_finish: UnsetOr[
+        Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+    ] = UNSET,
 ) -> MessagesCommandDict:
     r"""
     Plays one or more messages on the call, sequentially in order. The
@@ -37,11 +44,11 @@ def messages_command(
     :type name: UnsetOr[str]
     :param on_finish: SVAML commands to execute when all messages in the
         sequence have finished playing.
-    :type on_finish: UnsetOr[Sequence[SvamlCommandDict]]
+    :type on_finish: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
     :returns: The ``messages`` command.
     :rtype: MessagesCommandDict
     """
-    events = strip_unset({"on_finish": on_finish})
+    events = strip_unset({"on_finish": as_commands(on_finish)})
     return cast(
         MessagesCommandDict,
         strip_unset(
@@ -57,10 +64,12 @@ def messages_command(
 
 def text_command(
     text: str,
-    voice_name: str,
+    voice_name: Union[VoiceNameEnum, VoiceName],
     *,
     name: UnsetOr[str] = UNSET,
-    on_finish: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+    on_finish: UnsetOr[
+        Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+    ] = UNSET,
 ) -> MessagesCommandDict:
     r"""
     Plays a single text-to-speech message on the call. Shortcut for
@@ -70,8 +79,10 @@ def text_command(
         600 characters.
     :type text: str
     :param voice_name: The name of the voice to use for text-to-speech
-        synthesis.
-    :type voice_name: str
+        synthesis. Use ``VoiceNameEnum`` to browse voices with their
+        language, gender and pricing, or ``VoiceNameByLanguageEnum`` to
+        browse them grouped by language.
+    :type voice_name: Union[VoiceNameEnum, VoiceName]
     :param name: Name of the message sequence, between 1 and 32
         characters, matching ``^\S+$``. Must be unique within the current
         call session. Can be referenced by :meth:`stop_messages` to control
@@ -79,7 +90,7 @@ def text_command(
     :type name: UnsetOr[str]
     :param on_finish: SVAML commands to execute when the message has
         finished playing.
-    :type on_finish: UnsetOr[Sequence[SvamlCommandDict]]
+    :type on_finish: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
     :returns: The ``messages`` command.
     :rtype: MessagesCommandDict
     """
@@ -92,7 +103,9 @@ def play_command(
     url: str,
     *,
     name: UnsetOr[str] = UNSET,
-    on_finish: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+    on_finish: UnsetOr[
+        Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+    ] = UNSET,
 ) -> MessagesCommandDict:
     r"""
     Plays a single audio file on the call. Shortcut for :meth:`messages`
@@ -107,7 +120,7 @@ def play_command(
     :type name: UnsetOr[str]
     :param on_finish: SVAML commands to execute when the message has
         finished playing.
-    :type on_finish: UnsetOr[Sequence[SvamlCommandDict]]
+    :type on_finish: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
     :returns: The ``messages`` command.
     :rtype: MessagesCommandDict
     """
@@ -142,7 +155,9 @@ def menu_item(
     terminating_sequence: UnsetOr[str] = UNSET,
     input_methods: UnsetOr[List[Union[Literal["DTMF"], str]]] = UNSET,
     matches: UnsetOr[Mapping[str, Sequence[SvamlCommandDict]]] = UNSET,
-    on_failure: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+    on_failure: UnsetOr[
+        Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+    ] = UNSET,
 ) -> NamedMenuItemDict:
     r"""
     Defines a single menu step, including input handling rules,
@@ -200,7 +215,7 @@ def menu_item(
     :param on_failure: SVAML commands executed when the menu fails to
         collect a matching input. This handler runs after the repeat
         limit is reached without any input matching a menu match item.
-    :type on_failure: UnsetOr[Sequence[SvamlCommandDict]]
+    :type on_failure: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
     :returns: The named menu item.
     :rtype: NamedMenuItemDict
     :raises ValueError: If the menu name is duplicated.

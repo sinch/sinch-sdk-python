@@ -31,3 +31,9 @@ def test_activate_expects_events_omitted_when_not_provided():
 def test_activate_expects_empty_handler_kept():
     """Test that an explicit empty handler list is kept, so events is sent."""
     assert Amd.activate(on_beep=[])["events"] == {"on_beep": []}
+
+
+def test_activate_expects_single_command_handler_wrapped():
+    """Test that a handler given as a single command is sent as a list."""
+    command = Amd.activate(on_machine=Calls.hangup())
+    assert command["events"] == {"on_machine": [{"command": "hangup"}]}

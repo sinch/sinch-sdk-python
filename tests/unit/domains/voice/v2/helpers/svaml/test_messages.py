@@ -60,6 +60,12 @@ def test_start_expects_empty_handler_kept():
     assert Messages.start(SAY, on_finish=[])["events"] == {"on_finish": []}
 
 
+def test_start_expects_single_command_handler_wrapped():
+    """Test that a handler given as a single command is sent as a list."""
+    command = Messages.start(SAY, on_finish=Calls.hangup())
+    assert command["events"] == {"on_finish": [{"command": "hangup"}]}
+
+
 def test_stop_expects_all_fields():
     """Test that stop builds the command with all its fields."""
     assert Messages.stop("greeting") == {

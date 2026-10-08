@@ -1,10 +1,11 @@
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.pagination import LinkBasedPaginator, Paginator
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.api.v2.base.base_voice import BaseVoice
 from sinch.domains.voice.api.v2.internal.calls_endpoints import (
     GetCallByIdEndpoint,
@@ -46,7 +47,7 @@ from sinch.domains.voice.models.v2.types.call_type import CallType
 class Calls(BaseVoice):
     def start(
         self,
-        commands: Sequence[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
         service_id: Optional[str] = None,
         idempotency_key: UnsetOr[Optional[str]] = UNSET,
         **kwargs,
@@ -55,7 +56,7 @@ class Calls(BaseVoice):
         Create a new outbound call, associated to the project's default service or to the service specified in the `serviceId` query parameter.
 
         :param commands: (required) SVAML commands describing the call flow.
-        :type commands: Sequence[SvamlCommandDict]
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
         :param service_id: (optional) The ID of the service to use for the call. If omitted, the project's default service is used.
         :type service_id: Optional[str]
         :param idempotency_key: (optional) Client-generated idempotency key to safely retry requests. If a request with the same key is received within 10 minutes, the cached response from the original request is returned. Using a random UUID (v4) is strongly recommended.
@@ -68,7 +69,7 @@ class Calls(BaseVoice):
         For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = StartCallRequest(
-            commands=commands,
+            commands=as_commands(commands),
             service_id=service_id,
             **strip_unset(
                 {
@@ -162,7 +163,7 @@ class Calls(BaseVoice):
     def interact_by_call_id(
         self,
         call_id: str,
-        commands: Sequence[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
         idempotency_key: UnsetOr[Optional[str]] = UNSET,
         **kwargs,
     ) -> None:
@@ -172,7 +173,7 @@ class Calls(BaseVoice):
         :param call_id: (required) The ID of the call.
         :type call_id: str
         :param commands: (required) SVAML commands describing the call flow.
-        :type commands: Sequence[SvamlCommandDict]
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
         :param idempotency_key: (optional) Client-generated idempotency key to safely retry requests. If a request with the same key is received within 10 minutes, the cached response from the original request is returned. Using a random UUID (v4) is strongly recommended.
         :type idempotency_key: UnsetOr[Optional[str]]
         :param **kwargs: Additional parameters for the request.
@@ -184,7 +185,7 @@ class Calls(BaseVoice):
         """
         request_data = PatchCallByIdRequest(
             call_id=call_id,
-            commands=commands,
+            commands=as_commands(commands),
             **strip_unset(
                 {
                     "idempotency_key": idempotency_key,
@@ -198,7 +199,7 @@ class Calls(BaseVoice):
         self,
         session_id: str,
         call_name: str,
-        commands: Sequence[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
         idempotency_key: UnsetOr[Optional[str]] = UNSET,
         **kwargs,
     ) -> None:
@@ -210,7 +211,7 @@ class Calls(BaseVoice):
         :param call_name: (required) The name of the call leg within the session, as assigned by the `callName` property in the `dial` command.
         :type call_name: str
         :param commands: (required) SVAML commands describing the call flow.
-        :type commands: Sequence[SvamlCommandDict]
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
         :param idempotency_key: (optional) Client-generated idempotency key to safely retry requests. If a request with the same key is received within 10 minutes, the cached response from the original request is returned. Using a random UUID (v4) is strongly recommended.
         :type idempotency_key: UnsetOr[Optional[str]]
         :param **kwargs: Additional parameters for the request.
@@ -223,7 +224,7 @@ class Calls(BaseVoice):
         request_data = PatchCallBySessionAndNameRequest(
             session_id=session_id,
             call_name=call_name,
-            commands=commands,
+            commands=as_commands(commands),
             **strip_unset(
                 {
                     "idempotency_key": idempotency_key,

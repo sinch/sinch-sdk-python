@@ -1,8 +1,9 @@
 from collections.abc import Sequence
-from typing import cast
+from typing import Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.models.v2.svaml.types import (
     MessageDict,
     MessagesCommandDict,
@@ -11,13 +12,19 @@ from sinch.domains.voice.models.v2.svaml.types import (
     StopMessagesCommandDict,
     SvamlCommandDict,
 )
+from sinch.domains.voice.models.v2.types.voice_name import VoiceName
+from sinch.domains.voice.models.v2.types.voice_name_enum import (
+    VoiceNameEnum,
+)
 
 
 class Messages:
     """Helpers to build the message playback SVAML commands."""
 
     @staticmethod
-    def text(text: str, voice_name: str) -> SayMessageDict:
+    def text(
+        text: str, voice_name: Union[VoiceNameEnum, VoiceName]
+    ) -> SayMessageDict:
         """
         A text-to-speech (TTS) message item. The platform synthesizes the
         provided plain text into speech and plays it on the call.
@@ -26,15 +33,19 @@ class Messages:
             600 characters.
         :type text: str
         :param voice_name: The name of the voice to use for text-to-speech
-            synthesis.
-        :type voice_name: str
+            synthesis. Use ``VoiceNameEnum`` to browse voices with their
+            language, gender and pricing, or ``VoiceNameByLanguageEnum`` to
+            browse them grouped by language.
+        :type voice_name: Union[VoiceNameEnum, VoiceName]
         :returns: The ``SAY`` message, in ``TEXT`` format.
         :rtype: SayMessageDict
         """
         return {"type": "SAY", "say": {"text": text, "voice_name": voice_name}}
 
     @staticmethod
-    def ssml(ssml: str, voice_name: str) -> SayMessageDict:
+    def ssml(
+        ssml: str, voice_name: Union[VoiceNameEnum, VoiceName]
+    ) -> SayMessageDict:
         """
         A text-to-speech (TTS) message item using Speech Synthesis Markup
         Language for advanced text-to-speech control. The platform
@@ -45,8 +56,10 @@ class Messages:
             synthesized into speech, at most 600 characters.
         :type ssml: str
         :param voice_name: The name of the voice to use for text-to-speech
-            synthesis.
-        :type voice_name: str
+            synthesis. Use ``VoiceNameEnum`` to browse voices with their
+            language, gender and pricing, or ``VoiceNameByLanguageEnum`` to
+            browse them grouped by language.
+        :type voice_name: Union[VoiceNameEnum, VoiceName]
         :returns: The ``SAY`` message, in ``SSML`` format.
         :rtype: SayMessageDict
         """
@@ -73,7 +86,9 @@ class Messages:
         message: MessageDict,
         *messages: MessageDict,
         name: UnsetOr[str] = UNSET,
-        on_finish: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_finish: UnsetOr[
+            Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        ] = UNSET,
     ) -> MessagesCommandDict:
         r"""
         Plays one or more messages on the call. Multiple messages are played
@@ -97,11 +112,11 @@ class Messages:
         :type name: UnsetOr[str]
         :param on_finish: SVAML commands to execute when all messages in the
             sequence have finished playing.
-        :type on_finish: UnsetOr[Sequence[SvamlCommandDict]]
+        :type on_finish: UnsetOr[Union[SvamlCommandDict, Sequence[SvamlCommandDict]]]
         :returns: The ``messages`` command.
         :rtype: MessagesCommandDict
         """
-        events = strip_unset({"on_finish": on_finish})
+        events = strip_unset({"on_finish": as_commands(on_finish)})
         return cast(
             MessagesCommandDict,
             strip_unset(

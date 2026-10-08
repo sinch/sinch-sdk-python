@@ -4,7 +4,10 @@ number and bridge the two legs together.
 """
 
 from sinch.domains.voice.api.v2.sinch_events import SinchEvents
-from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
+from sinch.domains.voice.helpers.v2.svaml import (
+    Calls,
+    CommandsSequenceCreator,
+)
 from sinch.domains.voice.models.v2.shared.phone import Phone
 from sinch.domains.voice.models.v2.sinch_events.voice_sinch_event_request import (
     VoiceSinchEventRequest,
@@ -58,10 +61,10 @@ def _handle_call_incoming(
             destination_number,
             from_=sinch_number,
             name="agent",
-            on_answer=CommandsSequenceCreator().bridge_call("inbound-bridge"),
-            on_hangup=CommandsSequenceCreator().hangup("incoming"),
-            on_timeout=CommandsSequenceCreator().hangup("incoming"),
+            on_answer=Calls.bridge_call("inbound-bridge"),
+            on_hangup=Calls.hangup("incoming"),
+            on_timeout=Calls.hangup("incoming"),
         ),
         call_name="incoming",
-        on_hangup=CommandsSequenceCreator().hangup("agent"),
+        on_hangup=Calls.hangup("agent"),
     )
