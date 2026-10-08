@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.voice.helpers.v2.svaml import Calls
+from sinch.domains.voice.helpers.v2.svaml import Calls, Messages
 
 load_dotenv()
 
@@ -36,20 +36,11 @@ dial = Calls.dial(
     from_=sinch_phone_number,
     name="Python_SDK_Snippet_Call",
     on_answer=[
-        {
-            "command": "messages",
-            "messages": [
-                {
-                    "type": "SAY",
-                    "say": {
-                        "text": "Hello, your call is now connected.",
-                        "voice_name": "Emma",
-                    },
-                }
-            ],
-        }
+        Messages.start(
+            [Messages.text("Hello, your call is now connected.", "Emma")],
+            on_finish=[Calls.hangup()],
+        )
     ],
-    on_hangup=[Calls.hangup()],
 )
 
 # The SVAML commands describing the call flow

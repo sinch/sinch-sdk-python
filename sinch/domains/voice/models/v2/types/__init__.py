@@ -1,3 +1,8 @@
+from sinch.domains.voice.models.v2.types.base_call_destination_dict import (
+    BaseCallDestinationDict,
+    BaseSipDict,
+    BaseStreamDict,
+)
 from sinch.domains.voice.models.v2.types.call_destination_dict import (
     CallDestinationDict,
 )
@@ -34,6 +39,9 @@ from sinch.domains.voice.models.v2.types.voice_relay_dict import (
 )
 
 __all__ = [
+    "BaseStreamDict",
+    "BaseSipDict",
+    "BaseCallDestinationDict",
     "CallDestinationDict",
     "CallDirection",
     "CallHeaderDict",

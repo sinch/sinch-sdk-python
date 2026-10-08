@@ -2,6 +2,7 @@ from typing import List, Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.destinations import Destination
 from sinch.domains.voice.models.v2.svaml.types import (
     AnswerCommandDict,
     BridgeCallCommandDict,
@@ -11,17 +12,10 @@ from sinch.domains.voice.models.v2.svaml.types import (
     SvamlCommandDict,
 )
 from sinch.domains.voice.models.v2.types import (
+    BaseCallDestinationDict,
     CallDestinationDict,
     CallOriginDict,
-    PhoneDict,
 )
-
-
-def _phone_if_str(endpoint):
-    if isinstance(endpoint, str):
-        phone: PhoneDict = {"type": "PHONE", "phone": {"number": endpoint}}
-        return phone
-    return endpoint
 
 
 class Calls:
@@ -61,9 +55,11 @@ class Calls:
 
     @staticmethod
     def dial(
-        to: Union[str, CallDestinationDict],
+        to: Union[str, BaseCallDestinationDict, CallDestinationDict],
         *,
-        from_: UnsetOr[Union[str, CallOriginDict]] = UNSET,
+        from_: UnsetOr[
+            Union[str, BaseCallDestinationDict, CallOriginDict]
+        ] = UNSET,
         name: UnsetOr[str] = UNSET,
         timeout_duration_seconds: UnsetOr[int] = UNSET,
         max_duration_seconds: UnsetOr[int] = UNSET,
@@ -88,17 +84,15 @@ class Calls:
         such as `sip:46701234567@acme.se` can be converted to an E.164 number. If the
         `from` value cannot be converted, it defaults to null (anonymous).
 
-        ``events`` is only included when at least one ``on_*`` handler is provided.
-
         :param to: Call destination: a phone number in E.164 format,
             a SIP URI, a WebSocket endpoint for real-time audio
             streaming or the Voice Relay service for real-time
-            speech-to-text and text-to-speech. A plain string is
-            treated as a phone number.
-        :type to: Union[str, CallDestinationDict]
+            speech-to-text and text-to-speech. A string is parsed with
+            :meth:`Destination.of`.
+        :type to: Union[str, BaseCallDestinationDict, CallDestinationDict]
         :param from_: Call origin: a phone number in E.164 format or
-            a SIP URI. A plain string is treated as a phone number.
-        :type from_: UnsetOr[Union[str, CallOriginDict]]
+            a SIP URI. A string is parsed with :meth:`Destination.of`.
+        :type from_: UnsetOr[Union[str, BaseCallDestinationDict, CallOriginDict]]
         :param name: Identifier for this call leg within the session. Must be
             unique across all active call legs in the session. Other commands (e.g.,
             `hangup`) can reference this name to target this specific leg.
@@ -140,8 +134,12 @@ class Calls:
             strip_unset(
                 {
                     "command": "dial",
-                    "to": _phone_if_str(to),
-                    "from_": _phone_if_str(from_),
+                    "to": Destination.of(to) if isinstance(to, str) else to,
+                    "from_": (
+                        Destination.of(from_)
+                        if isinstance(from_, str)
+                        else from_
+                    ),
                     "call_name": name,
                     "dial_timeout_duration_seconds": timeout_duration_seconds,
                     "max_call_duration_seconds": max_duration_seconds,

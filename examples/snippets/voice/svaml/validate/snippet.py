@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
+from sinch.domains.voice.helpers.v2.svaml import Messages
 
 load_dotenv()
 
@@ -20,18 +21,9 @@ sinch_client = SinchClient(
 
 # The SVAML commands to validate
 commands = [
-    {
-        "command": "messages",
-        "messages": [
-            {
-                "type": "SAY",
-                "say": {
-                    "text": "Hello, your call is now connected.",
-                    "voice_name": "Emma",
-                },
-            }
-        ],
-    }
+    Messages.start(
+        [Messages.text("Hello, your call is now connected.", "Emma")]
+    )
 ]
 
 response = sinch_client.voice.v2.svaml.validate(commands=commands)

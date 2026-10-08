@@ -68,6 +68,19 @@ def test_dial_expects_str_endpoints_as_phone():
     assert command["from_"] == FROM
 
 
+def test_dial_expects_str_endpoints_parsed_by_prefix():
+    """Test that string to and from_ are parsed with Destination.of."""
+    command = Calls.dial("sip:bob@example.com", from_="sip:alice@example.com")
+    assert command["to"] == {
+        "type": "SIP",
+        "sip": {"endpoint": "sip:bob@example.com"},
+    }
+    assert command["from_"] == {
+        "type": "SIP",
+        "sip": {"endpoint": "sip:alice@example.com"},
+    }
+
+
 def test_hangup_expects_all_fields():
     """Test that hangup builds the command with all its fields."""
     assert Calls.hangup("origin") == {

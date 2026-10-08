@@ -4,7 +4,7 @@ number and bridge the two legs together.
 """
 
 from sinch.domains.voice.api.v2.sinch_events import SinchEvents
-from sinch.domains.voice.helpers.v2.svaml import Calls
+from sinch.domains.voice.helpers.v2.svaml import Calls, Messages
 from sinch.domains.voice.models.v2.shared.phone import Phone
 from sinch.domains.voice.models.v2.sinch_events.voice_sinch_event_request import (
     VoiceSinchEventRequest,
@@ -48,19 +48,15 @@ def _handle_call_incoming(
     return sinch_events_service.build_incoming_call_response(
         commands=[
             Calls.answer(),
-            {
-                "command": "messages",
-                "messages_name": "greeting",
-                "messages": [
-                    {
-                        "type": "SAY",
-                        "say": {
-                            "text": "Welcome to Acme. Please hold while we connect your call.",
-                            "voice_name": "Emma",
-                        },
-                    }
+            Messages.start(
+                [
+                    Messages.text(
+                        "Welcome to Acme. Please hold while we connect your call.",
+                        "Emma",
+                    )
                 ],
-            },
+                name="greeting",
+            ),
             Calls.bridge_call("inbound-bridge"),
             Calls.dial(
                 destination_number,
