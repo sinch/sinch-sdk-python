@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce.kakaotalk_carousel_commerce_channel_specific_message import (
     KakaoTalkCarouselCommerceChannelSpecificMessage,
@@ -19,11 +20,14 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     PaymentOrderStatusChannelSpecificMessage,
 )
 
-ChannelSpecificMessageContent = Union[
-    FlowChannelSpecificMessage,
-    PaymentOrderDetailsChannelSpecificMessage,
-    PaymentOrderStatusChannelSpecificMessage,
-    KakaoTalkCommerceChannelSpecificMessage,
-    KakaoTalkCarouselCommerceChannelSpecificMessage,
-    LineNotificationMessageTemplateMessage,
+ChannelSpecificMessageContent = Annotated[
+    Union[
+        FlowChannelSpecificMessage,
+        PaymentOrderDetailsChannelSpecificMessage,
+        PaymentOrderStatusChannelSpecificMessage,
+        KakaoTalkCommerceChannelSpecificMessage,
+        KakaoTalkCarouselCommerceChannelSpecificMessage,
+        LineNotificationMessageTemplateMessage,
+    ],
+    ResolveUnion(),
 ]

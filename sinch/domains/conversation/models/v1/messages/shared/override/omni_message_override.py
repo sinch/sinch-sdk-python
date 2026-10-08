@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 
 
 def _get_omni_message_override_union():
@@ -31,16 +32,19 @@ def _get_omni_message_override_union():
         TextMessageField,
     )
 
-    return Union[
-        TextMessageField,
-        MediaMessageField,
-        TemplateReferenceField,
-        ChoiceMessageField,
-        CardMessageField,
-        CarouselMessageField,
-        LocationMessageField,
-        ContactInfoMessageField,
-        ListMessageField,
+    return Annotated[
+        Union[
+            TextMessageField,
+            MediaMessageField,
+            TemplateReferenceField,
+            ChoiceMessageField,
+            CardMessageField,
+            CarouselMessageField,
+            LocationMessageField,
+            ContactInfoMessageField,
+            ListMessageField,
+        ],
+        ResolveUnion(),
     ]
 
 

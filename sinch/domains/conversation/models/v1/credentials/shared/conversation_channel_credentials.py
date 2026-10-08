@@ -1,10 +1,8 @@
 from typing import Annotated, Union
-from pydantic import Discriminator, Tag
+
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.conversation.models.v1.credentials.shared.apple_business_chat_credentials import (
     AppleBusinessChatCredentials,
-)
-from sinch.domains.conversation.models.v1.internal.mappers.channel_credentials_mappers import (
-    discriminate_channel_credentials,
 )
 from sinch.domains.conversation.models.v1.credentials.shared.channel_credentials_common_types import (
     ChannelCredentialsCommonTypes,
@@ -12,11 +10,8 @@ from sinch.domains.conversation.models.v1.credentials.shared.channel_credentials
 from sinch.domains.conversation.models.v1.credentials.shared.instagram_credentials import (
     InstagramCredentials,
 )
-from sinch.domains.conversation.models.v1.credentials.shared.line_enterprise_credentials_japan import (
-    LineEnterpriseCredentialsJapan,
-)
-from sinch.domains.conversation.models.v1.credentials.shared.line_enterprise_credentials_thailand import (
-    LineEnterpriseCredentialsThailand,
+from sinch.domains.conversation.models.v1.credentials.shared.line_enterprise_region_credentials import (
+    LineEnterpriseRegionCredentials,
 )
 from sinch.domains.conversation.models.v1.credentials.shared.kakao_talk_chat_credentials import (
     KakaoTalkChatCredentials,
@@ -69,9 +64,7 @@ class LineChannelCredentials(ChannelCredentialsCommonTypes):
 
 
 class LineEnterpriseChannelCredentials(ChannelCredentialsCommonTypes):
-    line_enterprise_credentials: Union[
-        LineEnterpriseCredentialsJapan, LineEnterpriseCredentialsThailand
-    ]
+    line_enterprise_credentials: LineEnterpriseRegionCredentials
 
 
 class WeChatChannelCredentials(ChannelCredentialsCommonTypes):
@@ -92,22 +85,34 @@ class KakaoTalkChatChannelCredentials(ChannelCredentialsCommonTypes):
 
 ConversationChannelCredentials = Annotated[
     Union[
-        Annotated[StaticBearerChannelCredentials, Tag("WHATSAPP")],
-        Annotated[StaticBearerChannelCredentials, Tag("RCS")],
-        Annotated[StaticBearerChannelCredentials, Tag("SMS")],
-        Annotated[StaticBearerChannelCredentials, Tag("VIBERBM")],
-        Annotated[StaticTokenChannelCredentials, Tag("MESSENGER")],
-        Annotated[MMSChannelCredentials, Tag("MMS")],
-        Annotated[KakaoTalkChannelCredentials, Tag("KAKAOTALK")],
-        Annotated[TelegramChannelCredentials, Tag("TELEGRAM")],
-        Annotated[
-            Union[LineChannelCredentials, LineEnterpriseChannelCredentials],
-            Tag("LINE"),
-        ],
-        Annotated[WeChatChannelCredentials, Tag("WECHAT")],
-        Annotated[InstagramChannelCredentials, Tag("INSTAGRAM")],
-        Annotated[AppleBusinessChatChannelCredentials, Tag("APPLEBC")],
-        Annotated[KakaoTalkChatChannelCredentials, Tag("KAKAOTALKCHAT")],
+        StaticBearerChannelCredentials,
+        StaticTokenChannelCredentials,
+        MMSChannelCredentials,
+        KakaoTalkChannelCredentials,
+        TelegramChannelCredentials,
+        LineChannelCredentials,
+        LineEnterpriseChannelCredentials,
+        WeChatChannelCredentials,
+        InstagramChannelCredentials,
+        AppleBusinessChatChannelCredentials,
+        KakaoTalkChatChannelCredentials,
     ],
-    Discriminator(discriminate_channel_credentials),
+    ResolveUnion(
+        discriminator="channel",
+        tags={
+            "WHATSAPP": StaticBearerChannelCredentials,
+            "RCS": StaticBearerChannelCredentials,
+            "SMS": StaticBearerChannelCredentials,
+            "VIBERBM": StaticBearerChannelCredentials,
+            "MESSENGER": StaticTokenChannelCredentials,
+            "MMS": MMSChannelCredentials,
+            "KAKAOTALK": KakaoTalkChannelCredentials,
+            "TELEGRAM": TelegramChannelCredentials,
+            "LINE": (LineChannelCredentials, LineEnterpriseChannelCredentials),
+            "WECHAT": WeChatChannelCredentials,
+            "INSTAGRAM": InstagramChannelCredentials,
+            "APPLEBC": AppleBusinessChatChannelCredentials,
+            "KAKAOTALKCHAT": KakaoTalkChatChannelCredentials,
+        },
+    ),
 ]

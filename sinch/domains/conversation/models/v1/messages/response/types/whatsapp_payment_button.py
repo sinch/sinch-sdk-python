@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.whatsapp.buttons.whatsapp_payment_settings_pix_button import (
     WhatsAppPaymentSettingsPixButton,
 )
@@ -9,8 +10,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     WhatsAppPaymentSettingsBoletoButton,
 )
 
-WhatsAppPaymentButton = Union[
-    WhatsAppPaymentSettingsPixButton,
-    WhatsAppPaymentSettingsPaymentLinkButton,
-    WhatsAppPaymentSettingsBoletoButton,
+WhatsAppPaymentButton = Annotated[
+    Union[
+        WhatsAppPaymentSettingsPixButton,
+        WhatsAppPaymentSettingsPaymentLinkButton,
+        WhatsAppPaymentSettingsBoletoButton,
+    ],
+    ResolveUnion(discriminator="type", discriminator_strict=False),
 ]

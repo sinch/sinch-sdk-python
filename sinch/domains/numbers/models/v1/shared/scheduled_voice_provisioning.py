@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_est import (
     ScheduledVoiceProvisioningEST,
 )
@@ -13,9 +14,16 @@ from sinch.domains.numbers.models.v1.shared.scheduled_voice_provisioning_custom 
 )
 
 
-ScheduledVoiceProvisioning = Union[
-    ScheduledVoiceProvisioningEST,
-    ScheduledVoiceProvisioningFAX,
-    ScheduledVoiceProvisioningRTC,
-    ScheduledVoiceProvisioningCustom,
+ScheduledVoiceProvisioning = Annotated[
+    Union[
+        ScheduledVoiceProvisioningEST,
+        ScheduledVoiceProvisioningFAX,
+        ScheduledVoiceProvisioningRTC,
+        ScheduledVoiceProvisioningCustom,
+    ],
+    ResolveUnion(
+        discriminator="type",
+        discriminator_strict=False,
+        fallback=ScheduledVoiceProvisioningCustom,
+    ),
 ]

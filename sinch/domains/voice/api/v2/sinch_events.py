@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 from typing import Any, Dict, Optional, Union
+from sinch.core.models.internal.unions import parses_response
 
 from sinch.core.internal.sinch_events.authorization_helpers import (
     validate_authentication_header,
@@ -68,6 +69,7 @@ class SinchEvents:
             method=method,
         )
 
+    @parses_response
     def parse_event(
         self,
         event_body: Union[str, bytes, Dict[str, Any]],

@@ -18,6 +18,12 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ## v2.3.0 – Unreleased
 
+### SDK
+
+- **[fix]** Union fields now resolve to the same model on every supported pydantic version (`>=2.0.0`), since pydantic 2.8 changed its union resolution.
+- **[fix]** Fixed an `ImportError` on pydantic < 2.8: `SerializerFunctionWrapHandler` is now imported from `pydantic_core`, which exposes it on every supported version. 
+- **[feature]** Response and event payloads that match no known union variant are now parsed as `SinchRawResponse`, which keeps the payload exactly as received, instead of raising a validation error. Request validation is unchanged.
+
 ### Voice
 
 - **[feature]** Voice V2 SVAML helpers (`sinch.domains.voice.helpers.v2.svaml`): `Calls`, `Messages`, `Menu`, `Amd`, `Recording`, and `CustomEvents` build the SVAML commands.
