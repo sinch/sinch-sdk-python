@@ -24,6 +24,16 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[fix]** Fixed an `ImportError` on pydantic < 2.8: `SerializerFunctionWrapHandler` is now imported from `pydantic_core`, which exposes it on every supported version. 
 - **[feature]** Response and event payloads that match no known union variant are now parsed as `SinchRawResponse`, which keeps the payload exactly as received, instead of raising a validation error. Request validation is unchanged.
 
+### Voice
+
+- **[feature]** Voice V2 SVAML helpers (`sinch.domains.voice.helpers.v2.svaml`): `Calls`, `Messages`, `Menu`, `Amd`, `Recording`, and `CustomEvents` build the SVAML commands.
+- **[feature]** Voice V2 `Destination` helper (`sinch.domains.voice.helpers.v2.destinations`) to build call destinations and origins (`phone`, `sip`, `sip_from`, `stream`, `voice_relay`, and `of` to parse a string). `Calls.dial` also accepts a plain string for `to` and `from_`.
+- **[feature]** Voice V2 `CallBehavior` helper (`sinch.domains.voice.helpers.v2.services`) to build the call behavior of a service: `none`, `event_destination`, and `static`.
+- **[feature]** Voice V2 `CommandsSequenceCreator` (`sinch.domains.voice.helpers.v2.svaml`): an immutable fluent builder of SVAML command sequences, with one method per command (`answer`, `dial`, `hangup`, `pause`, `bridge_call`, `amd`, `messages`, `stop_messages`, `recording`, `stop_recording`, `custom_events`, `menu`, and `goto_menu`), plus `command` to append any command and `build` to get the list. `text` and `play` append a single message.
+- **[feature]** Voice V2 voice catalog: `VoiceName`, `VoiceNameEnum`, and `VoiceNameByLanguageEnum` (voices grouped by language), available in `sinch.domains.voice.models.v2.types`.
+- **[feature]** Voice V2 helpers and public methods that take SVAML commands accept either a single command or a list of commands.
+- **[design]** Voice V2 parameters and typed dicts holding SVAML commands (`commands`, `on_hangup`, `on_answer`, ...) are now typed as `Sequence` instead of `List`, so a `CommandsSequenceCreator` or a tuple can be passed as well as a list.
+- **[design]** Voice V2 `SinchEvents.build_incoming_call_response`: `call_name` and `on_hangup` are now keyword-only, must pass them by name.
 
 ---
 

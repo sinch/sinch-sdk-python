@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Dict, List, Literal, TypedDict, Union
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, List, Literal, TypedDict, Union
 
 from typing_extensions import NotRequired
 
@@ -21,5 +22,5 @@ class MenuItemDict(TypedDict):
     maximum_input_length: NotRequired[int]
     terminating_sequence: NotRequired[str]
     input_methods: NotRequired[List[Union[Literal["DTMF"], str]]]
-    matches: NotRequired[Dict[str, List["SvamlCommandDict"]]]
-    on_fail: NotRequired[List["SvamlCommandDict"]]
+    matches: NotRequired[Mapping[str, Sequence["SvamlCommandDict"]]]
+    on_fail: NotRequired[Sequence["SvamlCommandDict"]]

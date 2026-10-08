@@ -1,3 +1,8 @@
+from sinch.domains.voice.models.v2.types.base_call_destination_dict import (
+    BaseCallDestinationDict,
+    BaseSipDict,
+    BaseStreamDict,
+)
 from sinch.domains.voice.models.v2.types.call_destination_dict import (
     CallDestinationDict,
 )
@@ -28,12 +33,22 @@ from sinch.domains.voice.models.v2.types.stream_dict import (
     StreamDict,
     StreamOptionsDict,
 )
+from sinch.domains.voice.models.v2.types.voice_name import VoiceName
+from sinch.domains.voice.models.v2.types.voice_name_by_language_enum import (
+    VoiceNameByLanguageEnum,
+)
+from sinch.domains.voice.models.v2.types.voice_name_enum import (
+    VoiceNameEnum,
+)
 from sinch.domains.voice.models.v2.types.voice_relay_dict import (
     VoiceRelayDetailsDict,
     VoiceRelayDict,
 )
 
 __all__ = [
+    "BaseStreamDict",
+    "BaseSipDict",
+    "BaseCallDestinationDict",
     "CallDestinationDict",
     "CallDirection",
     "CallHeaderDict",
@@ -52,6 +67,9 @@ __all__ = [
     "StreamDetailsDict",
     "StreamDict",
     "StreamOptionsDict",
+    "VoiceName",
+    "VoiceNameByLanguageEnum",
+    "VoiceNameEnum",
     "VoiceRelayDetailsDict",
     "VoiceRelayDict",
 ]

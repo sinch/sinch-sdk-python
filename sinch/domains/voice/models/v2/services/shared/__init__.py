@@ -4,7 +4,9 @@ from sinch.domains.voice.models.v2.services.shared.call_behavior import (
     NoneCallBehavior,
     StaticCallBehavior,
 )
-from sinch.domains.voice.models.v2.services.shared.event_destination_configuration import EventDestinationConfiguration
+from sinch.domains.voice.models.v2.services.shared.event_destination_configuration import (
+    EventDestinationConfiguration,
+)
 
 __all__ = [
     "CallBehavior",

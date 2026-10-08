@@ -48,3 +48,27 @@ def test_start_call_request_expects_validation_error_for_missing_required():
     """Test that commands is required."""
     with pytest.raises(ValidationError):
         StartCallRequest()
+
+
+def test_start_call_request_expects_non_list_sequences_serialized_as_lists():
+    """Test that commands given as non-list sequences dump as JSON arrays."""
+    model = StartCallRequest(
+        commands=(
+            {
+                "command": "dial",
+                "to": {"type": "PHONE", "phone": {"number": "+15559876543"}},
+                "events": {"on_answer": ({"command": "hangup"},)},
+            },
+        )
+    )
+
+    alias_dump = model.model_dump(
+        mode="json", by_alias=True, exclude_none=True
+    )
+    assert alias_dump["commands"] == [
+        {
+            "command": "dial",
+            "to": {"type": "PHONE", "phone": {"number": "+15559876543"}},
+            "events": {"onAnswer": [{"command": "hangup"}]},
+        }
+    ]

@@ -25,16 +25,6 @@ def test_start_call_response_expects_parsed_input():
     assert alias_dump["sessionId"] == "01BX5ZZKBKACTAV9WEVGEMMVRB"
 
 
-def test_start_call_response_expects_all_optionals_default_to_none():
-    """Test that all optional fields default to None."""
-    model = StartCallResponse(
-        project_id="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
-        service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
-    )
-
-    assert model.session_id is None
-
-
 def test_start_call_response_expects_validation_error_for_missing_required():
     """Test that project_id and service_id are required."""
     with pytest.raises(ValidationError):

@@ -8,7 +8,10 @@ from sinch.domains.voice.models.v2.internal.base.base_model_configuration import
 
 
 class PhoneDetails(BaseModelConfiguration):
-    number: StrictStr = Field(default=..., description="E.164 Phone number")
+    number: StrictStr = Field(
+        default=...,
+        description="""Phone number in E.164 format, between 3 and 16 characters, matching ``^\+[1-9]\d{1,14}$``""",
+    )
 
 
 class Phone(BaseModelConfiguration):

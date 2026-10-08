@@ -1,5 +1,6 @@
 from behave import given, when, then
 from sinch.domains.voice.api.v2.calls_apis import Calls
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 from sinch.domains.voice.models.v2.calls.response.start_call_response import (
     StartCallResponse,
 )
@@ -15,38 +16,23 @@ def step_service_is_available(context):
 @when('I send a request to start a call')
 def step_start_call(context):
     context.response = context.calls.start(
-        commands=[
-            {
-                "command": "dial",
-                "call_name": "audio-notification",
-                "from_": {"type": "PHONE", "phone": {"number": "+12015555555"}},
-                "to": {"type": "PHONE", "phone": {"number": "+12017777777"}},
-                "dial_timeout_duration_seconds": 30,
-                "max_call_duration_seconds": 300,
-                "events": {
-                    "on_answer": [
-                        {
-                            "command": "messages",
-                            "messages_name": "notification",
-                            "messages": [
-                                {
-                                    "type": "PLAY",
-                                    "play": {"url": "https://samplelib.com/mp3/sample-12s.mp3"},
-                                },
-                                {
-                                    "type": "SAY",
-                                    "say": {
-                                        "text": "Hello! This is a test notification from Sinch. Your verification code is 4 8 3 7.",
-                                        "voice_name": "Emma",
-                                    },
-                                },
-                            ],
-                            "events": {"on_finish": [{"command": "hangup"}]},
-                        }
-                    ]
-                },
-            }
-        ]
+        commands=CommandsSequenceCreator().dial(
+            "+12017777777",
+            from_="+12015555555",
+            name="audio-notification",
+            timeout_duration_seconds=30,
+            max_duration_seconds=300,
+            on_answer=CommandsSequenceCreator()
+            .messages(
+                name="notification",
+                on_finish=CommandsSequenceCreator().hangup(),
+            )
+            .play("https://samplelib.com/mp3/sample-12s.mp3")
+            .text(
+                "Hello! This is a test notification from Sinch. Your verification code is 4 8 3 7.",
+                "Emma",
+            ),
+        )
     )
 
 
@@ -132,21 +118,11 @@ def step_validate_calls_pages_count(context, count):
 def step_interact_by_call_id(context):
     context.response = context.calls.interact_by_call_id(
         call_id='01HZXK8FQNPMR8VD3JW9YF2C5A',
-        commands=[
-            {
-                "command": "messages",
-                "messages": [
-                    {
-                        "type": "SAY",
-                        "say": {
-                            "text": "Hello, your call is now connected.",
-                            "voice_name": "Emma",
-                        },
-                    }
-                ],
-                "events": {"on_finish": [{"command": "hangup"}]},
-            }
-        ],
+        commands=CommandsSequenceCreator().text(
+            "Hello, your call is now connected.",
+            "Emma",
+            on_finish=CommandsSequenceCreator().hangup(),
+        ),
     )
 
 
@@ -160,21 +136,11 @@ def step_interact_by_call_name(context):
     context.response = context.calls.interact_by_call_name(
         session_id='01HZXK7QNPMR8VD3JW9YF2C4TB',
         call_name='audio-notification',
-        commands=[
-            {
-                "command": "messages",
-                "messages": [
-                    {
-                        "type": "SAY",
-                        "say": {
-                            "text": "Hello, your call is now connected.",
-                            "voice_name": "Emma",
-                        },
-                    }
-                ],
-                "events": {"on_finish": [{"command": "hangup"}]},
-            }
-        ],
+        commands=CommandsSequenceCreator().text(
+            "Hello, your call is now connected.",
+            "Emma",
+            on_finish=CommandsSequenceCreator().hangup(),
+        ),
     )
 
 

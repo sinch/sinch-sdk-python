@@ -112,3 +112,35 @@ def test_svaml_validate_expects_omitted_optionals_unset(
     assert "validation_type" not in request_data.model_fields_set
     assert "call_name" not in request_data.svaml.model_fields_set
     assert "events" not in request_data.svaml.model_fields_set
+
+
+def test_svaml_describe_expects_single_commands_wrapped(
+    mock_sinch_client_voice, mocker
+):
+    """Test that commands and on_hangup given as a single command are sent as lists."""
+    spy = mocker.spy(DescribeSvamlEndpoint, "__init__")
+
+    Voice(mock_sinch_client_voice).v2.svaml.describe(
+        commands={"command": "answer"}, on_hangup={"command": "hangup"}
+    )
+
+    _, kwargs = spy.call_args
+    svaml = kwargs["request_data"].svaml
+    assert [c.command for c in svaml.commands] == ["answer"]
+    assert [c.command for c in svaml.events.on_hangup] == ["hangup"]
+
+
+def test_svaml_validate_expects_single_commands_wrapped(
+    mock_sinch_client_voice, mocker
+):
+    """Test that commands and on_hangup given as a single command are sent as lists."""
+    spy = mocker.spy(ValidateSvamlEndpoint, "__init__")
+
+    Voice(mock_sinch_client_voice).v2.svaml.validate(
+        commands={"command": "answer"}, on_hangup={"command": "hangup"}
+    )
+
+    _, kwargs = spy.call_args
+    svaml = kwargs["request_data"].svaml
+    assert [c.command for c in svaml.commands] == ["answer"]
+    assert [c.command for c in svaml.events.on_hangup] == ["hangup"]

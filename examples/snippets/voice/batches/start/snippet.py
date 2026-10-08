@@ -9,6 +9,10 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
+from sinch.domains.voice.helpers.v2.svaml import (
+    Calls,
+    CommandsSequenceCreator,
+)
 
 load_dotenv()
 
@@ -18,8 +22,8 @@ sinch_client = SinchClient(
     key_secret=os.environ.get("SINCH_KEY_SECRET") or "MY_KEY_SECRET",
 )
 
-# The Sinch phone number to call from
-from_phone_number = (
+# The phone number to be used as the caller ID, in E.164 format (e.g., +12025550123)
+sinch_phone_number = (
     os.environ.get("SINCH_PHONE_NUMBER") or "MY_SINCH_PHONE_NUMBER"
 )
 
@@ -29,33 +33,17 @@ parameters = [
     {"to_number": "RECIPIENT_PHONE_NUMBER_2"},
 ]
 
-# The command dialing out to the recipients specified in the parameters
-dial_command = {
-    "command": "dial",
-    "call_name": "Python_SDK_Snippet_Call",
-    "from_": {"type": "PHONE", "phone": {"number": from_phone_number}},
-    "to": {"type": "PHONE", "phone": {"number": "@to_number"}},
-    "events": {
-        "on_answer": [
-            {
-                "command": "messages",
-                "messages": [
-                    {
-                        "type": "SAY",
-                        "say": {
-                            "text": "Hello, your call is now connected.",
-                            "voice_name": "Emma",
-                        },
-                    }
-                ],
-            }
-        ],
-        "on_hangup": [{"command": "hangup"}],
-    },
-}
-
-# The SVAML commands describing the call flow
-commands = [dial_command]
+# The SVAML commands describing the call flow: dial out to the recipients specified in the parameters
+commands = CommandsSequenceCreator().dial(
+    "@to_number",
+    from_=sinch_phone_number,
+    name="Python_SDK_Snippet_Call",
+    on_answer=CommandsSequenceCreator().text(
+        "Hello, your call is now connected.",
+        "Emma",
+        on_finish=Calls.hangup(),
+    ),
+)
 
 response = sinch_client.voice.v2.batches.start(
     commands=commands, parameters=parameters

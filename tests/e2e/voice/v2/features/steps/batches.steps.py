@@ -1,5 +1,6 @@
 from behave import given, when, then
 from sinch.domains.voice.api.v2.batches_apis import Batches
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 from sinch.domains.voice.models.v2.batches.response.batch_details_response import (
     BatchDetailsResponse,
 )
@@ -25,34 +26,19 @@ def step_service_is_available(context):
 @when('I send a request to start a batch of calls')
 def step_start_batch_of_calls(context):
     context.response = context.batches.start(
-        commands=[
-            {
-                "command": "dial",
-                "call_name": "batch-reminder",
-                "from_": {"type": "PHONE", "phone": {"number": "+12015555555"}},
-                "to": {"type": "PHONE", "phone": {"number": "@toNumber"}},
-                "dial_timeout_duration_seconds": 30,
-                "max_call_duration_seconds": 120,
-                "events": {
-                    "on_answer": [
-                        {
-                            "command": "messages",
-                            "messages": [
-                                {
-                                    "type": "SAY",
-                                    "say": {
-                                        "text": "Hello, this is an automated reminder from Sinch. Goodbye.",
-                                        "voice_name": "Emma",
-                                    },
-                                }
-                            ],
-                            "events": {"on_finish": [{"command": "hangup"}]},
-                        }
-                    ],
-                    "on_hangup": [{"command": "hangup"}],
-                },
-            }
-        ],
+        commands=CommandsSequenceCreator().dial(
+            "@toNumber",
+            from_="+12015555555",
+            name="batch-reminder",
+            timeout_duration_seconds=30,
+            max_duration_seconds=120,
+            on_answer=CommandsSequenceCreator().text(
+                "Hello, this is an automated reminder from Sinch. Goodbye.",
+                "Emma",
+                on_finish=CommandsSequenceCreator().hangup(),
+            ),
+            on_hangup=CommandsSequenceCreator().hangup(),
+        ),
         parameters=[
             {"toNumber": "+12017777777"},
             {"toNumber": "+12018888888"},

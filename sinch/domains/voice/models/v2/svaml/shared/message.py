@@ -6,6 +6,7 @@ from pydantic import Field, StrictStr
 from sinch.domains.voice.models.v2.internal.base.base_model_configuration import (
     BaseModelConfiguration,
 )
+from sinch.domains.voice.models.v2.types.voice_name import VoiceName
 
 
 class Say(BaseModelConfiguration):
@@ -16,10 +17,10 @@ class Say(BaseModelConfiguration):
     format: Optional[Union[Literal["TEXT", "SSML"], StrictStr]] = Field(
         default=None, description="Format of the message"
     )
-    voice_name: StrictStr = Field(
+    voice_name: VoiceName = Field(
         default=...,
         alias="voiceName",
-        description="The name of the voice to use for text-to-speech synthesis.\n\nSupported voices include: Emma, Brian, and others. For a complete list of available voices and their characteristics, see the [Text-to-Speech Voices documentation](/docs/voice/api-reference/text-to-speech-voices).",
+        description="The name of the voice to use for text-to-speech synthesis.",
     )
 
 

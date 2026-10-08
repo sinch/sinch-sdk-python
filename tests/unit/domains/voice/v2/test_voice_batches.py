@@ -220,3 +220,18 @@ def test_batches_stop_expects_correct_request(mock_sinch_client_voice, mocker):
     assert isinstance(response, BatchStopResponse)
     assert response.result == "STOP_REQUESTED"
     mock_sinch_client_voice.configuration.transport.request.assert_called_once()
+
+
+def test_batches_start_expects_single_command_wrapped(
+    mock_sinch_client_voice, mocker
+):
+    """Test that commands given as a single command is sent as a list."""
+    spy = mocker.spy(StartBatchEndpoint, "__init__")
+
+    Voice(mock_sinch_client_voice).v2.batches.start(
+        commands={"command": "hangup"},
+        parameters=[{"to_number": "+15559876544"}],
+    )
+
+    _, kwargs = spy.call_args
+    assert [c.command for c in kwargs["request_data"].commands] == ["hangup"]
