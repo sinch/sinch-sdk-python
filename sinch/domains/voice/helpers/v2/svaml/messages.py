@@ -1,4 +1,5 @@
-from typing import List, cast
+from collections.abc import Sequence
+from typing import cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
@@ -69,10 +70,10 @@ class Messages:
 
     @staticmethod
     def start(
-        messages: List[MessageDict],
-        *,
+        message: MessageDict,
+        *messages: MessageDict,
         name: UnsetOr[str] = UNSET,
-        on_finish: UnsetOr[List[SvamlCommandDict]] = UNSET,
+        on_finish: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
     ) -> MessagesCommandDict:
         r"""
         Plays one or more messages on the call. Multiple messages are played
@@ -83,9 +84,12 @@ class Messages:
         ``on_finish`` event can be used to run a command after all messages
         complete.
 
-        :param messages: Ordered list of messages to play, between 1 and 10,
-            built with :meth:`text`, :meth:`ssml` or :meth:`play`.
-        :type messages: List[MessageDict]
+        :param message: First message to play, built with :meth:`text`,
+            :meth:`ssml` or :meth:`play`.
+        :type message: MessageDict
+        :param messages: Further messages to play in order, up to 10
+            messages in total.
+        :type messages: MessageDict
         :param name: Name of the message sequence, between 1 and 32
             characters, matching ``^\S+$``. Must be unique within the current
             call session. Can be referenced by :meth:`stop` to control this
@@ -93,7 +97,7 @@ class Messages:
         :type name: UnsetOr[str]
         :param on_finish: SVAML commands to execute when all messages in the
             sequence have finished playing.
-        :type on_finish: UnsetOr[List[SvamlCommandDict]]
+        :type on_finish: UnsetOr[Sequence[SvamlCommandDict]]
         :returns: The ``messages`` command.
         :rtype: MessagesCommandDict
         """
@@ -104,7 +108,7 @@ class Messages:
                 {
                     "command": "messages",
                     "messages_name": name,
-                    "messages": messages,
+                    "messages": [message, *messages],
                     "events": events if events else UNSET,
                 }
             ),

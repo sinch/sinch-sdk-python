@@ -1,4 +1,5 @@
-from typing import List, Union, cast
+from collections.abc import Sequence
+from typing import Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
@@ -63,12 +64,12 @@ class Calls:
         name: UnsetOr[str] = UNSET,
         timeout_duration_seconds: UnsetOr[int] = UNSET,
         max_duration_seconds: UnsetOr[int] = UNSET,
-        on_answer: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_busy: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_reject: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_timeout: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_hangup: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_failure: UnsetOr[List[SvamlCommandDict]] = UNSET,
+        on_answer: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_busy: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_reject: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_timeout: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_hangup: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_failure: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
     ) -> DialCommandDict:
         """
         Initiates a new outbound call leg within the current session.
@@ -105,17 +106,17 @@ class Calls:
             The call is terminated automatically when this limit is reached.
         :type max_duration_seconds: UnsetOr[int]
         :param on_answer: SVAML commands to be executed when the call is answered.
-        :type on_answer: UnsetOr[List[SvamlCommandDict]]
+        :type on_answer: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_busy: SVAML commands to be executed when the call is busy.
-        :type on_busy: UnsetOr[List[SvamlCommandDict]]
+        :type on_busy: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_reject: SVAML commands to be executed when the call is rejected.
-        :type on_reject: UnsetOr[List[SvamlCommandDict]]
+        :type on_reject: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_timeout: SVAML commands to be executed when the call is timed out.
-        :type on_timeout: UnsetOr[List[SvamlCommandDict]]
+        :type on_timeout: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_hangup: SVAML commands to be executed when the call is hung up.
-        :type on_hangup: UnsetOr[List[SvamlCommandDict]]
+        :type on_hangup: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_failure: SVAML commands to be executed when the call fails.
-        :type on_failure: UnsetOr[List[SvamlCommandDict]]
+        :type on_failure: UnsetOr[Sequence[SvamlCommandDict]]
         :returns: The ``dial`` command.
         :rtype: DialCommandDict
         """

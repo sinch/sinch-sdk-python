@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.voice.helpers.v2.svaml import Calls
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 
 load_dotenv()
 
@@ -23,7 +23,7 @@ sinch_client = SinchClient(
 call_id = "CALL_ID"
 
 # The SVAML commands to interact with the ongoing call
-commands = [Calls.hangup()]
+commands = CommandsSequenceCreator().hangup()
 
 sinch_client.voice.v2.calls.interact_by_call_id(
     call_id=call_id, commands=commands

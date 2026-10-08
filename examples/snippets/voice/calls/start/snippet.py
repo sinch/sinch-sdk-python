@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.voice.helpers.v2.svaml import Calls, Messages
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 
 load_dotenv()
 
@@ -27,21 +27,17 @@ sinch_phone_number = (
 # The phone number you want to call, in E.164 format (e.g., +12025550123)
 recipient_phone_number = "RECIPIENT_PHONE_NUMBER"
 
-# The command dialing out to the recipient
-dial = Calls.dial(
+# The SVAML commands describing the call flow: dial out to the recipient
+commands = CommandsSequenceCreator().dial(
     recipient_phone_number,
     from_=sinch_phone_number,
     name="Python_SDK_Snippet_Call",
-    on_answer=[
-        Messages.start(
-            [Messages.text("Hello, your call is now connected.", "Emma")],
-            on_finish=[Calls.hangup()],
-        )
-    ],
+    on_answer=CommandsSequenceCreator().text(
+        "Hello, your call is now connected.",
+        "Emma",
+        on_finish=CommandsSequenceCreator().hangup(),
+    ),
 )
-
-# The SVAML commands describing the call flow
-commands = [dial]
 
 response = sinch_client.voice.v2.calls.start(commands=commands)
 

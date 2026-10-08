@@ -1,4 +1,5 @@
-from typing import List, cast
+from collections.abc import Sequence
+from typing import cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
@@ -14,10 +15,10 @@ class Amd:
     @staticmethod
     def activate(
         *,
-        on_human: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_machine: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_beep: UnsetOr[List[SvamlCommandDict]] = UNSET,
-        on_unknown: UnsetOr[List[SvamlCommandDict]] = UNSET,
+        on_human: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_machine: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_beep: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
+        on_unknown: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
     ) -> AmdCommandDict:
         """
         AMD (Answering Machine Detection) command to detect what answered the
@@ -31,15 +32,15 @@ class Amd:
 
         :param on_human: SVAML commands to be executed when a human is
             detected.
-        :type on_human: UnsetOr[List[SvamlCommandDict]]
+        :type on_human: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_machine: SVAML commands to be executed when a machine is
             detected.
-        :type on_machine: UnsetOr[List[SvamlCommandDict]]
+        :type on_machine: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_beep: SVAML commands to be executed when a beep is detected.
-        :type on_beep: UnsetOr[List[SvamlCommandDict]]
+        :type on_beep: UnsetOr[Sequence[SvamlCommandDict]]
         :param on_unknown: SVAML commands to be executed when an unknown event
             is detected.
-        :type on_unknown: UnsetOr[List[SvamlCommandDict]]
+        :type on_unknown: UnsetOr[Sequence[SvamlCommandDict]]
         :returns: The ``amd`` command.
         :rtype: AmdCommandDict
         """

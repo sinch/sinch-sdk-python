@@ -31,7 +31,7 @@ def test_play_expects_all_fields():
 def test_start_expects_all_fields():
     """Test that start builds the command with all its fields."""
     command = Messages.start(
-        [Messages.text("Hello", "Emma")],
+        Messages.text("Hello", "Emma"),
         name="greeting",
         on_finish=[Calls.hangup()],
     )
@@ -46,12 +46,18 @@ def test_start_expects_all_fields():
 
 def test_start_expects_optionals_omitted_when_not_provided():
     """Test that omitted optionals, including events, are not included."""
-    assert Messages.start([SAY]) == {"command": "messages", "messages": [SAY]}
+    assert Messages.start(SAY) == {"command": "messages", "messages": [SAY]}
+
+
+def test_start_expects_messages_in_order():
+    """Test that several messages are kept in the given order."""
+    play = Messages.play("https://example.com/a.mp3")
+    assert Messages.start(SAY, play)["messages"] == [SAY, play]
 
 
 def test_start_expects_empty_handler_kept():
     """Test that an explicit empty handler list is kept, so events is sent."""
-    assert Messages.start([SAY], on_finish=[])["events"] == {"on_finish": []}
+    assert Messages.start(SAY, on_finish=[])["events"] == {"on_finish": []}
 
 
 def test_stop_expects_all_fields():

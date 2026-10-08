@@ -1,3 +1,4 @@
+from collections.abc import Mapping, Sequence
 from typing import Any, Dict, Iterator, List, Literal, Union, cast
 
 from sinch.core.models.internal.utils import strip_unset
@@ -18,7 +19,7 @@ def _goto_targets(value: Any) -> Iterator[str]:
 
     Nested ``menu`` commands are skipped: they define their own context.
     """
-    if isinstance(value, list):
+    if isinstance(value, Sequence) and not isinstance(value, str):
         for item in value:
             yield from _goto_targets(item)
     elif isinstance(value, dict):
@@ -32,11 +33,22 @@ def _goto_targets(value: Any) -> Iterator[str]:
             yield from _goto_targets(item)
 
 
+def _check_references(start_menu: str, menus: Mapping[str, Any]) -> None:
+    """Raises if the start menu or a ``gotoMenu`` target is not in menus."""
+    if start_menu not in menus:
+        raise ValueError(f"Start menu '{start_menu}' is not defined")
+    for target in _goto_targets(list(menus.values())):
+        if target not in menus:
+            raise ValueError(f"Go-to target menu '{target}' is not defined")
+
+
 class Menu:
     """Helpers to build the menu SVAML commands."""
 
     @staticmethod
-    def create(name: str, items: List[NamedMenuItemDict]) -> MenuCommandDict:
+    def create(
+        name: str, item: NamedMenuItemDict, *items: NamedMenuItemDict
+    ) -> MenuCommandDict:
         """
         Defines a set of named menus and executes them starting from
         ``name``. This is a blocking command — execution waits for the menu
@@ -46,34 +58,28 @@ class Menu:
         handling, and repeat behavior.
 
         :param name: Name of the menu to execute first, between 1 and 16
-            characters. Must match the name of one of the ``items``.
+            characters. Must match the name of one of the menu items.
         :type name: str
-        :param items: Menu definitions, built with :meth:`item`. Their names
-            must be unique.
-        :type items: List[NamedMenuItemDict]
+        :param item: First menu definition, built with :meth:`item`.
+        :type item: NamedMenuItemDict
+        :param items: Further menu definitions. Menu names must be unique.
+        :type items: NamedMenuItemDict
         :returns: The ``menu`` command.
         :rtype: MenuCommandDict
         :raises ValueError: If a menu name is duplicated, or if ``name`` or
-            the target of a :meth:`goto` is not one of the ``items``.
+            the target of a :meth:`goto` is not one of the menu items.
         """
         menus: Dict[str, MenuItemDict] = {}
-        for item in items:
-            item_name = item["name"]
+        for menu_item in (item, *items):
+            item_name = menu_item["name"]
             if item_name in menus:
                 raise ValueError(f"Duplicated menu name: '{item_name}'")
             menus[item_name] = cast(
                 MenuItemDict,
-                {k: v for k, v in item.items() if k != "name"},
+                {k: v for k, v in menu_item.items() if k != "name"},
             )
 
-        if name not in menus:
-            raise ValueError(f"Start menu '{name}' is not defined")
-        for target in _goto_targets(list(menus.values())):
-            if target not in menus:
-                raise ValueError(
-                    f"Go-to target menu '{target}' is not defined"
-                )
-
+        _check_references(name, menus)
         return {"command": "menu", "start_menu": name, "menus": menus}
 
     @staticmethod
@@ -88,8 +94,8 @@ class Menu:
         maximum_input_length: UnsetOr[int] = UNSET,
         terminating_sequence: UnsetOr[str] = UNSET,
         input_methods: UnsetOr[List[Union[Literal["DTMF"], str]]] = UNSET,
-        matches: UnsetOr[Dict[str, List[SvamlCommandDict]]] = UNSET,
-        on_failure: UnsetOr[List[SvamlCommandDict]] = UNSET,
+        matches: UnsetOr[Mapping[str, Sequence[SvamlCommandDict]]] = UNSET,
+        on_failure: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
     ) -> NamedMenuItemDict:
         r"""
         Defines a single menu step, including prompts, input handling rules,
@@ -150,11 +156,11 @@ class Menu:
             execute. Keys are evaluated sequentially in the order defined;
             the first key that matches the input triggers its commands. Use
             ``\*`` to match the DTMF star tone (``*``).
-        :type matches: UnsetOr[Dict[str, List[SvamlCommandDict]]]
+        :type matches: UnsetOr[Mapping[str, Sequence[SvamlCommandDict]]]
         :param on_failure: SVAML commands executed when the menu fails to
             collect a matching input. This handler runs after the repeat
             limit is reached without any input matching a menu match item.
-        :type on_failure: UnsetOr[List[SvamlCommandDict]]
+        :type on_failure: UnsetOr[Sequence[SvamlCommandDict]]
         :returns: The named menu item.
         :rtype: NamedMenuItemDict
         """
@@ -181,16 +187,21 @@ class Menu:
 
     @staticmethod
     def prompt(
-        messages: List[MessageDict],
-        *,
+        message: MessageDict,
+        *messages: MessageDict,
         allow_barge_in: UnsetOr[bool] = UNSET,
     ) -> MenuPromptDict:
         """
         Prompt configuration for menu playback, including prompt messages and
         barge-in behavior.
 
-        :param messages: Ordered list of messages to play, between 1 and 10.
-        :type messages: List[MessageDict]
+        :param message: First message to play, built with
+            :meth:`Messages.text`, :meth:`Messages.ssml` or
+            :meth:`Messages.play`.
+        :type message: MessageDict
+        :param messages: Further messages to play in order, up to 10
+            messages in total.
+        :type messages: MessageDict
         :param allow_barge_in: Controls whether input can interrupt prompt
             playback. When enabled, playback stops as soon as input is
             detected and the input is evaluated immediately if matching
@@ -204,7 +215,10 @@ class Menu:
         return cast(
             MenuPromptDict,
             strip_unset(
-                {"messages": messages, "allow_barge_in": allow_barge_in}
+                {
+                    "messages": [message, *messages],
+                    "allow_barge_in": allow_barge_in,
+                }
             ),
         )
 

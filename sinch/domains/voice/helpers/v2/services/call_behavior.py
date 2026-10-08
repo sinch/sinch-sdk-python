@@ -1,4 +1,5 @@
-from typing import List, cast
+from collections.abc import Sequence
+from typing import cast
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
@@ -57,10 +58,10 @@ class CallBehavior:
 
     @staticmethod
     def static(
-        commands: List[SvamlCommandDict],
+        commands: Sequence[SvamlCommandDict],
         *,
         name: UnsetOr[str] = UNSET,
-        on_hangup: UnsetOr[List[SvamlCommandDict]] = UNSET,
+        on_hangup: UnsetOr[Sequence[SvamlCommandDict]] = UNSET,
     ) -> StaticCallBehaviorDict:
         """
         Calls are handled using a predefined static SVAML script. The commands
@@ -70,13 +71,13 @@ class CallBehavior:
         :param commands: An ordered list of SVAML v2 (Sinch Voice Application
             Markup Language) commands that describe a call flow. Commands are
             executed sequentially in the order they are defined.
-        :type commands: List[SvamlCommandDict]
+        :type commands: Sequence[SvamlCommandDict]
         :param name: Name of the call. Must be 1-32 characters. Regex
             pattern: `^\\S+$`
         :type name: UnsetOr[str]
         :param on_hangup: SVAML commands to be executed when the call is hung
             up.
-        :type on_hangup: UnsetOr[List[SvamlCommandDict]]
+        :type on_hangup: UnsetOr[Sequence[SvamlCommandDict]]
         :returns: The ``STATIC`` call behavior.
         :rtype: StaticCallBehaviorDict
         """

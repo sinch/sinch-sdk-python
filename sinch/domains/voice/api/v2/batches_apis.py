@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Dict, List, Optional
 
 from sinch.core.models.internal.utils import strip_unset
@@ -38,7 +39,7 @@ from sinch.domains.voice.models.v2.svaml.types.svaml_command_dict import (
 class Batches(BaseVoice):
     def start(
         self,
-        commands: List[SvamlCommandDict],
+        commands: Sequence[SvamlCommandDict],
         parameters: List[Dict[str, str]],
         service_id: Optional[str] = None,
         batch_options: UnsetOr[Optional[BatchOptionsDict]] = UNSET,
@@ -49,7 +50,7 @@ class Batches(BaseVoice):
         Create a batch of outbound calls, associated to the project's default service or to the service specified in the `serviceId` query parameter.
 
         :param commands: (required) SVAML commands describing the call flow.
-        :type commands: List[SvamlCommandDict]
+        :type commands: Sequence[SvamlCommandDict]
         :param parameters: (required) Parameter sets for dynamic placeholders in the commands. One entry queues one call.
         :type parameters: List[Dict[str, str]]
         :param service_id: (optional) The ID of the service to use for the call. If omitted, the project's default service is used.

@@ -9,7 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
-from sinch.domains.voice.helpers.v2.svaml import Messages
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 
 load_dotenv()
 
@@ -20,11 +20,9 @@ sinch_client = SinchClient(
 )
 
 # The SVAML commands to describe
-commands = [
-    Messages.start(
-        [Messages.text("Hello, your call is now connected.", "Emma")]
-    )
-]
+commands = CommandsSequenceCreator().text(
+    "Hello, your call is now connected.", "Emma"
+)
 
 response = sinch_client.voice.v2.svaml.describe(commands=commands)
 
