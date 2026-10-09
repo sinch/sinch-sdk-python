@@ -16,15 +16,6 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
     KakaoTalkUpCoupon,
 )
 
-
-_KakaoTalkCouponUnion = Union[
-    KakaoTalkFixedDiscountCoupon,
-    KakaoTalkDiscountRateCoupon,
-    KakaoTalkShippingDiscountCoupon,
-    KakaoTalkFreeCoupon,
-    KakaoTalkUpCoupon,
-]
-
 KakaoTalkCoupon = Annotated[
     Union[
         KakaoTalkFixedDiscountCoupon,

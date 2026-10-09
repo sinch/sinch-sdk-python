@@ -13,14 +13,6 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.wh
     WhatsAppInteractiveVideoHeader,
 )
 
-
-_WhatsAppInteractiveHeaderUnion = Union[
-    WhatsAppInteractiveTextHeader,
-    WhatsAppInteractiveImageHeader,
-    WhatsAppInteractiveDocumentHeader,
-    WhatsAppInteractiveVideoHeader,
-]
-
 WhatsAppInteractiveHeader = Annotated[
     Union[
         WhatsAppInteractiveTextHeader,

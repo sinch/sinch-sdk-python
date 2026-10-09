@@ -6,8 +6,6 @@ from sinch.domains.sms.models.v1.shared.mo_binary_message import (
 )
 from sinch.domains.sms.models.v1.shared.mo_media_message import MOMediaMessage
 
-_InboundMessageUnion = Union[MOTextMessage, MOBinaryMessage, MOMediaMessage]
-
 InboundMessage = Annotated[
     Union[
         MOTextMessage,

@@ -448,9 +448,10 @@ class ResolveUnion:
 
         def resolve(value: Any, validate: Callable[[Any], Any]) -> Any:
             resolved = _resolve(value, spec)
-            if isinstance(resolved, SinchRawResponse):
+            # A different object means _resolve already built and validated the member.
+            if resolved is not value:
                 return resolved
-            return validate(resolved)
+            return validate(value)
 
         def serialize(value: Any, serialize_member: Callable, info: Any) -> Any:
             if isinstance(value, SinchRawResponse):
