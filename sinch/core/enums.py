@@ -23,7 +23,21 @@ class VoiceRegionEnum(str, Enum):
     ASIA_PACIFIC = "sg1"
     AUSTRALIA = "au1"
 
-    
+
+class ConversationRegionEnum(str, Enum):
+    UNITED_STATES = "us"
+    EUROPE = "eu"
+    BRAZIL = "br"
+
+
+class SmsRegionEnum(str, Enum):
+    UNITED_STATES = "us"
+    EUROPE = "eu"
+    AUSTRALIA = "au"
+    BRAZIL = "br"
+    CANADA = "ca"
+
+
 class RetryPolicy(Enum):
     #: Honor a ``Retry-After`` header if present, otherwise fall back to backoff.
     DEFAULT = "DEFAULT"

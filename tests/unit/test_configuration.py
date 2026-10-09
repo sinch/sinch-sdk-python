@@ -5,7 +5,7 @@ import pytest
 from sinch import SinchClient
 from sinch.core.clients.sinch_client_configuration import Configuration
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
-from sinch.core.enums import VoiceRegionEnum
+from sinch.core.enums import ConversationRegionEnum, SmsRegionEnum, VoiceRegionEnum
 from sinch.core.models.internal.base_model_config import (
     SnakeCaseExtrasModel,
     transform_kwargs_casing_scope,
@@ -80,6 +80,69 @@ def test_set_conversation_domain_property_expects_updated_conversation_origin(si
     sinch_client_sync.configuration.conversation_region = "eu"
     sinch_client_sync.configuration.conversation_domain = "https://{}.test.conversation.api.sinch.com"
     assert sinch_client_sync.configuration.conversation_origin == "https://eu.test.conversation.api.sinch.com"
+
+
+def test_configuration_expects_sms_origins_with_enum_region(sinch_client_sync):
+    """ Test that sms_origin and sms_origin_with_service_plan_id are built from a SmsRegionEnum member """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        sms_region=SmsRegionEnum.EUROPE,
+    )
+    assert client_configuration.sms_origin == "https://zt.eu.sms.api.sinch.com"
+    assert client_configuration.sms_origin_with_service_plan_id == "https://eu.sms.api.sinch.com"
+
+
+def test_configuration_expects_sms_origin_with_unlisted_string_region(sinch_client_sync):
+    """ Test that sms_region accepts a raw string not present in SmsRegionEnum """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        sms_region="xx",
+    )
+    assert client_configuration.sms_origin == "https://zt.xx.sms.api.sinch.com"
+
+
+def test_set_sms_region_property_with_enum_expects_updated_sms_origin(sinch_client_sync):
+    """ Test that setting the sms_region property with a SmsRegionEnum member updates sms_origin """
+    sinch_client_sync.configuration.sms_region = SmsRegionEnum.AUSTRALIA
+    assert sinch_client_sync.configuration.sms_origin == "https://zt.au.sms.api.sinch.com"
+
+
+def test_set_sms_region_with_service_plan_id_property_with_enum_expects_updated_origin(sinch_client_sync):
+    """ Test that setting sms_region_with_service_plan_id with a SmsRegionEnum member updates its origin """
+    sinch_client_sync.configuration.sms_region_with_service_plan_id = SmsRegionEnum.CANADA
+    assert sinch_client_sync.configuration.sms_origin_with_service_plan_id == "https://ca.sms.api.sinch.com"
+
+
+def test_configuration_expects_conversation_origin_with_enum_region(sinch_client_sync):
+    """ Test that conversation_origin is built from a ConversationRegionEnum member """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        conversation_region=ConversationRegionEnum.BRAZIL,
+    )
+    assert client_configuration.conversation_origin == "https://br.conversation.api.sinch.com"
+
+
+def test_configuration_expects_conversation_origin_with_unlisted_string_region(sinch_client_sync):
+    """ Test that conversation_region accepts a raw string not present in ConversationRegionEnum """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        conversation_region="xx",
+    )
+    assert client_configuration.conversation_origin == "https://xx.conversation.api.sinch.com"
+
+
+def test_set_conversation_region_property_with_enum_expects_updated_conversation_origin(sinch_client_sync):
+    """ Test that setting the conversation_region property with a ConversationRegionEnum member updates the origin """
+    sinch_client_sync.configuration.conversation_region = ConversationRegionEnum.EUROPE
+    assert sinch_client_sync.configuration.conversation_origin == "https://eu.conversation.api.sinch.com"
 
 
 def test_configuration_expects_voice_v2_origin_defaults_to_global(sinch_client_sync):

@@ -1,9 +1,10 @@
 import logging
 import warnings
+from enum import Enum
 from logging import Logger
 from typing import Union
 
-from sinch.core.enums import VoiceRegionEnum
+from sinch.core.enums import ConversationRegionEnum, SmsRegionEnum, VoiceRegionEnum
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.ports.http_transport import HTTPTransport
@@ -36,8 +37,8 @@ class Configuration:
         logger_name: str = None,
         service_plan_id: str = None,
         sms_api_token: str = None,
-        sms_region: str = None,
-        conversation_region: str = None,
+        sms_region: Union[SmsRegionEnum, str] = None,
+        conversation_region: Union[ConversationRegionEnum, str] = None,
         voice_region: Union[VoiceRegionEnum, str] = VoiceRegionEnum.GLOBAL,
         transform_kwargs_casing: bool = True,
         retry_configuration: RetryConfiguration = None,
@@ -80,10 +81,14 @@ class Configuration:
         else:
             self.logger = logging.getLogger("Sinch")
 
+    @staticmethod
+    def _region_value(region):
+        return region.value if isinstance(region, Enum) else region
+
     def _set_sms_origin_with_service_plan_id(self):
         if self._sms_region_with_service_plan_id:
             self.sms_origin_with_service_plan_id = self._sms_domain_with_service_plan_id.format(
-                self._sms_region_with_service_plan_id
+                self._region_value(self._sms_region_with_service_plan_id)
             )
         else:
             self.sms_origin_with_service_plan_id = None
@@ -116,7 +121,7 @@ class Configuration:
 
     def _set_sms_origin(self):
         if self._sms_region:
-            self.sms_origin = self._sms_domain.format(self._sms_region)
+            self.sms_origin = self._sms_domain.format(self._region_value(self._sms_region))
         else:
             self.sms_origin = None
 
@@ -147,8 +152,7 @@ class Configuration:
     )
 
     def _set_voice_origin(self):
-        region = self._voice_region
-        value = region.value if isinstance(region, VoiceRegionEnum) else region
+        value = self._region_value(self._voice_region)
         prefix = f"{value}." if value else ""
         self.voice_v2_origin = self._voice_domain.format(prefix)
 
@@ -167,7 +171,9 @@ class Configuration:
 
     def _set_conversation_origin(self):
         if self._conversation_region:
-            self.conversation_origin = self._conversation_domain.format(self._conversation_region)
+            self.conversation_origin = self._conversation_domain.format(
+                self._region_value(self._conversation_region)
+            )
         else:
             self.conversation_origin = None
 
