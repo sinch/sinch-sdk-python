@@ -183,7 +183,7 @@ class Menu:
                     "terminating_sequence": terminating_sequence,
                     "input_methods": input_methods,
                     "matches": matches,
-                    "on_fail": as_commands(on_failure),
+                    "on_failure": as_commands(on_failure),
                 }
             ),
         )

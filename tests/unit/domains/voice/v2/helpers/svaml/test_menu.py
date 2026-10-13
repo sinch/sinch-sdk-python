@@ -22,7 +22,7 @@ def test_create_expects_items_keyed_by_name():
                     "1": [{"command": "gotoMenu", "menu_name": "support"}]
                 }
             },
-            "support": {"on_fail": [{"command": "hangup"}]},
+            "support": {"on_failure": [{"command": "hangup"}]},
         },
     }
 
@@ -105,7 +105,7 @@ def test_item_expects_all_fields():
         "terminating_sequence": "#",
         "input_methods": ["DTMF"],
         "matches": {"1": [{"command": "hangup"}]},
-        "on_fail": [{"command": "hangup"}],
+        "on_failure": [{"command": "hangup"}],
     }
 
 
@@ -117,7 +117,7 @@ def test_item_expects_optionals_omitted_when_not_provided():
 def test_item_expects_single_command_handler_wrapped():
     """Test that on_failure given as a single command is sent as a list."""
     item = Menu.item("main", on_failure=Calls.hangup())
-    assert item["on_fail"] == [{"command": "hangup"}]
+    assert item["on_failure"] == [{"command": "hangup"}]
 
 
 def test_prompt_expects_all_fields():

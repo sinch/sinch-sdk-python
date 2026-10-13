@@ -23,4 +23,4 @@ class MenuItemDict(TypedDict):
     terminating_sequence: NotRequired[str]
     input_methods: NotRequired[List[Union[Literal["DTMF"], str]]]
     matches: NotRequired[Mapping[str, Sequence["SvamlCommandDict"]]]
-    on_fail: NotRequired[Sequence["SvamlCommandDict"]]
+    on_failure: NotRequired[Sequence["SvamlCommandDict"]]

@@ -24,6 +24,7 @@ def step_validate_create_service(context):
     data: ServiceResponse = context.response
     assert data.service_id == '1a2b3c4d-5e6f-4789-a012-b3c4d5e6f789'
     assert data.project_id == 'c3d4e5f6-a7b8-4901-c234-d5e6f7a8b901'
+    assert data.service_secret == "9+MXX5u6dky5aATA7ZfIRg=="
     assert data.name == 'Example service'
     assert data.is_default is False
 
@@ -87,6 +88,7 @@ def step_validate_get_service_details(context):
     data: ServiceResponse = context.response
     assert data.service_id == SERVICE_ID
     assert data.project_id == 'c3d4e5f6-a7b8-4901-c234-d5e6f7a8b901'
+    assert data.service_secret == "9+MXX5u6dky5aATA7ZfIRg=="
     assert data.name == 'Example service 2'
     assert data.is_default is False
     assert data.call_behavior.type == 'NONE'
@@ -113,6 +115,7 @@ def step_validate_update_service(context):
     assert data.service_id == SERVICE_ID
     assert data.description == 'Service with webhooks'
     assert data.call_behavior.type == 'EVENT_DESTINATION'
+    assert data.service_secret == "9+MXX5u6dky5aATA7ZfIRg=="
     assert data.call_behavior.event_destination.url == 'https://example.com/webhook'
     assert (
         data.call_behavior.event_destination.fallback_url

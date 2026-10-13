@@ -54,8 +54,8 @@ class MenuItem(BaseModelConfiguration):
         default=None,
         description="Items matched against the collected input. Maximum number of allowed match expressions is 50.\n\nDefined as a dictionary where each property name is a literal or a regular expression string.\n\nValues are evaluated in the order they are defined.",
     )
-    on_fail: Optional[conlist("SvamlCommand")] = Field(
+    on_failure: Optional[conlist("SvamlCommand")] = Field(
         default=None,
-        alias="onFail",
+        alias="onFailure",
         description="SVAML commands executed when the menu fails to collect a matching input.\n\nThis handler runs after the repeat limit is reached without any input matching a menu match item.",
     )

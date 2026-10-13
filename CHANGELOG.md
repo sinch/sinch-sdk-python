@@ -35,6 +35,8 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[feature]** Voice V2 helpers and public methods that take SVAML commands accept either a single command or a list of commands.
 - **[design]** Voice V2 parameters and typed dicts holding SVAML commands (`commands`, `on_hangup`, `on_answer`, ...) are now typed as `Sequence` instead of `List`, so a `CommandsSequenceCreator` or a tuple can be passed as well as a list.
 - **[design]** Voice V2 `SinchEvents.build_incoming_call_response`: `call_name` and `on_hangup` are now keyword-only, must pass them by name.
+- **[design]** Voice V2 menu items: `on_fail` is renamed to `on_failure` in `MenuItem` and `MenuItemDict`, following the API specification.
+- **[feature]** Voice V2 `ServiceResponse` exposes `service_secret`, returned by `services.create`, `services.get`, and `services.update`.
 
 ---
 
