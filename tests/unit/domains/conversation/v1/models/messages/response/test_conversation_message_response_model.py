@@ -1,8 +1,14 @@
+from sinch.core.models.internal.unions import response_parsing_scope
+from sinch.core.models.sinch_raw_response import SinchRawResponse
 import pytest
 from datetime import datetime, timezone
+from pydantic import TypeAdapter
 from sinch.domains.conversation.models.v1.messages.response.message_response import (
     AppMessageResponse,
     ContactMessageResponse,
+)
+from sinch.domains.conversation.models.v1.messages.response.types.conversation_message_response import (  # noqa: E501
+    ConversationMessageResponse,
 )
 
 
@@ -174,3 +180,40 @@ def test_parsing_app_message_response_expects_correct_fields(app_message_respons
     assert parsed_response.accept_time == datetime(
         2026, 1, 14, 20, 32, 31, 147000, tzinfo=timezone.utc
     )
+
+
+@pytest.mark.parametrize(
+    "payload_fixture, expected_type",
+    [
+        ("app_message_response_data", AppMessageResponse),
+        ("contact_message_response_data", ContactMessageResponse),
+    ],
+    ids=["app_message", "contact_message"],
+)
+def test_conversation_message_response_expects_each_variant_resolved(
+    request, payload_fixture, expected_type
+):
+    """Test that each message response variant is resolved from the message
+    key it declares."""
+    payload = request.getfixturevalue(payload_fixture)
+
+    with response_parsing_scope():
+        response = TypeAdapter(ConversationMessageResponse).validate_python(
+            payload
+        )
+
+    assert type(response) is expected_type
+
+
+def test_conversation_message_response_expects_unknown_message_kind_parsed():
+    """Test that a message kind added to the API later is parsed as
+    SinchRawResponse, keeping the payload."""
+    payload = {"id": "m1", "reaction_message": {"emoji": "thumbs_up"}}
+
+    with response_parsing_scope():
+        response = TypeAdapter(ConversationMessageResponse).validate_python(
+            payload
+        )
+
+    assert isinstance(response, SinchRawResponse)
+    assert response.model_dump() == payload

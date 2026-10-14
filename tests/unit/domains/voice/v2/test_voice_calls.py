@@ -332,3 +332,46 @@ def test_calls_interact_by_call_name_expects_extra_kwargs_forwarded(
 
     _, kwargs = spy.call_args
     assert kwargs["request_data"].unexpected_field == "unexpected_value"
+
+
+def test_calls_start_expects_single_command_wrapped(
+    mock_sinch_client_voice, mocker
+):
+    """Test that commands given as a single command is sent as a list."""
+    spy = mocker.spy(StartCallEndpoint, "__init__")
+
+    Voice(mock_sinch_client_voice).v2.calls.start(commands={"command": "hangup"})
+
+    _, kwargs = spy.call_args
+    assert [c.command for c in kwargs["request_data"].commands] == ["hangup"]
+
+
+def test_calls_interact_by_call_id_expects_single_command_wrapped(
+    mock_sinch_client_voice, mocker
+):
+    """Test that commands given as a single command is sent as a list."""
+    spy = mocker.spy(PatchCallByIdEndpoint, "__init__")
+
+    Voice(mock_sinch_client_voice).v2.calls.interact_by_call_id(
+        call_id="01ARZ3NDEKTSV4RRFFQ69G5FAA",
+        commands={"command": "hangup"},
+    )
+
+    _, kwargs = spy.call_args
+    assert [c.command for c in kwargs["request_data"].commands] == ["hangup"]
+
+
+def test_calls_interact_by_call_name_expects_single_command_wrapped(
+    mock_sinch_client_voice, mocker
+):
+    """Test that commands given as a single command is sent as a list."""
+    spy = mocker.spy(PatchCallBySessionAndNameEndpoint, "__init__")
+
+    Voice(mock_sinch_client_voice).v2.calls.interact_by_call_name(
+        session_id="01BX5ZZKBKACTAV9WEVGEMMVRB",
+        call_name="origin",
+        commands={"command": "hangup"},
+    )
+
+    _, kwargs = spy.call_args
+    assert [c.command for c in kwargs["request_data"].commands] == ["hangup"]

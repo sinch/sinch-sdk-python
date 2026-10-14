@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.buttons.kakaotalk_web_link_button import (
     KakaoTalkWebLinkButton,
 )
@@ -10,8 +11,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
 )
 
 
-KakaoTalkButton = Union[
-    KakaoTalkWebLinkButton,
-    KakaoTalkAppLinkButton,
-    KakaoTalkBotKeywordButton,
+KakaoTalkButton = Annotated[
+    Union[
+        KakaoTalkWebLinkButton,
+        KakaoTalkAppLinkButton,
+        KakaoTalkBotKeywordButton,
+    ],
+    ResolveUnion(discriminator="type", discriminator_strict=False),
 ]

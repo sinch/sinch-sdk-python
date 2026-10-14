@@ -1,3 +1,4 @@
+from sinch.core.models.internal.unions import parses_response
 import json
 from typing import Any, Dict, Optional, Union
 
@@ -53,6 +54,7 @@ class SmsSinchEvent:
             self.app_secret, headers, payload_str
         )
 
+    @parses_response
     def parse_event(
         self,
         event_body: Union[str, bytes, Dict[str, Any]],

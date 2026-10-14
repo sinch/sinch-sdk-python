@@ -18,6 +18,11 @@ class ServiceResponse(BaseModelConfiguration):
     service_id: StrictStr = Field(
         default=..., alias="serviceId", description="The ID of the service."
     )
+    service_secret: StrictStr = Field(
+        default=...,
+        alias="serviceSecret",
+        description="The secret of the service.",
+    )
     project_id: StrictStr = Field(
         default=..., alias="projectId", description="The ID of the project."
     )

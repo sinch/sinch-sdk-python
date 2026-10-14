@@ -6,6 +6,7 @@ from sinch.domains.voice.models.v2.internal.base.base_model_configuration import
     BaseModelConfiguration,
 )
 from sinch.domains.voice.models.v2.shared.call_header import CallHeader
+from sinch.domains.voice.models.v2.types.voice_name import VoiceName
 
 
 class VoiceRelayDetails(BaseModelConfiguration):
@@ -18,10 +19,10 @@ class VoiceRelayDetails(BaseModelConfiguration):
         alias="enableInterruptions",
         description='Allow "barge-in" during text-to-speech (TTS) playback.\n\nWhen `true`, TTS playback is interrupted as soon as inbound speech is detected, unless the currently playing content is marked as uninterruptible.\n\nWhen `false`, TTS playback continues uninterrupted, but an interruption signal is still sent over the WebSocket so the client application can choose to stop playback manually if needed.',
     )
-    tts_voice: StrictStr = Field(
+    tts_voice: VoiceName = Field(
         default=...,
         alias="ttsVoice",
-        description="Name of the voice to be used when synthesizing speech. \n\nThis is the default voice used, if no override voice is provided in the web-socket TTS message.\n\nSupported voices include: Emma, Brian, and others. For a complete list of available voices and their characteristics, see the [Text-to-Speech Voices documentation](/docs/voice/api-reference/text-to-speech-voices).",
+        description="Name of the voice to be used when synthesizing speech. \n\nThis is the default voice used, if no override voice is provided in the web-socket TTS message.",
     )
     stt_language: StrictStr = Field(
         default=...,

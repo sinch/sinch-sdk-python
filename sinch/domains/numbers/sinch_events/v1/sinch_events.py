@@ -1,3 +1,4 @@
+from sinch.core.models.internal.unions import parses_response
 from typing import Any, Dict, Optional, Union
 
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
@@ -44,6 +45,7 @@ class SinchEvents:
             self.callback_secret, headers, payload_str
         )
 
+    @parses_response
     def parse_event(
         self,
         event_body: Union[str, bytes, Dict[str, Any]],

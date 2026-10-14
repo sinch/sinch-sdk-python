@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.sms.models.v1.shared.text_request import TextRequest
 from sinch.domains.sms.models.v1.shared.binary_request import (
     BinaryRequest,
@@ -27,8 +28,11 @@ class ReplaceMediaRequest(BatchIdMixin, MediaRequest):
     pass
 
 
-ReplaceBatchRequest = Union[
-    ReplaceTextRequest,
-    ReplaceBinaryRequest,
-    ReplaceMediaRequest,
+ReplaceBatchRequest = Annotated[
+    Union[
+        ReplaceTextRequest,
+        ReplaceBinaryRequest,
+        ReplaceMediaRequest,
+    ],
+    ResolveUnion(discriminator="type", discriminator_strict=False),
 ]

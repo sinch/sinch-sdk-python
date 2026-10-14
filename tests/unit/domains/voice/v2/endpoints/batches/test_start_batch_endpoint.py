@@ -83,7 +83,7 @@ def mock_error_response():
             "type": "https://api.sinch.com/docs/errors/bad-request",
             "title": "Bad Request",
             "detail": "The request body is invalid or malformed.",
-            "instance": "/v2/projects/5c5bf2b1-35ae-4825-ab89-457e07bb60e6/calls",
+            "instance": "/v2/projects/5c5bf2b1-35ae-4825-ab89-457e07bb60e6/batches",
         },
         headers={"Content-Type": "application/problem+json"},
     )
@@ -93,7 +93,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_voice):
     """Test that the URL is built correctly."""
     assert (
         endpoint.build_url(mock_sinch_client_voice)
-        == "https://voice.api.sinch.com/v2/projects/test_project_id/calls"
+        == "https://voice.api.sinch.com/v2/projects/test_project_id/batches"
     )
 
 
@@ -219,5 +219,5 @@ def test_handle_response_expects_error_type_and_instance_on_error(
         "https://api.sinch.com/docs/errors/bad-request"
     )
     assert exc_info.value.instance == (
-        "/v2/projects/5c5bf2b1-35ae-4825-ab89-457e07bb60e6/calls"
+        "/v2/projects/5c5bf2b1-35ae-4825-ab89-457e07bb60e6/batches"
     )

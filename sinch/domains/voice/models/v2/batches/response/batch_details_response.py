@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, Optional
 
 from pydantic import Field, StrictStr, conlist
 
@@ -14,6 +14,10 @@ class BatchSessionSummary(BaseModelConfiguration):
         description="Unique identifier of the call session within the batch. This identifies the session, not an individual call. Use it with `/v2/projects/{projectId}/sessions/{sessionId}` to retrieve full session details.",
     )
     state: Optional[SessionState] = Field(default=None)
+    parameters: Optional[Dict[StrictStr, StrictStr]] = Field(
+        default=None,
+        description="Plain key-value set of parameters from the batch request `parameters` entry that was used to initiate this call session.",
+    )
 
 
 class BatchDetailsResponse(BaseModelConfiguration):

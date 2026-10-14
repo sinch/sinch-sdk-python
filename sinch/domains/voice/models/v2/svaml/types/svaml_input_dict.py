@@ -1,4 +1,4 @@
-from typing import List
+from collections.abc import Sequence
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -11,6 +11,6 @@ from sinch.domains.voice.models.v2.svaml.types.svaml_command_dict import (
 
 
 class SvamlInputDict(TypedDict):
-    commands: List[SvamlCommandDict]
+    commands: Sequence[SvamlCommandDict]
     call_name: NotRequired[str]
     events: NotRequired[IncomingCallResponseEventsDict]

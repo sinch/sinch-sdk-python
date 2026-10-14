@@ -29,7 +29,11 @@ def mock_response():
         status_code=200,
         body={
             "sessions": [
-                {"id": "01F8Z5J4X2G9Y3J4X2G9Y3J4X2G9", "state": "COMPLETED"},
+                {
+                    "id": "01F8Z5J4X2G9Y3J4X2G9Y3J4X2G9",
+                    "state": "COMPLETED",
+                    "parameters": {"numberB": "+15559876543"},
+                },
                 {"id": "01F8Z5J4X2G9Y3J4X2G9Y3J4X5YJ", "state": "IN_PROGRESS"},
                 {"id": "01F8Z5J4X2G9Y3J4X2G9Y3J4X9QK", "state": "QUEUED"},
             ]
@@ -72,7 +76,11 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     assert len(parsed_response.sessions) == 3
     assert parsed_response.sessions[0].id == "01F8Z5J4X2G9Y3J4X2G9Y3J4X2G9"
     assert parsed_response.sessions[0].state == "COMPLETED"
+    assert parsed_response.sessions[0].parameters == {
+        "numberB": "+15559876543"
+    }
     assert parsed_response.sessions[1].state == "IN_PROGRESS"
+    assert parsed_response.sessions[1].parameters is None
     assert parsed_response.sessions[2].state == "QUEUED"
 
 

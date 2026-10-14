@@ -2,6 +2,7 @@ import requests
 from behave import given, when, then
 
 from sinch.domains.voice.api.v2.sinch_events import SinchEvents
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 from sinch.domains.voice.models.v2.sinch_events import VoiceSinchEventRequest
 from tests.e2e.helpers import store_webhook_response
 from tests.e2e.shared_config import VOICE_V2_ORIGIN
@@ -72,22 +73,12 @@ def step_check_event_type(context, event_type):
 @then('the response to the "{event_type}" event matches the expected call control instructions')
 def step_respond_with_call_control_instructions(context, event_type):
     response = context.voice_sinch_events.build_response(
-        commands=[
-            {
-                "command": "messages",
-                "messages_name": "from-webhook-server",
-                "messages": [
-                    {
-                        "type": "SAY",
-                        "say": {
-                            "text": "This message came from your local webhook server.",
-                            "voice_name": "Emma",
-                        },
-                    }
-                ],
-                "events": {"on_finish": [{"command": "hangup"}]},
-            }
-        ]
+        commands=CommandsSequenceCreator().text(
+            "This message came from your local webhook server.",
+            "Emma",
+            name="from-webhook-server",
+            on_finish=CommandsSequenceCreator().hangup(),
+        )
     )
     body = context.voice_sinch_events.serialize_response(response)
     confirmation = requests.post(f"{VOICE_V2_ORIGIN}{context.event_path}/confirm", json=body)

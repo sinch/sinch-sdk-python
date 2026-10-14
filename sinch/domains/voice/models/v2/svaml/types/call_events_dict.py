@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, List, TypedDict
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, TypedDict
 
 from typing_extensions import NotRequired
 
@@ -9,9 +10,9 @@ if TYPE_CHECKING:
 
 
 class CallEventsDict(TypedDict):
-    on_answer: NotRequired[List["SvamlCommandDict"]]
-    on_busy: NotRequired[List["SvamlCommandDict"]]
-    on_reject: NotRequired[List["SvamlCommandDict"]]
-    on_timeout: NotRequired[List["SvamlCommandDict"]]
-    on_hangup: NotRequired[List["SvamlCommandDict"]]
-    on_failure: NotRequired[List["SvamlCommandDict"]]
+    on_answer: NotRequired[Sequence["SvamlCommandDict"]]
+    on_busy: NotRequired[Sequence["SvamlCommandDict"]]
+    on_reject: NotRequired[Sequence["SvamlCommandDict"]]
+    on_timeout: NotRequired[Sequence["SvamlCommandDict"]]
+    on_hangup: NotRequired[Sequence["SvamlCommandDict"]]
+    on_failure: NotRequired[Sequence["SvamlCommandDict"]]

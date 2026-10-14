@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 import pytest
 from pydantic import ValidationError, TypeAdapter
+from sinch.core.models.internal.unions import response_parsing_scope
+from sinch.core.models.sinch_raw_response import SinchRawResponse
 from sinch.domains.sms.models.v1.types import BatchResponse
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
 from sinch.domains.sms.models.v1.shared.binary_response import BinaryResponse
@@ -61,31 +63,47 @@ def media_response_data():
     }
 
 
-def test_batch_response_expects_parses_all_response_types(
-    text_response_data, binary_response_data, media_response_data
+@pytest.mark.parametrize(
+    "payload_fixture, expected_type, expected_fields",
+    [
+        (
+            "text_response_data",
+            TextResponse,
+            {"body": "Hello World!", "delivery_report": "full"},
+        ),
+        ("binary_response_data", BinaryResponse, {"udh": "06050423F423F4"}),
+        ("media_response_data", MediaResponse, {}),
+    ],
+    ids=["text", "binary", "media"],
+)
+def test_batch_response_expects_each_variant_resolved(
+    request, payload_fixture, expected_type, expected_fields
 ):
     """
-    Test that BatchResponse correctly parses all three response types.
-    Verifies discriminator routes correctly based on type field.
+    Test that each batch response variant is resolved from its type field.
     """
-    adapter = TypeAdapter(BatchResponse)
+    payload = request.getfixturevalue(payload_fixture)
 
-    text_response = adapter.validate_python(text_response_data)
-    assert isinstance(text_response, TextResponse)
-    assert text_response.type == "mt_text"
-    assert text_response.body == "Hello World!"
-    assert text_response.delivery_report == "full"
+    with response_parsing_scope():
+        response = TypeAdapter(BatchResponse).validate_python(payload)
 
-    binary_response = adapter.validate_python(binary_response_data)
-    assert isinstance(binary_response, BinaryResponse)
-    assert not isinstance(binary_response, TextResponse)
-    assert binary_response.type == "mt_binary"
-    assert binary_response.udh == "06050423F423F4"
+    assert type(response) is expected_type
+    for name, value in expected_fields.items():
+        assert getattr(response, name) == value
 
-    media_response = adapter.validate_python(media_response_data)
-    assert isinstance(media_response, MediaResponse)
-    assert media_response.type == "mt_media"
-    assert media_response.body.url == "https://example.com/image.jpg"
+
+def test_batch_response_expects_unknown_type_resolved_to_unknown():
+    """
+    Test that a batch type added to the API later is parsed as SinchRawResponse,
+    keeping the payload, instead of failing the whole response.
+    """
+    payload = {"type": "mt_future", "id": "test123", "body": "Hello"}
+
+    with response_parsing_scope():
+        response = TypeAdapter(BatchResponse).validate_python(payload)
+
+    assert isinstance(response, SinchRawResponse)
+    assert response.model_dump() == payload
 
 
 def test_batch_response_expects_text_response_variations(text_response_data):

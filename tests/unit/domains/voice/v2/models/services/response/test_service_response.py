@@ -13,6 +13,7 @@ def test_service_response_expects_parsed_input():
     """Test that the model correctly parses a full valid input."""
     model = ServiceResponse(
         service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
+        service_secret="9+MXX5u6dky5aATA7ZfIRg==",
         project_id="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
         create_time="2025-01-01T00:00:00Z",
         update_time="2025-06-01T09:15:00Z",
@@ -30,6 +31,7 @@ def test_service_response_expects_parsed_input():
     )
 
     assert model.service_id == "6e124178-c29d-46a5-943c-5c2ae544aade"
+    assert model.service_secret == "9+MXX5u6dky5aATA7ZfIRg=="
     assert model.project_id == "5c5bf2b1-35ae-4825-ab89-457e07bb60e6"
     assert model.create_time is not None
     assert model.update_time is not None
@@ -46,6 +48,7 @@ def test_service_response_expects_parsed_input():
         mode="json", by_alias=True, exclude_none=True
     )
     assert alias_dump["serviceId"] == "6e124178-c29d-46a5-943c-5c2ae544aade"
+    assert alias_dump["serviceSecret"] == "9+MXX5u6dky5aATA7ZfIRg=="
     assert alias_dump["projectId"] == "5c5bf2b1-35ae-4825-ab89-457e07bb60e6"
     assert alias_dump["createTime"] == "2025-01-01T00:00:00Z"
     assert alias_dump["updateTime"] == "2025-06-01T09:15:00Z"
@@ -60,6 +63,7 @@ def test_service_response_expects_all_optionals_default_to_none():
     """Test that all optional fields default to None."""
     model = ServiceResponse(
         service_id="6e124178-c29d-46a5-943c-5c2ae544aade",
+        service_secret="9+MXX5u6dky5aATA7ZfIRg==",
         project_id="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
         create_time="2025-01-01T00:00:00Z",
         name="My Voice Service",

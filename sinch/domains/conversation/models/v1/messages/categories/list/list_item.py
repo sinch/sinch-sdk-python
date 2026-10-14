@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 
 from sinch.domains.conversation.models.v1.messages.categories.list.list_item_choice import (
     ListItemChoice,
@@ -7,4 +8,10 @@ from sinch.domains.conversation.models.v1.messages.categories.list.list_item_pro
     ListItemProduct,
 )
 
-ListItem = Union[ListItemChoice, ListItemProduct]
+ListItem = Annotated[
+    Union[
+        ListItemChoice,
+        ListItemProduct,
+    ],
+    ResolveUnion(),
+]

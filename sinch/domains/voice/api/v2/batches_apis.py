@@ -1,7 +1,9 @@
-from typing import Dict, List, Optional
+from collections.abc import Sequence
+from typing import Dict, List, Optional, Union
 
 from sinch.core.models.internal.utils import strip_unset
 from sinch.core.sentinel import UNSET, UnsetOr
+from sinch.domains.voice.helpers.v2.svaml.internal.utils import as_commands
 from sinch.domains.voice.api.v2.base.base_voice import BaseVoice
 from sinch.domains.voice.api.v2.internal.batches_endpoints import (
     GetBatchCallSummaryEndpoint,
@@ -38,7 +40,7 @@ from sinch.domains.voice.models.v2.svaml.types.svaml_command_dict import (
 class Batches(BaseVoice):
     def start(
         self,
-        commands: List[SvamlCommandDict],
+        commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]],
         parameters: List[Dict[str, str]],
         service_id: Optional[str] = None,
         batch_options: UnsetOr[Optional[BatchOptionsDict]] = UNSET,
@@ -46,25 +48,29 @@ class Batches(BaseVoice):
         **kwargs,
     ) -> StartBatchResponse:
         """
-        Create a batch of outbound calls, associated to the project's default service or to the service specified in the `serviceId` query parameter.
+        Create a batch of outbound call sessions, associated to the project's default service or to the service specified in the `serviceId` query parameter.
+
+        The request contains a single set of SVAML commands describing the call flow, together with one `parameters` entry per call session to queue. Placeholders in the commands (prefixed with `@`) are substituted with the values of the matching `parameters` entry, so each session can be personalized without changing the command structure.
+
+        Queued sessions are initiated asynchronously, paced according to `batch_options`.
 
         :param commands: (required) SVAML commands describing the call flow.
-        :type commands: List[SvamlCommandDict]
-        :param parameters: (required) Parameter sets for dynamic placeholders in the commands. One entry queues one call.
+        :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]
+        :param parameters: (required) Parameter sets for dynamic placeholders in the commands. Each entry queues one call session.
         :type parameters: List[Dict[str, str]]
-        :param service_id: (optional) The ID of the service to use for the call. If omitted, the project's default service is used.
+        :param service_id: (optional) The ID of the service to use for the batch. If omitted, the project's default service is used.
         :type service_id: Optional[str]
         :param batch_options: (optional) Options controlling how the batch is processed (maximum calls per second, time-to-live).
         :type batch_options: UnsetOr[Optional[BatchOptionsDict]]
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
-        :returns: The queued batch of call sessions.
+        :returns: The created batch. Identifiers of the individual call sessions are retrieved with :meth:`get_details`.
         :rtype: StartBatchResponse
 
         For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
         """
         request_data = StartBatchRequest(
-            commands=commands,
+            commands=as_commands(commands),
             parameters=parameters,
             service_id=service_id,
             **strip_unset(
@@ -79,13 +85,13 @@ class Batches(BaseVoice):
 
     def get(self, batch_id: str, **kwargs) -> BatchSummaryResponse:
         """
-        Retrieve a summary of a batch call operation, including statistics on completed, failed, in-progress, and queued calls. This provides an overview of the batch execution state and individual call session states.
+        Retrieve a summary of a batch, including statistics on completed, failed, in-progress, and queued calls. This provides an overview of the batch execution state and individual call session states.
 
         :param batch_id: (required) The ID of the batch.
         :type batch_id: str
         :param **kwargs: Additional parameters for the request.
         :type **kwargs: dict
-        :returns: The batch call summary.
+        :returns: The batch summary.
         :rtype: BatchSummaryResponse
 
         For detailed documentation, visit https://developers.sinch.com/docs/voice-2.0.
@@ -95,7 +101,7 @@ class Batches(BaseVoice):
 
     def get_details(self, batch_id: str, **kwargs) -> BatchDetailsResponse:
         """
-        Retrieve per-session details for a batch call operation, including the current state of each call session in the batch.
+        Retrieve per-session details for a batch, including the current state of each call session in the batch.
 
         Use this endpoint when individual session-level visibility is needed (for example, to inspect which sessions are `QUEUED`, `IN_PROGRESS` or `COMPLETED`). `EXPIRED` sessions are never returned because they were never initiated.
 

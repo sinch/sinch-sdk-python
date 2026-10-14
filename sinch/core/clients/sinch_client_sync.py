@@ -3,7 +3,7 @@ from typing import Union
 
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.sinch_client_configuration import Configuration
-from sinch.core.enums import VoiceRegionEnum
+from sinch.core.enums import ConversationRegionEnum, SmsRegionEnum, VoiceRegionEnum
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.domains.authentication import Authentication
@@ -39,8 +39,8 @@ class SinchClient:
         logger: Logger = None,
         service_plan_id: str = None,
         sms_api_token: str = None,
-        sms_region: str = None,
-        conversation_region: str = None,
+        sms_region: Union[SmsRegionEnum, str] = None,
+        conversation_region: Union[ConversationRegionEnum, str] = None,
         voice_region: Union[VoiceRegionEnum, str] = VoiceRegionEnum.GLOBAL,
         transform_kwargs_casing: bool = True,
         retry_configuration: RetryConfiguration = None,

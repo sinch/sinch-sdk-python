@@ -1,4 +1,5 @@
-from typing import Union, Optional
+from sinch.core.models.internal.unions import ResolveUnion
+from typing import Annotated, Optional, Union
 from pydantic import BaseModel, Field, StrictBool, StrictInt
 from sinch.domains.sms.models.v1.shared.text_request import TextRequest
 from sinch.domains.sms.models.v1.shared.binary_request import (
@@ -40,8 +41,11 @@ class DryRunMediaRequest(DryRunMixin, MediaRequest):
     pass
 
 
-DryRunRequest = Union[
-    DryRunTextRequest,
-    DryRunBinaryRequest,
-    DryRunMediaRequest,
+DryRunRequest = Annotated[
+    Union[
+        DryRunTextRequest,
+        DryRunBinaryRequest,
+        DryRunMediaRequest,
+    ],
+    ResolveUnion(discriminator="type", discriminator_strict=False),
 ]

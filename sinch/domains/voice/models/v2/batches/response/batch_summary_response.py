@@ -12,7 +12,7 @@ class BatchSummaryResponse(BaseModelConfiguration):
     batch_id: StrictStr = Field(
         default=...,
         alias="batchId",
-        description="Unique identifier of the batch call operation (ULID).\n\nUse this value to retrieve the batch details ([GET] `/v2/projects/{projectId}/batches/{batchId}/details`) or stop processing ([DELETE] `/v2/projects/{projectId}/batches/{batchId}`).",
+        description="Unique identifier of the batch (ULID).",
     )
     session_count: StrictInt = Field(
         default=...,

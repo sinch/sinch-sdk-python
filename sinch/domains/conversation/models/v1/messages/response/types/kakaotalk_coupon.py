@@ -1,5 +1,5 @@
+from sinch.core.models.internal.unions import ResolveUnion
 from typing import Annotated, Union
-from pydantic import Field
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.coupons.kakaotalk_fixed_discount_coupon import (
     KakaoTalkFixedDiscountCoupon,
 )
@@ -16,13 +16,13 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
     KakaoTalkUpCoupon,
 )
 
-
-_KakaoTalkCouponUnion = Union[
-    KakaoTalkFixedDiscountCoupon,
-    KakaoTalkDiscountRateCoupon,
-    KakaoTalkShippingDiscountCoupon,
-    KakaoTalkFreeCoupon,
-    KakaoTalkUpCoupon,
+KakaoTalkCoupon = Annotated[
+    Union[
+        KakaoTalkFixedDiscountCoupon,
+        KakaoTalkDiscountRateCoupon,
+        KakaoTalkShippingDiscountCoupon,
+        KakaoTalkFreeCoupon,
+        KakaoTalkUpCoupon,
+    ],
+    ResolveUnion(discriminator="type"),
 ]
-
-KakaoTalkCoupon = Annotated[_KakaoTalkCouponUnion, Field(discriminator="type")]

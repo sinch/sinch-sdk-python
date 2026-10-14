@@ -103,6 +103,7 @@ def test_services_create_expects_correct_request(
     mock_sinch_client_voice.configuration.transport.request.return_value = (
         ServiceResponse(
             serviceId="6e124178-c29d-46a5-943c-5c2ae544aade",
+            serviceSecret="9+MXX5u6dky5aATA7ZfIRg==",
             projectId="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             createTime="2025-01-01T00:00:00Z",
             name="Example service",
@@ -165,6 +166,7 @@ def test_services_get_expects_correct_request(mock_sinch_client_voice, mocker):
     mock_sinch_client_voice.configuration.transport.request.return_value = (
         ServiceResponse(
             serviceId="6e124178-c29d-46a5-943c-5c2ae544aade",
+            serviceSecret="9+MXX5u6dky5aATA7ZfIRg==",
             projectId="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             createTime="2025-01-01T00:00:00Z",
             name="Example service",
@@ -195,6 +197,7 @@ def test_services_update_expects_correct_request(
     mock_sinch_client_voice.configuration.transport.request.return_value = (
         ServiceResponse(
             serviceId="6e124178-c29d-46a5-943c-5c2ae544aade",
+            serviceSecret="9+MXX5u6dky5aATA7ZfIRg==",
             projectId="5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             createTime="2025-01-01T00:00:00Z",
             name="Renamed service",

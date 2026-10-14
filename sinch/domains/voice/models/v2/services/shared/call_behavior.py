@@ -1,7 +1,7 @@
-from typing import Literal, Union
+from sinch.core.models.internal.unions import ResolveUnion
+from typing import Annotated, Literal, Union
 
 from pydantic import Field, field_serializer
-from typing_extensions import Annotated
 
 from sinch.domains.voice.models.v2.internal.base.base_model_configuration import (
     BaseModelConfiguration,
@@ -37,6 +37,10 @@ class StaticCallBehavior(BaseModelConfiguration):
 
 
 CallBehavior = Annotated[
-    Union[NoneCallBehavior, EventDestinationCallBehavior, StaticCallBehavior],
-    Field(discriminator="type"),
+    Union[
+        NoneCallBehavior,
+        EventDestinationCallBehavior,
+        StaticCallBehavior,
+    ],
+    ResolveUnion(discriminator="type"),
 ]

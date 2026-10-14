@@ -9,6 +9,7 @@ import os
 from dotenv import load_dotenv
 
 from sinch import SinchClient
+from sinch.domains.voice.helpers.v2.svaml import CommandsSequenceCreator
 
 load_dotenv()
 
@@ -19,7 +20,9 @@ sinch_client = SinchClient(
 )
 
 # The SVAML commands to validate
-commands = [{"command": "hangup"}]
+commands = CommandsSequenceCreator().text(
+    "Hello, your call is now connected.", "Emma"
+)
 
 response = sinch_client.voice.v2.svaml.validate(commands=commands)
 

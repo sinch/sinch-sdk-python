@@ -29,6 +29,7 @@ def mock_response():
         status_code=200,
         body={
             "serviceId": "6e124178-c29d-46a5-943c-5c2ae544aade",
+            "serviceSecret": "9+MXX5u6dky5aATA7ZfIRg==",
             "projectId": "5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             "createTime": "2025-01-01T00:00:00Z",
             "updateTime": "2025-06-01T09:15:00Z",
@@ -77,6 +78,7 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
 
     assert isinstance(parsed_response, ServiceResponse)
     assert parsed_response.service_id == "6e124178-c29d-46a5-943c-5c2ae544aade"
+    assert parsed_response.service_secret == "9+MXX5u6dky5aATA7ZfIRg=="
     assert parsed_response.update_time is not None
     assert parsed_response.call_behavior.type == "STATIC"
     assert parsed_response.call_behavior.static.commands[0].command == (

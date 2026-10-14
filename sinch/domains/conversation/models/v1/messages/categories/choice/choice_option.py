@@ -1,5 +1,8 @@
 from typing import Annotated, Union, get_args
+
 from pydantic import BeforeValidator
+
+from sinch.core.models.internal.unions import ResolveUnion
 
 from sinch.domains.conversation.models.v1.messages.categories.choice.choice_options import (
     CalendarChoiceMessage,
@@ -48,5 +51,6 @@ def _validate_exactly_one_choice_message_key(value: object) -> object:
 
 ChoiceOption = Annotated[
     ChoiceOptionUnion,
+    ResolveUnion(),
     BeforeValidator(_validate_exactly_one_choice_message_key),
 ]

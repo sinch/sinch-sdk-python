@@ -1,4 +1,6 @@
+import pytest
 from pydantic import TypeAdapter
+
 from sinch.domains.numbers.models.v1.internal import (
     VoiceConfigurationCustom,
     VoiceConfigurationEST,
@@ -10,86 +12,59 @@ from sinch.domains.numbers.models.v1.internal import (
 voice_configuration_adapter = TypeAdapter(VoiceConfigurationRequestUnion)
 
 
-def test_voice_configuration_request_union_expects_rtc_parsed():
+@pytest.mark.parametrize(
+    "payload, expected_type, expected_dump",
+    [
+        (
+            {"type": "RTC", "appId": "YOUR_app_id"},
+            VoiceConfigurationRTC,
+            {"type": "RTC", "appId": "YOUR_app_id"},
+        ),
+        (
+            {"type": "EST", "trunkId": "YOUR_trunk_id"},
+            VoiceConfigurationEST,
+            {"type": "EST", "trunkId": "YOUR_trunk_id"},
+        ),
+        (
+            {"type": "FAX", "serviceId": "YOUR_service_id"},
+            VoiceConfigurationFAX,
+            {"type": "FAX", "serviceId": "YOUR_service_id"},
+        ),
+        (
+            {"type": "SOMETHING_NEW", "customField": "abc"},
+            VoiceConfigurationCustom,
+            {"type": "SOMETHING_NEW", "customField": "abc"},
+        ),
+        (
+            {"appId": "YOUR_app_id"},
+            VoiceConfigurationRTC,
+            {"type": "RTC", "appId": "YOUR_app_id"},
+        ),
+        (
+            {"type": "", "appId": "YOUR_app_id"},
+            VoiceConfigurationRTC,
+            {"type": "RTC", "appId": "YOUR_app_id"},
+        ),
+    ],
+    ids=[
+        "rtc",
+        "est",
+        "fax",
+        "unknown_type_falls_back_to_custom",
+        "missing_type_defaults_to_rtc",
+        "empty_type_defaults_to_rtc",
+    ],
+)
+def test_voice_configuration_request_union_resolves_by_type(
+    payload, expected_type, expected_dump
+):
     """
-    Test that a RTC payload parses into VoiceConfigurationRTC.
+    Expects each type to resolve to its own request variant, an unrecognized
+    type to fall back to VoiceConfigurationCustom, and a missing or empty type
+    to default to VoiceConfigurationRTC, all serializing back to the wire shape
+    the API expects.
     """
-    result = voice_configuration_adapter.validate_python(
-        {"type": "RTC", "appId": "YOUR_app_id"}
-    )
-    assert isinstance(result, VoiceConfigurationRTC)
-    assert result.type == "RTC"
-    assert result.app_id == "YOUR_app_id"
-    assert result.model_dump(by_alias=True, exclude_none=True) == {
-        "type": "RTC",
-        "appId": "YOUR_app_id",
-    }
+    result = voice_configuration_adapter.validate_python(payload)
 
-
-def test_voice_configuration_request_union_expects_est_parsed():
-    """
-    Test that an EST payload parses into VoiceConfigurationEST.
-    """
-    result = voice_configuration_adapter.validate_python(
-        {"type": "EST", "trunkId": "YOUR_trunk_id"}
-    )
-    assert isinstance(result, VoiceConfigurationEST)
-    assert result.type == "EST"
-    assert result.trunk_id == "YOUR_trunk_id"
-    assert result.model_dump(by_alias=True, exclude_none=True) == {
-        "type": "EST",
-        "trunkId": "YOUR_trunk_id",
-    }
-
-
-def test_voice_configuration_request_union_expects_fax_parsed():
-    """
-    Test that a FAX payload parses into VoiceConfigurationFAX.
-    """
-    result = voice_configuration_adapter.validate_python(
-        {"type": "FAX", "serviceId": "YOUR_service_id"}
-    )
-    assert isinstance(result, VoiceConfigurationFAX)
-    assert result.type == "FAX"
-    assert result.service_id == "YOUR_service_id"
-    assert result.model_dump(by_alias=True, exclude_none=True) == {
-        "type": "FAX",
-        "serviceId": "YOUR_service_id",
-    }
-
-
-def test_voice_configuration_request_union_expects_custom_parsed():
-    """
-    Test that an unrecognized type parses into VoiceConfigurationCustom.
-    """
-    result = voice_configuration_adapter.validate_python(
-        {"type": "SOMETHING_NEW", "customField": "abc"}
-    )
-    assert isinstance(result, VoiceConfigurationCustom)
-    assert result.type == "SOMETHING_NEW"
-    assert result.model_dump(by_alias=True, exclude_none=True) == {
-        "type": "SOMETHING_NEW",
-        "customField": "abc",
-    }
-
-
-def test_voice_configuration_request_union_expects_missing_type_defaults_to_rtc():
-    """
-    Test that a payload without `type` defaults to VoiceConfigurationRTC.
-    """
-    result = voice_configuration_adapter.validate_python({"appId": "YOUR_app_id"})
-    assert isinstance(result, VoiceConfigurationRTC)
-    assert result.type == "RTC"
-    assert result.app_id == "YOUR_app_id"
-
-
-def test_voice_configuration_request_union_expects_empty_type_defaults_to_rtc():
-    """
-    Test that a payload with an empty `type` string defaults to VoiceConfigurationRTC.
-    """
-    result = voice_configuration_adapter.validate_python(
-        {"type": "", "appId": "YOUR_app_id"}
-    )
-    assert isinstance(result, VoiceConfigurationRTC)
-    assert result.type == "RTC"
-    assert result.app_id == "YOUR_app_id"
+    assert type(result) is expected_type
+    assert result.model_dump(by_alias=True, exclude_none=True) == expected_dump

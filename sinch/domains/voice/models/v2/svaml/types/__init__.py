@@ -50,6 +50,9 @@ from sinch.domains.voice.models.v2.svaml.types.message_events_dict import (
 from sinch.domains.voice.models.v2.svaml.types.messages_command_dict import (
     MessagesCommandDict,
 )
+from sinch.domains.voice.models.v2.svaml.types.named_menu_item_dict import (
+    NamedMenuItemDict,
+)
 from sinch.domains.voice.models.v2.svaml.types.pause_command_dict import (
     PauseCommandDict,
 )
@@ -102,6 +105,7 @@ __all__ = [
     "MenuItemDict",
     "MenuPromptDict",
     "MessageDict",
+    "NamedMenuItemDict",
     "MessageEventsDict",
     "MessagesCommandDict",
     "PauseCommandDict",

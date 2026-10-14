@@ -37,6 +37,7 @@ def mock_response():
         status_code=200,
         body={
             "serviceId": "6e124178-c29d-46a5-943c-5c2ae544aade",
+            "serviceSecret": "9+MXX5u6dky5aATA7ZfIRg==",
             "projectId": "5c5bf2b1-35ae-4825-ab89-457e07bb60e6",
             "createTime": "2025-01-01T00:00:00Z",
             "name": "Renamed service",

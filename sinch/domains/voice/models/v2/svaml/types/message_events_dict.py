@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, List, TypedDict
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, TypedDict
 
 from typing_extensions import NotRequired
 
@@ -9,4 +10,4 @@ if TYPE_CHECKING:
 
 
 class MessageEventsDict(TypedDict):
-    on_finish: NotRequired[List["SvamlCommandDict"]]
+    on_finish: NotRequired[Sequence["SvamlCommandDict"]]

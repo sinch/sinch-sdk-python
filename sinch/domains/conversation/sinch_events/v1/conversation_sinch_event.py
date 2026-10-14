@@ -1,3 +1,4 @@
+from sinch.core.models.internal.unions import parses_response
 import logging
 from typing import Any, Dict, Union, Optional
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
@@ -77,6 +78,7 @@ class ConversationSinchEvent:
         """
         return self._validate_signature(json_payload, headers)
 
+    @parses_response
     def parse_event(
         self,
         event_body: Union[str, bytes, Dict[str, Any]],

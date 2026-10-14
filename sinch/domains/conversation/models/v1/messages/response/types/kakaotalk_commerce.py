@@ -1,4 +1,5 @@
-from typing import Union
+from typing import Annotated, Union
+from sinch.core.models.internal.unions import ResolveUnion
 from sinch.domains.conversation.models.v1.messages.categories.channelspecific.kakaotalk.commerce.kakaotalk_regular_price_commerce import (
     KakaoTalkRegularPriceCommerce,
 )
@@ -10,8 +11,11 @@ from sinch.domains.conversation.models.v1.messages.categories.channelspecific.ka
 )
 
 
-KakaoTalkCommerce = Union[
-    KakaoTalkRegularPriceCommerce,
-    KakaoTalkDiscountFixedCommerce,
-    KakaoTalkDiscountRateCommerce,
+KakaoTalkCommerce = Annotated[
+    Union[
+        KakaoTalkRegularPriceCommerce,
+        KakaoTalkDiscountFixedCommerce,
+        KakaoTalkDiscountRateCommerce,
+    ],
+    ResolveUnion(discriminator="type", discriminator_strict=False),
 ]
