@@ -23,7 +23,7 @@ from sinch.domains.voice.models.v2.batches.response.start_batch_response import 
 
 
 class StartBatchEndpoint(VoiceEndpoint):
-    ENDPOINT_URL = "{origin}/v2/projects/{project_id}/calls"
+    ENDPOINT_URL = "{origin}/v2/projects/{project_id}/batches"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.OAUTH.value
 

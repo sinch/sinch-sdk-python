@@ -53,7 +53,7 @@ class Calls(BaseVoice):
         **kwargs,
     ) -> StartCallResponse:
         """
-        Create a new outbound call, associated to the project's default service or to the service specified in the `serviceId` query parameter.
+        Create a new outbound call session, associated to the project's default service or to the service specified in the `serviceId` query parameter.
 
         :param commands: (required) SVAML commands describing the call flow.
         :type commands: Union[SvamlCommandDict, Sequence[SvamlCommandDict]]

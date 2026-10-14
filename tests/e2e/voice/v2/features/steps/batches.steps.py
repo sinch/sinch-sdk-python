@@ -84,8 +84,10 @@ def step_validate_batch_call_details(context):
     assert len(data.sessions) == 2
     assert data.sessions[0].id == '01M144V4PE5KTSVY2AX19QC332'
     assert data.sessions[0].state == 'IN_PROGRESS'
+    assert data.sessions[0].parameters == {'toNumber': '+12017777777'}
     assert data.sessions[1].id == '01M144V4PEH22EHB1SHMJRXBXA'
     assert data.sessions[1].state == 'COMPLETED'
+    assert data.sessions[1].parameters == {'toNumber': '+12018888888'}
 
 
 @when('I send a request to stop batch processing')

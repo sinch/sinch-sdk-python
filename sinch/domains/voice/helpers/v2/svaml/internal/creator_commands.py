@@ -167,9 +167,9 @@ def menu_item(
     Each collected input is matched against the values in ``matches``.
     If no match succeeds, the ``on_failure`` commands are executed.
 
-    If neither ``matches`` nor ``on_failure`` is defined and the service
-    call behavior is ``EVENT_DESTINATION``, an event including the collected
-    input is sent to the event destination.
+    If no match succeeds and ``on_failure`` is not defined, a ``call.menu``
+    event including the collected input is sent to the event destination
+    when the service call behavior is ``EVENT_DESTINATION``.
 
     :param name: Name of the menu, between 1 and 16 characters. Used as
         the start menu in :meth:`menu` and as the target of
