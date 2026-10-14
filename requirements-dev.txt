@@ -63,7 +63,7 @@ packaging==26.3
     # via
     #   pytest
     #   sphinx
-parse==1.22.2
+parse==1.22.3
     # via
     #   behave
     #   parse-type
@@ -71,9 +71,13 @@ parse-type==0.6.6
     # via behave
 pluggy==1.6.0
     # via pytest
-pydantic==2.13.5
+pydantic==2.13.5 ; python_full_version < '3.10'
     # via -r requirements.in
-pydantic-core==2.46.5
+pydantic==2.14.1 ; python_full_version >= '3.10'
+    # via -r requirements.in
+pydantic-core==2.46.5 ; python_full_version < '3.10'
+    # via pydantic
+pydantic-core==2.50.1 ; python_full_version >= '3.10'
     # via pydantic
 pygments==2.21.0
     # via
@@ -168,7 +172,7 @@ urllib3==2.8.0 ; python_full_version >= '3.10'
     # via
     #   -r requirements.in
     #   requests
-uv==0.12.23
+uv==0.13.1
     # via -r requirements.in
 win-unicode-console==0.5 ; python_full_version < '3.10'
     # via behave
