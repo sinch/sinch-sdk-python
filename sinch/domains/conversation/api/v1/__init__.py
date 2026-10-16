@@ -3,11 +3,13 @@ from sinch.domains.conversation.api.v1.contacts_apis import Contacts
 from sinch.domains.conversation.api.v1.event_destinations_apis import (
     EventDestinations,
 )
+from sinch.domains.conversation.api.v1.events_apis import Events
 from sinch.domains.conversation.api.v1.messages_apis import Messages
 
 __all__ = [
     "Apps",
     "Contacts",
     "EventDestinations",
+    "Events",
     "Messages",
 ]

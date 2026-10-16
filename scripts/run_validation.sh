@@ -97,6 +97,8 @@ safe_cp "$MOCKSERVER_DIR"/features/number-lookup/lookups.feature ./tests/e2e/num
 safe_cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/events.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/voice-v2/* ./tests/e2e/voice/v2/features/
 

@@ -83,6 +83,8 @@ jobs:
         cp sinch-sdk-mockserver/features/conversation/messages.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/apps.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/contacts.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/conversation/events.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/conversation/webhooks.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/voice-v2/* ./tests/e2e/voice/v2/features/
 
