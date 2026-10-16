@@ -16,6 +16,14 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.4.0 – unreleased
+
+### Conversation
+
+- **[feature]** Conversation Event Destinations API (`sinch.conversation.event_destinations`): `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+
+---
+
 ## v2.3.0 – 2026-10-14
 
 ### SDK
@@ -37,6 +45,11 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[design]** Voice V2 `SinchEvents.build_incoming_call_response`: `call_name` and `on_hangup` are now keyword-only, must pass them by name.
 - **[design]** Voice V2 menu items: `on_fail` is renamed to `on_failure` in `MenuItem` and `MenuItemDict`, following the API specification.
 - **[feature]** Voice V2 `ServiceResponse` exposes `service_secret`, returned by `services.create`, `services.get`, and `services.update`.
+
+### Conversation
+
+- **[feature]** Conversation Event Destinations API (`sinch.conversation.event_destinations`): `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+
 
 ---
 

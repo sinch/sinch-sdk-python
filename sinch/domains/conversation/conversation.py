@@ -1,4 +1,9 @@
-from sinch.domains.conversation.api.v1 import Apps, Contacts, Messages
+from sinch.domains.conversation.api.v1 import (
+    Apps,
+    Contacts,
+    EventDestinations,
+    Messages,
+)
 from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
 
 
@@ -12,6 +17,7 @@ class Conversation:
         self._sinch = sinch
         self.apps = Apps(sinch)
         self.contacts = Contacts(self._sinch)
+        self.event_destinations = EventDestinations(self._sinch)
         self.messages = Messages(self._sinch)
 
     def sinch_events(
