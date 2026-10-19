@@ -6,7 +6,9 @@ for message sending, such as recipient validation, type coercion, and
 parameter splitting.
 """
 
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
+
+from sinch.core.sentinel import UNSET
 
 from sinch.domains.conversation.models.v1.messages.internal.request.recipient import (
     ChannelRecipientIdentity,
@@ -60,6 +62,35 @@ def build_recipient_dict(
         if has_contact_id
         else {"channel_identities": recipient_identities}
     )
+
+
+def validate_inject_message_body(
+    app_message: Any, contact_message: Any
+) -> None:
+    """
+    Validate that exactly one of app_message or contact_message is set.
+
+    A parameter counts as set when it is not ``UNSET``.
+
+    :param app_message: The app message, or ``UNSET`` if omitted.
+    :type app_message: Any
+    :param contact_message: The contact message, or ``UNSET`` if omitted.
+    :type contact_message: Any
+
+    :raises ValueError: If both or neither parameters are set.
+    """
+    has_app_message = app_message is not UNSET
+    has_contact_message = contact_message is not UNSET
+
+    if has_app_message and has_contact_message:
+        raise ValueError(
+            "Cannot specify both 'app_message' and 'contact_message'. "
+            "Provide exactly one."
+        )
+    if not has_app_message and not has_contact_message:
+        raise ValueError(
+            "Must provide either 'app_message' or 'contact_message'."
+        )
 
 
 def coerce_recipient(recipient: Union[Recipient, dict]) -> Recipient:

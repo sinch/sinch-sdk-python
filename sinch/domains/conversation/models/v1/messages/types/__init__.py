@@ -1,6 +1,9 @@
 from sinch.domains.conversation.models.v1.messages.types.agent_type import (
     AgentType,
 )
+from sinch.domains.conversation.models.v1.messages.types.app_message_dict import (
+    AppMessageDict,
+)
 from sinch.domains.conversation.models.v1.messages.types.card_height_type import (
     CardHeightType,
 )
@@ -18,6 +21,18 @@ from sinch.domains.conversation.models.v1.messages.types.choice_message_dict imp
 )
 from sinch.domains.conversation.models.v1.messages.types.contact_info_message_dict import (
     ContactInfoMessageDict,
+)
+from sinch.domains.conversation.models.v1.messages.types.contact_message_dict import (
+    ChannelSpecificContactMessageDict,
+    ChoiceResponseMessageDict,
+    ContactMessageDict,
+    FallbackMessageDict,
+    MediaCardMessageDict,
+    ProductResponseMessageDict,
+    ReasonDict,
+    ReplyToDict,
+    WhatsAppInteractiveNfmReplyDict,
+    WhatsAppInteractiveNfmReplyMessageDict,
 )
 from sinch.domains.conversation.models.v1.messages.types.conversation_channel_type import (
     ConversationChannelType,
@@ -110,6 +125,17 @@ __all__ = [
     "RecipientDict",
     "ChannelRecipientIdentityDict",
     "SendMessageRequestBodyDict",
+    "AppMessageDict",
+    "ContactMessageDict",
+    "ChannelSpecificContactMessageDict",
+    "ChoiceResponseMessageDict",
+    "FallbackMessageDict",
+    "MediaCardMessageDict",
+    "ProductResponseMessageDict",
+    "ReasonDict",
+    "ReplyToDict",
+    "WhatsAppInteractiveNfmReplyDict",
+    "WhatsAppInteractiveNfmReplyMessageDict",
     "MessageSourceType",
     "PaymentOrderGoodsType",
     "PaymentOrderStatusType",

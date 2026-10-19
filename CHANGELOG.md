@@ -22,7 +22,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 - **[feature]** Conversation Event Destinations API (`sinch.conversation.event_destinations`): `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
 - **[feature]** Conversation Events API (`sinch.conversation.events`): `send`, `get`, `list`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
-
+- **[feature]** Conversation Conversations API (`sinch.conversation.conversations`): `create`, `delete`, `get`, `inject_event`, `inject_message`, `list`, `list_recent`, `stop_active` and `update` operations, with full model, endpoints and unit/e2e test coverage.
 
 ---
 

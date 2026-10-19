@@ -1,8 +1,10 @@
 import pytest
+from sinch.core.sentinel import UNSET
 from sinch.domains.conversation.api.v1.internal.utils import (
     build_recipient_dict,
     coerce_recipient,
     split_send_kwargs,
+    validate_inject_message_body,
 )
 from sinch.domains.conversation.models.v1.messages.internal.request import (
     Recipient,
@@ -144,3 +146,26 @@ class TestSplitSendKwargs:
         message_kwargs, request_kwargs = split_send_kwargs(kwargs)
         assert message_kwargs == expected_message_kwargs
         assert request_kwargs == expected_request_kwargs
+
+
+class TestValidateInjectMessageBody:
+
+    @pytest.mark.parametrize(
+        "app_message,contact_message",
+        [({"text_message": {"text": "Hi"}}, UNSET), (UNSET, {"text_message": {"text": "Hi"}})],
+    )
+    def test_validate_inject_message_body_expects_exactly_one_set_returns_none(
+        self, app_message, contact_message
+    ):
+        """Test that setting exactly one message does not raise."""
+        assert validate_inject_message_body(app_message, contact_message) is None
+
+    def test_validate_inject_message_body_expects_both_set_raises_value_error(self):
+        """Test that setting both messages raises ValueError."""
+        with pytest.raises(ValueError, match="Cannot specify both"):
+            validate_inject_message_body({"a": 1}, {"b": 2})
+
+    def test_validate_inject_message_body_expects_none_set_raises_value_error(self):
+        """Test that setting neither message raises ValueError."""
+        with pytest.raises(ValueError, match="Must provide either"):
+            validate_inject_message_body(UNSET, UNSET)

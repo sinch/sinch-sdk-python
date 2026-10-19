@@ -8,6 +8,17 @@ from sinch.domains.conversation.api.v1.internal.contacts_endpoints import (
     MergeContactEndpoint,
     UpdateContactEndpoint,
 )
+from sinch.domains.conversation.api.v1.internal.conversations_endpoints import (
+    CreateConversationEndpoint,
+    DeleteConversationEndpoint,
+    GetConversationEndpoint,
+    InjectEventEndpoint,
+    InjectMessageEndpoint,
+    ListConversationsEndpoint,
+    ListRecentConversationsEndpoint,
+    StopActiveConversationEndpoint,
+    UpdateConversationEndpoint,
+)
 from sinch.domains.conversation.api.v1.internal.events_endpoints import (
     DeleteEventEndpoint,
     GetEventEndpoint,
@@ -25,21 +36,30 @@ from sinch.domains.conversation.api.v1.internal.messages_endpoints import (
 
 __all__ = [
     "CreateContactEndpoint",
+    "CreateConversationEndpoint",
     "DeleteContactEndpoint",
+    "DeleteConversationEndpoint",
     "DeleteEventEndpoint",
     "DeleteMessageEndpoint",
     "GetChannelProfileEndpoint",
     "GetContactEndpoint",
+    "GetConversationEndpoint",
     "GetEventEndpoint",
     "GetMessageEndpoint",
+    "InjectEventEndpoint",
+    "InjectMessageEndpoint",
     "ListContactsEndpoint",
+    "ListConversationsEndpoint",
     "ListEventsEndpoint",
     "ListIdentityConflictsEndpoint",
     "ListLastMessagesByChannelIdentityEndpoint",
     "ListMessagesEndpoint",
+    "ListRecentConversationsEndpoint",
     "MergeContactEndpoint",
     "SendEventEndpoint",
     "SendMessageEndpoint",
+    "StopActiveConversationEndpoint",
     "UpdateContactEndpoint",
+    "UpdateConversationEndpoint",
     "UpdateMessageMetadataEndpoint",
 ]
