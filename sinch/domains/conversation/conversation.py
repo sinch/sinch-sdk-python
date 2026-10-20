@@ -1,5 +1,6 @@
 from sinch.domains.conversation.api.v1 import (
     Apps,
+    Capability,
     Consents,
     Contacts,
     Conversations,
@@ -20,6 +21,7 @@ class Conversation:
     def __init__(self, sinch):
         self._sinch = sinch
         self.apps = Apps(sinch)
+        self.capability = Capability(self._sinch)
         self.consents = Consents(self._sinch)
         self.contacts = Contacts(self._sinch)
         self.conversations = Conversations(self._sinch)

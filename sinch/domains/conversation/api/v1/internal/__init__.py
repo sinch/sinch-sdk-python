@@ -1,3 +1,6 @@
+from sinch.domains.conversation.api.v1.internal.capability_endpoints import (
+    LookupCapabilityEndpoint,
+)
 from sinch.domains.conversation.api.v1.internal.consents_endpoints import (
     ListAuditRecordsEndpoint,
     ListConsentIdentitiesEndpoint,
@@ -70,6 +73,7 @@ __all__ = [
     "ListLastMessagesByChannelIdentityEndpoint",
     "ListMessagesEndpoint",
     "ListRecentConversationsEndpoint",
+    "LookupCapabilityEndpoint",
     "MergeContactEndpoint",
     "SendEventEndpoint",
     "SendMessageEndpoint",

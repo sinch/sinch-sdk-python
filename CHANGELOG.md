@@ -25,6 +25,7 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 - **[feature]** Conversation Conversations API (`sinch.conversation.conversations`): `create`, `delete`, `get`, `inject_event`, `inject_message`, `list`, `list_recent`, `stop_active` and `update` operations, with full model, endpoints and unit/e2e test coverage.
 - **[feature]** Conversation Consents API (`sinch.conversation.consents`): `list_identities` and `list_audit_records` operations, with full model, endpoints and unit/e2e test coverage.
 - **[feature]** Conversation Project Settings API (`sinch.conversation.project_settings`): `create`, `get`, `update` and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Capability API (`sinch.conversation.capability`): `lookup` operation, with full model, endpoint and unit/e2e test coverage.
 
 ---
 
