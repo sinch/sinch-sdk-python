@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from sinch.domains.conversation.models.v1.consents.response.audit_record_response import (
-    AuditRecordResponse,
+from sinch.domains.conversation.models.v1.consents.shared.audit_record import (
+    AuditRecord,
 )
 from sinch.domains.conversation.models.v1.consents.response.audit_records_response import (
     AuditRecordsResponse,
@@ -31,7 +31,7 @@ def test_audit_records_response_expects_parsed_input():
     assert model.identity.identity == "33612345678"
     assert len(model.audit_records) == 1
     record = model.audit_records[0]
-    assert isinstance(record, AuditRecordResponse)
+    assert isinstance(record, AuditRecord)
     assert record.origin == "ORIGIN_API"
     assert record.operation == "OPERATION_DELETE"
     assert record.list_type == "OPT_OUT_NOTIFICATION"

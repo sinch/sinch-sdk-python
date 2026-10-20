@@ -10,8 +10,8 @@ from sinch.domains.conversation.api.v1.internal.consents_endpoints import (
 from sinch.domains.conversation.models.v1.consents.internal.list_audit_records_request import (
     ListAuditRecordsRequest,
 )
-from sinch.domains.conversation.models.v1.consents.response.audit_record_response import (
-    AuditRecordResponse,
+from sinch.domains.conversation.models.v1.consents.shared.audit_record import (
+    AuditRecord,
 )
 from sinch.domains.conversation.models.v1.consents.response.audit_records_response import (
     AuditRecordsResponse,
@@ -95,7 +95,7 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
     assert parsed_response.identity.identity == "33612345678"
     assert len(parsed_response.audit_records) == 1
     record = parsed_response.audit_records[0]
-    assert isinstance(record, AuditRecordResponse)
+    assert isinstance(record, AuditRecord)
     assert record.origin == "ORIGIN_MO"
     assert record.operation == "OPERATION_INSERT"
     assert record.list_type == "OPT_OUT_ALL"

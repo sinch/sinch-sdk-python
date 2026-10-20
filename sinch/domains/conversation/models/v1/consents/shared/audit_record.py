@@ -11,7 +11,7 @@ from sinch.domains.conversation.models.v1.internal.base.base_model_configuration
 )
 
 
-class AuditRecordResponse(BaseModelConfiguration):
+class AuditRecord(BaseModelConfiguration):
     origin: Union[Literal["ORIGIN_API", "ORIGIN_MO"], StrictStr] = Field(
         default=...,
         description="The origin from the opt-out or opt-in. This could be the Batch API or an MO (when matched with an end-user MO).",

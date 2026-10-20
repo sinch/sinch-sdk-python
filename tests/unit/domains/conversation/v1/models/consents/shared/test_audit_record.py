@@ -3,8 +3,8 @@ from datetime import datetime, timezone
 import pytest
 from pydantic import ValidationError
 
-from sinch.domains.conversation.models.v1.consents.response.audit_record_response import (
-    AuditRecordResponse,
+from sinch.domains.conversation.models.v1.consents.shared.audit_record import (
+    AuditRecord,
 )
 
 FULL_INPUT = {
@@ -17,9 +17,9 @@ FULL_INPUT = {
 }
 
 
-def test_audit_record_response_expects_parsed_input():
+def test_audit_record_expects_parsed_input():
     """Test that the model correctly parses a full valid input."""
-    model = AuditRecordResponse(**FULL_INPUT)
+    model = AuditRecord(**FULL_INPUT)
 
     assert model.origin == "ORIGIN_MO"
     assert model.operation == "OPERATION_INSERT"
@@ -37,9 +37,9 @@ def test_audit_record_response_expects_parsed_input():
     assert alias_dump == FULL_INPUT
 
 
-def test_audit_record_response_expects_unknown_enum_values_accepted():
+def test_audit_record_expects_unknown_enum_values_accepted():
     """Test that values outside the known enums are still accepted."""
-    model = AuditRecordResponse(
+    model = AuditRecord(
         **{
             **FULL_INPUT,
             "origin": "ORIGIN_FUTURE",
@@ -54,11 +54,11 @@ def test_audit_record_response_expects_unknown_enum_values_accepted():
 
 
 @pytest.mark.parametrize("missing", list(FULL_INPUT))
-def test_audit_record_response_expects_missing_required_field_rejected(
+def test_audit_record_expects_missing_required_field_rejected(
     missing,
 ):
     """Test that the model rejects input missing a required field."""
     data = {k: v for k, v in FULL_INPUT.items() if k != missing}
 
     with pytest.raises(ValidationError):
-        AuditRecordResponse(**data)
+        AuditRecord(**data)
