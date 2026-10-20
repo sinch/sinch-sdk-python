@@ -8,6 +8,7 @@ from sinch.domains.conversation.api.v1 import (
     Events,
     Messages,
     ProjectSettings,
+    Transcoding,
 )
 from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
 
@@ -29,6 +30,7 @@ class Conversation:
         self.events = Events(self._sinch)
         self.messages = Messages(self._sinch)
         self.project_settings = ProjectSettings(self._sinch)
+        self.transcoding = Transcoding(self._sinch)
 
     def sinch_events(
         self, callback_secret: str = ""

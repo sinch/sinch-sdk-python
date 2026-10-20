@@ -11,6 +11,7 @@ from sinch.domains.conversation.api.v1.messages_apis import Messages
 from sinch.domains.conversation.api.v1.project_settings_apis import (
     ProjectSettings,
 )
+from sinch.domains.conversation.api.v1.transcoding_apis import Transcoding
 
 __all__ = [
     "Apps",
@@ -22,4 +23,5 @@ __all__ = [
     "Events",
     "Messages",
     "ProjectSettings",
+    "Transcoding",
 ]

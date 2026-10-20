@@ -46,6 +46,9 @@ from sinch.domains.conversation.api.v1.internal.project_settings_endpoints impor
     GetProjectSettingsEndpoint,
     UpdateProjectSettingsEndpoint,
 )
+from sinch.domains.conversation.api.v1.internal.transcoding_endpoints import (
+    TranscodeMessageEndpoint,
+)
 
 __all__ = [
     "CreateContactEndpoint",
@@ -78,6 +81,7 @@ __all__ = [
     "SendEventEndpoint",
     "SendMessageEndpoint",
     "StopActiveConversationEndpoint",
+    "TranscodeMessageEndpoint",
     "UpdateContactEndpoint",
     "UpdateConversationEndpoint",
     "UpdateMessageMetadataEndpoint",
