@@ -1,3 +1,7 @@
+from sinch.domains.conversation.api.v1.internal.consents_endpoints import (
+    ListAuditRecordsEndpoint,
+    ListConsentIdentitiesEndpoint,
+)
 from sinch.domains.conversation.api.v1.internal.contacts_endpoints import (
     CreateContactEndpoint,
     DeleteContactEndpoint,
@@ -48,6 +52,8 @@ __all__ = [
     "GetMessageEndpoint",
     "InjectEventEndpoint",
     "InjectMessageEndpoint",
+    "ListAuditRecordsEndpoint",
+    "ListConsentIdentitiesEndpoint",
     "ListContactsEndpoint",
     "ListConversationsEndpoint",
     "ListEventsEndpoint",

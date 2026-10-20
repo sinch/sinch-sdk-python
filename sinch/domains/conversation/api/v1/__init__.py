@@ -1,4 +1,5 @@
 from sinch.domains.conversation.api.v1.apps_apis import Apps
+from sinch.domains.conversation.api.v1.consents_apis import Consents
 from sinch.domains.conversation.api.v1.contacts_apis import Contacts
 from sinch.domains.conversation.api.v1.conversations_apis import Conversations
 from sinch.domains.conversation.api.v1.event_destinations_apis import (
@@ -9,6 +10,7 @@ from sinch.domains.conversation.api.v1.messages_apis import Messages
 
 __all__ = [
     "Apps",
+    "Consents",
     "Contacts",
     "Conversations",
     "EventDestinations",
