@@ -88,6 +88,7 @@ jobs:
         cp sinch-sdk-mockserver/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/conversations.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/conversation/consent.feature ./tests/e2e/conversation/features/
+        cp sinch-sdk-mockserver/features/conversation/project-settings.feature ./tests/e2e/conversation/features/
         cp sinch-sdk-mockserver/features/voice-v2/* ./tests/e2e/voice/v2/features/
 
     - name: Check mockserver availability

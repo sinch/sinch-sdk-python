@@ -37,19 +37,28 @@ from sinch.domains.conversation.api.v1.internal.messages_endpoints import (
     SendMessageEndpoint,
     UpdateMessageMetadataEndpoint,
 )
+from sinch.domains.conversation.api.v1.internal.project_settings_endpoints import (
+    CreateProjectSettingsEndpoint,
+    DeleteProjectSettingsEndpoint,
+    GetProjectSettingsEndpoint,
+    UpdateProjectSettingsEndpoint,
+)
 
 __all__ = [
     "CreateContactEndpoint",
     "CreateConversationEndpoint",
+    "CreateProjectSettingsEndpoint",
     "DeleteContactEndpoint",
     "DeleteConversationEndpoint",
     "DeleteEventEndpoint",
     "DeleteMessageEndpoint",
+    "DeleteProjectSettingsEndpoint",
     "GetChannelProfileEndpoint",
     "GetContactEndpoint",
     "GetConversationEndpoint",
     "GetEventEndpoint",
     "GetMessageEndpoint",
+    "GetProjectSettingsEndpoint",
     "InjectEventEndpoint",
     "InjectMessageEndpoint",
     "ListAuditRecordsEndpoint",
@@ -68,4 +77,5 @@ __all__ = [
     "UpdateContactEndpoint",
     "UpdateConversationEndpoint",
     "UpdateMessageMetadataEndpoint",
+    "UpdateProjectSettingsEndpoint",
 ]

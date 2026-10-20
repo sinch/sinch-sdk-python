@@ -6,6 +6,7 @@ from sinch.domains.conversation.api.v1 import (
     EventDestinations,
     Events,
     Messages,
+    ProjectSettings,
 )
 from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
 
@@ -25,6 +26,7 @@ class Conversation:
         self.event_destinations = EventDestinations(self._sinch)
         self.events = Events(self._sinch)
         self.messages = Messages(self._sinch)
+        self.project_settings = ProjectSettings(self._sinch)
 
     def sinch_events(
         self, callback_secret: str = ""

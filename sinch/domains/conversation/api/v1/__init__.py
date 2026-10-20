@@ -7,6 +7,9 @@ from sinch.domains.conversation.api.v1.event_destinations_apis import (
 )
 from sinch.domains.conversation.api.v1.events_apis import Events
 from sinch.domains.conversation.api.v1.messages_apis import Messages
+from sinch.domains.conversation.api.v1.project_settings_apis import (
+    ProjectSettings,
+)
 
 __all__ = [
     "Apps",
@@ -16,4 +19,5 @@ __all__ = [
     "EventDestinations",
     "Events",
     "Messages",
+    "ProjectSettings",
 ]
