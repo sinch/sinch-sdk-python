@@ -1,6 +1,6 @@
 from sinch.core.models.internal.unions import parses_response
-import logging
 from typing import Any, Dict, Union, Optional
+from pydantic import TypeAdapter
 from sinch.domains.authentication.sinch_events.v1.authentication_validation import (
     validate_sinch_event_signature_with_nonce,
 )
@@ -12,15 +12,11 @@ from sinch.domains.authentication.sinch_events.v1.sinch_event_utils import (
     normalize_iso_timestamp,
 )
 from sinch.domains.conversation.models.v1.sinch_events import (
-    ConversationSinchEventBase,
     ConversationSinchEventPayload,
-    MessageDeliveryReceiptEvent,
-    MessageInboundEvent,
-    MessageSubmitEvent,
 )
 
 
-logger = logging.getLogger(__name__)
+_payload_adapter = TypeAdapter(ConversationSinchEventPayload)
 
 
 class ConversationSinchEvent:
@@ -87,9 +83,10 @@ class ConversationSinchEvent:
         """
         Parse the Sinch Event payload into a typed event.
 
-        Parses by key: message_delivery_report → MessageDeliveryReceiptEvent,
-        message → MessageInboundEvent, message_submit_notification → MessageSubmitEvent.
-        Normalizes accepted_time and event_time. Injects trigger on the returned event.
+        The event type is resolved from the notification key present in the payload
+        (for example message_delivery_report, contact_create_notification or
+        opt_in_notification). Normalizes accepted_time and event_time. A payload that
+        matches no known event resolves to ConversationSinchEventBase.
 
         :param event_body: JSON string, raw bytes, or dict of the event body.
         :param headers: Request headers (used to decode charset when event_body is bytes).
@@ -106,16 +103,4 @@ class ConversationSinchEvent:
             if key in event_body and isinstance(event_body[key], str):
                 event_body[key] = normalize_iso_timestamp(event_body[key])
 
-        # Type is determined by which key is present (message_delivery_report, message,
-        # message_submit_notification).
-        if "message_delivery_report" in event_body:
-            return MessageDeliveryReceiptEvent(**event_body)
-        if "message" in event_body:
-            return MessageInboundEvent(**event_body)
-        if "message_submit_notification" in event_body:
-            return MessageSubmitEvent(**event_body)
-
-        logger.warning(
-            "Conversation Sinch Event: unknown event type; returning base event."
-        )
-        return ConversationSinchEventBase(**event_body)
+        return _payload_adapter.validate_python(event_body)

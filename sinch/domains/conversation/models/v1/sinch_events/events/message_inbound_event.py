@@ -1,16 +1,14 @@
-from pydantic import Field
+"""Backwards-compatible re-export.
 
-from sinch.domains.conversation.models.v1.sinch_events.events.conversation_sinch_event_base import (
-    ConversationSinchEventBase,
+.. deprecated:: 2.4
+    Import from ``sinch.domains.conversation.models.v1.sinch_events.message.message_inbound_event``
+    (or from ``sinch.domains.conversation.models.v1.sinch_events``) instead. This module is removed in 3.0.
+"""
+
+from sinch.domains.conversation.models.v1.sinch_events.message.message_inbound_event import (
+    MessageInboundEvent,
 )
-from sinch.domains.conversation.models.v1.sinch_events.events.inbound_message import (
-    InboundMessage,
-)
 
-
-class MessageInboundEvent(ConversationSinchEventBase):
-    """Sinch Event for MESSAGE_INBOUND (inbound message from user)."""
-
-    message: InboundMessage = Field(
-        description="The inbound message payload.",
-    )
+__all__ = [
+    "MessageInboundEvent",
+]
