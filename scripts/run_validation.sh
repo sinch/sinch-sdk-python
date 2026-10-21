@@ -94,17 +94,7 @@ safe_cp "$MOCKSERVER_DIR"/features/numbers/numbers.feature ./tests/e2e/numbers/f
 safe_cp "$MOCKSERVER_DIR"/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
 safe_cp "$MOCKSERVER_DIR"/features/sms/* ./tests/e2e/sms/features/
 safe_cp "$MOCKSERVER_DIR"/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/messages.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/apps.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/contacts.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/events.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/webhooks-events.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/conversations.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/consent.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/project-settings.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/capability.feature ./tests/e2e/conversation/features/
-safe_cp "$MOCKSERVER_DIR"/features/conversation/transcoding.feature ./tests/e2e/conversation/features/
+safe_cp "$MOCKSERVER_DIR"/features/conversation/* ./tests/e2e/conversation/features/
 safe_cp "$MOCKSERVER_DIR"/features/voice-v2/* ./tests/e2e/voice/v2/features/
 
 python -m behave tests/e2e/numbers/features

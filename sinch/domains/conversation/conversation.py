@@ -11,6 +11,9 @@ from sinch.domains.conversation.api.v1 import (
     Transcoding,
 )
 from sinch.domains.conversation.sinch_events.v1 import ConversationSinchEvent
+from sinch.domains.conversation.templates.api.v2.templates_apis import (
+    Templates,
+)
 
 
 class Conversation:
@@ -31,6 +34,7 @@ class Conversation:
         self.messages = Messages(self._sinch)
         self.project_settings = ProjectSettings(self._sinch)
         self.transcoding = Transcoding(self._sinch)
+        self.templates = Templates(self._sinch)
 
     def sinch_events(
         self, callback_secret: str = ""
