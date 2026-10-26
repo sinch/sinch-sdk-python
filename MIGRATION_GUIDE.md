@@ -155,9 +155,115 @@ sinch_client.configuration.conversation_region = "eu"
 | `sinch.domains.conversation.models.message.requests.ListConversationMessagesRequest` | `list()` with individual parameters: `conversation_id`, `contact_id`, `app_id`, `page_size`, `page_token`, `view`, `messages_source`, `only_recipient_originated` (signature aligned with V1 where available) |
 | `sinch.domains.conversation.models.message.responses.ListConversationMessagesResponse` | Response type for `list()` (messages list, next_page_token) |
 
+##### Apps (create, get, list, update, delete)
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.app.requests.CreateConversationAppRequest` | `create()` with individual parameters: `channel_credentials`, `display_name` and optional `conversation_metadata_report_view`, `retention_policy`, `dispatch_retention_policy`, `processing_mode`, `smart_conversation`, `event_destination_settings`, `message_retry_settings`, `delivery_report_based_fallback`. Internally uses [`CreateAppRequest`](sinch/domains/conversation/models/v1/apps/request/create_app_request.py). |
+| `sinch.domains.conversation.models.app.responses.CreateConversationAppResponse` | [`AppCustomResponse`](sinch/domains/conversation/models/v1/apps/response/app_custom_response.py) by default (`channel_credentials` keyed by channel). Pass `raw_response=True` to get [`AppResponse`](sinch/domains/conversation/models/v1/apps/response/app_response.py) (`channel_credentials` as the list returned by the API). |
+| `sinch.domains.conversation.models.app.requests.GetConversationAppRequest` | `get(app_id, raw_response=False)` |
+| `sinch.domains.conversation.models.app.responses.GetConversationAppResponse` | [`AppCustomResponse`](sinch/domains/conversation/models/v1/apps/response/app_custom_response.py) / [`AppResponse`](sinch/domains/conversation/models/v1/apps/response/app_response.py) (see `create()`) |
+| `sinch.domains.conversation.models.app.responses.ListConversationAppsResponse` | `list(raw_response=False)` returns a `Paginator` of [`AppCustomResponse`](sinch/domains/conversation/models/v1/apps/response/app_custom_response.py) (or [`AppResponse`](sinch/domains/conversation/models/v1/apps/response/app_response.py) with `raw_response=True`) |
+| `sinch.domains.conversation.models.app.requests.UpdateConversationAppRequest` | `update(app_id, ...)` with the same optional parameters as `create()`. `update_mask` is no longer a parameter: the SDK builds it from the fields you pass. Internally uses [`UpdateAppRequest`](sinch/domains/conversation/models/v1/apps/request/update_app_request.py). |
+| `sinch.domains.conversation.models.app.responses.UpdateConversationAppResponse` | [`AppCustomResponse`](sinch/domains/conversation/models/v1/apps/response/app_custom_response.py) / [`AppResponse`](sinch/domains/conversation/models/v1/apps/response/app_response.py) (see `create()`) |
+| `sinch.domains.conversation.models.app.requests.DeleteConversationAppRequest` | `delete(app_id)` |
+| `sinch.domains.conversation.models.app.responses.DeleteConversationAppResponse` | `None` (method returns `None`) |
+
+##### Contacts (create, get, list, update, delete, merge, channel profile)
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.contact.requests.CreateConversationContactRequest` | `create()` with individual parameters: `channel_identities`, `language` and optional `channel_priority`, `display_name`, `email`, `external_id`, `metadata` |
+| `sinch.domains.conversation.models.contact.responses.CreateConversationContactResponse` | [`ContactResponse`](sinch/domains/conversation/models/v1/contacts/response/contact_response.py) |
+| `sinch.domains.conversation.models.contact.requests.GetConversationContactRequest` | `get(contact_id)` |
+| `sinch.domains.conversation.models.contact.responses.GetConversationContactResponse` | [`ContactResponse`](sinch/domains/conversation/models/v1/contacts/response/contact_response.py) |
+| `sinch.domains.conversation.models.contact.requests.ListConversationContactRequest` | `list()` with the same fields as keyword arguments: `page_size`, `page_token`, `external_id`, `channel`, `identity` |
+| `sinch.domains.conversation.models.contact.responses.ListConversationContactsResponse` | `Paginator` of [`ContactResponse`](sinch/domains/conversation/models/v1/contacts/response/contact_response.py) |
+| `sinch.domains.conversation.models.contact.requests.UpdateConversationContactRequest` | `update(contact_id, ...)` with optional `channel_identities`, `channel_priority`, `display_name`, `email`, `external_id`, `language`, `metadata`. The SDK builds `update_mask` from the fields you pass. |
+| `sinch.domains.conversation.models.contact.responses.UpdateConversationContactResponse` | [`ContactResponse`](sinch/domains/conversation/models/v1/contacts/response/contact_response.py) |
+| `sinch.domains.conversation.models.contact.requests.DeleteConversationContactRequest` | `delete(contact_id)` |
+| `sinch.domains.conversation.models.contact.responses.DeleteConversationContactResponse` | `None` (method returns `None`) |
+| `sinch.domains.conversation.models.contact.requests.MergeConversationContactsRequest` | `merge_contact(destination_id, source_id, strategy=...)` |
+| `sinch.domains.conversation.models.contact.responses.MergeConversationContactsResponse` | [`ContactResponse`](sinch/domains/conversation/models/v1/contacts/response/contact_response.py) (the preserved contact) |
+| `sinch.domains.conversation.models.contact.requests.GetConversationChannelProfileRequest` | `get_channel_profile(app_id, channel, recipient)`, or the convenience methods `get_channel_profile_by_contact_id()` and `get_channel_profile_by_channel_identity()` |
+| `sinch.domains.conversation.models.contact.responses.GetConversationChannelProfileResponse` | [`GetChannelProfileResponse`](sinch/domains/conversation/models/v1/contacts/response/get_channel_profile_response.py) |
+
+##### Conversations (create, get, list, update, delete, stop, inject)
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.conversation.requests.CreateConversationRequest` | `create()` with individual parameters: `app_id`, `contact_id` and optional `active`, `active_channel`, `metadata_json`, `correlation_id`. V1 `conversation_metadata` is now `metadata_json`. V1 `id` and the deprecated `metadata` string are not accepted (the ID is generated by the API). |
+| `sinch.domains.conversation.models.conversation.responses.SinchCreateConversationResponse` | [`ConversationResponse`](sinch/domains/conversation/models/v1/conversations/response/conversation_response.py) |
+| `sinch.domains.conversation.models.conversation.requests.GetConversationRequest` | `get(conversation_id)` |
+| `sinch.domains.conversation.models.conversation.responses.SinchGetConversationResponse` | [`ConversationResponse`](sinch/domains/conversation/models/v1/conversations/response/conversation_response.py) |
+| `sinch.domains.conversation.models.conversation.requests.ListConversationsRequest` | `list()` with the same fields as keyword arguments: `app_id`, `contact_id`, `only_active`, `page_size`, `page_token`. V2 adds optional `active_channel`. |
+| `sinch.domains.conversation.models.conversation.responses.SinchListConversationsResponse` | `Paginator` of [`ConversationResponse`](sinch/domains/conversation/models/v1/conversations/response/conversation_response.py) |
+| `sinch.domains.conversation.models.conversation.requests.UpdateConversationRequest` | `update(conversation_id, ...)` with optional `active`, `active_channel`, `app_id`, `contact_id`, `metadata_json`, `correlation_id`, `metadata_update_strategy`. The SDK builds `update_mask` from the fields you pass. |
+| `sinch.domains.conversation.models.conversation.responses.SinchUpdateConversationResponse` | [`ConversationResponse`](sinch/domains/conversation/models/v1/conversations/response/conversation_response.py) |
+| `sinch.domains.conversation.models.conversation.requests.DeleteConversationRequest` | `delete(conversation_id)` |
+| `sinch.domains.conversation.models.conversation.responses.SinchDeleteConversationResponse` | `None` (method returns `None`) |
+| `sinch.domains.conversation.models.conversation.requests.StopConversationRequest` | `stop_active(conversation_id)` |
+| `sinch.domains.conversation.models.conversation.responses.SinchStopConversationResponse` | `None` (method returns `None`) |
+| `sinch.domains.conversation.models.conversation.requests.InjectMessageToConversationRequest` | `inject_message()` with individual parameters: `conversation_id`, `contact_id`, `channel_identity`, `direction`, `accept_time`, exactly one of `app_message` or `contact_message`, and optional `sender_id`, `processing_mode`, `metadata` |
+| `sinch.domains.conversation.models.conversation.responses.SinchInjectMessageResponse` | `None` (method returns `None`) |
+
+##### Events (send)
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.event.requests.SendConversationEventRequest` | `send()` with individual parameters: `app_id`, `event`, either `contact_id` or `recipient_identities`, and optional `event_destination_target`, `channel_priority_order`, `event_metadata`, `queue`. Internally uses [`SendEventRequest`](sinch/domains/conversation/models/v1/events/internal/send_event_request.py). |
+| `sinch.domains.conversation.models.event.responses.SendConversationEventResponse` | [`SendEventResponse`](sinch/domains/conversation/models/v1/events/response/send_event_response.py) |
+
+##### Webhooks → Event Destinations
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.webhook.requests.CreateConversationWebhookRequest` | `event_destinations.create()` with individual parameters: `app_id`, `target` and optional `client_credentials`, `secret`, `target_type`, `triggers` |
+| `sinch.domains.conversation.models.webhook.responses.CreateWebhookResponse` | [`EventDestinationResponse`](sinch/domains/conversation/models/v1/event_destinations/response/event_destination_response.py) |
+| `sinch.domains.conversation.models.webhook.requests.GetConversationWebhookRequest` | `event_destinations.get(event_destination_id)` |
+| `sinch.domains.conversation.models.webhook.responses.GetWebhookResponse` | [`EventDestinationResponse`](sinch/domains/conversation/models/v1/event_destinations/response/event_destination_response.py) |
+| `sinch.domains.conversation.models.webhook.requests.ListConversationWebhookRequest` | `event_destinations.list(app_id)` |
+| `sinch.domains.conversation.models.webhook.responses.SinchListWebhooksResponse` | `Paginator` of [`EventDestinationResponse`](sinch/domains/conversation/models/v1/event_destinations/response/event_destination_response.py) |
+| `sinch.domains.conversation.models.webhook.requests.UpdateConversationWebhookRequest` | `event_destinations.update(event_destination_id, ...)` with optional `app_id`, `target`, `client_credentials`, `secret`, `target_type`, `triggers`. The SDK builds `update_mask` from the fields you pass. |
+| `sinch.domains.conversation.models.webhook.responses.UpdateWebhookResponse` | [`EventDestinationResponse`](sinch/domains/conversation/models/v1/event_destinations/response/event_destination_response.py) |
+| `sinch.domains.conversation.models.webhook.requests.DeleteConversationWebhookRequest` | `event_destinations.delete(event_destination_id)` |
+| `sinch.domains.conversation.models.webhook.responses.SinchDeleteWebhookResponse` | `None` (method returns `None`) |
+
+##### Capability (lookup)
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.capability.requests.QueryConversationCapabilityRequest` | `lookup()` with individual parameters: `app_id`, either `contact_id` or `recipient_identities`, and optional `request_id` |
+| `sinch.domains.conversation.models.capability.responses.QueryConversationCapabilityResponse` | [`LookupCapabilityResponse`](sinch/domains/conversation/models/v1/capability/response/lookup_capability_response.py) |
+
+##### Transcoding
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.transcoding.requests.TranscodeConversationMessageRequest` | `transcode_message()` with the same fields as individual parameters: `app_id`, `app_message`, `channels` and optional `from_`, `to` |
+| `sinch.domains.conversation.models.transcoding.responses.TranscodeConversationMessageResponse` | [`TranscodeMessageResponse`](sinch/domains/conversation/models/v1/transcoding/response/transcode_message_response.py) |
+
+##### Templates
+
+V1 targeted the Template Management API **v1** (`/v1/projects/{project_id}/templates`). V2 targets the Template Management API **v2** (`/v2/projects/{project_id}/templates`), whose model is different: translations are versioned and the V1 fields `channel`, `create_time` and `update_time` are no longer accepted on requests.
+
+| Old class | New class |
+|-----------|-----------|
+| `sinch.domains.conversation.models.templates.requests.CreateConversationTemplateRequest` | `create()` with individual parameters: `default_translation`, `translations` and optional `id`, `description`, `version` |
+| `sinch.domains.conversation.models.templates.responses.CreateConversationTemplateResponse` | [`TemplateResponse`](sinch/domains/conversation/templates/models/v2/response/template_response.py) |
+| `sinch.domains.conversation.models.templates.requests.GetConversationTemplateRequest` | `get(template_id)` |
+| `sinch.domains.conversation.models.templates.responses.GetConversationTemplateResponse` | [`TemplateResponse`](sinch/domains/conversation/templates/models/v2/response/template_response.py) |
+| `sinch.domains.conversation.models.templates.responses.ListConversationTemplatesResponse` | `list()` returns a `Paginator` of [`TemplateResponse`](sinch/domains/conversation/templates/models/v2/response/template_response.py) |
+| `sinch.domains.conversation.models.templates.requests.UpdateConversationTemplateRequest` | `update(template_id, version, ...)` with optional `default_translation`, `translations`, `description`. `version` (the current version of the template) is now required and `update_mask` is no longer a parameter. |
+| `sinch.domains.conversation.models.templates.responses.UpdateConversationTemplateResponse` | [`TemplateResponse`](sinch/domains/conversation/templates/models/v2/response/template_response.py) |
+| `sinch.domains.conversation.models.templates.requests.DeleteConversationTemplateRequest` | `delete(template_id)` |
+| `sinch.domains.conversation.models.templates.responses.DeleteConversationTemplateResponse` | `None` (method returns `None`) |
+
 #### Replacement APIs
 
-The Conversation domain API access remains `sinch_client.conversation`; message operations are under `sinch_client.conversation.messages`. Recipient is specified with exactly one of `contact_id` or `recipient_identities` (list of `{channel, identity}`).
+The Conversation domain API access remains `sinch_client.conversation`. Its resources are exposed as `messages`, `apps`, `contacts`, `conversations`, `events`, `event_destinations`, `capability`, `transcoding`, `templates`, `consents` and `project_settings`, plus the `sinch_events()` handler factory. V1 singular attribute names (`message`, `app`, `contact`, `conversation`, `event`, `template`, `webhook`) are replaced by the plural names above. Wherever a recipient is required (`messages.send*()`, `events.send()`, `capability.lookup()`), it is specified with exactly one of `contact_id` or `recipient_identities` (list of `{channel, identity}`) instead of the V1 `recipient` dict.
+
+All `list()` methods return a **`Paginator`**: use `.content()` for the items on the current page, `.next_page()` to load the next page, or `.iterator()` to walk every item across all pages.
 
 ##### Messages API
 
@@ -169,11 +275,105 @@ The Conversation domain API access remains `sinch_client.conversation`; message 
 | `list()` with `ListConversationMessagesRequest` | `list()` with the same fields as keyword arguments (see models table above). V2 adds optional `channel_identity`, `start_time`, `end_time`, `channel`, `direction`. Returns **`Paginator[ConversationMessageResponse]`**: use `.content()` for messages on the current page, `.next_page()` to load the next page, or `.iterator()` to walk every message across all pages. |
 | — | **New in V2:** `update()` with `message_id`, `metadata`, and optional `messages_source` |
 
+##### Apps API
+
+| Old method in `conversation.app` | New method in `conversation.apps` |
+|------------|----------------------------------------|
+| `create()` with `CreateConversationAppRequest` fields | `create()` (see models table above). V2 adds optional `smart_conversation`, `event_destination_settings`, `message_retry_settings`, `delivery_report_based_fallback`. |
+| `get(app_id)` | `get(app_id)` |
+| `list()` | `list()`, returns a `Paginator` |
+| `update()` with `UpdateConversationAppRequest` fields | `update()`, without `update_mask` |
+| `delete(app_id)` | `delete(app_id)` |
+
+##### Contacts API
+
+| Old method in `conversation.contact` | New method in `conversation.contacts` |
+|------------|----------------------------------------|
+| `create()` | `create()` |
+| `get(contact_id)` | `get(contact_id)` |
+| `list()` | `list()`, returns a `Paginator` |
+| `update()` | `update()` |
+| `delete(contact_id)` | `delete(contact_id)` |
+| `merge(source_id, destination_id, strategy)` | `merge_contact(destination_id, source_id, strategy=...)` |
+| `get_channel_profile(app_id, recipient, channel)` | `get_channel_profile(app_id, channel, recipient)`, `get_channel_profile_by_contact_id(app_id, channel, contact_id)` or `get_channel_profile_by_channel_identity(app_id, channel, recipient_identities)` |
+| — | **New in V2:** `list_identity_conflicts()`, returns a `Paginator` of [`ContactIdentityConflict`](sinch/domains/conversation/models/v1/contacts/response/contact_identity_conflict.py) |
+
+##### Conversations API
+
+| Old method in `conversation.conversation` | New method in `conversation.conversations` |
+|------------|----------------------------------------|
+| `create()` | `create()` (see models table above for the `metadata` / `conversation_metadata` changes) |
+| `get(conversation_id)` | `get(conversation_id)` |
+| `list()` | `list()`, returns a `Paginator` |
+| `update()` | `update()`, without `update_mask` |
+| `delete(conversation_id)` | `delete(conversation_id)` |
+| `stop(conversation_id)` | `stop_active(conversation_id)` |
+| `inject_message_to_conversation()` | `inject_message()` |
+| — | **New in V2:** `list_recent(app_id, ...)`, returns a `Paginator` of [`RecentConversationResponse`](sinch/domains/conversation/models/v1/conversations/response/recent_conversation_response.py) |
+| — | **New in V2:** `inject_event(conversation_id, app_event, accept_time, ...)`, returns [`InjectEventResponse`](sinch/domains/conversation/models/v1/conversations/response/inject_event_response.py) |
+
+##### Events API
+
+| Old method in `conversation.event` | New method in `conversation.events` |
+|------------|----------------------------------------|
+| `send(app_id, recipient, event, callback_url, ...)` | `send(app_id, event, contact_id=... or recipient_identities=..., event_destination_target=..., ...)` |
+| — | **New in V2:** `get(event_id)`, returns [`ConversationEventResponse`](sinch/domains/conversation/models/v1/events/response/conversation_event_response.py) |
+| — | **New in V2:** `list()` with `conversation_id`, `contact_id`, `page_size`, `page_token`, returns a `Paginator` of [`ConversationEventResponse`](sinch/domains/conversation/models/v1/events/response/conversation_event_response.py) |
+| — | **New in V2:** `delete(event_id)` |
+
+##### Event Destinations API
+
+| Old method in `conversation.webhook` | New method in `conversation.event_destinations` |
+|------------|----------------------------------------|
+| `create()` | `create()` |
+| `get(webhook_id)` | `get(event_destination_id)` |
+| `list(app_id)` | `list(app_id)`, returns a `Paginator` |
+| `update(webhook_id, ...)` | `update(event_destination_id, ...)`, without `update_mask` |
+| `delete(webhook_id)` | `delete(event_destination_id)` |
+
+##### Capability API
+
+| Old method in `conversation.capability` | New method in `conversation.capability` |
+|------------|----------------------------------------|
+| `query(app_id, recipient, request_id)` | `lookup(app_id, contact_id=... or recipient_identities=..., request_id=...)` |
+
+##### Transcoding API
+
+| Old method in `conversation.transcoding` | New method in `conversation.transcoding` |
+|------------|----------------------------------------|
+| `transcode_message(app_id, app_message, channels, from_, to)` | `transcode_message(app_id, app_message, channels, from_, to)` (unchanged) |
+
+##### Templates API
+
+| Old method in `conversation.template` | New method in `conversation.templates` |
+|------------|----------------------------------------|
+| `create()` | `create()` (Template Management API v2, see models table above) |
+| `get(template_id)` | `get(template_id)` |
+| `list()` | `list()`, returns a `Paginator` |
+| `update()` | `update(template_id, version, ...)` |
+| `delete(template_id)` | `delete(template_id)` |
+| — | **New in V2:** `list_translations(template_id, language_code=..., translation_version=...)`, returns a `Paginator` of [`TemplateTranslation`](sinch/domains/conversation/templates/models/v2/shared/template_translation.py) |
+
+##### Consents API (new in V2)
+
+| Old | New method in `conversation.consents` |
+|-----|----------------------------------------|
+| — | `list_identities(app_id, list_type, ...)`, returns a `Paginator` of [`ConsentIdentityResponse`](sinch/domains/conversation/models/v1/consents/response/consent_identity_response.py) |
+| — | `list_audit_records(app_id, identity)`, returns [`AuditRecordsResponse`](sinch/domains/conversation/models/v1/consents/response/audit_records_response.py) |
+
+##### Project Settings API (new in V2)
+
+| Old | New method in `conversation.project_settings` |
+|-----|----------------------------------------|
+| — | `create(contact_settings)`, `get()`, `update(contact_settings)`, `delete()`. `create()`, `get()` and `update()` return [`ProjectSettingsResponse`](sinch/domains/conversation/models/v1/project_settings/response/project_settings_response.py). |
+
 ##### Replacement APIs / attributes
 
 | Old | New |
 |-----|-----|
-| `sinch_client.conversation.webhook` (REST: create, list, get, update, delete webhooks; models under `sinch.domains.conversation.models.webhook`, e.g. `CreateConversationWebhookRequest`, `SinchListWebhooksResponse`) | **Not available in V2.** The Conversation client only exposes `messages` and `sinch_events`; More features are planned for future releases. To validate and parse inbound Sinch Events payloads, use `sinch_client.conversation.sinch_events(callback_secret)`—see **Sinch Events** below. |
+| `sinch_client.conversation.webhook` | `sinch_client.conversation.event_destinations` (see **Event Destinations API** above). To validate and parse inbound Sinch Events payloads, use `sinch_client.conversation.sinch_events(callback_secret)`. See **Sinch Events** below. |
+| `sinch_client.conversation.opt_in.register()` / `sinch_client.conversation.opt_out.register()` (models `RegisterConversationOptInRequest`, `RegisterConversationOptInResponse`, `RegisterConversationOptOutRequest`, `RegisterConversationOptOutResponse`) | **Not available in V2.** The opt-in/opt-out registration endpoints are no longer part of the Conversation API. To query consent lists use `sinch_client.conversation.consents`. `OPT_IN` / `OPT_OUT` notifications are still delivered to event destinations and parsed by `sinch_events()` as `OptInEvent` / `OptOutEvent`. |
+| `sinch.domains.conversation.models.SinchConversationRecipient` (`recipient` dict) | `contact_id` or `recipient_identities` parameters |
 
 #### Sinch Events (Event Destinations payload models and package path)
 
@@ -181,7 +381,31 @@ The Conversation domain API access remains `sinch_client.conversation`; message 
 |-----|-----|
 | — _(N/A)_ | `sinch.domains.conversation.models.v1.sinch_events` (package path for inbound payload models) |
 | — | [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) (handler: signature validation and `parse_event`) |
-| — | `ConversationSinchEventPayload`, `ConversationSinchEventBase`, and concrete event types (e.g. `MessageInboundEvent`, `MessageDeliveryReceiptEvent`, `MessageSubmitEvent`) |
+| — | `ConversationSinchEventPayload`, `ConversationSinchEventBase`, and one concrete event type per trigger (see table below) |
+
+`parse_event()` returns the concrete event type that matches the payload:
+
+| Trigger | Event type |
+|---------|------------|
+| `MESSAGE_INBOUND` | `MessageInboundEvent` |
+| `MESSAGE_INBOUND_SMART_CONVERSATION_REDACTION` | `MessageInboundSmartConversationRedactionEvent` |
+| `MESSAGE_SUBMIT` | `MessageSubmitEvent` |
+| `MESSAGE_DELIVERY` | `MessageDeliveryReceiptEvent` |
+| `EVENT_INBOUND` | `EventInboundEvent` |
+| `EVENT_DELIVERY` | `EventDeliveryReceiptEvent` |
+| `CONVERSATION_START` / `CONVERSATION_STOP` / `CONVERSATION_DELETE` | `ConversationStartEvent` / `ConversationStopEvent` / `ConversationDeleteEvent` |
+| `CONTACT_CREATE` / `CONTACT_DELETE` / `CONTACT_UPDATE` / `CONTACT_MERGE` | `ContactCreateEvent` / `ContactDeleteEvent` / `ContactUpdateEvent` / `ContactMergeEvent` |
+| `CONTACT_IDENTITIES_DUPLICATION` | `ContactIdentitiesDuplicationEvent` |
+| `CAPABILITY` | `CapabilityEvent` |
+| `OPT_IN` / `OPT_OUT` | `OptInEvent` / `OptOutEvent` |
+| `CHANNEL_EVENT` | `ChannelEvent` |
+| `RECORD_NOTIFICATION` | `RecordNotificationEvent` |
+| `SMART_CONVERSATION` | `SmartConversationsEvent` |
+| `UNSUPPORTED` | `UnsupportedSinchEvent` |
+
+All of them can be imported from `sinch.domains.conversation.models.v1.sinch_events`.
+
+> **Deprecation notice:** the modules under `sinch.domains.conversation.models.v1.sinch_events.events` (`conversation_sinch_event_base`, `conversation_sinch_event_payload`, `message_inbound_event`, `message_submit_event`, `message_submit_notification`, `inbound_message`, `message_delivery_receipt_event`, `message_delivery_report` and `delivery_status_type`) are kept as re-exports of their new locations and will be removed in 3.0. Import these classes from `sinch.domains.conversation.models.v1.sinch_events` instead.
 
 To obtain a Conversation Sinch Events handler: `sinch_client.conversation.sinch_events(callback_secret)` returns a [`ConversationSinchEvent`](sinch/domains/conversation/sinch_events/v1/conversation_sinch_event.py) instance; `handler.parse_event(request_body)` returns a `ConversationSinchEventPayload`.
 
@@ -197,9 +421,11 @@ event = handler.parse_event(request_body)
 |---|-----|-----|
 | **Messages (`send`)** | `sinch.domains.conversation.models.message.requests.SendConversationMessageRequest` field `callback_url` | [`SendMessageRequest`](sinch/domains/conversation/models/v1/messages/internal/request/send_message_request.py) field `event_destination_target` |
 | **Messages (methods)** | `ConversationMessage.send(..., callback_url=...)` | `sinch_client.conversation.messages.send()`, `send_text_message()`, and other `send_*_message()` methods with `event_destination_target=...` |
-| **Send event** | `sinch.domains.conversation.models.event.requests.SendConversationEventRequest` field `callback_url` | `event_destination_target` on the V2 send-event request model when that API is exposed |
+| **Send event** | `sinch.domains.conversation.models.event.requests.SendConversationEventRequest` field `callback_url` | [`SendEventRequest`](sinch/domains/conversation/models/v1/events/internal/send_event_request.py) field `event_destination_target` |
+| **Events (methods)** | `ConversationEvent.send(..., callback_url=...)` | `sinch_client.conversation.events.send(..., event_destination_target=...)` |
+| **Apps** | — _(not exposed in V1)_ | `apps.create()` / `apps.update()` parameter `event_destination_settings` ([`EventDestinationSettings`](sinch/domains/conversation/models/v1/apps/shared/event_destination_settings.py), field `secret_for_overridden_target`) |
 
-The Conversation HTTP API still expects the JSON field **`callback_url`**. In V2, use the Python parameter / model field `event_destination_target`; it is serialized as `callback_url` on the wire (same pattern as other domains, e.g. SMS).
+The Conversation HTTP API still expects the JSON fields **`callback_url`**, **`callback_settings`** and **`secret_for_overridden_callback_urls`**. In V2, use the Python parameters / model fields `event_destination_target`, `event_destination_settings` and `secret_for_overridden_target`; they are serialized with the original names on the wire (same pattern as other domains, e.g. SMS).
 
 ---
 
