@@ -3,6 +3,7 @@ import pytest
 from unittest.mock import Mock
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
+from sinch.core.clients.transport_settings import TransportSettings
 from sinch.core.enums import HTTPAuthentication, RetryPolicy
 from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.models.http_request import HttpRequest
@@ -93,7 +94,14 @@ def mock_sinch():
     sinch.configuration.sms_api_token = "test_sms_token"
     sinch.configuration.service_plan_id = "test_service_plan"
     sinch.configuration.retry_manager = RetryManager(RetryConfiguration())
+    sinch.configuration.transport_settings = TransportSettings()
     return sinch
+
+
+@pytest.fixture
+def sinch_auth_disabled(mock_sinch):
+    mock_sinch.configuration.transport_settings = TransportSettings(use_sinch_auth=False)
+    return mock_sinch
 
 
 @pytest.fixture
@@ -157,6 +165,40 @@ class TestHTTPTransport:
             transport.authenticate(endpoint, base_request)
 
 
+class TestAuthenticateWithSinchAuthDisabled:
+    def test_oauth_does_not_add_authorization_header(self, sinch_auth_disabled, base_request):
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
+
+        result = transport.authenticate(endpoint, base_request)
+
+        assert "Authorization" not in result.headers
+
+    def test_oauth_does_not_fetch_a_token(self, sinch_auth_disabled, base_request):
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
+
+        transport.authenticate(endpoint, base_request)
+
+        sinch_auth_disabled.authentication.get_auth_token.assert_not_called()
+
+    def test_oauth_does_not_require_key_id_and_key_secret(self, sinch_auth_disabled, base_request):
+        sinch_auth_disabled.configuration.key_id = None
+        sinch_auth_disabled.configuration.key_secret = None
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
+
+        transport.authenticate(endpoint, base_request)
+
+    def test_oauth_requires_project_id(self, sinch_auth_disabled, base_request):
+        sinch_auth_disabled.configuration.project_id = None
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
+
+        with pytest.raises(ValidationException, match="project_id is required by this API"):
+            transport.authenticate(endpoint, base_request)
+
+
 class TestPrepareRequest:
 
     def test_merges_endpoint_headers(self, mock_sinch):
@@ -212,6 +254,24 @@ class TestSend:
 
         with pytest.raises(SinchException):
             transport.send_request(base_request)
+
+    def test_send_passes_timeout_seconds(self, mock_sinch, base_request):
+        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+
+        transport.send_request(base_request)
+
+        assert transport.http_session.request.call_args.kwargs["timeout"] == 30
+
+    def test_send_disables_timeout_when_timeout_seconds_is_zero(self, mock_sinch, base_request):
+        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=0)
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+
+        transport.send_request(base_request)
+
+        assert transport.http_session.request.call_args.kwargs["timeout"] is None
 
 
 class TestTokenRefreshRetry:
@@ -302,6 +362,18 @@ class TestTokenRefreshRetry:
         transport.http_session.request = Mock(
             return_value=_requests_response(401, body={})
         )
+        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value, error_on_4xx=True)
+
+        with pytest.raises(ValidationException, match="401"):
+            transport.request(endpoint)
+
+        assert transport.http_session.request.call_count == 1
+        token_manager.refresh_auth_token.assert_not_called()
+
+    def test_no_refresh_when_sinch_auth_disabled(self, sinch_auth_disabled):
+        token_manager = _token_manager(sinch_auth_disabled)
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        transport.http_session.request = Mock(side_effect=[self._expired_401()])
         endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value, error_on_4xx=True)
 
         with pytest.raises(ValidationException, match="401"):
