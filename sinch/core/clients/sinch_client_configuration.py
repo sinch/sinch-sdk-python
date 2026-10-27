@@ -4,6 +4,7 @@ from enum import Enum
 from logging import Logger
 from typing import Union
 
+from sinch.core.clients.transport_settings import TransportSettings
 from sinch.core.enums import ConversationRegionEnum, SmsRegionEnum, VoiceRegionEnum
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
@@ -15,6 +16,35 @@ class Configuration:
     """
     Sinch client configuration object.
 
+    :param transport: HTTP transport used to send requests.
+    :type transport: HTTPTransport
+    :param token_manager: Manager of the OAuth access token.
+    :type token_manager: TokenManager
+    :param connection_timeout: HTTP timeout in seconds, used only when ``transport_settings`` is not provided.
+
+        .. deprecated:: 2.5
+            Use ``transport_settings`` instead. Will be removed in 3.0.
+    :type connection_timeout: float
+    :param key_id: Access key ID, used for OAuth authentication.
+    :type key_id: str
+    :param key_secret: Access key secret, used for OAuth authentication.
+    :type key_secret: str
+    :param project_id: Sinch project ID.
+    :type project_id: str
+    :param logger: Logger instance to use. Defaults to the ``Sinch`` logger.
+    :type logger: Logger
+    :param logger_name: Name of the logger to use. Takes precedence over ``logger``.
+    :type logger_name: str
+    :param service_plan_id: SMS service plan ID, used with ``sms_api_token``.
+    :type service_plan_id: str
+    :param sms_api_token: SMS API token, used with ``service_plan_id``.
+    :type sms_api_token: str
+    :param sms_region: SMS API region. Required when using the SMS API.
+    :type sms_region: Union[SmsRegionEnum, str]
+    :param conversation_region: Conversation API region. Required when using the Conversation API.
+    :type conversation_region: Union[ConversationRegionEnum, str]
+    :param voice_region: Voice API region. Defaults to the global endpoint.
+    :type voice_region: Union[VoiceRegionEnum, str]
     :param transform_kwargs_casing: When
         ``True`` (default), extra fields on request/response models are
         auto-converted to the api convention ``snake_case`` or ``camelCase``, same as before 2.2.0.
@@ -24,6 +54,12 @@ class Configuration:
         .. deprecated:: 2.2
             This flag is transitional and will be removed in 3.0, when extra fields will always pass
             through unchanged.
+    :type transform_kwargs_casing: bool
+    :param retry_configuration: Retry policy applied to rate-limited (HTTP 429) responses.
+    :type retry_configuration: RetryConfiguration
+    :param transport_settings: Transport level settings. When provided, its
+        ``timeout_seconds`` replaces ``connection_timeout``.
+    :type transport_settings: TransportSettings
     """
     def __init__(
         self,
@@ -42,16 +78,19 @@ class Configuration:
         voice_region: Union[VoiceRegionEnum, str] = VoiceRegionEnum.GLOBAL,
         transform_kwargs_casing: bool = True,
         retry_configuration: RetryConfiguration = None,
+        transport_settings: TransportSettings = None,
     ):
         self.key_id = key_id
         self.key_secret = key_secret
         self.project_id = project_id
-        self.connection_timeout = connection_timeout
         self.sms_api_token = sms_api_token
         self.service_plan_id = service_plan_id
         self.transform_kwargs_casing = transform_kwargs_casing
         self.retry_configuration = retry_configuration or RetryConfiguration()
         self.retry_manager = RetryManager(self.retry_configuration)
+        self.transport_settings = transport_settings or TransportSettings(
+            timeout_seconds=0 if connection_timeout is None else connection_timeout
+        )
 
         # Determine authentication method based on provided parameters
         self._authentication_method = self._determine_authentication_method()
@@ -80,6 +119,35 @@ class Configuration:
             self.logger = logger
         else:
             self.logger = logging.getLogger("Sinch")
+
+    @property
+    def connection_timeout(self):
+        """
+        HTTP timeout in seconds.
+
+        .. deprecated:: 2.5
+            Use ``transport_settings.timeout_seconds`` instead. Will be removed in 3.0.
+        """
+        warnings.warn(
+            "Configuration.connection_timeout is deprecated and will be removed in 3.0. "
+            "Use transport_settings.timeout_seconds instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.transport_settings.timeout_seconds
+
+    @connection_timeout.setter
+    def connection_timeout(self, value):
+        warnings.warn(
+            "Configuration.connection_timeout is deprecated and will be removed in 3.0. "
+            "Use transport_settings.timeout_seconds instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self.transport_settings = TransportSettings(
+            timeout_seconds=0 if value is None else value,
+            use_sinch_auth=self.transport_settings.use_sinch_auth,
+        )
 
     @staticmethod
     def _region_value(region):
@@ -225,14 +293,16 @@ class Configuration:
         """
         Validates that sufficient authentication parameters are provided.
         Recalculates the authentication method based on current credentials before validating.
+        When ``transport_settings.use_sinch_auth`` is ``False``, project auth only requires ``project_id``.
         This should be called before making actual API requests.
         """
 
         self._authentication_method = self._determine_authentication_method()
-        
+        use_sinch_auth = self.transport_settings.use_sinch_auth
+
         # Check for incomplete SMS auth only if not using project auth
         # This prevents false positives when both service_plan_id and project_id are provided
-        has_project_auth = self.project_id and self.key_id and self.key_secret
+        has_project_auth = self.project_id and (not use_sinch_auth or (self.key_id and self.key_secret))
         if self.service_plan_id and not self.sms_api_token and not has_project_auth:
             raise ValueError(
                 "The sms_api_token is required when using service_plan_id"
@@ -243,7 +313,7 @@ class Configuration:
                 raise ValueError(
                     "The project_id is required"
                 )
-            if not self.key_id or not self.key_secret:
+            if use_sinch_auth and (not self.key_id or not self.key_secret):
                 raise ValueError(
                     "The key_id and key_secret are required"
                 )

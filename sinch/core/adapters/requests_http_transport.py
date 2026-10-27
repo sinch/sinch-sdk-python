@@ -30,7 +30,7 @@ class HTTPTransportRequests(HTTPTransport):
             data=request_data.request_body,
             auth=request_data.auth,
             headers=request_data.headers,
-            timeout=self.sinch.configuration.connection_timeout,
+            timeout=self.sinch.configuration.transport_settings.timeout_seconds or None,
             params=request_data.query_params
         )
 

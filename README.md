@@ -17,6 +17,8 @@ To use Sinch services, you'll need a Sinch account and access keys. You can sign
 - [Supported APIs](#supported-apis)
 - [Getting started](#getting-started)
 - [Logging](#logging)
+- [Retry configuration](#retry-configuration)
+- [Transport settings](#transport-settings)
 - [Handling Exceptions](#handling-exceptions)
 - [Custom HTTP client implementation](#custom-http-client-implementation)
 - [Third-party dependencies](#third-party-dependencies)
@@ -335,6 +337,41 @@ sinch = SinchClient(
 )
 ```
 
+## Transport settings
+
+`SinchClient` accepts optional transport-level settings through `TransportSettings`, passed as `transport_settings`. They apply to product API calls and to OAuth token fetches.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `timeout_seconds` | `int` or `float` | `60` | HTTP I/O timeout in seconds, applied to both connect and read. Pass `0` to disable the timeout. Negative values are rejected. |
+| `use_sinch_auth` | `bool` | `True` | When `True`, OAuth-capable APIs fetch a Sinch access token. Set `False` to disable Sinch authentication: no token is fetched and no `Authorization` header is added. Only `project_id` is then required. Has no effect with SMS `service_plan_id` and `sms_api_token` credentials. |
+
+> **Note:** When `transport_settings` is not provided, the SDK keeps its previous timeout of 10 seconds. When provided, its `timeout_seconds` (default `60`) applies. `Configuration.connection_timeout` is deprecated in favor of `transport_settings.timeout_seconds` and will be removed in 3.0.
+
+### Timeout
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.transport_settings import TransportSettings
+
+sinch = SinchClient(
+    ...,
+    transport_settings=TransportSettings(timeout_seconds=30),
+)
+```
+
+### Disable Sinch OAuth
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.transport_settings import TransportSettings
+
+sinch = SinchClient(
+    ...,
+    transport_settings=TransportSettings(use_sinch_auth=False),
+)
+```
+
 ## Handling exceptions
 
 Each API throws a custom, API related exception for an unsuccessful backed call.
@@ -391,7 +428,7 @@ class MyHTTPImplementation(HTTPTransport):
             auth=request_data.auth,
             headers=request_data.headers,
             params=request_data.query_params,
-            timeout=self.sinch.configuration.connection_timeout,
+            timeout=self.sinch.configuration.transport_settings.timeout_seconds or None,
         )
         response_body = self.deserialize_json_response(response)
 

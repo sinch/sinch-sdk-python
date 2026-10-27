@@ -4,6 +4,7 @@ from logging import Logger, getLogger
 import pytest
 from sinch import SinchClient
 from sinch.core.clients.sinch_client_configuration import Configuration
+from sinch.core.clients.transport_settings import TransportSettings
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.core.enums import ConversationRegionEnum, SmsRegionEnum, VoiceRegionEnum
 from sinch.core.models.internal.base_model_config import (
@@ -340,3 +341,156 @@ def test_configuration_expects_get_conversation_origin_with_region(sinch_client_
     
     assert actual_origin == expected_origin
     assert actual_origin == "https://us.conversation.api.sinch.com"
+
+
+def test_configuration_expects_default_timeout_of_10_seconds_without_transport_settings(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+    )
+
+    assert client_configuration.transport_settings.timeout_seconds == 10
+
+
+def test_configuration_expects_connection_timeout_used_without_transport_settings(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        connection_timeout=25,
+    )
+
+    assert client_configuration.transport_settings.timeout_seconds == 25
+
+
+def test_configuration_expects_transport_settings_timeout_to_replace_connection_timeout(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        connection_timeout=25,
+        transport_settings=TransportSettings(),
+    )
+
+    assert client_configuration.transport_settings.timeout_seconds == TransportSettings.DEFAULT_TIMEOUT_SECONDS
+
+
+def test_configuration_expects_use_sinch_auth_enabled_by_default(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+    )
+
+    assert client_configuration.transport_settings.use_sinch_auth is True
+
+
+def test_connection_timeout_property_expects_transport_settings_timeout(sinch_client_sync):
+    sinch_client_sync.configuration.transport_settings.timeout_seconds = 30
+
+    with pytest.warns(DeprecationWarning):
+        assert sinch_client_sync.configuration.connection_timeout == 30
+
+
+def test_set_connection_timeout_property_expects_updated_transport_settings_timeout(sinch_client_sync):
+    with pytest.warns(DeprecationWarning):
+        sinch_client_sync.configuration.connection_timeout = 5
+
+    assert sinch_client_sync.configuration.transport_settings.timeout_seconds == 5
+
+
+def test_connection_timeout_property_expects_deprecation_warning(sinch_client_sync):
+    with pytest.warns(DeprecationWarning, match="connection_timeout is deprecated"):
+        _ = sinch_client_sync.configuration.connection_timeout
+
+
+def test_set_connection_timeout_property_expects_deprecation_warning(sinch_client_sync):
+    with pytest.warns(DeprecationWarning, match="connection_timeout is deprecated"):
+        sinch_client_sync.configuration.connection_timeout = 5
+
+
+def test_set_connection_timeout_property_expects_value_error_for_negative_value(sinch_client_sync):
+    with pytest.warns(DeprecationWarning), pytest.raises(ValueError):
+        sinch_client_sync.configuration.connection_timeout = -5
+
+
+def test_set_connection_timeout_property_expects_none_to_disable_timeout(sinch_client_sync):
+    with pytest.warns(DeprecationWarning):
+        sinch_client_sync.configuration.connection_timeout = None
+
+    assert sinch_client_sync.configuration.transport_settings.timeout_seconds == 0
+
+
+def test_set_connection_timeout_property_expects_use_sinch_auth_preserved(sinch_client_sync):
+    sinch_client_sync.configuration.transport_settings = TransportSettings(use_sinch_auth=False)
+
+    with pytest.warns(DeprecationWarning):
+        sinch_client_sync.configuration.connection_timeout = 5
+
+    assert sinch_client_sync.configuration.transport_settings.use_sinch_auth is False
+
+
+def test_set_connection_timeout_property_expects_shared_transport_settings_unchanged(sinch_client_sync):
+    shared_transport_settings = TransportSettings(timeout_seconds=30)
+    sinch_client_sync.configuration.transport_settings = shared_transport_settings
+
+    with pytest.warns(DeprecationWarning):
+        sinch_client_sync.configuration.connection_timeout = 5
+
+    assert shared_transport_settings.timeout_seconds == 30
+
+
+def test_configuration_expects_none_connection_timeout_to_disable_timeout(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        connection_timeout=None,
+    )
+
+    assert client_configuration.transport_settings.timeout_seconds == 0
+
+
+def test_validate_authentication_parameters_expects_only_project_id_when_sinch_auth_disabled(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        transport_settings=TransportSettings(use_sinch_auth=False),
+    )
+
+    client_configuration.validate_authentication_parameters()
+
+
+def test_validate_authentication_parameters_expects_project_id_required_when_sinch_auth_disabled(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        transport_settings=TransportSettings(use_sinch_auth=False),
+    )
+
+    with pytest.raises(ValueError, match="The project_id is required"):
+        client_configuration.validate_authentication_parameters()
+
+
+def test_validate_authentication_parameters_expects_key_id_and_secret_required_when_sinch_auth_enabled(
+    sinch_client_sync
+):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+    )
+
+    with pytest.raises(ValueError, match="The key_id and key_secret are required"):
+        client_configuration.validate_authentication_parameters()
+
+
+def test_validate_authentication_parameters_expects_project_auth_with_service_plan_id_when_sinch_auth_disabled(
+    sinch_client_sync
+):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        service_plan_id="test_service_plan",
+        transport_settings=TransportSettings(use_sinch_auth=False),
+    )
+
+    client_configuration.validate_authentication_parameters()

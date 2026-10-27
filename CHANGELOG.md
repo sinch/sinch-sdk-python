@@ -16,6 +16,15 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.5.0 – Unreleased
+
+### SDK
+
+- **[feature]** `SinchClient` adds transport level settings via `transport_settings=TransportSettings(...)` (from `sinch.core.clients.transport_settings`): `timeout_seconds` (default `60`, `0` disables it) and `use_sinch_auth` (default `True`). With `use_sinch_auth=False`, OAuth-capable APIs fetch no Sinch access token and add no `Authorization` header, and only `project_id` is required. SMS `service_plan_id` and `sms_api_token` credentials are unaffected.
+- **[deprecation notice]** `Configuration.connection_timeout` is deprecated in favor of `transport_settings.timeout_seconds` and will be removed in 3.0. When `transport_settings` is not provided, the timeout stays at 10 seconds as before. When provided, its `timeout_seconds` applies.
+
+---
+
 ## v2.3.0 – 2026-10-14
 
 ### SDK

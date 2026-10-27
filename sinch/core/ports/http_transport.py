@@ -133,6 +133,9 @@ class HTTPTransport(ABC):
         """
         Stamps the credentials required by the endpoint's auth scheme onto the request.
 
+        When ``transport_settings.use_sinch_auth`` is ``False``, OAuth endpoints only require
+        ``project_id`` and no ``Authorization`` header is added.
+
         :param endpoint: The endpoint being called, whose HTTP_AUTHENTICATION selects the scheme.
         :type endpoint: HTTPEndpoint
         :param request_data: The request to authenticate, mutated in place.
@@ -141,7 +144,10 @@ class HTTPTransport(ABC):
         :rtype: HttpRequest
         :raises ValidationException: If the credentials required by the scheme are missing.
         """
-        if endpoint.HTTP_AUTHENTICATION in (HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value):
+        is_oauth = endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value
+        use_sinch_oauth = is_oauth and self.sinch.configuration.transport_settings.use_sinch_auth
+
+        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value or use_sinch_oauth:
             if (
                 not self.sinch.configuration.key_id
                 or not self.sinch.configuration.key_secret
@@ -155,13 +161,22 @@ class HTTPTransport(ABC):
                     is_from_server=False,
                     response=None
                 )
+        elif is_oauth and not self.sinch.configuration.project_id:
+            raise ValidationException(
+                message=(
+                    "project_id is required by this API. "
+                    "It can be obtained from Sinch portal."
+                ),
+                is_from_server=False,
+                response=None
+            )
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
             request_data.auth = (self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
         else:
             request_data.auth = None
 
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value:
+        if use_sinch_oauth:
             token = self.sinch.authentication.get_auth_token().access_token
             self._set_bearer_token(request_data, token)
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
@@ -252,10 +267,10 @@ class HTTPTransport(ABC):
 
         return endpoint.handle_response(http_response)
 
-    @staticmethod
-    def _should_refresh_token(endpoint: HTTPEndpoint, http_response: HTTPResponse) -> bool:
+    def _should_refresh_token(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> bool:
         """
-        Returns True for an OAuth endpoint that got a 401 with an expired-token header.
+        Returns True for an OAuth endpoint that got a 401 with an expired-token header,
+        unless Sinch authentication is disabled through ``transport_settings.use_sinch_auth``.
 
         :param endpoint: The endpoint that was called.
         :type endpoint: HTTPEndpoint
@@ -265,6 +280,8 @@ class HTTPTransport(ABC):
         :rtype: bool
         """
         if endpoint.HTTP_AUTHENTICATION != HTTPAuthentication.OAUTH.value:
+            return False
+        if not self.sinch.configuration.transport_settings.use_sinch_auth:
             return False
         if http_response.status_code != 401:
             return False
