@@ -16,6 +16,10 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.5.0 – unreleased
+
+
+---
 ## v2.4.0 – 2026-10-28
 
 ### Conversation
