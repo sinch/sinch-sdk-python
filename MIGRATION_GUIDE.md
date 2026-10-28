@@ -1,6 +1,6 @@
 # Sinch Python SDK Migration Guide
 
-## 2.1.0
+## 2.4.0
 
 This release removes legacy SDK support.
 
