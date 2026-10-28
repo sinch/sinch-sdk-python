@@ -1,16 +1,14 @@
-from pydantic import Field
+"""Backwards-compatible re-export.
 
-from sinch.domains.conversation.models.v1.sinch_events.events.conversation_sinch_event_base import (
-    ConversationSinchEventBase,
+.. deprecated:: 2.4
+    Import from ``sinch.domains.conversation.models.v1.sinch_events.message.message_submit_event``
+    (or from ``sinch.domains.conversation.models.v1.sinch_events``) instead. This module is removed in 3.0.
+"""
+
+from sinch.domains.conversation.models.v1.sinch_events.message.message_submit_event import (
+    MessageSubmitEvent,
 )
-from sinch.domains.conversation.models.v1.sinch_events.events.message_submit_notification import (
-    MessageSubmitNotification,
-)
 
-
-class MessageSubmitEvent(ConversationSinchEventBase):
-    """Sinch Event for MESSAGE_SUBMIT (message submission notification)."""
-
-    message_submit_notification: MessageSubmitNotification = Field(
-        description="The message submit notification payload.",
-    )
+__all__ = [
+    "MessageSubmitEvent",
+]

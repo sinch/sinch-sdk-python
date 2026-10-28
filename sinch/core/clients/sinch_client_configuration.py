@@ -62,6 +62,7 @@ class Configuration:
         self._voice_domain = "https://{}voice.api.sinch.com"
         self._conversation_region = conversation_region
         self._conversation_domain = "https://{}.conversation.api.sinch.com"
+        self._conversation_templates_domain = "https://{}.template.api.sinch.com"
         self._sms_region = sms_region
         self._sms_region_with_service_plan_id = sms_region
         self._sms_domain = "https://zt.{}.sms.api.sinch.com"
@@ -71,6 +72,7 @@ class Configuration:
 
         self._set_voice_origin()
         self._set_conversation_origin()
+        self._set_conversation_templates_origin()
         self._set_sms_origin()
         self._set_sms_origin_with_service_plan_id()
 
@@ -177,9 +179,18 @@ class Configuration:
         else:
             self.conversation_origin = None
 
+    def _set_conversation_templates_origin(self):
+        if self._conversation_region:
+            self.conversation_templates_origin = self._conversation_templates_domain.format(
+                self._region_value(self._conversation_region)
+            )
+        else:
+            self.conversation_templates_origin = None
+
     def _set_conversation_region(self, region):
         self._conversation_region = region
         self._set_conversation_origin()
+        self._set_conversation_templates_origin()
 
     def _get_conversation_region(self):
         return self._conversation_region
@@ -293,3 +304,20 @@ class Configuration:
             )
 
         return self.conversation_origin
+
+    def get_conversation_templates_origin(self):
+        """
+        Returns the conversation Template Management origin.
+
+        Raises:
+            ValueError: If the conversation templates origin is None (conversation_region not set)
+        """
+        if self.conversation_templates_origin is None:
+            raise ValueError(
+                "Conversation region is required. "
+                "Provide conversation_region when initializing SinchClient "
+                "Example: SinchClient(project_id='...', key_id='...', key_secret='...', conversation_region='eu')"
+                " or set it via sinch_client.configuration.conversation_region. "
+            )
+
+        return self.conversation_templates_origin

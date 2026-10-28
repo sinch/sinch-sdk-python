@@ -16,6 +16,24 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
+## v2.4.0 – 2026-10-28
+
+### Conversation
+
+- **[feature]** Conversation Event Destinations API (`sinch.conversation.event_destinations`): `create`, `get`, `list`, `update`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Events API (`sinch.conversation.events`): `send`, `get`, `list`, and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Conversations API (`sinch.conversation.conversations`): `create`, `delete`, `get`, `inject_event`, `inject_message`, `list`, `list_recent`, `stop_active` and `update` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Consents API (`sinch.conversation.consents`): `list_identities` and `list_audit_records` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Project Settings API (`sinch.conversation.project_settings`): `create`, `get`, `update` and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Capability API (`sinch.conversation.capability`): `lookup` operation, with full model, endpoint and unit/e2e test coverage.
+- **[feature]** Conversation Transcoding API (`sinch.conversation.transcoding`): `transcode_message` operation, with full model, endpoint and unit/e2e test coverage.
+- **[feature]** Conversation Templates API (`sinch.conversation.templates`): `create`, `get`, `list`, `list_translations`, `update` and `delete` operations, with full model, endpoints and unit/e2e test coverage.
+- **[feature]** Conversation Sinch Events: `ConversationSinchEvent.parse_event` parses the remaining events of the API (`MESSAGE_INBOUND_SMART_CONVERSATION_REDACTION`, `EVENT_INBOUND`, `EVENT_DELIVERY`, `CONVERSATION_START`, `CONVERSATION_STOP`, `CONVERSATION_DELETE`, `CONTACT_CREATE`, `CONTACT_DELETE`, `CONTACT_UPDATE`, `CONTACT_MERGE`, `CONTACT_IDENTITIES_DUPLICATION`, `CAPABILITY`, `OPT_IN`, `OPT_OUT`, `CHANNEL_EVENT`, `RECORD_NOTIFICATION`, `UNSUPPORTED` and `SMART_CONVERSATION`), with full model and unit/e2e test coverage.
+- **[fix]** `MessageDeliveryReceiptEvent.message_delivery_report` is now required, like the notification field of every other event, so `ConversationSinchEvent.parse_event` resolves a payload with no known notification to `ConversationSinchEventBase` instead of `MessageDeliveryReceiptEvent`.
+- **[deprecation notice]** The modules under `sinch.domains.conversation.models.v1.sinch_events.events` (`conversation_sinch_event_base`, `conversation_sinch_event_payload`, `message_inbound_event`, `message_submit_event`, `message_submit_notification`, `inbound_message`, `message_delivery_receipt_event`, `message_delivery_report` and `delivery_status_type`) are kept as re-exports of their new locations and will be removed in 3.0.
+
+---
+
 ## v2.3.0 – 2026-10-14
 
 ### SDK

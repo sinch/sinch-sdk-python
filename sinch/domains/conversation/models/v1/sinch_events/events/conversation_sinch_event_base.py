@@ -1,33 +1,14 @@
-from datetime import datetime
-from typing import Optional
+"""Backwards-compatible re-export.
 
-from pydantic import Field, StrictStr
+.. deprecated:: 2.4
+    Import from ``sinch.domains.conversation.models.v1.sinch_events.conversation_sinch_event_base``
+    (or from ``sinch.domains.conversation.models.v1.sinch_events``) instead. This module is removed in 3.0.
+"""
 
-from sinch.domains.conversation.sinch_events.v1.internal import SinchEvent
+from sinch.domains.conversation.models.v1.sinch_events.conversation_sinch_event_base import (
+    ConversationSinchEventBase,
+)
 
-
-class ConversationSinchEventBase(SinchEvent):
-    """Base fields present on every Conversation API Sinch Event payload."""
-
-    app_id: StrictStr = Field(
-        description="Id of the subscribed app.",
-    )
-    project_id: StrictStr = Field(
-        description="The project ID of the app which has subscribed for the callback.",
-    )
-    accepted_time: Optional[datetime] = Field(
-        default=None,
-        description="Timestamp when the channel callback was accepted by the Conversation API.",
-    )
-    event_time: Optional[datetime] = Field(
-        default=None,
-        description="Timestamp of the event as provided by the underlying channels.",
-    )
-    message_metadata: Optional[StrictStr] = Field(
-        default=None,
-        description="Context-dependent metadata.",
-    )
-    correlation_id: Optional[StrictStr] = Field(
-        default=None,
-        description="Value from correlation_id of the send message request.",
-    )
+__all__ = [
+    "ConversationSinchEventBase",
+]

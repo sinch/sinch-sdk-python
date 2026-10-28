@@ -49,10 +49,10 @@ python_maximum_signature_line_length = 88
 html_theme = "sphinx_rtd_theme"
 
 html_theme_options = {
-    # Maximum depth of the navigation sidebar (-1 = unlimited)
-    "navigation_depth": -1,
-    # Keep all navigation entries expanded by default
-    "collapse_navigation": False,
+    # Maximum depth of the navigation sidebar.
+    "navigation_depth": 2,
+    # Only expand the current section; the full tree is not rendered per page
+    "collapse_navigation": True,
 }
 
 # Directory with extra static files (custom CSS, etc.), relative to this conf.py

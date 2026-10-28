@@ -74,6 +74,20 @@ def test_sinch_client_expects_conversation_region_error_when_not_provided():
         sinch_client.configuration.get_conversation_origin()
 
 
+def test_sinch_client_expects_conversation_templates_region_error_when_not_provided():
+    """ Test that get_conversation_templates_origin raises ValueError when SinchClient is initialized without conversation_region """
+    sinch_client = SinchClient(
+        key_id="test_key_id",
+        key_secret="test_key_secret",
+        project_id="test_project_id"
+    )
+
+    assert sinch_client.configuration.conversation_templates_origin is None
+
+    with pytest.raises(ValueError, match="Conversation region is required"):
+        sinch_client.configuration.get_conversation_templates_origin()
+
+
 def test_sinch_client_expects_voice_region_default_global():
     """ Test that SinchClient defaults voice_region to GLOBAL when not provided """
     sinch_client = SinchClient(

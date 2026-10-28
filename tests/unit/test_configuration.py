@@ -145,6 +145,23 @@ def test_set_conversation_region_property_with_enum_expects_updated_conversation
     assert sinch_client_sync.configuration.conversation_origin == "https://eu.conversation.api.sinch.com"
 
 
+def test_configuration_expects_conversation_templates_origin_with_enum_region(sinch_client_sync):
+    """ Test that conversation_templates_origin is built from a ConversationRegionEnum member """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        conversation_region=ConversationRegionEnum.BRAZIL,
+    )
+    assert client_configuration.conversation_templates_origin == "https://br.template.api.sinch.com"
+
+
+def test_set_conversation_region_property_expects_updated_conversation_templates_origin(sinch_client_sync):
+    """ Test that setting the conversation region property updates the conversation templates origin """
+    sinch_client_sync.configuration.conversation_region = "eu"
+    assert sinch_client_sync.configuration.conversation_templates_origin == "https://eu.template.api.sinch.com"
+
+
 def test_configuration_expects_voice_v2_origin_defaults_to_global(sinch_client_sync):
     """ Test that voice_v2_origin defaults to the global endpoint when voice_region is not provided """
     client_configuration = Configuration(
@@ -340,3 +357,15 @@ def test_configuration_expects_get_conversation_origin_with_region(sinch_client_
     
     assert actual_origin == expected_origin
     assert actual_origin == "https://us.conversation.api.sinch.com"
+
+
+def test_configuration_expects_get_conversation_templates_origin_with_region(sinch_client_sync):
+    """ Test that get_conversation_templates_origin returns the correct origin when region is set """
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        project_id="test_project_id",
+        conversation_region="us"
+    )
+
+    assert client_configuration.get_conversation_templates_origin() == "https://us.template.api.sinch.com"

@@ -1,20 +1,14 @@
-from typing import Optional
+"""Backwards-compatible re-export.
 
-from pydantic import Field
+.. deprecated:: 2.4
+    Import from ``sinch.domains.conversation.models.v1.sinch_events.message.inbound_message``
+    (or from ``sinch.domains.conversation.models.v1.sinch_events``) instead. This module is removed in 3.0.
+"""
 
-from sinch.domains.conversation.sinch_events.v1.internal import SinchEvent
-from sinch.domains.conversation.models.v1.messages.shared.message_common_props import (
-    MessageCommonProps,
+from sinch.domains.conversation.models.v1.sinch_events.message.inbound_message import (
+    InboundMessage,
 )
-from sinch.domains.conversation.models.v1.messages.response.types.contact_message import (
-    ContactMessage,
-)
 
-
-class InboundMessage(MessageCommonProps, SinchEvent):
-    """Inbound message container (contact message + channel/contact info)."""
-
-    contact_message: Optional[ContactMessage] = Field(
-        default=None,
-        description="The contact (inbound) message content.",
-    )
+__all__ = [
+    "InboundMessage",
+]

@@ -1,17 +1,14 @@
-from pydantic import Field
+"""Backwards-compatible re-export.
 
-from sinch.domains.conversation.models.v1.sinch_events.events.conversation_sinch_event_base import (
-    ConversationSinchEventBase,
+.. deprecated:: 2.4
+    Import from ``sinch.domains.conversation.models.v1.sinch_events.delivery.message_delivery_receipt_event``
+    (or from ``sinch.domains.conversation.models.v1.sinch_events``) instead. This module is removed in 3.0.
+"""
+
+from sinch.domains.conversation.models.v1.sinch_events.delivery.message_delivery_receipt_event import (
+    MessageDeliveryReceiptEvent,
 )
-from sinch.domains.conversation.models.v1.sinch_events.events.message_delivery_report import (
-    MessageDeliveryReport,
-)
 
-
-class MessageDeliveryReceiptEvent(ConversationSinchEventBase):
-    """Sinch Event for MESSAGE_DELIVERY (delivery receipt for app messages)."""
-
-    message_delivery_report: MessageDeliveryReport = Field(
-        default=None,
-        description="The delivery report payload.",
-    )
+__all__ = [
+    "MessageDeliveryReceiptEvent",
+]
