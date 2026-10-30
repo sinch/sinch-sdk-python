@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.api.v1.internal.inbounds_endpoints import GetInboundEndpoint
 from sinch.domains.sms.models.v1.internal.inbound_id_request import InboundIdRequest
@@ -14,8 +14,8 @@ def request_data():
 
 @pytest.fixture
 def mock_mo_text_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "from": "+46701234567",
@@ -55,8 +55,8 @@ def test_handle_response_expects_mo_text_message(endpoint, mock_mo_text_response
 
 def test_handle_response_expects_mo_binary_message(request_data):
     """Test that the response is correctly parsed as MOBinaryMessage."""
-    mock_binary_response = HTTPResponse(
-        status_code=200,
+    mock_binary_response = json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "from": "+46701234567",
@@ -80,7 +80,7 @@ def test_handle_response_expects_mo_binary_message(request_data):
 
 def test_handle_response_expects_sms_exception_on_error(endpoint):
     """Test that SmsException is raised when server returns an error."""
-    error_response = HTTPResponse(status_code=404, body=1, headers={})
+    error_response = json_http_response(status=404, body=1, headers={})
 
     with pytest.raises(SmsException) as exc_info:
         endpoint.handle_response(error_response)

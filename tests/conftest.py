@@ -1,4 +1,5 @@
 # This file that contains fixtures that are shared across all tests in the tests directory.
+import json
 import os
 from dataclasses import dataclass
 from unittest.mock import Mock, MagicMock
@@ -7,6 +8,7 @@ import pytest
 from typing import Optional
 from sinch import SinchClient
 from sinch.core.internal.sinch_events.utils import build_string_to_sign, compute_content_md5, compute_signature
+from sinch.core.models.http_content import HttpContent
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.authentication.models.v1.authentication import OAuthToken
 from pydantic import BaseModel
@@ -30,6 +32,12 @@ def generate_service_authentication_header(method, path, headers, body, service_
     )
     signature = compute_signature(string_to_sign, service_secret)
     return f"service {service_id}:{signature}"
+
+
+def json_http_response(status, body=None, headers=None):
+    """Build an HTTPResponse whose content is ``body`` serialized as JSON."""
+    content = HttpContent(json.dumps(body).encode() if body is not None else b"")
+    return HTTPResponse(status=status, headers=headers, content=content)
 
 
 class SMSBasePaginationRequest(BaseModel):
@@ -62,8 +70,8 @@ def service_plan_id():
 
 @pytest.fixture
 def http_response():
-    return HTTPResponse(
-        status_code=404,
+    return json_http_response(
+        status=404,
         body={
             "error": {
                 "message": "Nobody expects the Spanish Inquisition!"

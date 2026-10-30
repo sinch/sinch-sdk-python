@@ -1,8 +1,7 @@
-import json
-
 from pydantic import StrictStr, TypeAdapter, conlist
 
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.models.http_body import JsonBody
 from sinch.core.models.http_response import HTTPResponse
 from sinch.domains.sms.api.v1.internal.base.sms_endpoint import SmsEndpoint
 from sinch.domains.sms.models.v1.internal.group_id_request import (
@@ -98,7 +97,7 @@ class UpdateGroupEndpoint(SmsEndpoint):
     ):
         super().__init__(project_id, request_data, response_model)
 
-    def request_body(self):
+    def build_body(self) -> JsonBody:
         """None fields are sent as explicit null, not omitted, so the API can clear a field."""
         path_params = self._get_path_params_from_url()
         request_data = self.request_data.model_dump(
@@ -106,7 +105,7 @@ class UpdateGroupEndpoint(SmsEndpoint):
             by_alias=True,
             exclude=path_params,
         )
-        return json.dumps(request_data)
+        return JsonBody(request_data)
 
 
 class DeleteGroupEndpoint(SmsEndpoint):
@@ -132,6 +131,6 @@ class ListGroupMembersEndpoint(SmsEndpoint):
         """The API returns a bare JSON array of members, not a {"members": [...]} object."""
         self._raise_for_error(response)
         members = TypeAdapter(conlist(StrictStr)).validate_python(
-            response.body
+            response.content.as_json()
         )
         return ListGroupMembersResponse(members=members)

@@ -41,7 +41,7 @@ class GetEventDestinationEndpoint(NumbersEndpoint):
                 is_from_server=e.is_from_server,
             )
         return self._process_response_model(
-            response.body, EventDestinationResponse
+            response.content.as_json(), EventDestinationResponse
         )
 
 
@@ -74,5 +74,5 @@ class UpdateEventDestinationEndpoint(NumbersEndpoint):
                 is_from_server=e.is_from_server,
             )
         return self._process_response_model(
-            response.body, EventDestinationResponse
+            response.content.as_json(), EventDestinationResponse
         )

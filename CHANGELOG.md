@@ -22,6 +22,11 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 - **[feature]** `SinchClient` adds transport level settings via `transport_settings=TransportSettings(...)` (from `sinch.core.clients.transport_settings`): `timeout_seconds` (default `60`, `0` disables it) and `use_sinch_auth` (default `True`). With `use_sinch_auth=False`, OAuth-capable APIs fetch no Sinch access token and add no `Authorization` header, and only `project_id` is required. SMS `service_plan_id` and `sms_api_token` credentials are unaffected.
 - **[deprecation notice]** `Configuration.connection_timeout` is deprecated in favor of `transport_settings.timeout_seconds` and will be removed in 3.0. When `transport_settings` is not provided, the timeout stays at 10 seconds as before. When provided, its `timeout_seconds` applies.
+- **[refactor]** `HTTPTransport` is now based on the shared Sinch SDK transport models: `HttpRequest` (`method`, `url`, `query_parameters`, `headers`, `content`) and `HTTPResponse` (`status`, `headers`, `content`, accepting the raw body as `bytes` or `HttpContent`). Query parameters and bodies are serialized by the SDK before reaching the transport (`content` is UTF-8 encoded `bytes`, and `Content-Type` is set from the body only, so requests without a body no longer send one), Basic credentials are sent in the `Authorization` header, and headers are held in a case-insensitive, multi-value `HttpHeaders`.
+- **[feature]** Response bodies are parsed on demand through `HTTPResponse.content` (`as_json()`, `as_string()`, `as_bytes()`), so the raw body stays available.
+- **[feature]** `HttpContent.as_string()` and `as_json()` decode the body with the charset declared in the `Content-Type` header of its request or response, and UTF-8 when there is none or it is unknown.
+- **[feature]** `MultipartBody` and `FilePart` (from `sinch.core.models.http_body`) build a `multipart/form-data` body in memory, with a generated boundary that is part of its `Content-Type`.
+- **[deprecation notice]** The 2.x transport names are deprecated and will be removed in 3.0: `HttpRequest.http_method`, `request_body`, `query_params` and `auth`; the `status_code` and `body` arguments of `HTTPResponse(...)`; `HTTPResponse.status_code` and `body`; and `HTTPTransport.deserialize_json_response`.
 
 ---
 

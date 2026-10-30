@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from unittest.mock import MagicMock
 import pytest
-from sinch.core.models.http_response import HTTPResponse
 from sinch.core.pagination import SMSPaginator
 from sinch.domains.sms.api.v1.batches_apis import Batches
 from sinch.domains.sms.api.v1.exceptions import SmsException

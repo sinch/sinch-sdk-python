@@ -1,11 +1,13 @@
 import json
 import pytest
 from unittest.mock import Mock
+from urllib3 import HTTPHeaderDict
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.clients.transport_settings import TransportSettings
 from sinch.core.enums import HTTPAuthentication, RetryPolicy
-from sinch.core.exceptions import ValidationException, SinchException
+from sinch.core.exceptions import SinchException, ValidationException
+from sinch.core.models.http_body import FilePart, JsonBody, MultipartBody, UrlEncodedBody
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
@@ -31,9 +33,6 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None):
         def build_url(self, sinch):
             return "api.sinch.com/test"
 
-        def request_body(self):
-            return {}
-
         def build_query_params(self):
             return {}
 
@@ -41,9 +40,9 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None):
             return build_headers() if build_headers else None
 
         def handle_response(self, response: HTTPResponse):
-            if error_on_4xx and response.status_code >= 400:
+            if error_on_4xx and response.status >= 400:
                 raise ValidationException(
-                    message=f"HTTP {response.status_code}",
+                    message=f"HTTP {response.status}",
                     is_from_server=True,
                     response=response,
                 )
@@ -53,12 +52,13 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None):
 
 
 def _requests_response(status_code, body=None, headers=None):
-    """Fake of a requests.Response, just enough for deserialize_json_response."""
+    """Fake of a requests.Response, just enough for HTTPTransportRequests.send_request."""
     resp = Mock()
     resp.status_code = status_code
     resp.content = json.dumps(body or {}).encode()
-    resp.json.return_value = body or {}
+    resp.text = resp.content.decode()
     resp.headers = headers or {}
+    resp.raw.headers = HTTPHeaderDict(headers or {})
     return resp
 
 
@@ -114,14 +114,7 @@ def no_jitter(mocker):
 
 @pytest.fixture
 def base_request():
-    return HttpRequest(
-        headers={},
-        url="https://api.sinch.com/test",
-        http_method="GET",
-        request_body={},
-        query_params={},
-        auth=()
-    )
+    return HttpRequest(method="GET", url="https://api.sinch.com/test")
 
 
 class TestHTTPTransport:
@@ -136,18 +129,26 @@ class TestHTTPTransport:
 
         if auth_type == HTTPAuthentication.BASIC.value:
             result = transport.authenticate(endpoint, base_request)
-            assert result.auth == ("test_key_id", "test_key_secret")
+            # base64("test_key_id:test_key_secret")
+            assert result.headers["Authorization"] == "Basic dGVzdF9rZXlfaWQ6dGVzdF9rZXlfc2VjcmV0"
 
         elif auth_type == HTTPAuthentication.OAUTH.value:
             mock_sinch.authentication.get_auth_token.return_value.access_token = "test_token"
             result = transport.authenticate(endpoint, base_request)
             assert result.headers["Authorization"] == "Bearer test_token"
-            assert result.headers["Content-Type"] == "application/json"
 
         elif auth_type == HTTPAuthentication.SMS_TOKEN.value:
             result = transport.authenticate(endpoint, base_request)
             assert result.headers["Authorization"] == "Bearer test_sms_token"
-            assert result.headers["Content-Type"] == "application/json"
+
+    @pytest.mark.parametrize("auth_type", [HTTPAuthentication.OAUTH.value, HTTPAuthentication.SMS_TOKEN.value])
+    def test_bearer_auth_does_not_set_content_type(self, mock_sinch, base_request, auth_type):
+        mock_sinch.authentication.get_auth_token.return_value.access_token = "test_token"
+        transport = HTTPTransportRequests(mock_sinch)
+
+        result = transport.authenticate(_make_mock_endpoint(auth_type), base_request)
+
+        assert "Content-Type" not in result.headers
 
     @pytest.mark.parametrize("auth_type,missing_creds", [
         (HTTPAuthentication.BASIC.value, {"key_id": None}),
@@ -221,39 +222,131 @@ class TestPrepareRequest:
 
         assert list(request_data.headers) == ["User-Agent"]
 
+    def test_serializes_query_params(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint.build_query_params = lambda: {"pageSize": 5, "types": ["MOBILE", "LOCAL"]}
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.url == "api.sinch.com/test"
+        assert request_data.query_parameters == "?pageSize=5&types=MOBILE&types=LOCAL"
+
+    def test_without_query_params_query_parameters_is_empty(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.query_parameters == ""
+
+    def test_json_body_is_encoded_with_its_content_type(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint.build_body = lambda: JsonBody({"a": 1})
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.content.as_bytes() == b'{"a": 1}'
+        assert request_data.headers["content-type"] == "application/json"
+
+    def test_dict_body_is_form_urlencoded(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint.build_body = lambda: UrlEncodedBody({"grant_type": "client_credentials"})
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.content.as_bytes() == b"grant_type=client_credentials"
+        assert request_data.headers["content-type"] == "application/x-www-form-urlencoded"
+
+    def test_multipart_body_is_encoded_with_its_boundary_in_the_content_type(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        body = MultipartBody(fields={"a": "1"}, files={"file": FilePart(b"data", "a.txt")})
+        endpoint.build_body = lambda: body
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.content.as_bytes() == body.encode()
+        assert request_data.headers["content-type"] == f"multipart/form-data; boundary={body.boundary}"
+
+    def test_empty_body_has_no_content(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.content is None
+        assert "Content-Type" not in request_data.headers
+
 
 class TestSend:
     def test_send_maps_requests_response(self, mock_sinch, base_request):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(
-            return_value=_requests_response(200, body={"x": 1})
+            return_value=_requests_response(200, body={"x": 1}, headers={"X-Trace": "abc"})
         )
 
         result = transport.send_request(base_request)
 
         assert isinstance(result, HTTPResponse)
-        assert result.status_code == 200
-        assert result.body == {"x": 1}
+        assert result.status == 200
+        assert result.headers["x-trace"] == "abc"
+        assert result.content.as_json() == {"x": 1}
 
-    def test_send_empty_body_returns_empty_dict(self, mock_sinch, base_request):
+    def test_send_keeps_repeated_response_headers(self, mock_sinch, base_request):
+        transport = HTTPTransportRequests(mock_sinch)
+        raw_headers = HTTPHeaderDict()
+        raw_headers.add("Set-Cookie", "a=1")
+        raw_headers.add("Set-Cookie", "b=2")
+        response = _requests_response(200, headers={"Set-Cookie": "a=1, b=2"})
+        response.raw.headers = raw_headers
+        transport.http_session.request = Mock(return_value=response)
+
+        result = transport.send_request(base_request)
+
+        assert result.headers.get_all("set-cookie") == ["a=1", "b=2"]
+
+    def test_send_keeps_the_raw_body(self, mock_sinch, base_request):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(
-            return_value=Mock(status_code=204, content=b"", headers={})
+            return_value=Mock(
+                status_code=200, content=b"not json", text="not json", headers={}, raw=Mock(headers=HTTPHeaderDict())
+            )
         )
 
         result = transport.send_request(base_request)
 
-        assert result.status_code == 204
-        assert result.body == {}
+        assert result.content.as_bytes() == b"not json"
 
-    def test_send_raises_on_invalid_json(self, mock_sinch, base_request):
+    def test_send_appends_query_parameters_to_url(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
-        bad_response = Mock(status_code=200, content=b"not json", headers={})
-        bad_response.json.side_effect = ValueError("bad json")
-        transport.http_session.request = Mock(return_value=bad_response)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+        request = HttpRequest(method="GET", url="https://api.sinch.com/test", query_parameters="?a=1&b=2")
 
-        with pytest.raises(SinchException):
-            transport.send_request(base_request)
+        transport.send_request(request)
+
+        kwargs = transport.http_session.request.call_args.kwargs
+        assert kwargs["url"] == "https://api.sinch.com/test?a=1&b=2"
+        assert "params" not in kwargs
+
+    def test_send_passes_content_as_data(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+        request = HttpRequest(method="POST", url="https://api.sinch.com/test", content=b'{"a": 1}')
+
+        transport.send_request(request)
+
+        assert transport.http_session.request.call_args.kwargs["data"] == b'{"a": 1}'
+
+    def test_send_does_not_pass_auth(self, mock_sinch, base_request):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+
+        transport.send_request(base_request)
+
+        assert "auth" not in transport.http_session.request.call_args.kwargs
 
     def test_send_passes_timeout_seconds(self, mock_sinch, base_request):
         mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
@@ -272,6 +365,21 @@ class TestSend:
         transport.send_request(base_request)
 
         assert transport.http_session.request.call_args.kwargs["timeout"] is None
+
+
+class TestHandleResponse:
+    def test_unparsable_body_raises_sinch_exception_with_the_response(self, mock_sinch, mocker):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint.handle_response = lambda response: response.content.as_json()
+        mocker.patch.object(transport, "send_request", return_value=HTTPResponse(502, {}, b"<html>Bad Gateway</html>"))
+
+        with pytest.raises(SinchException, match="Error while parsing json response") as exc_info:
+            transport.request(endpoint)
+
+        assert exc_info.value.response_status_code == 502
+        assert exc_info.value.http_response.content.as_string() == "<html>Bad Gateway</html>"
+        assert isinstance(exc_info.value.__cause__, json.JSONDecodeError)
 
 
 class TestTokenRefreshRetry:
@@ -302,7 +410,7 @@ class TestTokenRefreshRetry:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 200
+        assert result.status == 200
         assert transport.http_session.request.call_count == 2
         token_manager.refresh_auth_token.assert_called_once_with("old")
 
@@ -352,7 +460,7 @@ class TestTokenRefreshRetry:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 200
+        assert result.status == 200
         assert transport.http_session.request.call_count == 1
         token_manager.refresh_auth_token.assert_not_called()
 
@@ -406,7 +514,7 @@ class TestRetryWithBackoff:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 200
+        assert result.status == 200
         assert transport.http_session.request.call_count == 3
         assert no_sleep.call_count == 2
 
@@ -418,7 +526,7 @@ class TestRetryWithBackoff:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 429
+        assert result.status == 429
         assert transport.http_session.request.call_count == max_retries + 1
         assert no_sleep.call_count == max_retries
 
@@ -429,7 +537,7 @@ class TestRetryWithBackoff:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 200
+        assert result.status == 200
         assert transport.http_session.request.call_count == 1
         no_sleep.assert_not_called()
 
@@ -440,7 +548,7 @@ class TestRetryWithBackoff:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 400
+        assert result.status == 400
         assert transport.http_session.request.call_count == 1
         no_sleep.assert_not_called()
 
@@ -487,72 +595,6 @@ class TestRetryWithBackoff:
 
         result = transport.request(endpoint)
 
-        assert result.status_code == 429
+        assert result.status == 429
         assert transport.http_session.request.call_count == 1
         no_sleep.assert_not_called()
-
-
-class _LegacyTransport(HTTPTransport):
-    """A pre-2.1 transport that overrides the deprecated ``send(endpoint)`` hook."""
-
-    def __init__(self, sinch, responses):
-        super().__init__(sinch)
-        self._responses = list(responses)
-        self.send_calls = 0
-
-    def send(self, endpoint: HTTPEndpoint) -> HTTPResponse:
-        self.send_calls += 1
-        return self._responses.pop(0)
-
-
-class _NoHookTransport(HTTPTransport):
-    """A transport that implements neither ``send`` nor ``send_request``."""
-    pass
-
-
-class TestLegacySend:
-    """Tests for the deprecated ``send(endpoint)`` override path (_legacy_request)."""
-
-    @staticmethod
-    def _expired_401():
-        return HTTPResponse(
-            status_code=401,
-            headers={"www-authenticate": 'Bearer error="expired"'},
-            body={"error": "token expired"},
-        )
-
-    @staticmethod
-    def _ok_200():
-        return HTTPResponse(status_code=200, headers={}, body={"ok": True})
-
-    def test_legacy_send_emits_deprecation_warning(self, mock_sinch):
-        with pytest.warns(DeprecationWarning, match="send"):
-            _LegacyTransport(mock_sinch, [self._ok_200()])
-
-    def test_legacy_request_retries_on_expired_token(self, mock_sinch):
-        token_manager = Mock()
-        token_manager.token = OAuthToken(
-            access_token="old", expires_in=3599, scope="", token_type="bearer"
-        )
-        token_manager.refresh_auth_token.return_value = OAuthToken(
-            access_token="new", expires_in=3599, scope="", token_type="bearer"
-        )
-        mock_sinch.configuration.token_manager = token_manager
-
-        with pytest.warns(DeprecationWarning):
-            transport = _LegacyTransport(mock_sinch, [self._expired_401(), self._ok_200()])
-        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
-
-        result = transport.request(endpoint)
-
-        assert result.status_code == 200
-
-        assert transport.send_calls == 2
-        token_manager.refresh_auth_token.assert_called_once_with("old")
-
-    def test_request_raises_when_send_request_not_implemented(self, mock_sinch):
-        transport = _NoHookTransport(mock_sinch)
-        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
-
-        with pytest.raises(NotImplementedError, match="send_request"):
-            transport.request(endpoint)

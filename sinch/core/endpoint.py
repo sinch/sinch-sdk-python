@@ -1,10 +1,10 @@
-import json
 import re
 from abc import ABC, abstractmethod
 from typing import Any, Optional, Type, Union
 
 from pydantic import BaseModel, TypeAdapter
 
+from sinch.core.models.http_body import HttpBody, JsonBody, UrlEncodedBody
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.models.internal.unions import parses_response
 from sinch.core.models.internal.utils import query_params_to_comma_joined_lists
@@ -41,13 +41,23 @@ class HTTPEndpoint(ABC):
         """Builds the request-specific headers sent with the request."""
         return None
 
+    def build_body(self) -> Optional[HttpBody]:
+        """Builds the request body sent with the request, or None if the request has no body."""
+        return None
+
     def request_body(self) -> Optional[Union[str, dict]]:
         """
-        Builds the request body sent with the request.
+        The request body as returned in 2.x: a JSON string, or a dict for a form body.
 
-        Mirrors what `requests`' `data=` accepts: a `str` is sent as-is, a `dict` is form-urlencoded.
+        .. deprecated:: 2.5
+            Use :meth:`build_body` instead; this method will be removed in 3.0.
         """
-        return None
+        body = self.build_body()
+        if body is None:
+            return None
+        if isinstance(body, UrlEncodedBody):
+            return dict(body.fields)
+        return body.encode().decode("utf-8")
 
     @abstractmethod
     def build_url(self, sinch) -> str:
@@ -168,10 +178,10 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
             by_alias=True, exclude_none=True, exclude=exclude, mode="json"
         )
 
-    def request_body(self) -> Optional[str]:
-        """Builds the request body, serialized as a JSON string."""
-        body = self._build_body_data()
-        return json.dumps(body) if body else None
+    def build_body(self) -> Optional[JsonBody]:
+        """Builds the JSON request body, or None if there are no body fields."""
+        data = self._build_body_data()
+        return JsonBody(data) if data else None
 
     @parses_response
     def _process_response_model(
@@ -192,7 +202,8 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
         self._raise_for_error(response)
         if self.response_model is None:
             return None
-        return self._process_response_model(response.body, self.response_model)
+        body = response.content.as_json()
+        return self._process_response_model(body if body is not None else {}, self.response_model)
 
 
 class _StandardPaginatedLinkEndpoint:

@@ -1,13 +1,18 @@
+import json
 import warnings
 from abc import ABC
 from platform import python_version
-from typing import Optional
+from typing import Any, Optional
 
-from requests import Response
 from sinch.core.endpoint import HTTPEndpoint
+from sinch.core.models.http_headers import HttpHeaders
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
+from sinch.core.models.internal.utils import (
+    basic_auth_header,
+    encode_query_parameters,
+)
 from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.enums import HTTPAuthentication
 from sinch import __version__ as sdk_version
@@ -104,7 +109,7 @@ class HTTPTransport(ABC):
                 self._set_bearer_token(request_data, new_token.access_token)
                 http_response = self._send_with_retries(endpoint, request_data)
 
-            return endpoint.handle_response(http_response)
+            return self._handle_response(endpoint, http_response)
     
 
     def _send_with_retries(
@@ -172,9 +177,9 @@ class HTTPTransport(ABC):
             )
 
         if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
-            request_data.auth = (self.sinch.configuration.key_id, self.sinch.configuration.key_secret)
-        else:
-            request_data.auth = None
+            request_data.headers["Authorization"] = basic_auth_header(
+                self.sinch.configuration.key_id, self.sinch.configuration.key_secret
+            )
 
         if use_sinch_oauth:
             token = self.sinch.authentication.get_auth_token().access_token
@@ -202,28 +207,34 @@ class HTTPTransport(ABC):
         :returns: The prepared request.
         :rtype: HttpRequest
         """
-        url_query_params = endpoint.build_query_params()
+        headers = HttpHeaders({
+            "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
+                          f" {self.__class__.__name__};)",
+            **(endpoint.build_headers() or {}),
+        })
+        body = endpoint.build_body()
+        if body is not None:
+            headers["Content-Type"] = body.content_type
 
         return HttpRequest(
-            headers={
-                "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
-                              f" {self.__class__.__name__};)",
-                **(endpoint.build_headers() or {}),
-            },
+            method=endpoint.HTTP_METHOD,
             url=endpoint.build_url(self.sinch),
-            http_method=endpoint.HTTP_METHOD,
-            request_body=endpoint.request_body(),
-            query_params=url_query_params,
-            auth=()
+            query_parameters=encode_query_parameters(endpoint.build_query_params()),
+            headers=headers,
+            content=body.encode() if body is not None else None,
         )
 
     @staticmethod
-    def deserialize_json_response(response: Response) -> dict:
+    def deserialize_json_response(response: Any) -> dict:
         """
         Parses the JSON body of a response.
 
-        :param response: The raw HTTP response.
-        :type response: Response
+        .. deprecated:: 2.5
+            Return an :class:`HTTPResponse` whose ``content`` wraps the raw body bytes instead;
+            parsing happens on demand. This helper will be removed in 3.0.
+
+        :param response: The raw HTTP response of the underlying library, exposing ``content`` and ``json()``.
+        :type response: Any
         :returns: The parsed body.
         :rtype: dict
         :raises SinchException: If the body is present but not valid JSON.
@@ -265,7 +276,29 @@ class HTTPTransport(ABC):
             self.sinch.configuration.token_manager.refresh_auth_token(used_token)
             http_response = self._send_with_retries(endpoint, request_data=None)
 
-        return endpoint.handle_response(http_response)
+        return self._handle_response(endpoint, http_response)
+
+    @staticmethod
+    def _handle_response(endpoint: HTTPEndpoint, http_response: HTTPResponse) -> Any:
+        """
+        Hands the response to the endpoint, reporting an unparsable body together with the response.
+
+        :param endpoint: The endpoint that was called.
+        :type endpoint: HTTPEndpoint
+        :param http_response: The response received.
+        :type http_response: HTTPResponse
+        :returns: The result of :meth:`HTTPEndpoint.handle_response`.
+        :rtype: Any
+        :raises SinchException: If the body is present but not valid JSON.
+        """
+        try:
+            return endpoint.handle_response(http_response)
+        except json.JSONDecodeError as err:
+            raise SinchException(
+                message=f"Error while parsing json response. {err}",
+                is_from_server=True,
+                response=http_response,
+            ) from err
 
     def _should_refresh_token(self, endpoint: HTTPEndpoint, http_response: HTTPResponse) -> bool:
         """
@@ -283,7 +316,7 @@ class HTTPTransport(ABC):
             return False
         if not self.sinch.configuration.transport_settings.use_sinch_auth:
             return False
-        if http_response.status_code != 401:
+        if http_response.status != 401:
             return False
         www_authenticate = http_response.headers.get("www-authenticate") or ""
         return "expired" in www_authenticate
@@ -311,7 +344,4 @@ class HTTPTransport(ABC):
         :param token: The bearer token.
         :type token: str
         """
-        request_data.headers.update({
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
-        })
+        request_data.headers["Authorization"] = f"Bearer {token}"

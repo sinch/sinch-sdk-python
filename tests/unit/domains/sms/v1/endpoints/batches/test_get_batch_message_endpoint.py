@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import GetBatchMessageEndpoint
 from sinch.domains.sms.models.v1.internal import BatchIdRequest
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
@@ -13,8 +13,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "to": ["+46701234567"],

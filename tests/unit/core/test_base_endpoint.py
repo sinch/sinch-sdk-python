@@ -6,7 +6,6 @@ behave under each mode), build_query_params, build_headers (identical in
 both modes) and handle_response.
 """
 
-import json
 from typing import List, Literal, Optional
 
 import pytest
@@ -14,6 +13,7 @@ from pydantic import BaseModel, Field, StrictStr
 
 from sinch.core.endpoint import BaseHTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.core.models.internal.base_model_config import BaseConfigModel
 
 
@@ -62,7 +62,7 @@ class _HeaderEndpoint(_UnsetEndpoint):
 
 
 def _body(endpoint) -> dict:
-    return json.loads(endpoint.request_body())
+    return endpoint.build_body().data
 
 
 class TestBuildUrl:
@@ -85,7 +85,7 @@ class TestRequestBody:
 
         endpoint = _UnsetEndpoint("project", PathOnlyRequest(item_id="123"))
 
-        assert endpoint.request_body() is None
+        assert endpoint.build_body() is None
 
     def test_path_and_query_fields_are_excluded_from_body(self):
         endpoint = _UnsetEndpoint(
@@ -168,7 +168,7 @@ class TestRequestBody:
 
         endpoint = _UnsetEndpoint("project", PlainRequest(item_id="123"))
 
-        assert endpoint.request_body() is None
+        assert endpoint.build_body() is None
 
 
 class TestBuildQueryParams:
@@ -224,8 +224,8 @@ class TestHandleResponse:
         endpoint = _LegacyEndpoint(
             "project", _Request(item_id="123"), response_model=_Response
         )
-        response = HTTPResponse(
-            status_code=200, body={"id": "123", "name": "My Item"}, headers={}
+        response = json_http_response(
+            status=200, body={"id": "123", "name": "My Item"}, headers={}
         )
 
         parsed = endpoint.handle_response(response)
@@ -236,7 +236,7 @@ class TestHandleResponse:
 
     def test_returns_none_when_no_response_model_declared(self):
         endpoint = _LegacyEndpoint("project", _Request(item_id="123"))
-        response = HTTPResponse(status_code=200, body={}, headers={})
+        response = json_http_response(status=200, body={}, headers={})
 
         assert endpoint.handle_response(response) is None
 
@@ -244,8 +244,8 @@ class TestHandleResponse:
         endpoint = _LegacyEndpoint(
             "project", _Request(item_id="123"), response_model=_Response
         )
-        response = HTTPResponse(
-            status_code=400, body={"error": "Invalid argument"}, headers={}
+        response = json_http_response(
+            status=400, body={"error": "Invalid argument"}, headers={}
         )
 
         with pytest.raises(_EndpointError):
@@ -255,8 +255,8 @@ class TestHandleResponse:
         endpoint = _LegacyEndpoint(
             "project", _Request(item_id="123"), response_model=_Response
         )
-        response = HTTPResponse(
-            status_code=200, body={"name": "missing required id"}, headers={}
+        response = json_http_response(
+            status=200, body={"name": "missing required id"}, headers={}
         )
 
         with pytest.raises(ValueError, match="Invalid response structure"):

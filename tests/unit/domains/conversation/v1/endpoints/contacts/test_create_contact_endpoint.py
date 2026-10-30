@@ -1,8 +1,7 @@
-import json
 
 import pytest
 
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 from sinch.domains.conversation.api.v1.internal.contacts_endpoints import (
     CreateContactEndpoint,
@@ -31,8 +30,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01W4FFL35P4NC4K35CONTACT001",
             "channel_identities": [
@@ -52,8 +51,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "error": {
                 "code": 400,
@@ -82,7 +81,7 @@ def test_build_url_expects_correct_url(
 
 def test_request_body_expects_correct_serialization(endpoint):
     """Test that every provided field is serialized into the body."""
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["channel_identities"] == [
         {"channel": "SMS", "identity": "+12015555555"}
@@ -109,7 +108,7 @@ def test_request_body_accepts_none_fields_and_exclude_unset_fields():
             email=None,
         ),
     )
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["display_name"] == "Marty McFly"
     assert body["email"] is None
@@ -143,4 +142,4 @@ def test_handle_response_expects_conversation_exception_on_error(
 
     assert str(exc_info.value) == "Invalid argument  INVALID_ARGUMENT"
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

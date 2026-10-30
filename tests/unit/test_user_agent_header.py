@@ -24,9 +24,6 @@ class DummyEndpoint(HTTPEndpoint):
     def build_query_params(self):
         return {}
 
-    def request_body(self):
-        return ""
-
     def handle_response(self, response: HTTPResponse):
         return response
 

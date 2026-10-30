@@ -1,8 +1,7 @@
 import pytest
-import json
 from sinch.domains.numbers.api.v1.internal import RentNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import RentNumberRequest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 
 
 @pytest.fixture
@@ -25,8 +24,8 @@ def mock_request_data_snake_case():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "phoneNumber": "+1234567890",
             "regionCode": "US",
@@ -48,7 +47,7 @@ def mock_response_body():
             "appId": "YOUR_Voice_appId"
         }
     }
-    return json.dumps(expected_body)
+    return expected_body
 
 
 def test_build_url_expects_correct_url(mock_sinch_client_numbers, mock_request_data):
@@ -65,7 +64,7 @@ def test_request_body_expects_correct_json(mock_request_data, mock_response_body
     Check if request body is constructed correctly based on input data.
     """
     endpoint = RentNumberEndpoint(project_id="test_project", request_data=mock_request_data)
-    request_body = endpoint.request_body()
+    request_body = endpoint.build_body().data
     assert request_body == mock_response_body
 
 
@@ -74,7 +73,7 @@ def test_request_body_snake_case_dict_expects_correct_json(mock_request_data_sna
     Check if request body is constructed correctly based on input data.
     """
     endpoint = RentNumberEndpoint(project_id="test_project", request_data=mock_request_data_snake_case)
-    request_body = endpoint.request_body()
+    request_body = endpoint.build_body().data
 
     assert request_body == mock_response_body
 

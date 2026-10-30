@@ -44,7 +44,9 @@ class RentNumberEndpoint(NumbersEndpoint):
                 response=ex.http_response,
                 is_from_server=ex.is_from_server,
             )
-        return self._process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(
+            response.content.as_json(), ActiveNumber
+        )
 
 
 class AvailableNumbersEndpoint(NumbersEndpoint):
@@ -120,4 +122,6 @@ class SearchForNumberEndpoint(NumbersEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self._process_response_model(response.body, AvailableNumber)
+        return self._process_response_model(
+            response.content.as_json(), AvailableNumber
+        )

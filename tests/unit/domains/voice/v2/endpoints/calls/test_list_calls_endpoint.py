@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.voice.api.v2.exceptions import VoiceException
 from sinch.domains.voice.api.v2.internal.calls_endpoints import (
     ListCallsEndpoint,
@@ -38,8 +38,8 @@ def endpoint(request_data):
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "calls": [
                 {
@@ -72,8 +72,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "type": "https://api.sinch.com/docs/errors/bad-request",
             "title": "Bad Request",
@@ -117,7 +117,7 @@ def test_build_query_params_expects_none_fields_excluded():
 
 def test_request_body_expects_no_body(endpoint):
     """Test that the dumped body is empty since every field is a query param."""
-    assert endpoint.request_body() is None
+    assert endpoint.build_body() is None
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
@@ -158,4 +158,4 @@ def test_handle_response_expects_voice_exception_on_error(
         "Bad Request: The request body is invalid or malformed."
     )
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

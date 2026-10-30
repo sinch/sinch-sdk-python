@@ -398,7 +398,14 @@ By default, the HTTP implementation uses the `requests` library.
 
 To use a custom HTTP client, assign your transport to the client's configuration after initialization.
 
-Custom transports must extend `HTTPTransport` and implement the `send` method. The base class provides `prepare_request` and `authenticate` helpers, and handles OAuth token refresh automatically.
+Custom transports must extend `HTTPTransport` and implement the `send_request` method. It receives an `HttpRequest` that is already prepared and authenticated, and returns an `HTTPResponse`. The base class handles OAuth token refresh and retries.
+
+`HttpRequest` exposes:
+- `method`: the HTTP method.
+- `url`: the absolute URL, without query parameters.
+- `query_parameters`: the URL-encoded query string, including the leading `?`, or `""`.
+- `headers`: an `HttpHeaders`, a case-insensitive mapping that keeps repeated headers.
+- `content`: the body as an `HttpContent`, with its `Content-Type` header already set, or `None` when there is no body. Use `content.as_bytes()` to get the raw bytes to send.
 
 The following example replaces the default `requests` backend with `httpx` and routes traffic through an authenticated proxy:
 
@@ -406,6 +413,7 @@ The following example replaces the default `requests` backend with `httpx` and r
 import httpx
 from sinch import SinchClient
 from sinch.core.ports.http_transport import HTTPTransport
+from sinch.core.models.http_headers import HttpHeaders
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 
@@ -418,24 +426,18 @@ class MyHTTPImplementation(HTTPTransport):
         )
 
     def send_request(self, request_data: HttpRequest) -> HTTPResponse:
-
-        body = request_data.request_body
         response = self.http_client.request(
-            method=request_data.http_method,
-            url=request_data.url,
-            json=body if isinstance(body, dict) else None,
-            content=body if not isinstance(body, dict) else None,
-            auth=request_data.auth,
-            headers=request_data.headers,
-            params=request_data.query_params,
+            method=request_data.method,
+            url=request_data.url + request_data.query_parameters,
+            content=request_data.content.as_bytes() if request_data.content is not None else None,
+            headers=request_data.headers.multi_items(),
             timeout=self.sinch.configuration.transport_settings.timeout_seconds or None,
         )
-        response_body = self.deserialize_json_response(response)
 
         return HTTPResponse(
-            status_code=response.status_code,
-            body=response_body,
-            headers=dict(response.headers),
+            status=response.status_code,
+            headers=HttpHeaders(response.headers.multi_items()),
+            content=response.content,
         )
 
 

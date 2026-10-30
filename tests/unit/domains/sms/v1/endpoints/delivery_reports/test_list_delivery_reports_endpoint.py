@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timezone
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import ListDeliveryReportsEndpoint
 from sinch.domains.sms.models.v1.internal import ListDeliveryReportsRequest
 from sinch.domains.sms.models.v1.response import RecipientDeliveryReport
@@ -21,8 +21,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "count": 2,
             "page": 0,
