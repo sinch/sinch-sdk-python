@@ -1,4 +1,7 @@
-import math
+from sinch.core.clients.internal.validation import (
+    validate_timeout_seconds,
+    validate_use_sinch_auth,
+)
 
 
 class TransportSettings:
@@ -7,7 +10,8 @@ class TransportSettings:
 
     :param timeout_seconds: Timeout in seconds for HTTP I/O operations. ``0`` disables it.
     :type timeout_seconds: float
-    :param use_sinch_auth: When ``True``, endpoints supporting it authenticate against the Sinch auth server.
+    :param use_sinch_auth: Whether the SDK authenticates the requests. When ``False``, the SDK adds no
+        ``Authorization`` header, whatever the authentication method, and requires no credentials.
     :type use_sinch_auth: bool
     :raises ValueError: If timeout_seconds is not a finite number or is negative, or use_sinch_auth is not a bool.
     """
@@ -20,12 +24,8 @@ class TransportSettings:
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         use_sinch_auth: bool = DEFAULT_USE_SINCH_AUTH,
     ):
-        if not isinstance(timeout_seconds, (int, float)) or not math.isfinite(timeout_seconds):
-            raise ValueError(f"TransportSettings: timeout_seconds must be a finite number, got: {timeout_seconds}")
-        if timeout_seconds < 0:
-            raise ValueError(f"TransportSettings: timeout_seconds must be zero or greater, got: {timeout_seconds}")
-        if not isinstance(use_sinch_auth, bool):
-            raise ValueError(f"TransportSettings: use_sinch_auth must be a boolean, got: {use_sinch_auth}")
+        validate_timeout_seconds(timeout_seconds)
+        validate_use_sinch_auth(use_sinch_auth)
 
         self.timeout_seconds = timeout_seconds
         self.use_sinch_auth = use_sinch_auth

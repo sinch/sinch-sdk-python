@@ -33,7 +33,7 @@ def test_user_agent_header_creation_expects_to_be_included(sinch_client_sync):
     Test that User-Agent header is created with the correct format.
 
     Expected format: sinch-sdk/{sdk_version} (Python/{python_version}; {implementation_type}; {auxiliary_flag})
-    Note: auxiliary_flag is currently always empty in the implementation.
+    Note: auxiliary_flag is empty unless the endpoint declares a USER_AGENT_TAG.
     """
     endpoint = DummyEndpoint("dummy_project_id", {})
     http_request = sinch_client_sync.configuration.transport.prepare_request(endpoint)
@@ -53,4 +53,24 @@ def test_user_agent_header_creation_expects_to_be_included(sinch_client_sync):
     assert len(components) == 3, f"Expected 3 components, got {len(components)}: {components}"
     assert components[0] == f"Python/{python_version()}", f"Expected 'Python/{python_version()}', got '{components[0]}'"
     assert components[1] == transport_class_name, f"Expected '{transport_class_name}', got '{components[1]}'"
-    assert components[2] == "", f"Auxiliary flag should be empty (not implemented yet), got '{components[2]}'"
+    assert components[2] == "", f"Auxiliary flag should be empty without a tag, got '{components[2]}'"
+
+
+def test_user_agent_tag_expects_filling_the_auxiliary_flag(sinch_client_sync):
+    endpoint = DummyEndpoint("dummy_project_id", {})
+    endpoint.USER_AGENT_TAG = "http"
+
+    http_request = sinch_client_sync.configuration.transport.prepare_request(endpoint)
+
+    assert http_request.headers["User-Agent"].endswith("; http)")
+
+
+def test_endpoint_user_agent_expects_replaced_by_the_sdk_one(sinch_client_sync):
+    endpoint = DummyEndpoint("dummy_project_id", {})
+    endpoint.build_headers = lambda: {"User-Agent": "custom"}
+
+    http_request = sinch_client_sync.configuration.transport.prepare_request(endpoint)
+
+    user_agents = http_request.headers.get_all("User-Agent")
+    assert len(user_agents) == 1
+    assert user_agents[0].startswith("sinch-sdk/")

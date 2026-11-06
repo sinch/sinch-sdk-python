@@ -1,3 +1,4 @@
+from sinch.core.clients.request_options import RequestOptions
 from sinch.core.models.http_body import UrlEncodedBody
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
@@ -10,6 +11,8 @@ class OAuthEndpoint(HTTPEndpoint):
     ENDPOINT_URL = "{origin}/oauth2/token"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.BASIC.value
+    # The token is only requested when Sinch authentication is enabled for a request
+    request_options = RequestOptions(use_sinch_auth=True)
 
     def __init__(self):
         pass

@@ -8,6 +8,7 @@ from sinch.core.enums import ConversationRegionEnum, SmsRegionEnum, VoiceRegionE
 from sinch.core.token_manager import TokenManager
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.domains.authentication import Authentication
+from sinch.domains.http import Http
 from sinch.domains.numbers import VirtualNumbers
 from sinch.domains.conversation import Conversation
 from sinch.domains.sms import SMS
@@ -99,3 +100,4 @@ class SinchClient:
         self.sms = SMS(self)
         self.number_lookup = NumberLookup(self)
         self.voice = Voice(self)
+        self.http = Http(self)

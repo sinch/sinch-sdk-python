@@ -304,16 +304,17 @@ class Configuration:
         """
         Validates that sufficient authentication parameters are provided.
         Recalculates the authentication method based on current credentials before validating.
-        When ``transport_settings.use_sinch_auth`` is ``False``, project auth only requires ``project_id``.
+        When ``transport_settings.use_sinch_auth`` is ``False``, no credentials are required.
         This should be called before making actual API requests.
         """
 
         self._authentication_method = self._determine_authentication_method()
-        use_sinch_auth = self.transport_settings.use_sinch_auth
+        if not self.transport_settings.use_sinch_auth:
+            return
 
         # Check for incomplete SMS auth only if not using project auth
         # This prevents false positives when both service_plan_id and project_id are provided
-        has_project_auth = self.project_id and (not use_sinch_auth or (self.key_id and self.key_secret))
+        has_project_auth = self.project_id and self.key_id and self.key_secret
         if self.service_plan_id and not self.sms_api_token and not has_project_auth:
             raise ValueError(
                 "The sms_api_token is required when using service_plan_id"
@@ -324,7 +325,7 @@ class Configuration:
                 raise ValueError(
                     "The project_id is required"
                 )
-            if use_sinch_auth and (not self.key_id or not self.key_secret):
+            if not self.key_id or not self.key_secret:
                 raise ValueError(
                     "The key_id and key_secret are required"
                 )

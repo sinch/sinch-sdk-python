@@ -4,15 +4,12 @@ from abc import ABC
 from platform import python_version
 from typing import Any, Optional
 
+from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.endpoint import HTTPEndpoint
-from sinch.core.models.http_headers import HttpHeaders
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.models.internal.base_model_config import transform_kwargs_casing_scope
-from sinch.core.models.internal.utils import (
-    basic_auth_header,
-    encode_query_parameters,
-)
+from sinch.core.models.internal.utils import basic_auth_header
 from sinch.core.exceptions import ValidationException, SinchException
 from sinch.core.enums import HTTPAuthentication
 from sinch import __version__ as sdk_version
@@ -116,8 +113,8 @@ class HTTPTransport(ABC):
         self, endpoint: HTTPEndpoint, request_data: Optional[HttpRequest] = None
     ) -> HTTPResponse:
         """
-        Sends a request, retrying rate-limited responses according to
-        :attr:`Configuration.retry_manager`.
+        Sends a request, retrying rate-limited responses according to the retry configuration of its
+        request options, or :attr:`Configuration.retry_manager`.
 
         :param endpoint: The endpoint being called.
         :type endpoint: HTTPEndpoint
@@ -132,14 +129,59 @@ class HTTPTransport(ABC):
         else:
             def call():
                 return self.send_request(request_data)
-        return self.sinch.configuration.retry_manager.execute(call)
+        return self._retry_manager(endpoint).execute(call)
+
+    def _retry_manager(self, endpoint: HTTPEndpoint) -> RetryManager:
+        """
+        Returns the retry manager for an endpoint: the one of its request options if they set a retry
+        configuration, the client's otherwise.
+
+        :param endpoint: The endpoint being called.
+        :type endpoint: HTTPEndpoint
+        :returns: The retry manager to use.
+        :rtype: RetryManager
+        """
+        options = endpoint.request_options
+        if options is not None and options.retry_configuration is not None:
+            return RetryManager(options.retry_configuration)
+        return self.sinch.configuration.retry_manager
+
+    def _use_sinch_auth(self, endpoint: HTTPEndpoint) -> bool:
+        """
+        Returns whether Sinch authentication applies to an endpoint: the value of its request options if they
+        set one, ``transport_settings.use_sinch_auth`` otherwise.
+
+        :param endpoint: The endpoint being called.
+        :type endpoint: HTTPEndpoint
+        :returns: Whether Sinch authentication is enabled for the request.
+        :rtype: bool
+        """
+        options = endpoint.request_options
+        if options is not None and options.use_sinch_auth is not None:
+            return options.use_sinch_auth
+        return self.sinch.configuration.transport_settings.use_sinch_auth
+
+    def _timeout_seconds(self, endpoint: HTTPEndpoint) -> float:
+        """
+        Returns the timeout for an endpoint: the one of its request options if they set one,
+        ``transport_settings.timeout_seconds`` otherwise.
+
+        :param endpoint: The endpoint being called.
+        :type endpoint: HTTPEndpoint
+        :returns: The timeout in seconds, ``0`` meaning disabled.
+        :rtype: float
+        """
+        options = endpoint.request_options
+        if options is not None and options.timeout_seconds is not None:
+            return options.timeout_seconds
+        return self.sinch.configuration.transport_settings.timeout_seconds
 
     def authenticate(self, endpoint: HTTPEndpoint, request_data: HttpRequest) -> HttpRequest:
         """
         Stamps the credentials required by the endpoint's auth scheme onto the request.
 
-        When ``transport_settings.use_sinch_auth`` is ``False``, OAuth endpoints only require
-        ``project_id`` and no ``Authorization`` header is added.
+        When Sinch authentication is disabled, whatever the scheme, no credentials are required and no
+        ``Authorization`` header is added.
 
         :param endpoint: The endpoint being called, whose HTTP_AUTHENTICATION selects the scheme.
         :type endpoint: HTTPEndpoint
@@ -149,39 +191,29 @@ class HTTPTransport(ABC):
         :rtype: HttpRequest
         :raises ValidationException: If the credentials required by the scheme are missing.
         """
-        is_oauth = endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value
-        use_sinch_oauth = is_oauth and self.sinch.configuration.transport_settings.use_sinch_auth
+        if not self._use_sinch_auth(endpoint):
+            return request_data
 
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value or use_sinch_oauth:
-            if (
-                not self.sinch.configuration.key_id
-                or not self.sinch.configuration.key_secret
-                or not self.sinch.configuration.project_id
-            ):
+        is_basic = endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value
+        is_oauth = endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.OAUTH.value
+
+        if is_basic or is_oauth:
+            if not self.sinch.configuration.key_id or not self.sinch.configuration.key_secret:
                 raise ValidationException(
                     message=(
-                        "key_id, key_secret and project_id are required by this API. "
+                        "key_id and key_secret are required by this API. "
                         "Those credentials can be obtained from Sinch portal."
                     ),
                     is_from_server=False,
                     response=None
                 )
-        elif is_oauth and not self.sinch.configuration.project_id:
-            raise ValidationException(
-                message=(
-                    "project_id is required by this API. "
-                    "It can be obtained from Sinch portal."
-                ),
-                is_from_server=False,
-                response=None
-            )
 
-        if endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.BASIC.value:
+        if is_basic:
             request_data.headers["Authorization"] = basic_auth_header(
                 self.sinch.configuration.key_id, self.sinch.configuration.key_secret
             )
 
-        if use_sinch_oauth:
+        if is_oauth:
             token = self.sinch.authentication.get_auth_token().access_token
             self._set_bearer_token(request_data, token)
         elif endpoint.HTTP_AUTHENTICATION == HTTPAuthentication.SMS_TOKEN.value:
@@ -200,29 +232,22 @@ class HTTPTransport(ABC):
 
     def prepare_request(self, endpoint: HTTPEndpoint) -> HttpRequest:
         """
-        Builds the HttpRequest for an endpoint.
+        Builds the HttpRequest for an endpoint: the one of :meth:`HTTPEndpoint.build_request`, completed with
+        the ``User-Agent`` header, which replaces any given by the endpoint, and the timeout.
 
         :param endpoint: The endpoint to build the request for.
         :type endpoint: HTTPEndpoint
         :returns: The prepared request.
         :rtype: HttpRequest
         """
-        headers = HttpHeaders({
-            "User-Agent": f"sinch-sdk/{sdk_version} (Python/{python_version()};"
-                          f" {self.__class__.__name__};)",
-            **(endpoint.build_headers() or {}),
-        })
-        body = endpoint.build_body()
-        if body is not None:
-            headers["Content-Type"] = body.content_type
-
-        return HttpRequest(
-            method=endpoint.HTTP_METHOD,
-            url=endpoint.build_url(self.sinch),
-            query_parameters=encode_query_parameters(endpoint.build_query_params()),
-            headers=headers,
-            content=body.encode() if body is not None else None,
+        request_data = endpoint.build_request(self.sinch)
+        user_agent_tag = f" {endpoint.USER_AGENT_TAG}" if endpoint.USER_AGENT_TAG else ""
+        request_data.headers["User-Agent"] = (
+            f"sinch-sdk/{sdk_version} (Python/{python_version()};"
+            f" {self.__class__.__name__};{user_agent_tag})"
         )
+        request_data.timeout_seconds = self._timeout_seconds(endpoint)
+        return request_data
 
     @staticmethod
     def deserialize_json_response(response: Any) -> dict:
@@ -314,7 +339,7 @@ class HTTPTransport(ABC):
         """
         if endpoint.HTTP_AUTHENTICATION != HTTPAuthentication.OAUTH.value:
             return False
-        if not self.sinch.configuration.transport_settings.use_sinch_auth:
+        if not self._use_sinch_auth(endpoint):
             return False
         if http_response.status != 401:
             return False

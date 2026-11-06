@@ -8,10 +8,13 @@ both modes) and handle_response.
 
 from typing import List, Literal, Optional
 
+from unittest.mock import Mock
+
 import pytest
 from pydantic import BaseModel, Field, StrictStr
 
-from sinch.core.endpoint import BaseHTTPEndpoint
+from sinch.core.endpoint import BaseHTTPEndpoint, _StandardPaginatedLinkEndpoint
+from sinch.core.exceptions import ValidationException
 from sinch.core.models.http_response import HTTPResponse
 from tests.conftest import json_http_response
 from sinch.core.models.internal.base_model_config import BaseConfigModel
@@ -73,6 +76,20 @@ class TestBuildUrl:
             endpoint.build_url(sinch=None)
             == "https://example.com/v1/test_project_id/items/123"
         )
+
+
+class TestBuildUrlProjectId:
+    def test_url_with_project_id_and_no_project_id_expects_validation_exception(self):
+        endpoint = _UnsetEndpoint(None, _Request(item_id="123"))
+
+        with pytest.raises(ValidationException, match="project_id is required by this API"):
+            endpoint.build_url(Mock())
+
+    def test_url_without_project_id_expects_no_exception(self):
+        endpoint = _UnsetEndpoint(None, _Request(item_id="123"))
+        endpoint.ENDPOINT_URL = "https://example.com/v1/items/{item_id}"
+
+        assert endpoint.build_url(Mock()) == "https://example.com/v1/items/123"
 
 
 class TestRequestBody:
@@ -261,3 +278,57 @@ class TestHandleResponse:
 
         with pytest.raises(ValueError, match="Invalid response structure"):
             endpoint.handle_response(response)
+
+
+class TestBuildRequest:
+    def test_expects_request_assembled_from_the_endpoint(self):
+        endpoint = _HeaderEndpoint(
+            "test_project_id",
+            _Request(item_id="123", name="n", limit=5, token="secret"),
+        )
+
+        request_data = endpoint.build_request(sinch=None)
+
+        assert request_data.method == "POST"
+        assert request_data.url == "https://example.com/v1/test_project_id/items/123"
+        assert request_data.query_parameters == "?limit=5"
+        assert request_data.headers["X-Token"] == "secret"
+        assert request_data.headers["Content-Type"] == "application/json"
+        assert request_data.content.as_json() == {"name": "n", "kind": "fixed"}
+
+    def test_without_body_expects_no_content_and_no_content_type(self):
+        endpoint = _UnsetEndpoint("test_project_id", _Request(item_id="123"))
+        endpoint.build_body = lambda: None
+
+        request_data = endpoint.build_request(sinch=None)
+
+        assert request_data.content is None
+        assert "Content-Type" not in request_data.headers
+
+    def test_expects_no_transport_concerns(self):
+        endpoint = _UnsetEndpoint("test_project_id", _Request(item_id="123"))
+
+        request_data = endpoint.build_request(sinch=None)
+
+        assert "User-Agent" not in request_data.headers
+        assert "Authorization" not in request_data.headers
+        assert request_data.timeout_seconds is None
+
+
+def test_request_options_expects_none_by_default():
+    endpoint = _UnsetEndpoint("test_project_id", _Request(item_id="123"))
+
+    assert endpoint.request_options is None
+
+
+def test_paginated_link_endpoint_expects_request_with_link_url():
+    endpoint = _UnsetEndpoint("test_project_id", _Request(item_id="123", limit=5))
+    wrapper = _StandardPaginatedLinkEndpoint(
+        endpoint, "https://api.sinch.com/next?page_token=abc"
+    )
+
+    request_data = wrapper.build_request(sinch=None)
+
+    assert request_data.url == "https://api.sinch.com/next?page_token=abc"
+    assert request_data.query_parameters == ""
+    assert request_data.method == "POST"

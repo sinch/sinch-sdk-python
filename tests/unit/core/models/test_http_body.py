@@ -32,6 +32,9 @@ class TestUrlEncodedBody:
     def test_list_value_is_a_repeated_field(self):
         assert UrlEncodedBody({"a": ["1", "2"]}).encode() == b"a=1&a=2"
 
+    def test_omits_a_none_value(self):
+        assert UrlEncodedBody({"a": "1", "b": None}).encode() == b"a=1"
+
     def test_matches_requests_data(self):
         fields = {"grant_type": "client_credentials", "scope": "a b"}
         expected = requests.Request("POST", "https://auth.sinch.com", data=fields).prepare()
@@ -49,6 +52,25 @@ def fixed_boundary(monkeypatch):
 class TestFilePart:
     def test_reads_bytes(self):
         assert FilePart(b"data", "a.bin").read() == b"data"
+
+    def test_encodes_as_the_file_content(self):
+        assert FilePart(b"data").encode() == b"data"
+
+    def test_defaults_filename_to_the_name_of_a_path(self, tmp_path):
+        part = FilePart(tmp_path / "photo.jpg")
+
+        assert part.filename == "photo.jpg"
+        assert part.content_type == "image/jpeg"
+
+    def test_content_type_without_filename_defaults_to_octet_stream(self):
+        part = FilePart(b"data")
+
+        assert part.filename is None
+        assert part.content_type == "application/octet-stream"
+
+    def test_rejects_a_str_content(self):
+        with pytest.raises(ValueError, match="content must be bytes"):
+            FilePart("/tmp/a.bin", "a.bin")
 
     def test_reads_a_path(self, tmp_path):
         path = tmp_path / "a.txt"
@@ -101,7 +123,7 @@ class TestMultipartBody:
         )
 
     def test_encodes_a_file(self):
-        body = MultipartBody(files={"attachment": FilePart(b"%PDF", "doc.pdf")})
+        body = MultipartBody(fields={"attachment": FilePart(b"%PDF", "doc.pdf")})
 
         assert body.encode() == (
             b"--B1\r\n"
@@ -111,16 +133,25 @@ class TestMultipartBody:
             b"--B1--\r\n"
         )
 
-    def test_sends_fields_before_files(self):
+    def test_sends_parts_in_the_given_order(self):
         body = MultipartBody(
-            fields={"caption": "x"}, files={"file": FilePart(b"data", "a.txt")}
+            fields={"file": FilePart(b"data", "a.txt"), "caption": "x"}
         ).encode()
 
-        assert body.index(b'name="caption"') < body.index(b'name="file"')
+        assert body.index(b'name="file"') < body.index(b'name="caption"')
+
+    def test_list_can_mix_files_and_text(self):
+        body = MultipartBody(
+            fields={"item": ["hello", FilePart(b"data", "a.txt")]}
+        ).encode()
+
+        assert body.count(b'name="item"') == 2
+        assert body.index(b"\r\n\r\nhello\r\n") < body.index(b'filename="a.txt"')
+        assert b"\r\n\r\ndata\r\n" in body
 
     def test_files_under_the_same_name_are_all_sent(self):
         body = MultipartBody(
-            files={"file": [FilePart(b"one", "a.txt"), FilePart(b"two", "b.txt")]}
+            fields={"file": [FilePart(b"one", "a.txt"), FilePart(b"two", "b.txt")]}
         ).encode()
 
         assert body.count(b'name="file"') == 2
@@ -129,7 +160,7 @@ class TestMultipartBody:
     def test_sends_binary_content_untouched(self):
         raw = bytes(range(256))
 
-        body = MultipartBody(files={"file": FilePart(raw, "a.bin")}).encode()
+        body = MultipartBody(fields={"file": FilePart(raw, "a.bin")}).encode()
 
         assert b"\r\n\r\n" + raw + b"\r\n--B1--" in body
 
@@ -137,6 +168,17 @@ class TestMultipartBody:
         body = MultipartBody(fields={"count": 3}).encode()
 
         assert b"\r\n\r\n3\r\n" in body
+
+    def test_file_without_filename_sends_the_field_name(self):
+        body = MultipartBody(fields={"doc": FilePart(b"data")}).encode()
+
+        assert b'name="doc"; filename="doc"' in body
+
+    def test_list_value_is_a_repeated_field(self):
+        body = MultipartBody(fields={"tag": ["a", "b"]}).encode()
+
+        assert body.count(b'name="tag"') == 2
+        assert b"\r\n\r\na\r\n" in body and b"\r\n\r\nb\r\n" in body
 
     def test_omits_a_none_field(self):
         body = MultipartBody(fields={"kept": "1", "dropped": None}).encode()
@@ -151,7 +193,7 @@ class TestMultipartBody:
 
     def test_encodes_non_ascii_text_and_filename_as_utf8(self):
         body = MultipartBody(
-            fields={"text": "ñandú"}, files={"file": FilePart(b"x", "año.txt")}
+            fields={"text": "ñandú", "file": FilePart(b"x", "año.txt")}
         ).encode()
 
         assert "ñandú".encode("utf-8") in body
@@ -163,14 +205,14 @@ class TestMultipartBody:
     )
     def test_escapes_quotes_and_line_breaks_in_names(self, name, escaped):
         body = MultipartBody(
-            fields={name: "v"}, files={"file": FilePart(b"x", name)}
+            fields={name: "v", "file": FilePart(b"x", name)}
         ).encode()
 
         assert f'name="{escaped}"'.encode() in body
         assert f'filename="{escaped}"'.encode() in body
 
     def test_encode_is_repeatable_with_a_file_object(self):
-        body = MultipartBody(files={"file": FilePart(io.BytesIO(b"once"), "a.txt")})
+        body = MultipartBody(fields={"file": FilePart(io.BytesIO(b"once"), "a.txt")})
 
         assert body.encode() == body.encode()
         assert b"once" in body.encode()
@@ -178,7 +220,7 @@ class TestMultipartBody:
     def test_reads_a_path_when_encoding(self, tmp_path):
         path = tmp_path / "a.txt"
         path.write_bytes(b"late")
-        body = MultipartBody(files={"file": FilePart(path, "a.txt")})
+        body = MultipartBody(fields={"file": FilePart(path, "a.txt")})
         path.write_bytes(b"updated")
 
         assert b"updated" in body.encode()
@@ -190,15 +232,17 @@ class TestMultipartBody:
         file_field.make_multipart(content_type="application/pdf")
         expected, content_type = encode_multipart_formdata([field, file_field], boundary="B1")
         body = MultipartBody(
-            fields={"to": "someone@adomain.com"},
-            files={"attachment": FilePart(b"%PDF", "doc.pdf")},
+            fields={
+                "to": "someone@adomain.com",
+                "attachment": FilePart(b"%PDF", "doc.pdf"),
+            },
         )
 
         assert body.encode() == expected
         assert body.content_type == content_type
 
     def test_repr_lists_names_without_content(self):
-        body = MultipartBody(fields={"to": "x"}, files={"file": FilePart(b"secret", "a.txt")})
+        body = MultipartBody(fields={"to": "x", "file": FilePart(b"secret", "a.txt")})
 
         assert "secret" not in repr(body)
         assert "'to'" in repr(body) and "'file'" in repr(body)

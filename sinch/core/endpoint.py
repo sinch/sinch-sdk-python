@@ -1,13 +1,20 @@
 import re
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Type, Union
+from typing import Any, Mapping, Optional, Type, Union
 
 from pydantic import BaseModel, TypeAdapter
 
+from sinch.core.clients.request_options import RequestOptions
+from sinch.core.exceptions import ValidationException
 from sinch.core.models.http_body import HttpBody, JsonBody, UrlEncodedBody
+from sinch.core.models.http_headers import HttpHeaders
+from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.models.internal.unions import parses_response
-from sinch.core.models.internal.utils import query_params_to_comma_joined_lists
+from sinch.core.models.internal.utils import (
+    encode_query_parameters,
+    query_params_to_comma_joined_lists,
+)
 from sinch.core.types import BM
 
 
@@ -29,15 +36,49 @@ class HTTPEndpoint(ABC):
     def HTTP_AUTHENTICATION(self) -> str:
         """Authentication scheme the request is sent with."""
 
+    #: Options overriding, for this request only, the client level transport configuration.
+    request_options: Optional[RequestOptions] = None
+
+    #: Marker appended to the ``User-Agent`` header to tell this kind of request apart.
+    USER_AGENT_TAG: Optional[str] = None
+
     def __init__(self, project_id: Optional[str], request_data: Any) -> None:
         self.project_id = project_id
         self.request_data = request_data
+
+    def build_request(self, sinch) -> HttpRequest:
+        """
+        Builds the request sent to the API, without the transport level concerns: ``User-Agent``, timeout
+        and authentication.
+
+        By default it is assembled from :meth:`build_url`, :meth:`build_query_string`, :meth:`build_headers`
+        and :meth:`build_body`, whose ``content_type`` sets the ``Content-Type`` header.
+        """
+        headers = HttpHeaders(self.build_headers())
+        body = self.build_body()
+        if body is not None:
+            headers["Content-Type"] = body.content_type
+        return HttpRequest(
+            method=self.HTTP_METHOD,
+            url=self.build_url(sinch),
+            query_parameters=self.build_query_string(),
+            headers=headers,
+            content=body.encode() if body is not None else None,
+        )
 
     def build_query_params(self) -> Optional[dict]:
         """Builds the query string parameters sent with the request."""
         return None
 
-    def build_headers(self) -> Optional[dict]:
+    def build_query_string(self) -> str:
+        """
+        Builds the query string sent with the request, including the leading ``?``, or ``""`` if there is none.
+
+        By default it URL-encodes :meth:`build_query_params`.
+        """
+        return encode_query_parameters(self.build_query_params())
+
+    def build_headers(self) -> Optional[Mapping[str, str]]:
         """Builds the request-specific headers sent with the request."""
         return None
 
@@ -109,11 +150,24 @@ class BaseHTTPEndpoint(HTTPEndpoint, ABC):
 
     def build_url(self, sinch) -> str:
         """Fills ENDPOINT_URL with the domain origin, project_id and request_data fields."""
+        self._validate_project_id()
         return self.ENDPOINT_URL.format(
             origin=self._get_origin(sinch),
             project_id=self.project_id,
             **vars(self.request_data),
         )
+
+    def _validate_project_id(self) -> None:
+        """Raises if ENDPOINT_URL needs the project_id and there is none."""
+        if "{project_id}" in self.ENDPOINT_URL and not self.project_id:
+            raise ValidationException(
+                message=(
+                    "project_id is required by this API. "
+                    "It can be obtained from Sinch portal."
+                ),
+                is_from_server=False,
+                response=None,
+            )
 
     def _get_path_params_from_url(self) -> set:
         """Returns the ENDPOINT_URL placeholder names, excluding 'origin' and 'project_id'."""
@@ -228,3 +282,9 @@ class _StandardPaginatedLinkEndpoint:
 
     def build_query_params(self):
         return {}
+
+    def build_query_string(self):
+        return ""
+
+    def build_request(self, sinch):
+        return HTTPEndpoint.build_request(self, sinch)

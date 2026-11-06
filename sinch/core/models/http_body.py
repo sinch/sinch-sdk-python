@@ -6,10 +6,13 @@ from typing import Any, BinaryIO, Mapping, Optional, Sequence, Union
 from urllib.parse import urlencode
 from uuid import uuid4
 
+FormScalar = Union[str, bytes, int, float, bool]
+FormValue = Optional[Union[FormScalar, Sequence[FormScalar]]]
+
 
 class HttpBody(ABC):
     """
-    Request body built by an endpoint, encoded by the SDK into the bytes sent on the wire.
+    Request body encoded by the SDK into the bytes sent on the wire.
     """
 
     #: The ``Content-Type`` header sent with the body.
@@ -47,48 +50,59 @@ class JsonBody(HttpBody):
 
 class UrlEncodedBody(HttpBody):
     """
-    Request body sent form-urlencoded. A list value is sent as a repeated field.
+    Request body sent form-urlencoded. A list value is sent as a repeated field and a ``None`` value is omitted.
 
     :param fields: The form fields, keyed by field name.
-    :type fields: Mapping[str, Any]
+    :type fields: Mapping[str, Optional[Union[str, bytes, int, float, bool, Sequence[Union[str, bytes, int, float, bool]]]]]
     """
 
     content_type = "application/x-www-form-urlencoded"
 
-    def __init__(self, fields: Mapping[str, Any]) -> None:
+    def __init__(self, fields: Mapping[str, FormValue]) -> None:
         self.fields = fields
 
     def encode(self) -> bytes:
-        return urlencode(list(self.fields.items()), doseq=True).encode("utf-8")
+        fields = [(name, value) for name, value in self.fields.items() if value is not None]
+        return urlencode(fields, doseq=True).encode("utf-8")
 
     def __repr__(self) -> str:
         return f"UrlEncodedBody({self.fields!r})"
 
 
-class FilePart:
+class FilePart(HttpBody):
     """
-    File sent as a part of a :class:`MultipartBody`.
+    File sent as the whole request body, or as a part of a :class:`MultipartBody`.
 
     :param content: The file content: bytes, a binary file object or the path of a file, read when the body is encoded.
+        A file object is consumed by the read, so it cannot be shared between bodies.
     :type content: Union[bytes, BinaryIO, Path]
-    :param filename: The file name sent to the server.
-    :type filename: str
-    :param content_type: The media type of the file. Guessed from ``filename`` if omitted, or
+    :param filename: The file name sent to the server in a :class:`MultipartBody`. Defaults to the name of a path;
+        otherwise the field name is sent.
+    :type filename: Optional[str]
+    :param content_type: The media type of the file. Guessed from the file name if omitted, or
         ``application/octet-stream`` if it cannot be guessed.
     :type content_type: Optional[str]
-    :raises ValueError: If ``content_type`` contains a line break.
+    :raises ValueError: If ``content`` is not a supported type or ``content_type`` contains a line break.
     """
 
     def __init__(
         self,
         content: Union[bytes, BinaryIO, Path],
-        filename: str,
+        filename: Optional[str] = None,
         content_type: Optional[str] = None,
     ) -> None:
+        if not isinstance(content, (bytes, Path)) and not hasattr(content, "read"):
+            raise ValueError(
+                f"content must be bytes, a binary file object or a Path, got: {type(content).__name__}"
+            )
         _reject_line_breaks("content_type", content_type)
         self.content = content
-        self.filename = filename
-        self.content_type = content_type or mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        self.filename = filename or (content.name if isinstance(content, Path) else None)
+        self.content_type = (
+            content_type
+            or mimetypes.guess_type(self.filename or "")[0]
+            or "application/octet-stream"
+        )
 
     def read(self) -> bytes:
         """
@@ -103,8 +117,14 @@ class FilePart:
             return self.content.read_bytes()
         return self.content.read()
 
+    def encode(self) -> bytes:
+        return self.read()
+
     def __repr__(self) -> str:
         return f"FilePart(filename={self.filename!r}, content_type={self.content_type!r})"
+
+
+MultipartValue = Optional[Union[FormScalar, FilePart, Sequence[Union[FormScalar, FilePart]]]]
 
 
 class MultipartBody(HttpBody):
@@ -113,20 +133,14 @@ class MultipartBody(HttpBody):
 
     The boundary is generated when the body is created and is part of :attr:`content_type`.
 
-    :param fields: The text fields, keyed by field name. A value that is not ``bytes`` is sent as its ``str``,
-        and a ``None`` value is omitted.
-    :type fields: Optional[Mapping[str, Any]]
-    :param files: The files, keyed by field name. A list sends several files under the same name.
-    :type files: Optional[Mapping[str, Union[FilePart, Sequence[FilePart]]]]
+    :param fields: The parts, keyed by field name and sent in the given order. A :class:`FilePart` is sent as a file
+        and a value that is not ``bytes`` as its ``str``. A list value is sent as a repeated field, and it can mix
+        files and other values. A ``None`` value is omitted.
+    :type fields: Optional[Mapping[str, Optional[Union[str, bytes, int, float, bool, FilePart, Sequence[Union[str, bytes, int, float, bool, FilePart]]]]]]
     """
 
-    def __init__(
-        self,
-        fields: Optional[Mapping[str, Any]] = None,
-        files: Optional[Mapping[str, Union[FilePart, Sequence[FilePart]]]] = None,
-    ) -> None:
+    def __init__(self, fields: Optional[Mapping[str, MultipartValue]] = None) -> None:
         self.fields = fields or {}
-        self.files = files or {}
         self.boundary = uuid4().hex
         self.content_type = f"multipart/form-data; boundary={self.boundary}"
         self._encoded: Optional[bytes] = None
@@ -145,21 +159,24 @@ class MultipartBody(HttpBody):
         for name, value in self.fields.items():
             if value is None:
                 continue
-            data = value if isinstance(value, bytes) else str(value).encode("utf-8")
-            disposition = f'Content-Disposition: form-data; name="{_escape_quoted(name)}"'
-            chunks.append(delimiter + f"{disposition}\r\n\r\n".encode("utf-8") + data + b"\r\n")
-        for name, parts in self.files.items():
-            for part in [parts] if isinstance(parts, FilePart) else parts:
-                disposition = (
-                    f'Content-Disposition: form-data; name="{_escape_quoted(name)}"; '
-                    f'filename="{_escape_quoted(part.filename)}"'
-                )
-                headers = f"{disposition}\r\nContent-Type: {part.content_type}\r\n\r\n"
-                chunks.append(delimiter + headers.encode("utf-8") + part.read() + b"\r\n")
+            for item in [value] if isinstance(value, (str, bytes)) or not isinstance(value, Sequence) else value:
+                chunks.append(delimiter + _encode_part(name, item))
         return b"".join(chunks) + f"--{self.boundary}--\r\n".encode("ascii")
 
     def __repr__(self) -> str:
-        return f"MultipartBody(fields={list(self.fields)!r}, files={list(self.files)!r})"
+        return f"MultipartBody(fields={list(self.fields)!r})"
+
+
+def _encode_part(name: str, item: Union[FormScalar, FilePart]) -> bytes:
+    disposition = f'Content-Disposition: form-data; name="{_escape_quoted(name)}"'
+    if isinstance(item, FilePart):
+        headers = (
+            f'{disposition}; filename="{_escape_quoted(item.filename or name)}"\r\n'
+            f"Content-Type: {item.content_type}\r\n\r\n"
+        )
+        return headers.encode("utf-8") + item.read() + b"\r\n"
+    data = item if isinstance(item, bytes) else str(item).encode("utf-8")
+    return f"{disposition}\r\n\r\n".encode("utf-8") + data + b"\r\n"
 
 
 def _escape_quoted(value: str) -> str:

@@ -4,7 +4,7 @@ from urllib.parse import parse_qs
 from typing_extensions import deprecated
 
 from sinch.core.models.http_body import UrlEncodedBody
-from sinch.core.models.http_headers import HttpHeaders
+from sinch.core.models.http_headers import HeadersInput, HttpHeaders
 from sinch.core.models.http_content import HttpContent
 from sinch.core.models.internal.utils import (
     basic_auth_header,
@@ -26,11 +26,14 @@ class HttpRequest:
     :type url: str
     :param query_parameters: The URL-encoded query string, including the leading ``?``, or ``""``.
     :type query_parameters: str
-    :param headers: The request headers.
-    :type headers: Optional[Union[HttpHeaders, Mapping[str, str]]]
+    :param headers: The request headers, as a mapping or as ``(name, value)`` pairs.
+    :type headers: Optional[Union[Mapping[str, str], Iterable[Tuple[str, str]]]]
     :param content: The body sent on the wire, UTF-8 encoded when built by the SDK. It is exposed as an
         :class:`~sinch.core.models.http_content.HttpContent` that decodes it with the charset of ``headers``.
     :type content: Optional[bytes]
+    :param timeout_seconds: The timeout in seconds for this request, overriding the one of the client configuration.
+        ``0`` disables it. ``None`` leaves the client configuration in effect.
+    :type timeout_seconds: Optional[float]
     """
 
     @overload
@@ -40,8 +43,9 @@ class HttpRequest:
         url: str,
         method: str,
         query_parameters: str = "",
-        headers: Optional[Union[HttpHeaders, Mapping[str, str]]] = None,
+        headers: Optional[HeadersInput] = None,
         content: Optional[bytes] = None,
+        timeout_seconds: Optional[float] = None,
     ) -> None:
         pass
 
@@ -75,7 +79,7 @@ class HttpRequest:
 
     def __init__(
         self,
-        headers: Optional[Union[HttpHeaders, Mapping[str, str]]] = None,
+        headers: Optional[HeadersInput] = None,
         url: Optional[str] = None,
         http_method: Optional[str] = None,
         request_body: Optional[Union[str, bytes, Mapping[str, Any]]] = None,
@@ -85,8 +89,10 @@ class HttpRequest:
         method: Optional[str] = None,
         query_parameters: str = "",
         content: Optional[bytes] = None,
+        timeout_seconds: Optional[float] = None,
     ) -> None:
         self.url = url
+        self.timeout_seconds = timeout_seconds
         self.method = method if method is not None else http_method
         self.query_parameters = query_parameters
         self.headers = headers if isinstance(headers, HttpHeaders) else HttpHeaders(headers)

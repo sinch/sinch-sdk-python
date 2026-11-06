@@ -2,23 +2,26 @@ import json
 import pytest
 from unittest.mock import Mock
 from urllib3 import HTTPHeaderDict
+from sinch.core.clients.request_options import RequestOptions
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.clients.transport_settings import TransportSettings
 from sinch.core.enums import HTTPAuthentication, RetryPolicy
 from sinch.core.exceptions import SinchException, ValidationException
 from sinch.core.models.http_body import FilePart, JsonBody, MultipartBody, UrlEncodedBody
+from sinch.core.models.http_headers import HttpHeaders
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.adapters.requests_http_transport import HTTPTransportRequests
 from sinch.core.ports.http_transport import HTTPTransport
 from sinch.core.token_manager import TokenManager
+from sinch.domains.authentication.endpoints.v1.oauth import OAuthEndpoint
 from sinch.domains.authentication.models.v1.authentication import OAuthToken
 
 
 # Mock classes and fixtures
-def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None):
+def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None, request_options=None):
     """Create a MockEndpoint that satisfies the abstract property contract."""
 
     class _Endpoint(HTTPEndpoint):
@@ -48,7 +51,9 @@ def _make_mock_endpoint(auth_type, error_on_4xx=False, build_headers=None):
                 )
             return response
 
-    return _Endpoint()
+    endpoint = _Endpoint()
+    endpoint.request_options = request_options
+    return endpoint
 
 
 def _requests_response(status_code, body=None, headers=None):
@@ -166,14 +171,59 @@ class TestHTTPTransport:
             transport.authenticate(endpoint, base_request)
 
 
+    @pytest.mark.parametrize("auth_type", [HTTPAuthentication.BASIC.value, HTTPAuthentication.OAUTH.value])
+    def test_authenticate_does_not_require_project_id(self, mock_sinch, base_request, auth_type):
+        mock_sinch.configuration.project_id = None
+        mock_sinch.authentication.get_auth_token.return_value.access_token = "test_token"
+        transport = HTTPTransportRequests(mock_sinch)
+
+        result = transport.authenticate(_make_mock_endpoint(auth_type), base_request)
+
+        assert "Authorization" in result.headers
+
+
 class TestAuthenticateWithSinchAuthDisabled:
-    def test_oauth_does_not_add_authorization_header(self, sinch_auth_disabled, base_request):
+    @pytest.mark.parametrize("auth_type", [
+        HTTPAuthentication.BASIC.value,
+        HTTPAuthentication.OAUTH.value,
+        HTTPAuthentication.SMS_TOKEN.value
+    ])
+    def test_does_not_add_authorization_header(self, sinch_auth_disabled, base_request, auth_type):
         transport = HTTPTransportRequests(sinch_auth_disabled)
-        endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
+        endpoint = _make_mock_endpoint(auth_type)
 
         result = transport.authenticate(endpoint, base_request)
 
         assert "Authorization" not in result.headers
+
+    @pytest.mark.parametrize("auth_type,missing_creds", [
+        (HTTPAuthentication.BASIC.value, "key_id"),
+        (HTTPAuthentication.SMS_TOKEN.value, "sms_api_token"),
+    ])
+    def test_does_not_require_credentials(self, sinch_auth_disabled, base_request, auth_type, missing_creds):
+        setattr(sinch_auth_disabled.configuration, missing_creds, None)
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(auth_type)
+
+        transport.authenticate(endpoint, base_request)
+
+    def test_keeps_the_authorization_header_given_by_the_caller(self, sinch_auth_disabled):
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.SMS_TOKEN.value)
+        request = HttpRequest(
+            method="GET", url="https://api.sinch.com/test", headers={"Authorization": "Bearer mine"}
+        )
+
+        result = transport.authenticate(endpoint, request)
+
+        assert result.headers["Authorization"] == "Bearer mine"
+
+    def test_token_request_keeps_basic_authentication(self, sinch_auth_disabled, base_request):
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+
+        result = transport.authenticate(OAuthEndpoint(), base_request)
+
+        assert result.headers["Authorization"].startswith("Basic ")
 
     def test_oauth_does_not_fetch_a_token(self, sinch_auth_disabled, base_request):
         transport = HTTPTransportRequests(sinch_auth_disabled)
@@ -191,13 +241,51 @@ class TestAuthenticateWithSinchAuthDisabled:
 
         transport.authenticate(endpoint, base_request)
 
-    def test_oauth_requires_project_id(self, sinch_auth_disabled, base_request):
+    def test_oauth_does_not_require_project_id(self, sinch_auth_disabled, base_request):
         sinch_auth_disabled.configuration.project_id = None
         transport = HTTPTransportRequests(sinch_auth_disabled)
         endpoint = _make_mock_endpoint(HTTPAuthentication.OAUTH.value)
 
-        with pytest.raises(ValidationException, match="project_id is required by this API"):
-            transport.authenticate(endpoint, base_request)
+        result = transport.authenticate(endpoint, base_request)
+
+        assert "Authorization" not in result.headers
+
+
+class TestAuthenticateWithRequestOptions:
+    @pytest.mark.parametrize("auth_type", [HTTPAuthentication.OAUTH.value, HTTPAuthentication.SMS_TOKEN.value])
+    def test_use_sinch_auth_false_does_not_add_authorization_header(self, mock_sinch, base_request, auth_type):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(
+            auth_type,
+            request_options=RequestOptions(use_sinch_auth=False),
+        )
+
+        result = transport.authenticate(endpoint, base_request)
+
+        assert "Authorization" not in result.headers
+
+    def test_use_sinch_auth_true_overrides_the_client_setting(self, sinch_auth_disabled, base_request):
+        sinch_auth_disabled.authentication.get_auth_token.return_value.access_token = "test_token"
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.OAUTH.value,
+            request_options=RequestOptions(use_sinch_auth=True),
+        )
+
+        result = transport.authenticate(endpoint, base_request)
+
+        assert result.headers["Authorization"] == "Bearer test_token"
+
+    def test_options_without_use_sinch_auth_keep_the_client_setting(self, sinch_auth_disabled, base_request):
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.OAUTH.value,
+            request_options=RequestOptions(timeout_seconds=5),
+        )
+
+        result = transport.authenticate(endpoint, base_request)
+
+        assert "Authorization" not in result.headers
 
 
 class TestPrepareRequest:
@@ -222,6 +310,18 @@ class TestPrepareRequest:
 
         assert list(request_data.headers) == ["User-Agent"]
 
+    def test_keeps_repeated_endpoint_headers(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            build_headers=lambda: HttpHeaders([("X-Tag", "a"), ("Accept", "*/*"), ("x-tag", "b")]),
+        )
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.headers.get_all("X-Tag") == ["a", "b"]
+        assert request_data.headers["Accept"] == "*/*"
+
     def test_serializes_query_params(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
         endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
@@ -239,6 +339,15 @@ class TestPrepareRequest:
         request_data = transport.prepare_request(endpoint)
 
         assert request_data.query_parameters == ""
+
+    def test_endpoint_query_string_is_kept_untouched(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        endpoint.build_query_string = lambda: "?name=John%20Doe&tag=a&tag=b&empty="
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.query_parameters == "?name=John%20Doe&tag=a&tag=b&empty="
 
     def test_json_body_is_encoded_with_its_content_type(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
@@ -263,7 +372,7 @@ class TestPrepareRequest:
     def test_multipart_body_is_encoded_with_its_boundary_in_the_content_type(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
         endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
-        body = MultipartBody(fields={"a": "1"}, files={"file": FilePart(b"data", "a.txt")})
+        body = MultipartBody(fields={"a": "1", "file": FilePart(b"data", "a.txt")})
         endpoint.build_body = lambda: body
 
         request_data = transport.prepare_request(endpoint)
@@ -279,6 +388,65 @@ class TestPrepareRequest:
 
         assert request_data.content is None
         assert "Content-Type" not in request_data.headers
+
+    def test_completes_the_request_built_by_the_endpoint(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+        built = HttpRequest(method="PUT", url="https://example.com/resource", content=b"raw")
+        endpoint.build_request = lambda sinch: built
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data is built
+        assert request_data.headers["User-Agent"].startswith("sinch-sdk/")
+        assert request_data.timeout_seconds == TransportSettings.DEFAULT_TIMEOUT_SECONDS
+
+
+class TestPrepareRequestTimeout:
+    def test_without_options_uses_the_client_timeout(self, mock_sinch):
+        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(HTTPAuthentication.BASIC.value)
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.timeout_seconds == 30
+
+    def test_options_timeout_overrides_the_client_timeout(self, mock_sinch):
+        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            request_options=RequestOptions(timeout_seconds=5),
+        )
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.timeout_seconds == 5
+
+    def test_options_timeout_of_zero_overrides_the_client_timeout(self, mock_sinch):
+        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            request_options=RequestOptions(timeout_seconds=0),
+        )
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.timeout_seconds == 0
+
+    def test_options_without_timeout_use_the_client_timeout(self, mock_sinch):
+        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
+        transport = HTTPTransportRequests(mock_sinch)
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            request_options=RequestOptions(use_sinch_auth=False),
+        )
+
+        request_data = transport.prepare_request(endpoint)
+
+        assert request_data.timeout_seconds == 30
 
 
 class TestSend:
@@ -348,7 +516,17 @@ class TestSend:
 
         assert "auth" not in transport.http_session.request.call_args.kwargs
 
-    def test_send_passes_timeout_seconds(self, mock_sinch, base_request):
+    def test_send_passes_timeout_seconds(self, mock_sinch):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+
+        transport.send_request(
+            HttpRequest(method="GET", url="https://api.sinch.com/test", timeout_seconds=30)
+        )
+
+        assert transport.http_session.request.call_args.kwargs["timeout"] == 30
+
+    def test_send_without_timeout_seconds_uses_the_client_timeout(self, mock_sinch, base_request):
         mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=30)
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=_requests_response(200))
@@ -357,12 +535,13 @@ class TestSend:
 
         assert transport.http_session.request.call_args.kwargs["timeout"] == 30
 
-    def test_send_disables_timeout_when_timeout_seconds_is_zero(self, mock_sinch, base_request):
-        mock_sinch.configuration.transport_settings = TransportSettings(timeout_seconds=0)
+    def test_send_disables_timeout_when_timeout_seconds_is_zero(self, mock_sinch):
         transport = HTTPTransportRequests(mock_sinch)
         transport.http_session.request = Mock(return_value=_requests_response(200))
 
-        transport.send_request(base_request)
+        transport.send_request(
+            HttpRequest(method="GET", url="https://api.sinch.com/test", timeout_seconds=0)
+        )
 
         assert transport.http_session.request.call_args.kwargs["timeout"] is None
 
@@ -490,6 +669,36 @@ class TestTokenRefreshRetry:
         assert transport.http_session.request.call_count == 1
         token_manager.refresh_auth_token.assert_not_called()
 
+    def test_no_refresh_when_request_options_disable_sinch_auth(self, mock_sinch):
+        token_manager = _token_manager(mock_sinch)
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(side_effect=[self._expired_401()])
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.OAUTH.value,
+            error_on_4xx=True,
+            request_options=RequestOptions(use_sinch_auth=False),
+        )
+
+        with pytest.raises(ValidationException, match="401"):
+            transport.request(endpoint)
+
+        assert transport.http_session.request.call_count == 1
+        token_manager.refresh_auth_token.assert_not_called()
+
+    def test_retry_succeeds_when_request_options_enable_sinch_auth(self, sinch_auth_disabled):
+        token_manager = _token_manager(sinch_auth_disabled)
+        transport = HTTPTransportRequests(sinch_auth_disabled)
+        transport.http_session.request = Mock(side_effect=_server_rejecting_expired_token("Bearer new"))
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.OAUTH.value,
+            request_options=RequestOptions(use_sinch_auth=True),
+        )
+
+        result = transport.request(endpoint)
+
+        assert result.status == 200
+        token_manager.refresh_auth_token.assert_called_once_with("old")
+
 
 class TestRetryWithBackoff:
     """Tests for the automatic retry-with-backoff on rate-limited (429) responses.
@@ -598,3 +807,28 @@ class TestRetryWithBackoff:
         assert result.status == 429
         assert transport.http_session.request.call_count == 1
         no_sleep.assert_not_called()
+
+    def test_request_options_retry_configuration_overrides_the_client_one(self, mock_sinch, no_sleep, no_jitter):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=self._rate_limited())
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            request_options=RequestOptions(retry_configuration=RetryConfiguration(max_retries=1)),
+        )
+
+        transport.request(endpoint)
+
+        assert transport.http_session.request.call_count == 2
+
+    def test_request_options_without_retry_configuration_use_the_client_one(self, mock_sinch, no_sleep, no_jitter):
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=self._rate_limited())
+        endpoint = _make_mock_endpoint(
+            HTTPAuthentication.BASIC.value,
+            request_options=RequestOptions(timeout_seconds=5),
+        )
+        max_retries = mock_sinch.configuration.retry_manager.configuration.max_retries
+
+        transport.request(endpoint)
+
+        assert transport.http_session.request.call_count == max_retries + 1

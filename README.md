@@ -344,7 +344,7 @@ sinch = SinchClient(
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `timeout_seconds` | `int` or `float` | `60` | HTTP I/O timeout in seconds, applied to both connect and read. Pass `0` to disable the timeout. Negative values are rejected. |
-| `use_sinch_auth` | `bool` | `True` | When `True`, OAuth-capable APIs fetch a Sinch access token. Set `False` to disable Sinch authentication: no token is fetched and no `Authorization` header is added. Only `project_id` is then required. Has no effect with SMS `service_plan_id` and `sms_api_token` credentials. |
+| `use_sinch_auth` | `bool` | `True` | When `True`, the SDK authenticates the requests. Set `False` to disable Sinch authentication: whatever the authentication method, no `Authorization` header is added and no credentials are required.
 
 > **Note:** When `transport_settings` is not provided, the SDK keeps its previous timeout of 10 seconds. When provided, its `timeout_seconds` (default `60`) applies. `Configuration.connection_timeout` is deprecated in favor of `transport_settings.timeout_seconds` and will be removed in 3.0.
 
@@ -431,7 +431,7 @@ class MyHTTPImplementation(HTTPTransport):
             url=request_data.url + request_data.query_parameters,
             content=request_data.content.as_bytes() if request_data.content is not None else None,
             headers=request_data.headers.multi_items(),
-            timeout=self.sinch.configuration.transport_settings.timeout_seconds or None,
+            timeout=request_data.timeout_seconds or None,
         )
 
         return HTTPResponse(

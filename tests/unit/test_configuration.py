@@ -487,15 +487,25 @@ def test_validate_authentication_parameters_expects_only_project_id_when_sinch_a
     client_configuration.validate_authentication_parameters()
 
 
-def test_validate_authentication_parameters_expects_project_id_required_when_sinch_auth_disabled(sinch_client_sync):
+def test_validate_authentication_parameters_expects_no_project_id_required_when_sinch_auth_disabled(sinch_client_sync):
     client_configuration = Configuration(
         transport=HTTPTransportRequests(sinch_client_sync),
         token_manager=TokenManager(sinch_client_sync),
         transport_settings=TransportSettings(use_sinch_auth=False),
     )
 
-    with pytest.raises(ValueError, match="The project_id is required"):
-        client_configuration.validate_authentication_parameters()
+    client_configuration.validate_authentication_parameters()
+
+
+def test_validate_authentication_parameters_expects_no_sms_token_required_when_sinch_auth_disabled(sinch_client_sync):
+    client_configuration = Configuration(
+        transport=HTTPTransportRequests(sinch_client_sync),
+        token_manager=TokenManager(sinch_client_sync),
+        service_plan_id="test_service_plan",
+        transport_settings=TransportSettings(use_sinch_auth=False),
+    )
+
+    client_configuration.validate_authentication_parameters()
 
 
 def test_validate_authentication_parameters_expects_key_id_and_secret_required_when_sinch_auth_enabled(

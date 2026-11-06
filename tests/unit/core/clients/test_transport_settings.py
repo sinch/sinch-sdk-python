@@ -22,7 +22,7 @@ class TestTransportSettings:
     def test_accepts_a_float_timeout(self):
         assert TransportSettings(timeout_seconds=2.5).timeout_seconds == 2.5
 
-    @pytest.mark.parametrize("timeout_seconds", [None, "60", float("inf"), float("nan")])
+    @pytest.mark.parametrize("timeout_seconds", [None, "60", float("inf"), float("nan"), True])
     def test_rejects_non_finite_number_timeout(self, timeout_seconds):
         with pytest.raises(ValueError, match="timeout_seconds must be a finite number"):
             TransportSettings(timeout_seconds=timeout_seconds)

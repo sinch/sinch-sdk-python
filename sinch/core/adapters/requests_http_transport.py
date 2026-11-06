@@ -28,12 +28,17 @@ class HTTPTransportRequests(HTTPTransport):
             "Sync HTTP request %r with body: %s",
             request_data, body_text
         )
+        
+        timeout_seconds = request_data.timeout_seconds
+        if timeout_seconds is None:
+            timeout_seconds = self.sinch.configuration.transport_settings.timeout_seconds
+
         response = self.http_session.request(
             method=request_data.method,
             url=url,
             data=request_data.content.as_bytes() if request_data.content is not None else None,
             headers=request_data.headers,
-            timeout=self.sinch.configuration.transport_settings.timeout_seconds or None,
+            timeout=timeout_seconds or None,
         )
 
         http_response = HTTPResponse(

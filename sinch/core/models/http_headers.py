@@ -1,8 +1,10 @@
 from collections.abc import MutableMapping
 from typing import Iterable, Iterator, List, Mapping, Optional, Tuple, Union
 
+HeadersInput = Union[Mapping[str, str], Iterable[Tuple[str, str]]]
 
-class HttpHeaders(MutableMapping):
+
+class HttpHeaders(MutableMapping[str, str]):
     """
     Case-insensitive, multi-value and order-preserving collection of HTTP headers.
 
@@ -16,7 +18,7 @@ class HttpHeaders(MutableMapping):
 
     def __init__(
         self,
-        headers: Optional[Union[Mapping[str, str], Iterable[Tuple[str, str]]]] = None,
+        headers: Optional[HeadersInput] = None,
     ) -> None:
         self._items: List[Tuple[str, str]] = []
         if headers is None:
