@@ -1,0 +1,4 @@
+# https://docs.gitlab.com/user/project/codeowners/
+# GitLab counterpart of .github/CODEOWNERS (GitLab does not read .github/).
+# Same owners as on GitHub: @asein-sinch @JPPortier @matsk-sinch @edu-sinch @Hurus111 @marcos-sinch
+* @Antoin.Sein @Jean-Pierre.Portier @matsk-sinch @eduardo.sansegundo @hugo.rivas @marcos.lozanoromero

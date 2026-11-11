@@ -1,38 +1,30 @@
 name: Notify Private Repo of Update
 
+# The internal repository is on GitLab. On every push to the public repository,
+# trigger its sync-from-public pipeline (see .gitlab-ci.yml).
+# GITLAB_SYNC_TRIGGER_TOKEN is a pipeline trigger token of the GitLab project.
+
 env:
   SDK_NAME: sinch-sdk-python
+  GITLAB_PROJECT_ID: '88803867'
 
 on:
   push:
 
 jobs:
   ping-private:
+    # Skip pushes made by the sync from the internal repo, so they are not sent back.
     if: |
-      github.actor != 'sinch-internal-repo-sync-app[bot]' && !endsWith(github.event.repository.name, 'internal')
+      github.actor != 'sinch-internal-repo-sync-bot[bot]' && !endsWith(github.event.repository.name, 'internal')
 
     runs-on: ubuntu-latest
     steps:
-      # 1. Generate a temporary token from the GitHub App
-      - name: Generate GitHub App Token
-        uses: actions/create-github-app-token@v3
-        id: app-token
-        with:
-          client-id: ${{ vars.SINCH_INTERNAL_REPO_SYNC_APP_CLIENT_ID }}
-          private-key: ${{ secrets.SINCH_INTERNAL_REPO_SYNC_APP_PRIVATE_KEY }}
-          # Explicitly request access to the internal repository:
-          owner: ${{ github.repository_owner }}
-          repositories: ${{ env.SDK_NAME }}-internal
-
-      # 2. Use that token to send the "ping" to the private repo
-      - name: Send Repository Dispatch to Private Repo
+      - name: Trigger sync-from-public pipeline on GitLab
         env:
-          SYNC_TOKEN: ${{ steps.app-token.outputs.token }}
+          TRIGGER_TOKEN: ${{ secrets.GITLAB_SYNC_TRIGGER_TOKEN }}
         run: |
-          curl -X POST --fail-with-body \
-          -H "Content-Type: application/json" \
-          -H "Authorization: Bearer ${SYNC_TOKEN}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          -H "X-GitHub-Api-Version: 2026-03-10" \
-          https://api.github.com/repos/sinch/${SDK_NAME}-internal/dispatches \
-          -d '{"event_type": "public_push_event"}'
+          curl -X POST --fail-with-body --silent --show-error --output /dev/null \
+            -F "token=${TRIGGER_TOKEN}" \
+            -F "ref=main" \
+            -F "variables[SYNC_FROM_PUBLIC]=true" \
+            "https://gitlab.com/api/v4/projects/${GITLAB_PROJECT_ID}/trigger/pipeline"
