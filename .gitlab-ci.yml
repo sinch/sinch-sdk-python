@@ -1,0 +1,161 @@
+# CI for the internal Python SDK repository on GitLab.
+# Public CI, PyPI releases and documentation upload stay on GitHub
+# (.github/workflows), in the public repository sinch/sinch-sdk-python.
+#
+# CI/CD variables (set on the sdks group unless noted):
+#   MOCKSERVER_REPO_TOKEN        Read-only GitHub token for sinch/sinch-sdk-mockserver   (masked, hidden; not protected, because build runs on every branch)
+#   GITHUB_SYNC_APP_CLIENT_ID    Client ID of the sinch-internal-repo-sync-bot GitHub App (protected)
+#   GITHUB_SYNC_APP_PRIVATE_KEY  Private key of that App                                 (File, protected)
+#   GITLAB_SYNC_TOKEN            Project variable. Project access token, Maintainer, write_repository (masked, hidden, protected)
+#
+# The e2e tests also call the hosted mock server (MOCKSERVER_BASE_URL,
+# https://sinch-sdk-mockserver.sliplane.app by default).
+#
+# Pipelines:
+#   push to any branch          build (Python 3.9 to 3.14)
+#   push to a protected branch  also sync-to-public if the commit is an MR merge.
+#                               Protected: main, v*, feature-voice-v2, feature/transport-api
+#   SYNC_FROM_PUBLIC == "true"  sync-from-public only. Set by the nightly schedule and
+#                               by the trigger in the public repo (notify-private-repo.yml)
+
+workflow:
+  rules:
+    # Branch pipelines only, like "on: push" on GitHub. MR pipelines would run
+    # the build twice.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - when: always
+
+default:
+  tags: [default]
+
+variables:
+  SDK_NAME: sinch-sdk-python
+  PUBLIC_REPO: sinch/sinch-sdk-python
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+stages:
+  - build
+  - sync
+
+# Replaces .github/workflows/ci.yml.
+build:
+  stage: build
+  image: python:$PYTHON_VERSION
+  timeout: 20m
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+  cache:
+    key: pip-$PYTHON_VERSION
+    paths: [.cache/pip/]
+  rules:
+    - if: $SYNC_FROM_PUBLIC == "true"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web"
+  script:
+    - python -m pip install --upgrade pip
+    - pip install -e .
+    - pip install -r requirements-dev.txt
+
+    # Check requirements-dev.txt is up to date (once, on the newest Python).
+    - |
+      if [ "$PYTHON_VERSION" = "3.14" ]; then
+        ./scripts/compile_requirements.sh
+        git diff --exit-code requirements-dev.txt || {
+          echo "requirements-dev.txt is out of date. Regenerate it with:"
+          echo "  ./scripts/compile_requirements.sh"
+          exit 1
+        }
+      fi
+
+    # Compile all examples
+    - |
+      for file in $(find examples -name "*.py"); do
+        echo "Compiling $file..."
+        python -m py_compile "$file" || exit 1
+      done
+      echo "All examples compiled successfully."
+
+    # Check snippet coverage
+    - pip install python-dotenv
+    - python scripts/check_snippet_coverage.py
+
+    # Lint and format check with Ruff
+    - |
+      for domain in numbers sms number_lookup conversation; do
+        ruff check sinch/domains/$domain --statistics
+        ruff format sinch/domains/$domain --check --diff
+      done
+
+    - coverage run --source=. -m pytest
+    - python -m coverage report --skip-empty
+
+    - ': "${MOCKSERVER_REPO_TOKEN:?Set MOCKSERVER_REPO_TOKEN in Settings > CI/CD > Variables}"'
+    - git clone --depth 1 "https://x-access-token:${MOCKSERVER_REPO_TOKEN}@github.com/sinch/sinch-sdk-mockserver.git" sinch-sdk-mockserver
+    - |
+      cp sinch-sdk-mockserver/features/numbers/available-regions.feature ./tests/e2e/numbers/features/
+      cp sinch-sdk-mockserver/features/numbers/callback-configuration.feature ./tests/e2e/numbers/features/
+      cp sinch-sdk-mockserver/features/numbers/numbers.feature ./tests/e2e/numbers/features/
+      cp sinch-sdk-mockserver/features/numbers/webhooks.feature ./tests/e2e/numbers/features/
+      cp sinch-sdk-mockserver/features/sms/* ./tests/e2e/sms/features/
+      cp sinch-sdk-mockserver/features/number-lookup/lookups.feature ./tests/e2e/number-lookup/features/
+      cp sinch-sdk-mockserver/features/conversation/* ./tests/e2e/conversation/features/
+      cp sinch-sdk-mockserver/features/voice-v2/* ./tests/e2e/voice/v2/features/
+    - bash .github/scripts/check-mockservers-are-available.sh
+    - python -m behave tests/e2e/numbers/features
+    - python -m behave tests/e2e/sms/features
+    - python -m behave tests/e2e/conversation/features
+    - python -m behave tests/e2e/number-lookup/features
+    - python -m behave tests/e2e/voice/v2/features
+
+# Replaces .github/workflows/sync-to-public.yml. When an MR is merged, push the
+# target branch to the public repository. GitLab has no "MR merged" event, so
+# the rule matches the merge commit, whose message always contains
+# "See merge request". Commits pushed by the sync bot are skipped, so changes
+# that came from the public repo are not pushed back.
+# Only protected branches are synced, because the App key is a protected
+# variable that pipelines on other branches cannot read.
+sync-to-public:
+  stage: sync
+  image: alpine:3.20
+  needs: []
+  resource_group: sync-to-public-$CI_COMMIT_BRANCH
+  rules:
+    - if: $SYNC_FROM_PUBLIC == "true"
+      when: never
+    - if: $CI_COMMIT_REF_PROTECTED != "true"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE =~ /See merge request / && $GITLAB_USER_LOGIN !~ /^project_\d+_bot/
+    # Manual recovery: Run pipeline on a protected branch with SYNC_TO_PUBLIC=true.
+    - if: $CI_PIPELINE_SOURCE == "web" && $SYNC_TO_PUBLIC == "true"
+  variables:
+    GIT_DEPTH: 0
+  before_script:
+    - apk add --no-cache git curl jq openssl
+  script:
+    - TOKEN=$(sh .gitlab/scripts/github-app-token.sh sinch "$SDK_NAME")
+    - echo "Syncing $CI_COMMIT_BRANCH ($CI_COMMIT_SHORT_SHA) to $PUBLIC_REPO"
+    # No force push, so public history is never overwritten if the repos diverge.
+    - git push "https://x-access-token:${TOKEN}@github.com/${PUBLIC_REPO}.git" "${CI_COMMIT_SHA}:refs/heads/${CI_COMMIT_BRANCH}"
+
+# Replaces .github/workflows/sync-from-public.yml. Copies every branch and tag
+# from the public repository into this one.
+sync-from-public:
+  stage: sync
+  image: alpine:3.20
+  needs: []
+  resource_group: sync-from-public
+  rules:
+    - if: $SYNC_FROM_PUBLIC == "true"
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - apk add --no-cache git
+  script:
+    - ': "${GITLAB_SYNC_TOKEN:?Set GITLAB_SYNC_TOKEN in Settings > CI/CD > Variables}"'
+    - rm -rf public_repo
+    - git clone --bare "https://github.com/${PUBLIC_REPO}.git" public_repo
+    - cd public_repo
+    - git push --all "https://oauth2:${GITLAB_SYNC_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git push --tags "https://oauth2:${GITLAB_SYNC_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
