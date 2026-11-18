@@ -19,6 +19,7 @@ To use Sinch services, you'll need a Sinch account and access keys. You can sign
 - [Logging](#logging)
 - [Retry configuration](#retry-configuration)
 - [Transport settings](#transport-settings)
+- [Low-level HTTP client](#low-level-http-client)
 - [Handling Exceptions](#handling-exceptions)
 - [Custom HTTP client implementation](#custom-http-client-implementation)
 - [Third-party dependencies](#third-party-dependencies)
@@ -371,6 +372,67 @@ sinch = SinchClient(
     transport_settings=TransportSettings(use_sinch_auth=False),
 )
 ```
+
+## Low-level HTTP client
+
+`sinch.http` sends raw HTTP requests to any Sinch API, including the endpoints not covered by the SDK yet. The SDK still takes care of:
+- the authentication (`project_id` is not required: it is part of the URL), picked from the client credentials:
+  - OAuth2 and its token cache when `key_id` and `key_secret` are set: it has priority, any other credentials are ignored
+  - otherwise the SMS API token, when `service_plan_id` and `sms_api_token` are set
+- the HTTP 429 retries (see [Retry configuration](#retry-configuration))
+- the timeout and the `User-Agent` header, whose auxiliary flag ends with `http` for these requests
+
+Everything else is up to the caller: the URL, the query string and a `str` or `bytes` body are sent **untouched**. The URL is not validated, and the only change to the query string is the leading `?`, added when missing.
+
+```python
+from urllib.parse import urlencode
+
+from sinch import SinchClient
+from sinch.core.clients.request_options import RequestOptions
+from sinch.core.clients.retry_configuration import RetryConfiguration
+from sinch.core.enums import RetryPolicy
+
+sinch = SinchClient(key_id=key_id, key_secret=key_secret)
+
+response = sinch.http.get(
+    f"https://numbers.api.sinch.com/v1/projects/{project_id}/activeNumbers",
+    # pre-encoded; the leading "?" is added when missing
+    query_params=urlencode({"regionCode": "US", "type": "LOCAL", "pageSize": 5}),
+    headers={"accept": "application/json"},
+)
+active_numbers = response.content.as_json()
+
+sinch.http.post(
+    f"https://lookup.api.sinch.com/v2/projects/{project_id}/lookups",
+    body='{"number": "+14045001000"}',
+    headers={"content-type": "application/json"},
+    # request level overrides
+    options=RequestOptions(
+        timeout_seconds=10,
+        retry_configuration=RetryConfiguration(retry_policy=RetryPolicy.NONE),
+    ),
+)
+```
+
+| Method | Body |
+|--------|------|
+| `get(url, ...)` / `delete(url, ...)` | none |
+| `post(url, body=None, ...)` / `put(...)` / `patch(...)` | optional: `str`, `bytes` or an `HttpBody`. A `str` or `bytes` body requires the `content-type` header: a `ValidationException` is raised without it. Bytes are sent untouched, and a string is encoded with the charset of the `content-type` header (UTF-8 when there is none or it is unknown). An `HttpBody` (`JsonBody`, `UrlEncodedBody`, `MultipartBody` or `FilePart`, from `sinch.core.models.http_body`) is encoded by the SDK, which sets its `content-type`. |
+| `post_form_data(url, form_params, ...)` | a mapping of `str`, `bytes`, `int`, `float`, `bool`, `FilePart` or lists of them, sent as `multipart/form-data` (the SDK sets the `content-type` with its boundary). A `None` value is omitted. |
+
+Every method also accepts, as keyword arguments:
+- `query_params`: the pre-encoded query string, the leading `?` being optional.
+- `headers`: a mapping, or `(name, value)` pairs to repeat a header. The default transport sends the values of a repeated header joined with `", "`.
+- `options`: a `RequestOptions` (from `sinch.core.clients.request_options`) overriding the client settings for this call only.
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `use_sinch_auth` | `transport_settings.use_sinch_auth` | `False` sends the request without any `Authorization` header: set your own. Since the client setting is only the default, a single call can enable the authentication as long as credentials are set. |
+| `timeout_seconds` | `transport_settings.timeout_seconds` | HTTP I/O timeout in seconds, `0` to disable it. A custom transport must read `HttpRequest.timeout_seconds` for it to apply. |
+| `retry_configuration` | `retry_configuration` of the client | Replaces the whole retry configuration for this call. |
+
+The returned `HTTPResponse` (from `sinch.core.models.http_response`) exposes `status`, `headers` (case-insensitive names, multiple values) and `content`, fully loaded in memory: `as_string()`, `as_bytes()` or `as_json()`. A status >= 400 is raised as an `HttpException` (from `sinch.domains.http.api.v1.exceptions`), whose `http_response` can still be read.
+
 
 ## Handling exceptions
 
