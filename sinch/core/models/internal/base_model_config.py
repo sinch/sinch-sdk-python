@@ -92,7 +92,7 @@ class _SnakifyExtrasOnInit:
       model is constructed earlier, in the public API method, before that
       scope starts, so ``model_post_init`` alone would always see the
       ambient default. The ``model_serializer`` below re-checks the policy
-      at dump time instead, when it's invoked from ``request_body()``
+      at dump time instead, when it's invoked from ``build_body()``
     """
 
     def model_post_init(self, __context: Any) -> None:

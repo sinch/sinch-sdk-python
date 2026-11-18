@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.internal import GetMessageEndpoint
 from sinch.domains.conversation.models.v1.messages.internal.request import MessageIdRequest
 from sinch.domains.conversation.models.v1.messages.response.message_response import (
@@ -20,8 +20,8 @@ def request_data():
 @pytest.fixture
 def mock_contact_message_response(contact_message_response_data):
     """Mock response for ContactMessageResponse (Union type test)."""
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body=contact_message_response_data,
         headers={"Content-Type": "application/json"},
     )
@@ -30,8 +30,8 @@ def mock_contact_message_response(contact_message_response_data):
 @pytest.fixture
 def mock_app_message_response(app_message_response_data):
     """Mock response for AppMessageResponse (Union type test)."""
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body=app_message_response_data,
         headers={"Content-Type": "application/json"},
     )

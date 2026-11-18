@@ -1,7 +1,7 @@
 import pytest
 from datetime import datetime, timezone
 from decimal import Decimal
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.numbers.api.v1.internal import GetNumberConfigurationEndpoint
 from sinch.domains.numbers.models.v1.internal import NumberRequest
 from sinch.domains.numbers.models.v1.response import ActiveNumber
@@ -16,8 +16,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "phoneNumber": "+1234567890",
             "projectId": "51bc3f40-f266-4ca8-8938-a1ed0ff32b9a",

@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.numbers.api.v1.internal import UpdateEventDestinationEndpoint
 from sinch.domains.numbers.models.v1.internal import UpdateEventDestinationRequest
 from sinch.domains.numbers.models.v1.response import EventDestinationResponse
@@ -15,8 +14,8 @@ def mock_request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
           "projectId": "a99aa9aa-b888-777c-dd6d-ee55e5555555",
           "hmacSecret": "your_hmac_secret"
@@ -30,7 +29,7 @@ def mock_response_body():
     expected_body = {
         "hmacSecret": "your_hmac_secret"
     }
-    return json.dumps(expected_body)
+    return expected_body
 
 
 @pytest.fixture
@@ -50,7 +49,7 @@ def test_request_body_expects_correct_mapping(endpoint, mock_response_body):
     """
     Check if request body is properly formatted as JSON.
     """
-    request_body = endpoint.request_body()
+    request_body = endpoint.build_body().data
     assert request_body == mock_response_body
 
 

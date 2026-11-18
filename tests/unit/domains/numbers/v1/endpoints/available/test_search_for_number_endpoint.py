@@ -2,7 +2,7 @@ import pytest
 from sinch.domains.numbers.api.v1.internal import SearchForNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import NumberRequest
 from sinch.domains.numbers.models.v1.response import AvailableNumber
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 
 
 @pytest.fixture
@@ -18,8 +18,8 @@ def mock_response():
     """
     Mock the HTTP response object returned by the API.
     """
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
               "phoneNumber": "+1234567890",
               "regionCode": "US",
@@ -76,9 +76,10 @@ def test_handle_response_expects_missing_fields(mock_response):
     """
     Check if response handles missing fields by excluding them without failure.
     """
-    mock_response.body.pop("paymentIntervalMonths")
+    body = mock_response.content.as_json()
+    body.pop("paymentIntervalMonths")
     endpoint = SearchForNumberEndpoint(project_id="test_project", request_data=None)
-    response = endpoint.handle_response(mock_response)
+    response = endpoint.handle_response(json_http_response(status=200, body=body))
 
     assert response.phone_number == "+1234567890"
     assert response.region_code == "US"

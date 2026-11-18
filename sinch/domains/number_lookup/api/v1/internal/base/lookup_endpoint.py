@@ -12,9 +12,9 @@ class LookupEndpoint(BaseHTTPEndpoint, ABC):
         return sinch.configuration.number_lookup_origin
 
     def _raise_for_error(self, response: HTTPResponse) -> None:
-        if response.status_code >= 400:
+        if response.status >= 400:
             raise NumberLookupException(
-                message=f"Error {response.status_code}",
+                message=f"Error {response.status}",
                 response=response,
                 is_from_server=True,
             )

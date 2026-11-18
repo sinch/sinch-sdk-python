@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.internal import SendMessageEndpoint
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 from sinch.domains.conversation.models.v1.messages.internal.request import (
@@ -30,8 +29,8 @@ def request_data():
 @pytest.fixture
 def mock_send_message_response():
     """Mock response for SendMessageResponse."""
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={"message_id": "01FC66621XXXXX119Z8PMV1QPQ"},
         headers={"Content-Type": "application/json"},
     )
@@ -40,8 +39,8 @@ def mock_send_message_response():
 @pytest.fixture
 def mock_error_response():
     """Mock error response for send message endpoint."""
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "error": {
                 "code": 400,
@@ -69,7 +68,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_conversation)
 def test_request_body_expects_valid_json_with_app_id_recipient_message(request_data):
     """Test that the endpoint produces a JSON body with app_id, recipient, and message."""
     endpoint = SendMessageEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["app_id"] == "my app ID"
     assert body["recipient"]["contact_id"] == "my contact ID"
@@ -93,4 +92,4 @@ def test_handle_response_expects_conversation_exception_on_error(
         endpoint.handle_response(mock_error_response)
 
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

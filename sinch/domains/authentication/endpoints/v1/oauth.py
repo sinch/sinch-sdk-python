@@ -1,3 +1,5 @@
+from sinch.core.clients.request_options import RequestOptions
+from sinch.core.models.http_body import UrlEncodedBody
 from sinch.core.models.http_response import HTTPResponse
 from sinch.core.endpoint import HTTPEndpoint
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
@@ -9,6 +11,8 @@ class OAuthEndpoint(HTTPEndpoint):
     ENDPOINT_URL = "{origin}/oauth2/token"
     HTTP_METHOD = HTTPMethods.POST.value
     HTTP_AUTHENTICATION = HTTPAuthentication.BASIC.value
+    # The token is only requested when Sinch authentication is enabled for a request
+    request_options = RequestOptions(use_sinch_auth=True)
 
     def __init__(self):
         pass
@@ -18,22 +22,23 @@ class OAuthEndpoint(HTTPEndpoint):
             origin=sinch.configuration.auth_origin
         )
 
-    def request_body(self) -> dict:
-        return {
+    def build_body(self) -> UrlEncodedBody:
+        return UrlEncodedBody({
             "grant_type": "client_credentials"
-        }
+        })
 
     def handle_response(self, response: HTTPResponse):
-        if response.status_code >= 400:
+        body = response.content.as_json()
+        if response.status >= 400:
             raise AuthenticationException(
-                message=response.body.get("error_description"),
+                message=body.get("error_description"),
                 response=response,
                 is_from_server=True
             )
         else:
             return OAuthToken(
-                access_token=response.body["access_token"],
-                expires_in=response.body["expires_in"],
-                scope=response.body["scope"],
-                token_type=response.body["token_type"]
+                access_token=body["access_token"],
+                expires_in=body["expires_in"],
+                scope=body["scope"],
+                token_type=body["token_type"]
             )

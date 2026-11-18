@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import DeliveryFeedbackEndpoint
 from sinch.domains.sms.models.v1.internal import DeliveryFeedbackRequest
 
@@ -29,7 +28,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_sms):
 def test_request_body_expects_correct_data(request_data):
     """Test that the request body contains correct fields."""
     endpoint = DeliveryFeedbackEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "batch_id" not in body
     assert "recipients" in body
@@ -43,7 +42,7 @@ def test_request_body_expects_single_recipient():
         recipients=["+46701234567"],
     )
     endpoint = DeliveryFeedbackEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["recipients"] == ["+46701234567"]
 
@@ -55,7 +54,7 @@ def test_request_body_expects_empty_recipients():
         recipients=[],
     )
     endpoint = DeliveryFeedbackEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["recipients"] == []
 
@@ -68,8 +67,8 @@ def test_handle_response_expects_success_with_empty_body():
     )
     endpoint = DeliveryFeedbackEndpoint("test_project_id", request_data)
 
-    empty_response = HTTPResponse(
-        status_code=202,
+    empty_response = json_http_response(
+        status=202,
         headers={},
     )
 

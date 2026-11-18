@@ -1,5 +1,7 @@
 import requests
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
+from sinch.core.models.http_headers import HttpHeaders
+from sinch.core.models.http_content import HttpContent
 from sinch.core.models.http_response import HTTPResponse
 
 class HTTPTransportRequests(HTTPTransport):
@@ -20,29 +22,34 @@ class HTTPTransportRequests(HTTPTransport):
         :returns: The HTTP response.
         :rtype: HTTPResponse
         """
+        url = request_data.url + request_data.query_parameters
+        body_text = request_data.content.as_string(errors="replace") if request_data.content is not None else None
         self.sinch.configuration.logger.debug(
-            "Sync HTTP request %s call with headers: %s and body: %s to URL: %s",
-            request_data.http_method, request_data.headers, request_data.request_body, request_data.url
+            "Sync HTTP request %r with body: %s",
+            request_data, body_text
         )
+        
+        timeout_seconds = request_data.timeout_seconds
+        if timeout_seconds is None:
+            timeout_seconds = self.sinch.configuration.transport_settings.timeout_seconds
+
         response = self.http_session.request(
-            method=request_data.http_method,
-            url=request_data.url,
-            data=request_data.request_body,
-            auth=request_data.auth,
+            method=request_data.method,
+            url=url,
+            data=request_data.content.as_bytes() if request_data.content is not None else None,
             headers=request_data.headers,
-            timeout=self.sinch.configuration.connection_timeout,
-            params=request_data.query_params
+            timeout=timeout_seconds or None,
         )
 
-        response_body = self.deserialize_json_response(response)
+        http_response = HTTPResponse(
+            status=response.status_code,
+            headers=HttpHeaders(response.raw.headers),
+            content=response.content,
+        )
 
         self.sinch.configuration.logger.debug(
-            "Sync HTTP response %s with headers: %s and body: %s from URL: %s",
-            response.status_code, response.headers, response_body, request_data.url
+            "Sync HTTP response %r with body: %s from URL: %s",
+            http_response, http_response.content.as_string(errors="replace"), url
         )
 
-        return HTTPResponse(
-            status_code=response.status_code,
-            body=response_body,
-            headers=response.headers
-        )
+        return http_response

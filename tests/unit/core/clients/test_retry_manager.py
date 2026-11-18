@@ -3,11 +3,11 @@ from unittest.mock import Mock
 from sinch.core.clients.retry_configuration import RetryConfiguration
 from sinch.core.clients.retry_manager import RetryManager
 from sinch.core.enums import RetryPolicy
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 
 
 def _response(status_code, headers=None):
-    return HTTPResponse(status_code=status_code, headers=headers or {}, body={})
+    return json_http_response(status=status_code, headers=headers or {}, body={})
 
 
 class TestExecute:

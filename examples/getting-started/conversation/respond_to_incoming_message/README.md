@@ -53,7 +53,7 @@ see that the MO was received and processed.
 
 1. Navigate to this directory:
    ```
-   cd examples/getting-started/conversation/send_handle_incoming_sms
+   cd examples/getting-started/conversation/respond_to_incoming_message
    ```
 
 
