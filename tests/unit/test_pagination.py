@@ -282,6 +282,7 @@ def test_link_based_requests_the_next_page_from_the_served_link():
 
     next_endpoint = client.configuration.transport.request.call_args[0][0]
     assert next_endpoint.build_url(Mock()) == NEXT_PAGE_LINK
+    assert next_endpoint.build_query_string() == ""
     assert next_endpoint.build_query_params() == {}
 
 

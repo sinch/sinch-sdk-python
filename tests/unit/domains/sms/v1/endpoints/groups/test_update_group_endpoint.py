@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from datetime import datetime, timezone
 
@@ -16,8 +15,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "name": "Updated Group",
@@ -37,8 +36,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "code": 400,
             "text": "Bad Request",
@@ -83,12 +82,12 @@ def test_handle_response_expects_sms_exception_on_error(endpoint, mock_error_res
         endpoint.handle_response(mock_error_response)
 
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400
 
 
 def test_request_body_not_excludes_none_fields(endpoint):
     """Test that None fields are not excluded from the serialized request body."""
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["name"] == "Updated Group"
     assert "group_id" not in body
@@ -111,7 +110,7 @@ def test_request_body_expects_correct_serialization():
         auto_update={"to": "+15551231234", "add": {"first_word": "JOIN"}, "remove": {"first_word": "LEAVE"}},
     )
     endpoint = UpdateGroupEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "group_id" not in body
     assert body["name"] == "Updated Group"

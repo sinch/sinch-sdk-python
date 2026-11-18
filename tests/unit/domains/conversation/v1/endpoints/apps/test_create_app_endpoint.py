@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 from sinch.domains.conversation.api.v1.internal.apps_endpoints import (
     CreateAppEndpoint,
@@ -32,8 +31,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "display_name": "My App",
@@ -57,8 +56,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "error": {
                 "code": 400,
@@ -86,7 +85,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_conversation)
 def test_request_body_expects_correct_serialization(request_data):
     """Test that all fields serialize correctly to the request body, applying aliases."""
     endpoint = CreateAppEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["display_name"] == "My App"
     assert body["channel_credentials"][0]["static_bearer"]["token"] == "my-token"
@@ -109,7 +108,7 @@ def test_request_body_accepts_none_fields_and_exclude_unset_fields():
             retention_policy=None,
         ),
     )
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["display_name"] == "My App"
     assert body["retention_policy"] is None
@@ -162,4 +161,4 @@ def test_handle_response_expects_conversation_exception_on_error(
         endpoint.handle_response(mock_error_response)
 
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

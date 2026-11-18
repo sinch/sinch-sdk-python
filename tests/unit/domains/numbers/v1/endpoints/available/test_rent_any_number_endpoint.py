@@ -1,7 +1,6 @@
 import pytest
-import json
 from datetime import datetime, timezone
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.numbers.api.v1.internal import RentAnyNumberEndpoint
 from sinch.domains.numbers.models.v1.internal import RentAnyNumberRequest
 from sinch.domains.numbers.models.v1.response import ActiveNumber
@@ -79,7 +78,7 @@ def test_request_body_expects_correct_json(valid_request_data):
     Test that the request_body method returns the correct JSON structure.
     """
     endpoint = RentAnyNumberEndpoint(project_id="test_project", request_data=valid_request_data)
-    request_body = endpoint.request_body()
+    request_body = endpoint.build_body().data
 
     expected_body = {
         "numberPattern": {"pattern": "string", "searchPattern": "START"},
@@ -91,15 +90,15 @@ def test_request_body_expects_correct_json(valid_request_data):
         "callbackUrl": "https://www.your-callback-server.com/callback",
     }
 
-    assert json.loads(request_body) == expected_body
+    assert request_body == expected_body
 
 
 def test_handle_response_expects_valid_mapping(valid_response_data):
     """
     Test that the handle_response method correctly maps the response data.
     """
-    mock_response = HTTPResponse(status_code=200, body=valid_response_data,
-                                 headers="Content-Type:application/json")
+    mock_response = json_http_response(status=200, body=valid_response_data,
+                                 headers={"Content-Type": "application/json"})
 
     endpoint = RentAnyNumberEndpoint(project_id="test_project", request_data=None)
     response = endpoint.handle_response(mock_response)

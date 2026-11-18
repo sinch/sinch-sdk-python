@@ -1,6 +1,6 @@
 import pytest
 
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 from sinch.domains.conversation.api.v1.internal.contacts_endpoints import (
     GetContactEndpoint,
@@ -21,8 +21,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01W4FFL35P4NC4K35CONTACT001",
             "channel_identities": [
@@ -46,8 +46,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "error": {
                 "code": 400,
@@ -76,7 +76,7 @@ def test_build_url_expects_correct_url(
 
 def test_request_body_expects_no_body(endpoint):
     """Test that no body is sent: contact_id is a path param only."""
-    assert endpoint.request_body() is None
+    assert endpoint.build_body() is None
 
 
 def test_handle_response_expects_correct_mapping(endpoint, mock_response):
@@ -114,4 +114,4 @@ def test_handle_response_expects_conversation_exception_on_error(
 
     assert str(exc_info.value) == "Invalid argument  INVALID_ARGUMENT"
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

@@ -17,6 +17,8 @@ To use Sinch services, you'll need a Sinch account and access keys. You can sign
 - [Supported APIs](#supported-apis)
 - [Getting started](#getting-started)
 - [Logging](#logging)
+- [Retry configuration](#retry-configuration)
+- [Transport settings](#transport-settings)
 - [Handling Exceptions](#handling-exceptions)
 - [Custom HTTP client implementation](#custom-http-client-implementation)
 - [Third-party dependencies](#third-party-dependencies)
@@ -335,6 +337,41 @@ sinch = SinchClient(
 )
 ```
 
+## Transport settings
+
+`SinchClient` accepts optional transport-level settings through `TransportSettings`, passed as `transport_settings`. They apply to product API calls and to OAuth token fetches.
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `timeout_seconds` | `int` or `float` | `60` | HTTP I/O timeout in seconds, applied to both connect and read. Pass `0` to disable the timeout. Negative values are rejected. |
+| `use_sinch_auth` | `bool` | `True` | When `True`, the SDK authenticates the requests. Set `False` to disable Sinch authentication: whatever the authentication method, no `Authorization` header is added and no credentials are required.
+
+> **Note:** When `transport_settings` is not provided, the SDK keeps its previous timeout of 10 seconds. When provided, its `timeout_seconds` (default `60`) applies. `Configuration.connection_timeout` is deprecated in favor of `transport_settings.timeout_seconds` and will be removed in 3.0.
+
+### Timeout
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.transport_settings import TransportSettings
+
+sinch = SinchClient(
+    ...,
+    transport_settings=TransportSettings(timeout_seconds=30),
+)
+```
+
+### Disable Sinch OAuth
+
+```python
+from sinch import SinchClient
+from sinch.core.clients.transport_settings import TransportSettings
+
+sinch = SinchClient(
+    ...,
+    transport_settings=TransportSettings(use_sinch_auth=False),
+)
+```
+
 ## Handling exceptions
 
 Each API throws a custom, API related exception for an unsuccessful backed call.
@@ -361,7 +398,14 @@ By default, the HTTP implementation uses the `requests` library.
 
 To use a custom HTTP client, assign your transport to the client's configuration after initialization.
 
-Custom transports must extend `HTTPTransport` and implement the `send` method. The base class provides `prepare_request` and `authenticate` helpers, and handles OAuth token refresh automatically.
+Custom transports must extend `HTTPTransport` and implement the `send_request` method. It receives an `HttpRequest` that is already prepared and authenticated, and returns an `HTTPResponse`. The base class handles OAuth token refresh and retries.
+
+`HttpRequest` exposes:
+- `method`: the HTTP method.
+- `url`: the absolute URL, without query parameters.
+- `query_parameters`: the URL-encoded query string, including the leading `?`, or `""`.
+- `headers`: an `HttpHeaders`, a case-insensitive mapping that keeps repeated headers.
+- `content`: the body as an `HttpContent`, with its `Content-Type` header already set, or `None` when there is no body. Use `content.as_bytes()` to get the raw bytes to send.
 
 The following example replaces the default `requests` backend with `httpx` and routes traffic through an authenticated proxy:
 
@@ -369,6 +413,7 @@ The following example replaces the default `requests` backend with `httpx` and r
 import httpx
 from sinch import SinchClient
 from sinch.core.ports.http_transport import HTTPTransport
+from sinch.core.models.http_headers import HttpHeaders
 from sinch.core.models.http_request import HttpRequest
 from sinch.core.models.http_response import HTTPResponse
 
@@ -381,24 +426,18 @@ class MyHTTPImplementation(HTTPTransport):
         )
 
     def send_request(self, request_data: HttpRequest) -> HTTPResponse:
-
-        body = request_data.request_body
         response = self.http_client.request(
-            method=request_data.http_method,
-            url=request_data.url,
-            json=body if isinstance(body, dict) else None,
-            content=body if not isinstance(body, dict) else None,
-            auth=request_data.auth,
-            headers=request_data.headers,
-            params=request_data.query_params,
-            timeout=self.sinch.configuration.connection_timeout,
+            method=request_data.method,
+            url=request_data.url + request_data.query_parameters,
+            content=request_data.content.as_bytes() if request_data.content is not None else None,
+            headers=request_data.headers.multi_items(),
+            timeout=request_data.timeout_seconds or None,
         )
-        response_body = self.deserialize_json_response(response)
 
         return HTTPResponse(
-            status_code=response.status_code,
-            body=response_body,
-            headers=dict(response.headers),
+            status=response.status_code,
+            headers=HttpHeaders(response.headers.multi_items()),
+            content=response.content,
         )
 
 

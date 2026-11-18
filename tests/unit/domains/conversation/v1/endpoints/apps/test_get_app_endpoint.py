@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 from sinch.domains.conversation.api.v1.internal.apps_endpoints import (
     CreateAppEndpoint,
@@ -36,8 +36,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "display_name": "My App",
@@ -68,8 +68,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=404,
+    return json_http_response(
+        status=404,
         body={
             "error": {
                 "code": 404,
@@ -135,4 +135,4 @@ def test_handle_response_expects_conversation_exception_on_error(
         endpoint.handle_response(mock_error_response)
 
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 404
+    assert exc_info.value.http_response.status == 404

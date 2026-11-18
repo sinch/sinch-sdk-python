@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime, timezone
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import (
     GetRecipientDeliveryReportEndpoint,
 )
@@ -19,8 +19,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "applied_originator": "+1234567890",
             "at": "2025-01-15T10:30:45.123Z",

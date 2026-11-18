@@ -32,7 +32,7 @@ class RetryManager:
         num_retries = 0
         while True:
             http_response = call()
-            if http_response.status_code not in self.RETRYABLE_STATUS_CODES:
+            if http_response.status not in self.RETRYABLE_STATUS_CODES:
                 return http_response
             if num_retries >= self.configuration.max_retries:
                 return http_response
@@ -62,8 +62,7 @@ class RetryManager:
             return None
 
         if policy != RetryPolicy.BACKOFF:
-            headers = {key.lower(): value for key, value in http_response.headers.items()}
-            retry_after_seconds = self._parse_retry_after(headers.get("retry-after"))
+            retry_after_seconds = self._parse_retry_after(http_response.headers.get("retry-after"))
             if retry_after_seconds is not None:
                 return retry_after_seconds + random.uniform(0, self.RETRY_AFTER_JITTER_SECONDS)
             if policy == RetryPolicy.RETRY_AFTER:

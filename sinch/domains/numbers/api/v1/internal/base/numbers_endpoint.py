@@ -13,9 +13,9 @@ class NumbersEndpoint(BaseHTTPEndpoint, ABC):
         return sinch.configuration.numbers_origin
 
     def _raise_for_error(self, response: HTTPResponse) -> None:
-        error_data = (response.body or {}).get("error", {})
+        error_data = (response.content.as_json() or {}).get("error", {})
 
-        if response.status_code == 404:
+        if response.status == 404:
             try:
                 error = NotFoundError(**error_data)
             except TypeError:
@@ -24,12 +24,11 @@ class NumbersEndpoint(BaseHTTPEndpoint, ABC):
                 message=error, response=response, is_from_server=True
             )
 
-        if response.status_code >= 400:
+        if response.status >= 400:
             message = error_data.get("message", "")
             status = error_data.get("status", "")
             error_message = (
-                f"{message}  {status}".strip()
-                or f"Error {response.status_code}"
+                f"{message}  {status}".strip() or f"Error {response.status}"
             )
             raise NumbersException(
                 message=error_message,

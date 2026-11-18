@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.internal import (
     ListLastMessagesByChannelIdentityEndpoint,
 )
@@ -33,8 +32,8 @@ def endpoint(request_data):
 
 @pytest.fixture
 def mock_list_last_messages_response(contact_message_response_data):
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "messages": [contact_message_response_data],
             "next_page_token": "token_next_page_abc",
@@ -67,7 +66,7 @@ def test_request_body_expects_parsed_params():
     endpoint = ListLastMessagesByChannelIdentityEndpoint(
         "test_project_id", request_data
     )
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["channel_identities"] == ["+46701234567", "+46709876543"]
     assert body["contact_ids"] == ["CONTACT123"]
@@ -99,8 +98,8 @@ def test_handle_response_expects_empty_messages_list():
     endpoint = ListLastMessagesByChannelIdentityEndpoint(
         "test_project_id", request_data
     )
-    mock_response = HTTPResponse(
-        status_code=200,
+    mock_response = json_http_response(
+        status=200,
         body={"messages": [], "next_page_token": None},
         headers={"Content-Type": "application/json"},
     )

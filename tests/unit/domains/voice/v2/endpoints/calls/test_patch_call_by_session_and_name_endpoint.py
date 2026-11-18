@@ -1,8 +1,7 @@
-import json
 
 import pytest
 
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.voice.api.v2.exceptions import VoiceException
 from sinch.domains.voice.api.v2.internal.calls_endpoints import (
     PatchCallBySessionAndNameEndpoint,
@@ -60,8 +59,8 @@ def endpoint(request_data):
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=202,
+    return json_http_response(
+        status=202,
         body={},
         headers={},
     )
@@ -69,8 +68,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=404,
+    return json_http_response(
+        status=404,
         body={
             "type": "https://api.sinch.com/docs/errors/not-found",
             "title": "Not Found",
@@ -90,7 +89,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_voice):
 
 def test_request_body_expects_correct_serialization(endpoint):
     """Test that commands serialize correctly to the request body, applying aliases."""
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     dial = body["commands"][0]
     assert dial["command"] == "dial"
@@ -113,7 +112,7 @@ def test_request_body_expects_correct_serialization(endpoint):
 
 def test_request_body_expects_path_params_and_headers_excluded(endpoint):
     """Test that path params and headers never leak into the body."""
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "project_id" not in body
     assert "session_id" not in body
@@ -156,4 +155,4 @@ def test_handle_response_expects_voice_exception_on_error(
         "Not Found: The requested resource was not found."
     )
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 404
+    assert exc_info.value.http_response.status == 404
