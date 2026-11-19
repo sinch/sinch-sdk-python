@@ -545,6 +545,17 @@ class TestSend:
 
         assert transport.http_session.request.call_args.kwargs["timeout"] is None
 
+    def test_send_does_not_decode_bodies_when_debug_is_disabled(self, mock_sinch, mocker):
+        mock_sinch.configuration.logger.isEnabledFor.return_value = False
+        as_string = mocker.patch("sinch.core.models.http_content.HttpContent.as_string")
+        transport = HTTPTransportRequests(mock_sinch)
+        transport.http_session.request = Mock(return_value=_requests_response(200))
+
+        transport.send_request(HttpRequest(method="POST", url="https://api.sinch.com/test", content=b"payload"))
+
+        as_string.assert_not_called()
+        mock_sinch.configuration.logger.debug.assert_not_called()
+
 
 class TestHandleResponse:
     def test_unparsable_body_raises_sinch_exception_with_the_response(self, mock_sinch, mocker):
