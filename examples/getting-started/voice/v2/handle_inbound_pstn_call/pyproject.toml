@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "sinch-getting-started-handle_inbound_pstn_call"
+name = "sinch-getting-started-voice-handle-inbound-pstn-call"
 version = "0.1.0"
-description = "Getting Started: Handle Inbound PSTN Call and Bridge to an Agent"
+description = "Getting Started: handle inbound PSTN calls and bridge to an agent with Voice API v2"
 readme = "README.md"
 package-mode = false
 
@@ -10,7 +10,7 @@ package-mode = false
 python = "^3.10"
 python-dotenv = "1.2.2"
 flask = "3.1.3"
-sinch = "^2.0.0"
+sinch = "^2.3.0"
 
 # Transitive dependencies (pulled in by flask and sinch above)
 annotated-types = "0.7.0"
