@@ -1,3 +1,4 @@
+import logging
 import requests
 from sinch.core.ports.http_transport import HTTPTransport, HttpRequest
 from sinch.core.models.http_headers import HttpHeaders
@@ -23,12 +24,12 @@ class HTTPTransportRequests(HTTPTransport):
         :rtype: HTTPResponse
         """
         url = request_data.url + request_data.query_parameters
-        body_text = request_data.content.as_string(errors="replace") if request_data.content is not None else None
-        self.sinch.configuration.logger.debug(
-            "Sync HTTP request %r with body: %s",
-            request_data, body_text
-        )
-        
+        logger = self.sinch.configuration.logger
+        debug_enabled = logger.isEnabledFor(logging.DEBUG)
+        if debug_enabled:
+            body_text = request_data.content.as_string(errors="replace") if request_data.content is not None else None
+            logger.debug("Sync HTTP request %r with body: %s", request_data, body_text)
+
         timeout_seconds = request_data.timeout_seconds
         if timeout_seconds is None:
             timeout_seconds = self.sinch.configuration.transport_settings.timeout_seconds
@@ -47,9 +48,10 @@ class HTTPTransportRequests(HTTPTransport):
             content=response.content,
         )
 
-        self.sinch.configuration.logger.debug(
-            "Sync HTTP response %r with body: %s from URL: %s",
-            http_response, http_response.content.as_string(errors="replace"), url
-        )
+        if debug_enabled:
+            logger.debug(
+                "Sync HTTP response %r with body: %s from URL: %s",
+                http_response, http_response.content.as_string(errors="replace"), url
+            )
 
         return http_response

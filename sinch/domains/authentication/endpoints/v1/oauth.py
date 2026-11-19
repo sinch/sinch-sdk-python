@@ -28,7 +28,7 @@ class OAuthEndpoint(HTTPEndpoint):
         })
 
     def handle_response(self, response: HTTPResponse):
-        body = response.content.as_json()
+        body = response.content.as_json() or {}
         if response.status >= 400:
             raise AuthenticationException(
                 message=body.get("error_description"),

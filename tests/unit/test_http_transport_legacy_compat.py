@@ -338,3 +338,13 @@ class TestDeserializeJsonResponse:
 
         with pytest.raises(SinchException):
             HTTPTransport.deserialize_json_response(response)
+
+    def test_invalid_json_in_a_requests_response_keeps_the_status_code(self):
+        response = requests.Response()
+        response.status_code = 200
+        response._content = b"not json"
+
+        with pytest.raises(SinchException) as exc_info:
+            HTTPTransport.deserialize_json_response(response)
+
+        assert exc_info.value.response_status_code == 200
