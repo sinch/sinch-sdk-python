@@ -16,20 +16,25 @@ All notable changes to the **Sinch Python SDK** are documented in this file.
 
 ---
 
-## v2.5.0 – Unreleased
+## v2.5.0 – 2026-11-19
 
 ### SDK
 
 - **[feature]** `SinchClient` adds transport level settings via `transport_settings=TransportSettings(...)` (from `sinch.core.clients.transport_settings`): `timeout_seconds` (default `60`, `0` disables it) and `use_sinch_auth` (default `True`). With `use_sinch_auth=False`, the SDK adds no `Authorization` header, and requires no credentials. APIs whose URL contains the `project_id` still require it.
 - **[deprecation notice]** `Configuration.connection_timeout` is deprecated in favor of `transport_settings.timeout_seconds` and will be removed in 3.0. When `transport_settings` is not provided, the timeout stays at 10 seconds as before. When provided, its `timeout_seconds` applies.
-- **[refactor]** `HTTPTransport` is now based on the shared Sinch SDK transport models: `HttpRequest` (`method`, `url`, `query_parameters`, `headers`, `content`) and `HTTPResponse` (`status`, `headers`, `content`, accepting the raw body as `bytes` or `HttpContent`). Query parameters and bodies are serialized by the SDK before reaching the transport (`content` is UTF-8 encoded `bytes`, and `Content-Type` is set from the body only, so requests without a body no longer send one), Basic credentials are sent in the `Authorization` header, and headers are held in a case-insensitive, multi-value `HttpHeaders`.
-- **[feature]** Response bodies are parsed on demand through `HTTPResponse.content` (`as_json()`, `as_string()`, `as_bytes()`), so the raw body stays available.
-- **[feature]** `HttpContent.as_string()` and `as_json()` decode the body with the charset declared in the `Content-Type` header of its request or response, and UTF-8 when there is none or it is unknown.
-- **[feature]** HTTP API (`sinch.http`): `get`, `delete`, `post`, `put`, `patch` and `post_form_data` operations to call any Sinch API with the SDK authentication, token cache and retries, with full endpoints and unit test coverage. A response with a status of 400 or above raises `HttpException`.
-- **[feature]** `RequestOptions` (from `sinch.core.clients.request_options`) overrides `timeout_seconds`, `use_sinch_auth` and `retry_configuration` for a single `sinch.http` request.
-- **[feature]** `HttpRequest.timeout_seconds` carries the timeout of each request. A custom `HTTPTransport` must read it in `send_request` for `RequestOptions(timeout_seconds=...)` to apply.
-- **[feature]** `JsonBody`, `UrlEncodedBody`, `MultipartBody` and `FilePart` (from `sinch.core.models.http_body`) build a request body and set its `Content-Type`. `MultipartBody` is built in memory, with a generated boundary that is part of its `Content-Type`.
-- **[deprecation notice]** The 2.x transport names are deprecated and will be removed in 3.0: `HttpRequest.http_method`, `request_body`, `query_params` and `auth`; the `status_code` and `body` arguments of `HTTPResponse(...)`; `HTTPResponse.status_code` and `body`; and `HTTPTransport.deserialize_json_response`.
+- **[design]** Custom `HTTPTransport`: `send_request` now receives the shared Sinch SDK `HttpRequest` (`method`, `url`, `query_parameters`, `headers`, `content`, `timeout_seconds`) and returns an `HTTPResponse` (`status`, `headers`, `content`). The query string arrives already encoded with its leading `?`, the body as an `HttpContent` (`as_bytes()`), and headers as a case-insensitive, multi-value `HttpHeaders`.
+- **[deprecation notice]** The 2.x transport names are deprecated and will be removed in 3.0:
+  - `HttpRequest`: `http_method` → `method`, `request_body` → `content`, `query_params` → `query_parameters`, `auth` → the `Authorization` header.
+  - `HTTPResponse`: `status_code` → `status`, `body` → `content.as_json()`, both as constructor arguments and as attributes.
+  - `HTTPTransport.deserialize_json_response` → `HTTPResponse.content.as_json()`.
+
+### HTTP API
+
+- **[feature]** Low-level HTTP client (`sinch.http`): `get`, `delete`, `post`, `put`, `patch` and `post_form_data` call any Sinch API, with the SDK authentication, OAuth token cache and 429 retries. See [Low-level HTTP client](README.md#low-level-http-client).
+- **[feature]** Bodies can also be built with `JsonBody`, `UrlEncodedBody`, `MultipartBody` and `FilePart` (from `sinch.core.models.http_body`), which set the `Content-Type`.
+- **[feature]** `RequestOptions` (from `sinch.core.clients.request_options`) overrides `timeout_seconds`, `use_sinch_auth` and `retry_configuration` for a single call.
+- **[feature]** The returned `HTTPResponse` exposes `status`, `headers` and `content`, read with `as_json()`, `as_string()` or `as_bytes()`. Text is decoded with the charset of the `Content-Type` header, or UTF-8.
+
 
 ---
 
