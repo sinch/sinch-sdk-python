@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import ListBatchesEndpoint
 from sinch.domains.sms.models.v1.internal import ListBatchesRequest
 from sinch.domains.sms.models.v1.response.list_batches_response import (
@@ -18,8 +18,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "count": 2,
             "page": 0,
@@ -128,8 +128,8 @@ def test_handle_response_expects_empty_batches_list():
     request_data = ListBatchesRequest(page=0, page_size=10)
     endpoint = ListBatchesEndpoint("test_project_id", request_data)
 
-    empty_response = HTTPResponse(
-        status_code=200,
+    empty_response = json_http_response(
+        status=200,
         body={
             "count": 0,
             "page": 0,

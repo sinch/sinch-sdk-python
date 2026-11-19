@@ -1,8 +1,7 @@
-import json
 
 import pytest
 
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.voice.api.v2.exceptions import VoiceException
 from sinch.domains.voice.api.v2.internal.svaml_endpoints import (
     ValidateSvamlEndpoint,
@@ -30,8 +29,8 @@ def endpoint(request_data):
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "isValid": False,
             "errors": ["Invalid dial command. Missing destination."],
@@ -42,8 +41,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "type": "https://api.sinch.com/docs/errors/bad-request",
             "title": "Bad Request",
@@ -63,7 +62,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_voice):
 
 def test_request_body_expects_correct_serialization(endpoint):
     """Test that all fields serialize correctly to the request body, applying aliases."""
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["svaml"]["commands"][0]["command"] == "answer"
     assert body["validationType"] == "STRICT"
@@ -79,7 +78,7 @@ def test_request_body_accepts_none_fields_and_exclude_unset_fields():
             validation_type=None,
         ),
     )
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["svaml"]["commands"][0]["command"] == "answer"
     assert body["validationType"] is None
@@ -88,9 +87,7 @@ def test_request_body_accepts_none_fields_and_exclude_unset_fields():
         "test_project_id",
         ValidateSvamlRequest(svaml={"commands": [{"command": "answer"}]}),
     )
-    body_without_validation_type = json.loads(
-        endpoint_without_validation_type.request_body()
-    )
+    body_without_validation_type = endpoint_without_validation_type.build_body().data
     assert "validationType" not in body_without_validation_type
 
 
@@ -116,4 +113,4 @@ def test_handle_response_expects_voice_exception_on_error(
         "Bad Request: The request body is invalid or malformed."
     )
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

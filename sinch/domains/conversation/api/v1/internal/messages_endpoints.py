@@ -1,4 +1,7 @@
+from typing import Optional
+
 from sinch.core.enums import HTTPAuthentication, HTTPMethods
+from sinch.core.models.http_body import JsonBody
 from sinch.domains.conversation.api.v1.internal.base import (
     ConversationEndpoint,
 )
@@ -116,12 +119,15 @@ class UpdateMessageMetadataEndpoint(MessageEndpoint):
     ):
         super().__init__(project_id, request_data, response_model)
 
-    def request_body(self) -> str:
+    def build_body(self) -> Optional[JsonBody]:
         """Only BODY_PARAM_FIELDS are sent, not request_data minus path/query params."""
-        body = self.request_data.model_dump_json(
-            by_alias=True, exclude_none=True, include=self.BODY_PARAM_FIELDS
+        body = self.request_data.model_dump(
+            mode="json",
+            by_alias=True,
+            exclude_none=True,
+            include=self.BODY_PARAM_FIELDS,
         )
-        return body if body != "{}" else ""
+        return JsonBody(body) if body else None
 
 
 class SendMessageEndpoint(ConversationEndpoint):

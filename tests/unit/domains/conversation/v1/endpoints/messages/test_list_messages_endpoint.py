@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.internal import ListMessagesEndpoint
 from sinch.domains.conversation.models.v1.messages.internal import (
     ListMessagesResponse,
@@ -24,8 +24,8 @@ def endpoint(request_data):
 
 @pytest.fixture
 def mock_list_messages_response(contact_message_response_data):
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "messages": [contact_message_response_data],
             "next_page_token": "token_next_page_abc",
@@ -102,8 +102,8 @@ def test_handle_response_expects_empty_messages_list():
     """Test that response with empty messages list is handled correctly."""
     request_data = ListMessagesRequest(page_size=10)
     endpoint = ListMessagesEndpoint("test_project_id", request_data)
-    mock_response = HTTPResponse(
-        status_code=200,
+    mock_response = json_http_response(
+        status=200,
         body={"messages": [], "next_page_token": None},
         headers={"Content-Type": "application/json"},
     )

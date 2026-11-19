@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.exceptions import ConversationException
 from sinch.domains.conversation.api.v1.internal.apps_endpoints import (
     UpdateAppEndpoint,
@@ -34,8 +33,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "display_name": "Updated App",
@@ -56,8 +55,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=400,
+    return json_http_response(
+        status=400,
         body={
             "error": {
                 "code": 400,
@@ -122,7 +121,7 @@ def test_build_query_params_accepts_none_fields():
 def test_request_body_expects_correct_serialization(request_data):
     """Test that app_id is excluded from the body and aliases are applied."""
     endpoint = UpdateAppEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "app_id" not in body
     assert "update_mask" not in body
@@ -144,7 +143,7 @@ def test_request_body_accepts_none_fields_and_exclude_unset_fields():
             retention_policy=None,
         ),
     )
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["display_name"] == "Updated App"
     assert body["retention_policy"] is None
@@ -187,4 +186,4 @@ def test_handle_response_expects_conversation_exception_on_error(
         endpoint.handle_response(mock_error_response)
 
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 400
+    assert exc_info.value.http_response.status == 400

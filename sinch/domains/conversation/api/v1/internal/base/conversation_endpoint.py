@@ -10,13 +10,12 @@ class ConversationEndpoint(BaseHTTPEndpoint, ABC):
         return sinch.configuration.get_conversation_origin()
 
     def _raise_for_error(self, response: HTTPResponse) -> None:
-        if response.status_code >= 400:
-            error = (response.body or {}).get("error", {})
+        if response.status >= 400:
+            error = (response.content.as_json() or {}).get("error", {})
             message = error.get("message", "")
             status = error.get("status", "")
             error_message = (
-                f"{message}  {status}".strip()
-                or f"Error {response.status_code}"
+                f"{message}  {status}".strip() or f"Error {response.status}"
             )
             raise ConversationException(
                 message=error_message,

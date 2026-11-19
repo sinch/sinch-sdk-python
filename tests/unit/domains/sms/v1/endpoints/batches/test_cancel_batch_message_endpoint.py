@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import CancelBatchMessageEndpoint
 from sinch.domains.sms.models.v1.internal import BatchIdRequest
 from sinch.domains.sms.models.v1.shared.text_response import TextResponse
@@ -14,8 +14,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "to": ["12017777777"],
@@ -37,8 +37,8 @@ def mock_response():
 
 @pytest.fixture
 def mock_error_response():
-    return HTTPResponse(
-        status_code=404,
+    return json_http_response(
+        status=404,
         body={
             "code": 404,
             "text": "Batch not found",
@@ -114,15 +114,15 @@ def test_handle_response_expects_sms_exception_on_error(
         endpoint.handle_response(mock_error_response)
 
     assert exc_info.value.is_from_server is True
-    assert exc_info.value.http_response.status_code == 404
+    assert exc_info.value.http_response.status == 404
 
 
 def test_handle_response_expects_canceled_batch(endpoint):
     """
     Test that a canceled batch response is correctly parsed.
     """
-    canceled_response = HTTPResponse(
-        status_code=200,
+    canceled_response = json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "to": ["12017777777"],

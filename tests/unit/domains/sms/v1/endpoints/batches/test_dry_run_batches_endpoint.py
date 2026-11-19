@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import DryRunEndpoint
 from sinch.domains.sms.models.v1.internal.dry_run_request import (
     DryRunTextRequest,
@@ -81,8 +80,8 @@ def mock_dry_run_response_without_per_recipient():
 
 @pytest.fixture
 def mock_http_response_for_dry_run():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "number_of_recipients": 2,
             "number_of_messages": 1,
@@ -107,8 +106,8 @@ def mock_http_response_for_dry_run():
 
 @pytest.fixture
 def mock_http_response_without_per_recipient():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "number_of_recipients": 2,
             "number_of_messages": 1,
@@ -159,7 +158,7 @@ def test_request_body_expects_excludes_query_params(text_request_data):
     text_request_data.number_of_recipients = 100
 
     endpoint = DryRunEndpoint("test_project_id", text_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "per_recipient" not in body
     assert "number_of_recipients" not in body
@@ -175,7 +174,7 @@ def test_request_body_expects_binary_request_data(binary_request_data):
     binary_request_data.number_of_recipients = 100
 
     endpoint = DryRunEndpoint("test_project_id", binary_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "per_recipient" not in body
     assert "number_of_recipients" not in body
@@ -194,7 +193,7 @@ def test_request_body_expects_media_request_data(media_request_data):
     media_request_data.number_of_recipients = 50
 
     endpoint = DryRunEndpoint("test_project_id", media_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "per_recipient" not in body
     assert "number_of_recipients" not in body
