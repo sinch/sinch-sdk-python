@@ -44,5 +44,5 @@ class ListAvailableRegionsEndpoint(NumbersEndpoint):
                 is_from_server=ex.is_from_server,
             )
         return self._process_response_model(
-            response.body, ListAvailableRegionsResponse
+            response.content.as_json(), ListAvailableRegionsResponse
         )

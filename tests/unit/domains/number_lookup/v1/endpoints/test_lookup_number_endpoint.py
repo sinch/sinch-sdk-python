@@ -1,7 +1,6 @@
-import json
 from unittest.mock import MagicMock
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.number_lookup.api.v1.internal import LookupNumberEndpoint
 from sinch.domains.number_lookup.models.v1.internal import LookupNumberRequest
 from sinch.domains.number_lookup.models.v1.response import LookupNumberResponse
@@ -16,8 +15,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "line": {
                 "carrier": "T-Mobile USA",
@@ -77,8 +76,7 @@ def test_build_url_with_custom_domain_expects_overridden_url():
 
 def test_request_body_expects_correct_json(endpoint):
     """Check if request body is correctly serialized to JSON."""
-    body = endpoint.request_body()
-    parsed_body = json.loads(body)
+    parsed_body = endpoint.build_body().data
     assert parsed_body["number"] == "+12312312312"
     assert parsed_body["features"] == ["LineType", "SimSwap"]
 
@@ -91,8 +89,7 @@ def test_request_body_with_rnd_options_expects_correct_json():
         rnd_feature_options={"contact_date": "2025-01-01"},
     )
     endpoint = LookupNumberEndpoint("test_project_id", request_data)
-    body = endpoint.request_body()
-    parsed_body = json.loads(body)
+    parsed_body = endpoint.build_body().data
     assert parsed_body["number"] == "+12312312312"
     assert parsed_body["features"] == ["RND"]
     assert parsed_body["rndFeatureOptions"] == {"contact_date": "2025-01-01"}
@@ -102,8 +99,7 @@ def test_request_body_excludes_none_expects_correct_json():
     """Check if None values are excluded from request body."""
     request_data = LookupNumberRequest(number="+12312312312")
     endpoint = LookupNumberEndpoint("test_project_id", request_data)
-    body = endpoint.request_body()
-    parsed_body = json.loads(body)
+    parsed_body = endpoint.build_body().data
     assert "number" in parsed_body
     assert "features" not in parsed_body
     assert "rndFeatureOptions" not in parsed_body

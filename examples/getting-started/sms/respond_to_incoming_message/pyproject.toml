@@ -15,7 +15,7 @@ sinch = "^2.0.0"
 # Transitive dependencies (pulled in by flask and sinch above)
 annotated-types = "0.7.0"
 blinker = "1.9.0"
-certifi = "2026.7.22"
+certifi = "2026.10.23"
 charset-normalizer = "3.4.9"
 click = "8.4.2"
 idna = "3.18"
@@ -28,7 +28,7 @@ requests = "2.34.2"
 typing-inspection = "0.4.2"
 typing-extensions = "4.16.0"
 urllib3 = "2.8.0"
-werkzeug = "3.1.8"
+werkzeug = "3.1.9"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,5 +1,5 @@
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import GetBatchDeliveryReportEndpoint
 from sinch.domains.sms.models.v1.internal import GetBatchDeliveryReportRequest
 from sinch.domains.sms.models.v1.response import BatchDeliveryReport
@@ -19,8 +19,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "batch_id": "01FC66621XXXXX119Z8PMV1QPQ",
             "client_reference": "test_client_ref",

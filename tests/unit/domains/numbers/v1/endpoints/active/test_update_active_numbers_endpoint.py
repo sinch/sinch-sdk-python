@@ -1,9 +1,8 @@
-import json
 
 import pytest
 from datetime import datetime, timezone
 from decimal import Decimal
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.numbers.api.v1.internal import UpdateNumberConfigurationEndpoint
 from sinch.domains.numbers.models.v1.internal import UpdateNumberConfigurationRequest
 from sinch.domains.numbers.models.v1.response import ActiveNumber
@@ -26,8 +25,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "phoneNumber": "+1234567890",
             "projectId": "51bc3f40-f266-4ca8-8938-a1ed0ff32b9a",
@@ -60,7 +59,7 @@ def mock_response_body():
             "appId": "App Id"
         }
     }
-    return json.dumps(expected_body)
+    return expected_body
 
 
 @pytest.fixture
@@ -73,7 +72,7 @@ def test_request_body_expects_correct_json(request_data, mock_response_body):
     Check if request body is constructed correctly based on input data.
     """
     endpoint = UpdateNumberConfigurationEndpoint(project_id="test_project", request_data=request_data)
-    request_body = endpoint.request_body()
+    request_body = endpoint.build_body().data
     assert request_body == mock_response_body
 
 

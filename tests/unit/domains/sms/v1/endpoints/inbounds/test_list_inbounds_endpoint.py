@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.exceptions import SmsException
 from sinch.domains.sms.api.v1.internal.inbounds_endpoints import ListInboundsEndpoint
 from sinch.domains.sms.models.v1.internal.list_inbounds_request import ListInboundsRequest
@@ -20,8 +20,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "count": 1,
             "page": 0,
@@ -113,7 +113,7 @@ def test_handle_response_expects_correct_mapping(endpoint, mock_response):
 
 def test_handle_response_expects_sms_exception_on_error(endpoint):
     """Test that SmsException is raised when server returns an error."""
-    error_response = HTTPResponse(status_code=404, body=1, headers={})
+    error_response = json_http_response(status=404, body=1, headers={})
 
     with pytest.raises(SmsException) as exc_info:
         endpoint.handle_response(error_response)

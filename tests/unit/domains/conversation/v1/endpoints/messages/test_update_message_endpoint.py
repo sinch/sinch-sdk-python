@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.conversation.api.v1.internal import UpdateMessageMetadataEndpoint
 from sinch.domains.conversation.models.v1.messages.internal.request import UpdateMessageMetadataRequest
 from sinch.domains.conversation.models.v1.messages.response.message_response import (
@@ -24,8 +23,8 @@ def request_data():
 @pytest.fixture
 def mock_contact_message_response(contact_message_response_data):
     """Mock response for ContactMessageResponse (Union type test)."""
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body=contact_message_response_data,
         headers={"Content-Type": "application/json"},
     )
@@ -34,8 +33,8 @@ def mock_contact_message_response(contact_message_response_data):
 @pytest.fixture
 def mock_app_message_response(app_message_response_data):
     """Mock response for AppMessageResponse (Union type test)."""
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body=app_message_response_data,
         headers={"Content-Type": "application/json"},
     )
@@ -74,7 +73,7 @@ def test_request_body_expects_excludes_message_id_and_query_params(request_data)
     """
     request_data.messages_source = "CONVERSATION_SOURCE"
     endpoint = UpdateMessageMetadataEndpoint("test_project_id", request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "messages_source" not in body
     assert "message_id" not in body

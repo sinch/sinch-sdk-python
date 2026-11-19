@@ -22,9 +22,9 @@ class SmsEndpoint(BaseHTTPEndpoint, ABC):
         return sinch.configuration.get_sms_origin_for_auth()
 
     def _raise_for_error(self, response: HTTPResponse) -> None:
-        if response.status_code >= 400:
+        if response.status >= 400:
             raise SmsException(
-                message=f"Error {response.status_code}",
+                message=f"Error {response.status}",
                 response=response,
                 is_from_server=True,
             )

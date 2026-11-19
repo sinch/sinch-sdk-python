@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from unittest.mock import MagicMock
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.core.pagination import SMSPaginator
 from sinch.domains.sms.api.v1 import DeliveryReports
 from sinch.domains.sms.api.v1.exceptions import SmsException
@@ -167,7 +167,7 @@ def test_sms_endpoint_handle_response_raises_exception_on_error(
     )
     endpoint = GetBatchDeliveryReportEndpoint("test_project_id", request_data)
 
-    error_response = HTTPResponse(status_code=400, body=1, headers={})
+    error_response = json_http_response(status=400, body=1, headers={})
 
     with pytest.raises(SmsException) as exc_info:
         endpoint.handle_response(error_response)

@@ -1,6 +1,6 @@
 from decimal import Decimal
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.numbers.api.v1.internal import AvailableNumbersEndpoint
 from sinch.domains.numbers.models.v1.internal import ListAvailableNumbersRequest, ListAvailableNumbersResponse
 
@@ -19,8 +19,8 @@ def request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "availableNumbers": [
                 {

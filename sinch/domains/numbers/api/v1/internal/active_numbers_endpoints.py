@@ -42,7 +42,9 @@ class GetNumberConfigurationEndpoint(NumbersEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self._process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(
+            response.content.as_json(), ActiveNumber
+        )
 
 
 class ListActiveNumbersEndpoint(NumbersEndpoint):
@@ -98,7 +100,9 @@ class ReleaseNumberFromProjectEndpoint(NumbersEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self._process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(
+            response.content.as_json(), ActiveNumber
+        )
 
 
 class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
@@ -129,4 +133,6 @@ class UpdateNumberConfigurationEndpoint(NumbersEndpoint):
                 response=e.http_response,
                 is_from_server=e.is_from_server,
             )
-        return self._process_response_model(response.body, ActiveNumber)
+        return self._process_response_model(
+            response.content.as_json(), ActiveNumber
+        )

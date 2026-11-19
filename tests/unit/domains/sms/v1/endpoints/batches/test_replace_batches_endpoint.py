@@ -1,6 +1,5 @@
-import json
 import pytest
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.sms.api.v1.internal import ReplaceBatchEndpoint
 from sinch.domains.sms.models.v1.internal.replace_batch_request import (
     ReplaceTextRequest,
@@ -49,8 +48,8 @@ def media_request_data():
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "id": "01FC66621XXXXX119Z8PMV1QPQ",
             "to": ["+46701234567", "+46709876543"],
@@ -86,7 +85,7 @@ def test_build_url_expects_correct_url(endpoint, mock_sinch_client_sms):
 def test_request_body_expects_excludes_batch_id(text_request_data):
     """Test that the request body is correct for a text request."""
     endpoint = ReplaceBatchEndpoint("test_project_id", text_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "batch_id" not in body
     assert "to" in body
@@ -98,7 +97,7 @@ def test_request_body_expects_excludes_batch_id(text_request_data):
 def test_request_body_expects_text_request_data(text_request_data):
     """Test that the request body is correct for a text request."""
     endpoint = ReplaceBatchEndpoint("test_project_id", text_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert body["to"] == ["+46701234567", "+46709876543"]
     assert body["from"] == "+46701111111"
@@ -109,7 +108,7 @@ def test_request_body_expects_text_request_data(text_request_data):
 def test_request_body_expects_binary_request_data(binary_request_data):
     """Test that the request body is correct for a binary request."""
     endpoint = ReplaceBatchEndpoint("test_project_id", binary_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "batch_id" not in body
     assert "to" in body
@@ -124,7 +123,7 @@ def test_request_body_expects_binary_request_data(binary_request_data):
 def test_request_body_expects_media_request_data(media_request_data):
     """Test that the request body is correct for a media request."""
     endpoint = ReplaceBatchEndpoint("test_project_id", media_request_data)
-    body = json.loads(endpoint.request_body())
+    body = endpoint.build_body().data
 
     assert "batch_id" not in body
     assert "to" in body

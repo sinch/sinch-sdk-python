@@ -1,6 +1,5 @@
 import pytest
-import json
-from sinch.core.models.http_response import HTTPResponse
+from tests.conftest import json_http_response
 from sinch.domains.numbers.api.v1.internal import GetEventDestinationEndpoint
 from sinch.domains.numbers.models.v1.internal.base import BaseModelConfigurationRequest
 from sinch.domains.numbers.models.v1.response import EventDestinationResponse
@@ -8,8 +7,8 @@ from sinch.domains.numbers.models.v1.response import EventDestinationResponse
 
 @pytest.fixture
 def mock_response():
-    return HTTPResponse(
-        status_code=200,
+    return json_http_response(
+        status=200,
         body={
             "projectId": "j55aa9aa-b888-777c-dd6d-ee55e1010101010",
             "hmacSecret": "your_hmac_secret"
@@ -67,7 +66,7 @@ def test_request_body_expects_correct_mapping_with_extra_fields(endpoint_extra_r
     """
     Extra fields are included in the request body.
     """
-    assert endpoint_extra_request_data.request_body() == json.dumps({"extraField": "extra value"})
+    assert endpoint_extra_request_data.build_body().data == {"extraField": "extra value"}
 
 
 @endpoint_fixtures
