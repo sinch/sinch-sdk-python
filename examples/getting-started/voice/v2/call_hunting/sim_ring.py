@@ -46,8 +46,9 @@ def ring_agent(number, name, others):
     )
 
 
-# SVAML commands: dial the customer -> on answer play a hold message and ring
-# the three agents at once (dial is non-blocking) -> first to answer wins
+# SVAML commands: dial the customer -> on answer play a hold message, join the
+# bridge and ring the three agents at once (dial is non-blocking) -> first to
+# answer wins
 commands = CommandsSequenceCreator().dial(
     customer_number,
     from_=sinch_number,
@@ -55,6 +56,7 @@ commands = CommandsSequenceCreator().dial(
     timeout_duration_seconds=30,
     on_answer=CommandsSequenceCreator()
     .text("Connecting you now.", "Emma_3", name="hold")
+    .bridge_call("hunt-bridge")
     .command(ring_agent(agent_1, "agent-A", ["agent-B", "agent-C"]))
     .command(ring_agent(agent_2, "agent-B", ["agent-A", "agent-C"]))
     .command(ring_agent(agent_3, "agent-C", ["agent-A", "agent-B"])),

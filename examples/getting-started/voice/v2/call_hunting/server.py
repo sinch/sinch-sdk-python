@@ -78,8 +78,8 @@ def voice_events():
             on_hangup=Calls.hangup(),
         )
     elif event.event == "call.answered" and call_name == "customer":
-        # Outbound customer leg answered: play the hold message and dial the
-        # first agent
+        # Outbound customer leg answered: play the hold message, join the
+        # bridge and dial the first agent
         cursors[session_id] = 0
         response = sinch_events.build_response(
             commands=CommandsSequenceCreator()
@@ -88,6 +88,7 @@ def voice_events():
                 "Emma_3",
                 name="hold",
             )
+            .bridge_call("hunt-bridge")
             .command(dial_agent(0))
         )
     elif event.event == "call.answered" and call_name.startswith("agent-"):

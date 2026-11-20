@@ -34,9 +34,9 @@ join_bridge = (
     CommandsSequenceCreator().stop_messages("hold").bridge_call("hunt-bridge")
 )
 
-# SVAML commands: dial the customer -> on answer play a hold message and dial
-# agent 1 -> on timeout dial agent 2 -> on timeout dial agent 3 -> on timeout
-# hang up the customer
+# SVAML commands: dial the customer -> on answer play a hold message, join the
+# bridge and dial agent 1 -> on timeout dial agent 2 -> on timeout dial agent 3
+# -> on timeout hang up the customer
 commands = CommandsSequenceCreator().dial(
     customer_number,
     from_=sinch_number,
@@ -48,6 +48,7 @@ commands = CommandsSequenceCreator().dial(
         "Emma_3",
         name="hold",
     )
+    .bridge_call("hunt-bridge")
     .dial(
         agent_1,
         from_=sinch_number,

@@ -89,8 +89,8 @@ up. This flow only moves on when an agent times out; busy, rejected or failed ag
    poetry run python start_customer_call.py
    ```
    The dial has no events of its own, so its events go to the server. When the customer answers, the server plays a
-   hold message and dials the first agent. When an agent times out, is busy, rejects or fails, it dials the next one;
-   when the list runs out, it apologizes and hangs up. You can also call `SINCH_NUMBER` from a phone to start an
+   hold message, joins the customer to the bridge and dials the first agent. When an agent times out, is busy, rejects
+   or fails, it dials the next one; when the list runs out, it apologizes and hangs up. You can also call `SINCH_NUMBER` from a phone to start an
    inbound hunt.
 
 ### Simultaneous ring
